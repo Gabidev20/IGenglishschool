@@ -78,6 +78,26 @@ function lmCategory(topic) {
    1) READING TIME
    ========================================================================== */
 
+// Custom content helpers — allows teachers to override with their own text
+function getCustomReadingContent(topicId) {
+  const key = `custom_reading_${topicId}`;
+  const stored = localStorage.getItem(key);
+  return stored ? JSON.parse(stored) : null;
+}
+function saveCustomReadingContent(topicId, text, questions) {
+  const key = `custom_reading_${topicId}`;
+  localStorage.setItem(key, JSON.stringify({ text, questions }));
+}
+function getCustomPracticeContent(topicId) {
+  const key = `custom_practice_${topicId}`;
+  const stored = localStorage.getItem(key);
+  return stored ? JSON.parse(stored) : null;
+}
+function saveCustomPracticeContent(topicId, description, instructions) {
+  const key = `custom_practice_${topicId}`;
+  localStorage.setItem(key, JSON.stringify({ description, instructions }));
+}
+
 function buildReadingContent(level, topic) {
   // Authored content (topicsData's readingTime/questions) takes priority —
   // it's real, level-appropriate writing with genuine comprehension
@@ -187,59 +207,105 @@ function grammarTipHTML(topic) {
 }
 
 function renderReadingModule(container, level, topic) {
-  const content = buildReadingContent(level, topic);
+  const customContent = getCustomReadingContent(topic.id);
+  const content = customContent || buildReadingContent(level, topic);
+  const isCustom = !!customContent;
 
-  if (content.authored) {
-    const lines = String(content.text || '').split('\n').filter(Boolean);
+  function renderContent() {
+    if (content.authored || isCustom) {
+      const lines = String(content.text || '').split('\n').filter(Boolean);
+      container.innerHTML = `
+        <button class="edit-content-btn" id="editReadingBtn" title="Edit this reading">✏️ Edit Content</button>
+        ${grammarTipHTML(topic)}
+        <div class="reading-passage reading-passage-authored">
+          ${lines.map(line => `<p class="reading-line">${lmEscape(line)}</p>`).join('')}
+        </div>
+        <div class="reading-quiz">
+          <h4>Quick Check 📝</h4>
+          <div id="readingQuizList"></div>
+        </div>
+      `;
+      renderQuizList(document.getElementById('readingQuizList'), content.quiz);
+      document.getElementById('editReadingBtn').addEventListener('click', showEditPanel);
+      return;
+    }
+
     container.innerHTML = `
+      <button class="edit-content-btn" id="editReadingBtn" title="Edit this reading">✏️ Edit Content</button>
       ${grammarTipHTML(topic)}
-      <div class="reading-passage reading-passage-authored">
-        ${lines.map(line => `<p class="reading-line">${lmEscape(line)}</p>`).join('')}
+      <div class="reading-passage">
+        ${content.sentences.map((s, i) => `<p class="reading-sentence" data-sentence="${i}">${renderSentenceHTML(s)}</p><div class="reading-note" data-note-for="${i}" hidden></div>`).join('')}
       </div>
       <div class="reading-quiz">
         <h4>Quick Check 📝</h4>
         <div id="readingQuizList"></div>
       </div>
     `;
+
+    container.querySelectorAll('.glossary-word, .grammar-term').forEach(span => {
+      span.addEventListener('click', () => {
+        const sentenceEl = span.closest('.reading-sentence');
+        const idx = sentenceEl.dataset.sentence;
+        const note = container.querySelector(`.reading-note[data-note-for="${idx}"]`);
+        const kind = span.classList.contains('glossary-word') ? 'glossary' : 'grammar';
+
+        if (!note.hidden && note.dataset.kind === kind) {
+          note.hidden = true;
+          return;
+        }
+        note.dataset.kind = kind;
+        if (kind === 'glossary') {
+          const word = content.sentences[idx].glossaryWord;
+          note.innerHTML = `${lmWordVisual(word, 'note-visual')}<span>${word.en} — ${lmCategory(topic).article} ${lmCategory(topic).noun}</span>`;
+        } else {
+          const term = content.sentences[idx].grammarTerm;
+          note.innerHTML = `<span class="note-visual emoji-fallback" style="font-size:1.6rem">💡</span><span><strong>${term.text}</strong> — ${term.label}</span>`;
+        }
+        note.hidden = false;
+      });
+    });
+
     renderQuizList(document.getElementById('readingQuizList'), content.quiz);
-    return;
+    document.getElementById('editReadingBtn').addEventListener('click', showEditPanel);
   }
 
-  container.innerHTML = `
-    ${grammarTipHTML(topic)}
-    <div class="reading-passage">
-      ${content.sentences.map((s, i) => `<p class="reading-sentence" data-sentence="${i}">${renderSentenceHTML(s)}</p><div class="reading-note" data-note-for="${i}" hidden></div>`).join('')}
-    </div>
-    <div class="reading-quiz">
-      <h4>Quick Check 📝</h4>
-      <div id="readingQuizList"></div>
-    </div>
-  `;
+  function showEditPanel() {
+    const modal = document.createElement('div');
+    modal.className = 'edit-content-modal';
+    modal.innerHTML = `
+      <div class="edit-content-panel">
+        <h4>✏️ Edit Reading Content</h4>
+        <label>Reading Text (paste your story, dialogue, or article):</label>
+        <textarea id="editReadingText" style="width:100%;height:150px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:0.9rem">${content.text || ''}</textarea>
+        <label style="margin-top:12px;display:block">Quick Check Questions (JSON format):</label>
+        <textarea id="editReadingQuiz" style="width:100%;height:120px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:0.85rem">${JSON.stringify(content.quiz || [], null, 2)}</textarea>
+        <div style="margin-top:16px;display:flex;gap:8px">
+          <button id="saveReadingBtn" style="flex:1;padding:10px;background:#6f7d68;color:white;border:none;border-radius:6px;font-weight:700;cursor:pointer">💾 Save Content</button>
+          <button id="cancelReadingBtn" style="flex:1;padding:10px;background:#ccc;color:#333;border:none;border-radius:6px;font-weight:700;cursor:pointer">Cancel</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
 
-  container.querySelectorAll('.glossary-word, .grammar-term').forEach(span => {
-    span.addEventListener('click', () => {
-      const sentenceEl = span.closest('.reading-sentence');
-      const idx = sentenceEl.dataset.sentence;
-      const note = container.querySelector(`.reading-note[data-note-for="${idx}"]`);
-      const kind = span.classList.contains('glossary-word') ? 'glossary' : 'grammar';
-
-      if (!note.hidden && note.dataset.kind === kind) {
-        note.hidden = true;
-        return;
+    document.getElementById('saveReadingBtn').addEventListener('click', () => {
+      const text = document.getElementById('editReadingText').value;
+      try {
+        const quiz = JSON.parse(document.getElementById('editReadingQuiz').value);
+        saveCustomReadingContent(topic.id, text, quiz);
+        content.text = text;
+        content.quiz = quiz;
+        document.body.removeChild(modal);
+        renderContent();
+      } catch (e) {
+        alert('Invalid JSON in questions field: ' + e.message);
       }
-      note.dataset.kind = kind;
-      if (kind === 'glossary') {
-        const word = content.sentences[idx].glossaryWord;
-        note.innerHTML = `${lmWordVisual(word, 'note-visual')}<span>${word.en} — ${lmCategory(topic).article} ${lmCategory(topic).noun}</span>`;
-      } else {
-        const term = content.sentences[idx].grammarTerm;
-        note.innerHTML = `<span class="note-visual emoji-fallback" style="font-size:1.6rem">💡</span><span><strong>${term.text}</strong> — ${term.label}</span>`;
-      }
-      note.hidden = false;
     });
-  });
+    document.getElementById('cancelReadingBtn').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+  }
 
-  renderQuizList(document.getElementById('readingQuizList'), content.quiz);
+  renderContent();
 }
 
 function renderSentenceHTML(sentence) {
@@ -344,12 +410,15 @@ function buildPracticeSession(level, topic) {
 }
 
 function renderPracticeArena(container, level, topic) {
+  const customPractice = getCustomPracticeContent(topic.id);
   const state = { exercises: buildPracticeSession(level, topic), index: 0, hearts: 5, xp: 0 };
 
   function paintShell() {
     if (state.hearts <= 0) return paintGameOver();
     if (state.index >= state.exercises.length) return paintComplete();
     container.innerHTML = `
+      <button class="edit-content-btn" id="editPracticeBtn" title="Edit practice instructions">✏️ Edit Content</button>
+      ${customPractice ? `<div class="practice-custom-instructions">${lmEscape(customPractice.instructions || '')}</div>` : ''}
       <div class="practice-header">
         <div class="practice-hearts">${'❤️'.repeat(state.hearts)}${'🖤'.repeat(5 - state.hearts)}</div>
         <div class="practice-progress">Question ${state.index + 1} / ${state.exercises.length}</div>
@@ -358,6 +427,34 @@ function renderPracticeArena(container, level, topic) {
       <div class="practice-exercise" id="practiceExercise"></div>
     `;
     renderExercise(document.getElementById('practiceExercise'), state.exercises[state.index], handleResult);
+    document.getElementById('editPracticeBtn').addEventListener('click', showEditPracticePanel);
+  }
+
+  function showEditPracticePanel() {
+    const modal = document.createElement('div');
+    modal.className = 'edit-content-modal';
+    modal.innerHTML = `
+      <div class="edit-content-panel">
+        <h4>✏️ Edit Practice Instructions</h4>
+        <label>Custom Instructions (optional — appears above exercises):</label>
+        <textarea id="editPracticeInstructions" style="width:100%;height:100px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:sans-serif;font-size:0.9rem">${customPractice?.instructions || ''}</textarea>
+        <div style="margin-top:16px;display:flex;gap:8px">
+          <button id="savePracticeBtn" style="flex:1;padding:10px;background:#6f7d68;color:white;border:none;border-radius:6px;font-weight:700;cursor:pointer">💾 Save</button>
+          <button id="cancelPracticeBtn" style="flex:1;padding:10px;background:#ccc;color:#333;border:none;border-radius:6px;font-weight:700;cursor:pointer">Cancel</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('savePracticeBtn').addEventListener('click', () => {
+      const instructions = document.getElementById('editPracticeInstructions').value;
+      saveCustomPracticeContent(topic.id, '', instructions);
+      document.body.removeChild(modal);
+      paintShell();
+    });
+    document.getElementById('cancelPracticeBtn').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
   }
 
   function handleResult(correct) {
