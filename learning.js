@@ -79,6 +79,18 @@ function lmCategory(topic) {
    ========================================================================== */
 
 function buildReadingContent(level, topic) {
+  // Authored content (topicsData's readingTime/questions) takes priority —
+  // it's real, level-appropriate writing with genuine comprehension
+  // questions. Topics without it (older entries) fall back to the
+  // auto-generated sentences below, unchanged.
+  if (topic.readingTime && Array.isArray(topic.readingTime.questions)) {
+    return {
+      authored: true,
+      text: topic.readingTime.text,
+      quiz: topic.readingTime.questions.map(q => ({ prompt: q.prompt, visual: null, options: q.options, correct: q.correct })),
+    };
+  }
+
   const cat = lmCategory(topic);
   const words = topic.words.slice(0, Math.min(5, topic.words.length));
   const w = (i) => words[i % words.length];
@@ -111,7 +123,7 @@ function buildReadingContent(level, topic) {
     ];
   }
 
-  return { sentences, quiz: buildReadingQuiz(level, topic) };
+  return { authored: false, sentences, quiz: buildReadingQuiz(level, topic) };
 }
 
 function lmMakeTypo(word) {
@@ -169,10 +181,32 @@ function buildReadingQuiz(level, topic) {
   return [q1, q2, q3];
 }
 
+function grammarTipHTML(topic) {
+  if (!topic.grammarTip) return '';
+  return `<div class="grammar-tip-callout"><span class="grammar-tip-icon">💡</span><p><strong>Grammar Tip:</strong> ${lmEscape(topic.grammarTip)}</p></div>`;
+}
+
 function renderReadingModule(container, level, topic) {
   const content = buildReadingContent(level, topic);
 
+  if (content.authored) {
+    const lines = String(content.text || '').split('\n').filter(Boolean);
+    container.innerHTML = `
+      ${grammarTipHTML(topic)}
+      <div class="reading-passage reading-passage-authored">
+        ${lines.map(line => `<p class="reading-line">${lmEscape(line)}</p>`).join('')}
+      </div>
+      <div class="reading-quiz">
+        <h4>Quick Check 📝</h4>
+        <div id="readingQuizList"></div>
+      </div>
+    `;
+    renderQuizList(document.getElementById('readingQuizList'), content.quiz);
+    return;
+  }
+
   container.innerHTML = `
+    ${grammarTipHTML(topic)}
     <div class="reading-passage">
       ${content.sentences.map((s, i) => `<p class="reading-sentence" data-sentence="${i}">${renderSentenceHTML(s)}</p><div class="reading-note" data-note-for="${i}" hidden></div>`).join('')}
     </div>
@@ -642,6 +676,7 @@ function renderFlashcards(container, level, topic) {
           ${mode === 'peek' ? `<button class="game-btn" id="peekBtn">👀 Peek!</button>` : `<button class="game-btn" id="revealBlurBtn">🌫️ Reveal</button>`}
           <button class="game-btn secondary" id="showWordBtn">${revealed ? lmEscape(word.en) : 'Show Word'}</button>
         </div>
+        <p class="flashcard-translation" id="flashcardTranslation" hidden></p>
       </div>
       <div class="game-btn-row" style="justify-content:center;margin-top:10px">
         <button class="game-btn secondary" id="prevBtn">⬅ Prev</button>
@@ -668,6 +703,11 @@ function renderFlashcards(container, level, topic) {
     document.getElementById('showWordBtn').addEventListener('click', (e) => {
       revealed = true;
       e.target.textContent = word.en;
+      if (word.pt) {
+        const t = document.getElementById('flashcardTranslation');
+        t.textContent = word.pt;
+        t.hidden = false;
+      }
     });
     document.getElementById('prevBtn').addEventListener('click', () => { index = (index - 1 + words.length) % words.length; paint(); });
     document.getElementById('nextBtn').addEventListener('click', () => { index = (index + 1) % words.length; paint(); });

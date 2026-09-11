@@ -26,6 +26,7 @@
        title: string          // shown on the topic card and modal header
        emoji: string           // fallback shown if `image` fails/omitted
        description: string     // one line, shown on the topic card
+       cefr?: string           // e.g. 'A0', 'B1', 'B2-C1' — display-only label
        image?: string          // optional real photo URL (Unsplash etc.)
                                 // — omit it entirely for abstract topics
                                 //   (e.g. grammar points); the emoji fallback
@@ -33,20 +34,46 @@
                                 //   not a degraded state.
        words: Word[]           // the vocabulary/example bank — powers EVERY
                                 // game (Hangman, Memory, Match-up, Balloon
-                                // Pop, Word Search), Reading Time, Practice
-                                // Arena, Phonics, and Flashcards. 4-8 items
-                                // is the sweet spot.
+                                // Pop, Word Search, Word Match, Quick Quiz,
+                                // Listen & Repeat), Reading Time (fallback),
+                                // Practice Arena, Phonics, and Flashcards.
+                                // 12-15 items is the sweet spot.
+       grammarTip?: string     // shown as a callout at the top of the
+                                // Reading Time tab (learning.js's
+                                // grammarTipHTML) — a short, plain-English
+                                // explanation of the topic's language point.
+       readingTime?: {         // authored Reading Time content. When present,
+                                // learning.js's buildReadingContent() uses
+                                // this verbatim instead of auto-generating
+                                // sentences from `words` — real, level-
+                                // appropriate writing beats a template.
+         text: string,          // sentences or dialogue lines separated by
+                                 // '\n' — each line renders as its own <p>.
+         questions: [            // exactly 2 comprehension questions,
+           {                     // rendered by the existing renderQuizList()
+             prompt: string,
+             options: string[],  // 3 choices
+             correct: string,    // must exactly match one of `options`
+           },
+         ],
+       }
      }
 
    WORD — every item inside a topic's `words` array. This exact shape is
    reused everywhere in the app (games.js's wordVisualHTML, learning.js's
-   lmWordVisual, gamemaker.js) — keep new entries consistent with it:
+   lmWordVisual, gamemaker.js, app.js's ArcadeGames) — keep new entries
+   consistent with it:
      {
        id: string             // unique WITHIN this topic
        en: string              // the English word/phrase students see
        emoji: string           // ALWAYS include this — it's the fallback
                                 // shown automatically if `image` 404s, and
                                 // the only visual for abstract entries.
+       pt?: string             // Portuguese translation/definition — shown
+                                // in Flashcards (learning.js) when a student
+                                // reveals the word. Purely additive: every
+                                // game already works from `en`/`emoji`/
+                                // `image`/`swatch` alone.
        image?: string          // optional real photo URL. Use the IMG()
                                 // helper below for images.unsplash.com URLs.
        swatch?: string         // optional hex color — use INSTEAD of image
@@ -85,342 +112,5128 @@ const TIERS = [
 
 const LEVELS = [
   {
-    id: 'a0',
-    code: 'A0',
-    name: 'Starters',
-    tagline: 'First steps into English',
-    tier: 'kids',
-    color: '#6f7d68',
-    icon: '🌱',
-    topics: [
-      { id: 'colors',  title: 'Colors',   emoji: '🎨', description: 'Name the rainbow, mix and match.',
-        image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'red', en: 'Red', emoji: '🟥', swatch: '#EF4444' },
-          { id: 'blue', en: 'Blue', emoji: '🟦', swatch: '#3B82F6' },
-          { id: 'yellow', en: 'Yellow', emoji: '🟨', swatch: '#FACC15' },
-          { id: 'green', en: 'Green', emoji: '🟩', swatch: '#22C55E' },
-          { id: 'orange', en: 'Orange', emoji: '🟧', swatch: '#F97316' },
-          { id: 'purple', en: 'Purple', emoji: '🟪', swatch: '#A855F7' },
-        ] },
-      { id: 'numbers', title: 'Numbers 1-10', emoji: '🔢', description: 'Count objects, sing number songs.',
-        image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'one', en: 'One', emoji: '1️⃣' },
-          { id: 'two', en: 'Two', emoji: '2️⃣' },
-          { id: 'three', en: 'Three', emoji: '3️⃣' },
-          { id: 'four', en: 'Four', emoji: '4️⃣' },
-          { id: 'five', en: 'Five', emoji: '5️⃣' },
-          { id: 'six', en: 'Six', emoji: '6️⃣' },
-        ] },
-      { id: 'animals',  title: 'Animals',  emoji: '🐶', description: 'Farm, jungle and pet friends.',
-        image: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'dog', en: 'Dog', emoji: '🐶', image: IMG('1543466835-00a7907e9de1') },
-          { id: 'cat', en: 'Cat', emoji: '🐱', image: IMG('1514888286974-6c03e2ca1dba') },
-          { id: 'elephant', en: 'Elephant', emoji: '🐘', image: IMG('1557050543-4d5f4e07ef46') },
-          { id: 'lion', en: 'Lion', emoji: '🦁', image: IMG('1546182990-dffeafbe841d') },
-          { id: 'fish', en: 'Fish', emoji: '🐠', image: IMG('1535591273668-578e31182c4f') },
-          { id: 'bird', en: 'Bird', emoji: '🐦', image: IMG('1444464666168-49d633b86797') },
-        ] },
-      { id: 'family',   title: 'My Family', emoji: '👨‍👩‍👧', description: 'Mom, dad, siblings and more.',
-        image: 'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'mother', en: 'Mother', emoji: '👩' },
-          { id: 'father', en: 'Father', emoji: '👨' },
-          { id: 'sister', en: 'Sister', emoji: '👧' },
-          { id: 'brother', en: 'Brother', emoji: '👦' },
-          { id: 'baby', en: 'Baby', emoji: '👶' },
-          { id: 'grandma', en: 'Grandmother', emoji: '👵' },
-        ] },
-      { id: 'body',     title: 'My Body',  emoji: '🙋', description: 'Head, shoulders, knees and toes.',
-        image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'head', en: 'Head', emoji: '😀' },
-          { id: 'shoulders', en: 'Shoulders', emoji: '🤷' },
-          { id: 'knees', en: 'Knees', emoji: '🦵' },
-          { id: 'toes', en: 'Toes', emoji: '🦶' },
-          { id: 'hands', en: 'Hands', emoji: '✋' },
-          { id: 'eyes', en: 'Eyes', emoji: '👀' },
-        ] },
-      { id: 'toys',     title: 'Toys',     emoji: '🧸', description: 'Playtime words for everyday fun.',
-        image: 'https://images.unsplash.com/photo-1558877385-81a1c7e67d72?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'ball', en: 'Ball', emoji: '⚽', image: IMG('1614632537197-38a17061c2bd') },
-          { id: 'teddybear', en: 'Teddy Bear', emoji: '🧸', image: IMG('1567016376408-0226e4d0c1ea') },
-          { id: 'kite', en: 'Kite', emoji: '🪁', image: IMG('1526367790999-0150786686a2') },
-          { id: 'blocks', en: 'Blocks', emoji: '🧱', image: IMG('1587654780291-39c9404d746b') },
-          { id: 'doll', en: 'Doll', emoji: '🪆' },
-          { id: 'robot', en: 'Robot', emoji: '🤖', image: IMG('1485827404703-89b55fcc595e') },
-        ] },
-    ],
+    "id": "a0",
+    "code": "A0",
+    "name": "Starters",
+    "tagline": "First steps into English",
+    "tier": "kids",
+    "color": "#6f7d68",
+    "icon": "🌱",
+    "topics": [
+      {
+        "id": "alphabet",
+        "title": "Alphabet & Basic Phonics",
+        "emoji": "🔤",
+        "description": "Learn letters and simple 3-letter words",
+        "cefr": "A0",
+        "grammarTip": "Say each letter sound before the word, like 'C-A-T, cat'. Repeat simple 3-letter words often so children hear the sounds clearly.",
+        "words": [
+          {
+            "id": "a_apple",
+            "en": "A is for Apple",
+            "pt": "A de Maçã",
+            "emoji": "🍎"
+          },
+          {
+            "id": "b_ball",
+            "en": "B is for Ball",
+            "pt": "B de Bola",
+            "emoji": "⚽"
+          },
+          {
+            "id": "c_cat",
+            "en": "C is for Cat",
+            "pt": "C de Gato",
+            "emoji": "🐱"
+          },
+          {
+            "id": "cat",
+            "en": "cat",
+            "pt": "gato",
+            "emoji": "🐱"
+          },
+          {
+            "id": "dog",
+            "en": "dog",
+            "pt": "cachorro",
+            "emoji": "🐶"
+          },
+          {
+            "id": "sun",
+            "en": "sun",
+            "pt": "sol",
+            "emoji": "☀️"
+          },
+          {
+            "id": "hat",
+            "en": "hat",
+            "pt": "chapéu",
+            "emoji": "🎩"
+          },
+          {
+            "id": "bed",
+            "en": "bed",
+            "pt": "cama",
+            "emoji": "🛏️"
+          },
+          {
+            "id": "pig",
+            "en": "pig",
+            "pt": "porco",
+            "emoji": "🐷"
+          },
+          {
+            "id": "cup",
+            "en": "cup",
+            "pt": "xícara",
+            "emoji": "☕"
+          },
+          {
+            "id": "bus",
+            "en": "bus",
+            "pt": "ônibus",
+            "emoji": "🚌"
+          },
+          {
+            "id": "pen",
+            "en": "pen",
+            "pt": "caneta",
+            "emoji": "🖊️"
+          },
+          {
+            "id": "box",
+            "en": "box",
+            "pt": "caixa",
+            "emoji": "📦"
+          }
+        ],
+        "readingTime": {
+          "text": "The cat is on the bed.\nThe dog is in a box.\nA hat is on my head.\nThe sun is big and bright.",
+          "questions": [
+            {
+              "prompt": "Where is the cat?",
+              "options": [
+                "On the bed",
+                "In the box",
+                "On the sun"
+              ],
+              "correct": "On the bed"
+            },
+            {
+              "prompt": "What is in the box?",
+              "options": [
+                "A hat",
+                "The dog",
+                "The sun"
+              ],
+              "correct": "The dog"
+            }
+          ]
+        }
+      },
+      {
+        "id": "greetings",
+        "title": "Greetings & Introductions",
+        "emoji": "👋",
+        "description": "Say hello, goodbye, and your name",
+        "cefr": "A0",
+        "grammarTip": "Use 'Hello' or 'Hi' any time of day, and 'Goodbye' or 'Bye' when leaving. Keep greetings short and repeat them often.",
+        "words": [
+          {
+            "id": "hello",
+            "en": "Hello",
+            "pt": "Olá",
+            "emoji": "👋"
+          },
+          {
+            "id": "hi",
+            "en": "Hi",
+            "pt": "Oi",
+            "emoji": "🙋"
+          },
+          {
+            "id": "goodbye",
+            "en": "Goodbye",
+            "pt": "Tchau",
+            "emoji": "👋"
+          },
+          {
+            "id": "bye",
+            "en": "Bye",
+            "pt": "Tchau",
+            "emoji": "👋"
+          },
+          {
+            "id": "good_morning",
+            "en": "Good morning",
+            "pt": "Bom dia",
+            "emoji": "🌞"
+          },
+          {
+            "id": "good_night",
+            "en": "Good night",
+            "pt": "Boa noite",
+            "emoji": "🌙"
+          },
+          {
+            "id": "please",
+            "en": "Please",
+            "pt": "Por favor",
+            "emoji": "🙏"
+          },
+          {
+            "id": "thank_you",
+            "en": "Thank you",
+            "pt": "Obrigado",
+            "emoji": "🙏"
+          },
+          {
+            "id": "yes",
+            "en": "Yes",
+            "pt": "Sim",
+            "emoji": "✅"
+          },
+          {
+            "id": "no",
+            "en": "No",
+            "pt": "Não",
+            "emoji": "❌"
+          },
+          {
+            "id": "my_name_is",
+            "en": "My name is...",
+            "pt": "Meu nome é...",
+            "emoji": "🧑"
+          },
+          {
+            "id": "whats_your_name",
+            "en": "What is your name?",
+            "pt": "Qual é o seu nome?",
+            "emoji": "❓"
+          },
+          {
+            "id": "friend",
+            "en": "Friend",
+            "pt": "Amigo",
+            "emoji": "🧑‍🤝‍🧑"
+          }
+        ],
+        "readingTime": {
+          "text": "Hi! My name is Ana.\nGood morning, friend!\nThank you, and please sit down.\nGoodbye! See you soon.",
+          "questions": [
+            {
+              "prompt": "What does Ana say first?",
+              "options": [
+                "Hi",
+                "Goodbye",
+                "No"
+              ],
+              "correct": "Hi"
+            },
+            {
+              "prompt": "What do you say when you leave?",
+              "options": [
+                "Please",
+                "Goodbye",
+                "Yes"
+              ],
+              "correct": "Goodbye"
+            }
+          ]
+        }
+      },
+      {
+        "id": "numbers",
+        "title": "Numbers & Counting",
+        "emoji": "🔢",
+        "description": "Count from one to twenty and more",
+        "cefr": "A0",
+        "grammarTip": "Count objects one by one with your finger while saying the number. Use ordinal words like 'first' and 'second' when lining things up.",
+        "words": [
+          {
+            "id": "one",
+            "en": "one",
+            "pt": "um",
+            "emoji": "1️⃣"
+          },
+          {
+            "id": "two",
+            "en": "two",
+            "pt": "dois",
+            "emoji": "2️⃣"
+          },
+          {
+            "id": "three",
+            "en": "three",
+            "pt": "três",
+            "emoji": "3️⃣"
+          },
+          {
+            "id": "four",
+            "en": "four",
+            "pt": "quatro",
+            "emoji": "4️⃣"
+          },
+          {
+            "id": "five",
+            "en": "five",
+            "pt": "cinco",
+            "emoji": "5️⃣"
+          },
+          {
+            "id": "ten",
+            "en": "ten",
+            "pt": "dez",
+            "emoji": "🔟"
+          },
+          {
+            "id": "fifteen",
+            "en": "fifteen",
+            "pt": "quinze",
+            "emoji": "🔢"
+          },
+          {
+            "id": "twenty",
+            "en": "twenty",
+            "pt": "vinte",
+            "emoji": "🔢"
+          },
+          {
+            "id": "fifty",
+            "en": "fifty",
+            "pt": "cinquenta",
+            "emoji": "🔢"
+          },
+          {
+            "id": "hundred",
+            "en": "hundred",
+            "pt": "cem",
+            "emoji": "💯"
+          },
+          {
+            "id": "first",
+            "en": "first",
+            "pt": "primeiro",
+            "emoji": "🥇"
+          },
+          {
+            "id": "second",
+            "en": "second",
+            "pt": "segundo",
+            "emoji": "🥈"
+          },
+          {
+            "id": "third",
+            "en": "third",
+            "pt": "terceiro",
+            "emoji": "🥉"
+          },
+          {
+            "id": "count",
+            "en": "count",
+            "pt": "contar",
+            "emoji": "🧮"
+          },
+          {
+            "id": "number",
+            "en": "number",
+            "pt": "número",
+            "emoji": "🔢"
+          }
+        ],
+        "readingTime": {
+          "text": "I can count to ten.\nOne, two, three, let's go!\nThe first cup is red.\nThe second cup is blue.",
+          "questions": [
+            {
+              "prompt": "What color is the first cup?",
+              "options": [
+                "Red",
+                "Blue",
+                "Green"
+              ],
+              "correct": "Red"
+            },
+            {
+              "prompt": "What number comes after two?",
+              "options": [
+                "One",
+                "Three",
+                "Ten"
+              ],
+              "correct": "Three"
+            }
+          ]
+        }
+      },
+      {
+        "id": "colorsshapes",
+        "title": "Colors & Shapes",
+        "emoji": "🎨",
+        "description": "Name colors and simple shapes",
+        "cefr": "A0",
+        "grammarTip": "Use 'This is a ___' to name a color or shape, like 'This is a red circle.' Point at real objects to practice.",
+        "words": [
+          {
+            "id": "red",
+            "en": "red",
+            "pt": "vermelho",
+            "emoji": "🔴"
+          },
+          {
+            "id": "blue",
+            "en": "blue",
+            "pt": "azul",
+            "emoji": "🔵"
+          },
+          {
+            "id": "yellow",
+            "en": "yellow",
+            "pt": "amarelo",
+            "emoji": "🟡"
+          },
+          {
+            "id": "green",
+            "en": "green",
+            "pt": "verde",
+            "emoji": "🟢"
+          },
+          {
+            "id": "orange",
+            "en": "orange",
+            "pt": "laranja",
+            "emoji": "🟠"
+          },
+          {
+            "id": "purple",
+            "en": "purple",
+            "pt": "roxo",
+            "emoji": "🟣"
+          },
+          {
+            "id": "black",
+            "en": "black",
+            "pt": "preto",
+            "emoji": "⚫"
+          },
+          {
+            "id": "white",
+            "en": "white",
+            "pt": "branco",
+            "emoji": "⚪"
+          },
+          {
+            "id": "circle",
+            "en": "circle",
+            "pt": "círculo",
+            "emoji": "⭕"
+          },
+          {
+            "id": "square",
+            "en": "square",
+            "pt": "quadrado",
+            "emoji": "⬜"
+          },
+          {
+            "id": "triangle",
+            "en": "triangle",
+            "pt": "triângulo",
+            "emoji": "🔺"
+          },
+          {
+            "id": "star",
+            "en": "star",
+            "pt": "estrela",
+            "emoji": "⭐"
+          },
+          {
+            "id": "heart",
+            "en": "heart",
+            "pt": "coração",
+            "emoji": "❤️"
+          },
+          {
+            "id": "rectangle",
+            "en": "rectangle",
+            "pt": "retângulo",
+            "emoji": "▭"
+          }
+        ],
+        "readingTime": {
+          "text": "The sun is yellow and round.\nThis is a red circle.\nThe leaf is green.\nI see a blue square.",
+          "questions": [
+            {
+              "prompt": "What color is the sun?",
+              "options": [
+                "Yellow",
+                "Blue",
+                "Black"
+              ],
+              "correct": "Yellow"
+            },
+            {
+              "prompt": "What shape is red?",
+              "options": [
+                "Square",
+                "Circle",
+                "Triangle"
+              ],
+              "correct": "Circle"
+            }
+          ]
+        }
+      },
+      {
+        "id": "familyfeelings",
+        "title": "Family & Feelings",
+        "emoji": "👨‍👩‍👧‍👦",
+        "description": "Talk about family and how you feel",
+        "cefr": "A0",
+        "grammarTip": "Use 'This is my ___' for family members and 'I am ___' for feelings, like 'I am happy.' Point to pictures or people while saying these.",
+        "words": [
+          {
+            "id": "mom",
+            "en": "mom",
+            "pt": "mãe",
+            "emoji": "👩"
+          },
+          {
+            "id": "dad",
+            "en": "dad",
+            "pt": "pai",
+            "emoji": "👨"
+          },
+          {
+            "id": "baby",
+            "en": "baby",
+            "pt": "bebê",
+            "emoji": "👶"
+          },
+          {
+            "id": "sister",
+            "en": "sister",
+            "pt": "irmã",
+            "emoji": "👧"
+          },
+          {
+            "id": "brother",
+            "en": "brother",
+            "pt": "irmão",
+            "emoji": "👦"
+          },
+          {
+            "id": "grandma",
+            "en": "grandma",
+            "pt": "vovó",
+            "emoji": "👵"
+          },
+          {
+            "id": "grandpa",
+            "en": "grandpa",
+            "pt": "vovô",
+            "emoji": "👴"
+          },
+          {
+            "id": "family",
+            "en": "family",
+            "pt": "família",
+            "emoji": "👨‍👩‍👧‍👦"
+          },
+          {
+            "id": "happy",
+            "en": "happy",
+            "pt": "feliz",
+            "emoji": "😃"
+          },
+          {
+            "id": "sad",
+            "en": "sad",
+            "pt": "triste",
+            "emoji": "😢"
+          },
+          {
+            "id": "angry",
+            "en": "angry",
+            "pt": "bravo",
+            "emoji": "😠"
+          },
+          {
+            "id": "scared",
+            "en": "scared",
+            "pt": "assustado",
+            "emoji": "😨"
+          },
+          {
+            "id": "tired",
+            "en": "tired",
+            "pt": "cansado",
+            "emoji": "😴"
+          },
+          {
+            "id": "love",
+            "en": "love",
+            "pt": "amor",
+            "emoji": "❤️"
+          }
+        ],
+        "readingTime": {
+          "text": "This is my mom and dad.\nMy sister is happy today.\nMy brother is a little tired.\nI love my family very much.",
+          "questions": [
+            {
+              "prompt": "How does the sister feel?",
+              "options": [
+                "Happy",
+                "Sad",
+                "Angry"
+              ],
+              "correct": "Happy"
+            },
+            {
+              "prompt": "Who is a little tired?",
+              "options": [
+                "Mom",
+                "Brother",
+                "Grandma"
+              ],
+              "correct": "Brother"
+            }
+          ]
+        }
+      }
+    ]
   },
   {
-    id: 'a1',
-    code: 'A1',
-    name: 'Elementary',
-    tagline: 'Building everyday sentences',
-    tier: 'juniors',
-    color: '#b8953a',
-    icon: '🚀',
-    topics: [
-      { id: 'food',    title: 'Food & Drinks', emoji: '🍎', description: 'Snacks, meals and favorite flavors.',
-        image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'apple', en: 'Apple', emoji: '🍎', image: IMG('1560806887-1e4cd0b6cbd6') },
-          { id: 'banana', en: 'Banana', emoji: '🍌', image: IMG('1571771894821-ce9b6c11b08e') },
-          { id: 'bread', en: 'Bread', emoji: '🍞', image: IMG('1509440159596-0249088772ff') },
-          { id: 'milk', en: 'Milk', emoji: '🥛', image: IMG('1550583724-b2692b85b150') },
-          { id: 'pizza', en: 'Pizza', emoji: '🍕', image: IMG('1513104890138-7c749659a591') },
-          { id: 'juice', en: 'Juice', emoji: '🧃' },
-        ] },
-      { id: 'routine', title: 'Daily Routine',  emoji: '⏰', description: 'Wake up, brush teeth, go to school.',
-        image: 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'wakeup', en: 'Wake Up', emoji: '⏰' },
-          { id: 'brushteeth', en: 'Brush Teeth', emoji: '🪥' },
-          { id: 'breakfast', en: 'Eat Breakfast', emoji: '🍳' },
-          { id: 'goschool', en: 'Go To School', emoji: '🎒' },
-          { id: 'bath', en: 'Take A Bath', emoji: '🛁' },
-          { id: 'sleep', en: 'Sleep', emoji: '😴' },
-        ] },
-      { id: 'feelings', title: 'Feelings',      emoji: '🙂', description: 'Happy, sad, excited or scared?',
-        image: IMG('1517841905240-472988babdf9'),
-        words: [
-          { id: 'happy', en: 'Happy', emoji: '😊' },
-          { id: 'sad', en: 'Sad', emoji: '😢' },
-          { id: 'angry', en: 'Angry', emoji: '😠' },
-          { id: 'scared', en: 'Scared', emoji: '😨' },
-          { id: 'excited', en: 'Excited', emoji: '🤩' },
-          { id: 'tired', en: 'Tired', emoji: '😴' },
-        ] },
-      { id: 'school',  title: 'School',         emoji: '🏫', description: 'Classroom objects and school days.',
-        image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'book', en: 'Book', emoji: '📚', image: IMG('1544947950-fa07a98d237f') },
-          { id: 'pencil', en: 'Pencil', emoji: '✏️', image: IMG('1455390582262-044cdead277a') },
-          { id: 'backpack', en: 'Backpack', emoji: '🎒', image: IMG('1553062407-98eeb64c6a62') },
-          { id: 'teacher', en: 'Teacher', emoji: '🧑‍🏫', image: IMG('1580582932707-520aed937b7b') },
-          { id: 'desk', en: 'Desk', emoji: '🪑' },
-          { id: 'ruler', en: 'Ruler', emoji: '📏' },
-        ] },
-      { id: 'weather', title: 'Weather',        emoji: '⛅', description: 'Sunny, rainy, windy or snowy?',
-        image: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'sunny', en: 'Sunny', emoji: '☀️', image: IMG('1512453979798-5ea266f8880c') },
-          { id: 'rainy', en: 'Rainy', emoji: '🌧️', image: IMG('1428592953211-077101b2021b') },
-          { id: 'windy', en: 'Windy', emoji: '💨', image: IMG('1500534623283-312aade485b7') },
-          { id: 'snowy', en: 'Snowy', emoji: '❄️', image: IMG('1517842645767-c639042777db') },
-          { id: 'cloudy', en: 'Cloudy', emoji: '☁️' },
-          { id: 'stormy', en: 'Stormy', emoji: '⛈️' },
-        ] },
-      { id: 'clothes', title: 'Clothes',        emoji: '👕', description: 'Dress up for every occasion.',
-        image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'shirt', en: 'Shirt', emoji: '👕', image: IMG('1523381210434-271e8be1f52b') },
-          { id: 'pants', en: 'Pants', emoji: '👖' },
-          { id: 'shoes', en: 'Shoes', emoji: '👟', image: IMG('1560769629-975ec94e6a86') },
-          { id: 'hat', en: 'Hat', emoji: '🧢', image: IMG('1521369909029-2afed882baee') },
-          { id: 'jacket', en: 'Jacket', emoji: '🧥', image: IMG('1551028719-00167b16eac5') },
-          { id: 'socks', en: 'Socks', emoji: '🧦', image: IMG('1586350977771-b3b0abd50c82') },
-        ] },
-      { id: 'hobbies', title: 'Hobbies',        emoji: '⚽', description: 'Sports, drawing, music and play.',
-        image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'soccer', en: 'Soccer', emoji: '⚽', image: IMG('1614632537190-23e4146777db') },
-          { id: 'drawing', en: 'Drawing', emoji: '🎨' },
-          { id: 'dancing', en: 'Dancing', emoji: '💃', image: IMG('1508700115892-45ecd05ae2ad') },
-          { id: 'swimming', en: 'Swimming', emoji: '🏊' },
-          { id: 'reading', en: 'Reading', emoji: '📖' },
-          { id: 'music', en: 'Music', emoji: '🎵' },
-        ] },
-    ],
+    "id": "a1",
+    "code": "A1",
+    "name": "Elementary",
+    "tagline": "First grammar and everyday words",
+    "tier": "juniors",
+    "color": "#b8953a",
+    "icon": "🚀",
+    "topics": [
+      {
+        "id": "daysmonths",
+        "title": "Days & Months",
+        "emoji": "📅",
+        "description": "Days of the week and months of the year",
+        "cefr": "A1",
+        "grammarTip": "We use capital letters for the names of days and months in English, like Monday and April. We often say 'on Monday' for days and 'in April' for months. Try saying today's day and this month out loud!",
+        "words": [
+          {
+            "id": "mon",
+            "en": "Monday",
+            "pt": "segunda-feira",
+            "emoji": "1️⃣"
+          },
+          {
+            "id": "tue",
+            "en": "Tuesday",
+            "pt": "terça-feira",
+            "emoji": "2️⃣"
+          },
+          {
+            "id": "wed",
+            "en": "Wednesday",
+            "pt": "quarta-feira",
+            "emoji": "3️⃣"
+          },
+          {
+            "id": "thu",
+            "en": "Thursday",
+            "pt": "quinta-feira",
+            "emoji": "4️⃣"
+          },
+          {
+            "id": "fri",
+            "en": "Friday",
+            "pt": "sexta-feira",
+            "emoji": "5️⃣"
+          },
+          {
+            "id": "sat",
+            "en": "Saturday",
+            "pt": "sábado",
+            "emoji": "6️⃣"
+          },
+          {
+            "id": "sun",
+            "en": "Sunday",
+            "pt": "domingo",
+            "emoji": "7️⃣"
+          },
+          {
+            "id": "jan",
+            "en": "January",
+            "pt": "janeiro",
+            "emoji": "❄️"
+          },
+          {
+            "id": "feb",
+            "en": "February",
+            "pt": "fevereiro",
+            "emoji": "💌"
+          },
+          {
+            "id": "mar",
+            "en": "March",
+            "pt": "março",
+            "emoji": "🌱"
+          },
+          {
+            "id": "apr",
+            "en": "April",
+            "pt": "abril",
+            "emoji": "☔"
+          },
+          {
+            "id": "may",
+            "en": "May",
+            "pt": "maio",
+            "emoji": "🌷"
+          },
+          {
+            "id": "jun",
+            "en": "June",
+            "pt": "junho",
+            "emoji": "☀️"
+          },
+          {
+            "id": "jul",
+            "en": "July",
+            "pt": "julho",
+            "emoji": "🎇"
+          }
+        ],
+        "readingTime": {
+          "text": "Today is Monday. Tomorrow is Tuesday. My birthday is in April. I love December because of Christmas. On Sunday, my family and I go to the park.",
+          "questions": [
+            {
+              "prompt": "What day is it today in the story?",
+              "options": [
+                "Monday",
+                "Tuesday",
+                "Sunday"
+              ],
+              "correct": "Monday"
+            },
+            {
+              "prompt": "In which month is the birthday?",
+              "options": [
+                "December",
+                "April",
+                "Sunday"
+              ],
+              "correct": "April"
+            }
+          ]
+        }
+      },
+      {
+        "id": "houserooms",
+        "title": "House & Rooms",
+        "emoji": "🏠",
+        "description": "Rooms and things you find around the house",
+        "cefr": "A1",
+        "grammarTip": "We use 'in' for rooms inside a house, like 'in the kitchen' or 'in the bedroom'. We say 'in the garden' for the outside space. Try naming each room in your own house in English!",
+        "words": [
+          {
+            "id": "house",
+            "en": "house",
+            "pt": "casa",
+            "emoji": "🏠"
+          },
+          {
+            "id": "kitchen",
+            "en": "kitchen",
+            "pt": "cozinha",
+            "emoji": "🍳"
+          },
+          {
+            "id": "bedroom",
+            "en": "bedroom",
+            "pt": "quarto",
+            "emoji": "🛏️"
+          },
+          {
+            "id": "bathroom",
+            "en": "bathroom",
+            "pt": "banheiro",
+            "emoji": "🛁"
+          },
+          {
+            "id": "livingroom",
+            "en": "living room",
+            "pt": "sala de estar",
+            "emoji": "🛋️"
+          },
+          {
+            "id": "garden",
+            "en": "garden",
+            "pt": "jardim",
+            "emoji": "🌳"
+          },
+          {
+            "id": "door",
+            "en": "door",
+            "pt": "porta",
+            "emoji": "🚪"
+          },
+          {
+            "id": "window",
+            "en": "window",
+            "pt": "janela",
+            "emoji": "🪟"
+          },
+          {
+            "id": "roof",
+            "en": "roof",
+            "pt": "telhado",
+            "emoji": "🏚️"
+          },
+          {
+            "id": "stairs",
+            "en": "stairs",
+            "pt": "escada",
+            "emoji": "🪜"
+          },
+          {
+            "id": "table",
+            "en": "table",
+            "pt": "mesa",
+            "emoji": "🍽️"
+          },
+          {
+            "id": "chair",
+            "en": "chair",
+            "pt": "cadeira",
+            "emoji": "🪑"
+          },
+          {
+            "id": "bed",
+            "en": "bed",
+            "pt": "cama",
+            "emoji": "🛌"
+          }
+        ],
+        "readingTime": {
+          "text": "This is my house. My bedroom is upstairs. The kitchen is next to the living room. We eat dinner at the table. I play in the garden with my dog.",
+          "questions": [
+            {
+              "prompt": "Where does the family eat dinner?",
+              "options": [
+                "In the garden",
+                "At the table",
+                "In the bedroom"
+              ],
+              "correct": "At the table"
+            },
+            {
+              "prompt": "Where does the child play with the dog?",
+              "options": [
+                "In the kitchen",
+                "In the bedroom",
+                "In the garden"
+              ],
+              "correct": "In the garden"
+            }
+          ]
+        }
+      },
+      {
+        "id": "clothesweather",
+        "title": "Clothes & Weather",
+        "emoji": "🌦️",
+        "description": "Clothes to wear in different kinds of weather",
+        "cefr": "A1",
+        "grammarTip": "We use 'It's' to talk about the weather, like 'It's sunny' or 'It's rainy'. We choose our clothes to match the weather - a coat for cold days and a T-shirt for hot days.",
+        "words": [
+          {
+            "id": "shirt",
+            "en": "shirt",
+            "pt": "camisa",
+            "emoji": "👔"
+          },
+          {
+            "id": "tshirt",
+            "en": "T-shirt",
+            "pt": "camiseta",
+            "emoji": "👕"
+          },
+          {
+            "id": "dress",
+            "en": "dress",
+            "pt": "vestido",
+            "emoji": "👗"
+          },
+          {
+            "id": "shoes",
+            "en": "shoes",
+            "pt": "sapatos",
+            "emoji": "👟"
+          },
+          {
+            "id": "socks",
+            "en": "socks",
+            "pt": "meias",
+            "emoji": "🧦"
+          },
+          {
+            "id": "hat",
+            "en": "hat",
+            "pt": "chapéu",
+            "emoji": "🎩"
+          },
+          {
+            "id": "coat",
+            "en": "coat",
+            "pt": "casaco",
+            "emoji": "🧥"
+          },
+          {
+            "id": "jacket",
+            "en": "jacket",
+            "pt": "jaqueta",
+            "emoji": "🧥"
+          },
+          {
+            "id": "sunny",
+            "en": "sunny",
+            "pt": "ensolarado",
+            "emoji": "☀️"
+          },
+          {
+            "id": "rainy",
+            "en": "rainy",
+            "pt": "chuvoso",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "cloudy",
+            "en": "cloudy",
+            "pt": "nublado",
+            "emoji": "☁️"
+          },
+          {
+            "id": "windy",
+            "en": "windy",
+            "pt": "ventoso",
+            "emoji": "💨"
+          },
+          {
+            "id": "snowy",
+            "en": "snowy",
+            "pt": "nevando",
+            "emoji": "❄️"
+          },
+          {
+            "id": "hot",
+            "en": "hot",
+            "pt": "quente",
+            "emoji": "🥵"
+          }
+        ],
+        "readingTime": {
+          "text": "Mia: What's the weather today?\nTom: It's sunny and hot!\nMia: Great! I will wear my T-shirt.\nTom: I will wear my hat too.\nMia: It's rainy tomorrow.\nTom: Then I need my coat!",
+          "questions": [
+            {
+              "prompt": "What is the weather like today?",
+              "options": [
+                "Cold and rainy",
+                "Sunny and hot",
+                "Windy and snowy"
+              ],
+              "correct": "Sunny and hot"
+            },
+            {
+              "prompt": "What will Tom wear tomorrow?",
+              "options": [
+                "A T-shirt",
+                "A coat",
+                "A dress"
+              ],
+              "correct": "A coat"
+            }
+          ]
+        }
+      },
+      {
+        "id": "pronouns",
+        "title": "Grammar: Personal Pronouns",
+        "emoji": "🙋",
+        "description": "Small words that stand for names of people",
+        "cefr": "A1",
+        "grammarTip": "Personal pronouns like I, you, he, she, it, we, and they replace a person's or thing's name so we don't repeat it. Possessive words like my, your, his, and her show that something belongs to someone, for example 'his dog' means the dog belongs to him.",
+        "words": [
+          {
+            "id": "i",
+            "en": "I",
+            "pt": "eu",
+            "emoji": "🙋"
+          },
+          {
+            "id": "you",
+            "en": "you",
+            "pt": "você",
+            "emoji": "👉"
+          },
+          {
+            "id": "he",
+            "en": "he",
+            "pt": "ele",
+            "emoji": "👦"
+          },
+          {
+            "id": "she",
+            "en": "she",
+            "pt": "ela",
+            "emoji": "👧"
+          },
+          {
+            "id": "it",
+            "en": "it",
+            "pt": "ele/ela (coisa)",
+            "emoji": "📦"
+          },
+          {
+            "id": "we",
+            "en": "we",
+            "pt": "nós",
+            "emoji": "👨‍👩‍👧‍👦"
+          },
+          {
+            "id": "they",
+            "en": "they",
+            "pt": "eles/elas",
+            "emoji": "👥"
+          },
+          {
+            "id": "my",
+            "en": "my",
+            "pt": "meu/minha",
+            "emoji": "🤚"
+          },
+          {
+            "id": "your",
+            "en": "your",
+            "pt": "seu/sua",
+            "emoji": "👉"
+          },
+          {
+            "id": "his",
+            "en": "his",
+            "pt": "dele",
+            "emoji": "👦"
+          },
+          {
+            "id": "her",
+            "en": "her",
+            "pt": "dela",
+            "emoji": "👧"
+          },
+          {
+            "id": "our",
+            "en": "our",
+            "pt": "nosso/nossa",
+            "emoji": "👨‍👩‍👧‍👦"
+          },
+          {
+            "id": "their",
+            "en": "their",
+            "pt": "deles/delas",
+            "emoji": "👥"
+          }
+        ],
+        "readingTime": {
+          "text": "I am Mia. You are my friend. He is my brother, Tom. She is my sister, Ana. We are a happy family. My dog is small, and his name is Rex.",
+          "questions": [
+            {
+              "prompt": "Who is Tom?",
+              "options": [
+                "Mia's friend",
+                "Mia's brother",
+                "Mia's sister"
+              ],
+              "correct": "Mia's brother"
+            },
+            {
+              "prompt": "In 'his name is Rex,' who does 'his' refer to?",
+              "options": [
+                "Mia",
+                "Tom",
+                "the dog"
+              ],
+              "correct": "the dog"
+            }
+          ]
+        }
+      },
+      {
+        "id": "verbtobe",
+        "title": "Grammar: Verb To Be",
+        "emoji": "🟰",
+        "description": "Learn am, is, are, was, and were",
+        "cefr": "A1",
+        "grammarTip": "The verb 'to be' changes with each pronoun: I am, you/we/they are, he/she/it is. In the past, we use 'was' for I/he/she/it and 'were' for you/we/they, like 'I was happy' or 'They were tired.'",
+        "words": [
+          {
+            "id": "iam",
+            "en": "I am",
+            "pt": "eu sou/estou",
+            "emoji": "🟰"
+          },
+          {
+            "id": "youare",
+            "en": "You are",
+            "pt": "você é/está",
+            "emoji": "🟰"
+          },
+          {
+            "id": "heis",
+            "en": "He is",
+            "pt": "ele é/está",
+            "emoji": "🟰"
+          },
+          {
+            "id": "sheis",
+            "en": "She is",
+            "pt": "ela é/está",
+            "emoji": "🟰"
+          },
+          {
+            "id": "itis",
+            "en": "It is",
+            "pt": "isso é/está",
+            "emoji": "🟰"
+          },
+          {
+            "id": "weare",
+            "en": "We are",
+            "pt": "nós somos/estamos",
+            "emoji": "🟰"
+          },
+          {
+            "id": "theyare",
+            "en": "They are",
+            "pt": "eles são/estão",
+            "emoji": "🟰"
+          },
+          {
+            "id": "imnot",
+            "en": "I'm not",
+            "pt": "eu não sou/estou",
+            "emoji": "❌"
+          },
+          {
+            "id": "yourenot",
+            "en": "You aren't",
+            "pt": "você não é/está",
+            "emoji": "❌"
+          },
+          {
+            "id": "ishe",
+            "en": "Is he?",
+            "pt": "ele é/está?",
+            "emoji": "❓"
+          },
+          {
+            "id": "areyou",
+            "en": "Are you?",
+            "pt": "você é/está?",
+            "emoji": "❓"
+          },
+          {
+            "id": "was",
+            "en": "was",
+            "pt": "era/estava",
+            "emoji": "⏪"
+          },
+          {
+            "id": "were",
+            "en": "were",
+            "pt": "eram/estavam",
+            "emoji": "⏪"
+          },
+          {
+            "id": "wasshe",
+            "en": "Was she?",
+            "pt": "ela era/estava?",
+            "emoji": "❓"
+          }
+        ],
+        "readingTime": {
+          "text": "I am seven years old. You are my best friend. He is happy today. Is she at school? Yes, she is! Yesterday, I was at the park, and it was sunny.",
+          "questions": [
+            {
+              "prompt": "How old is the speaker?",
+              "options": [
+                "Six",
+                "Seven",
+                "Eight"
+              ],
+              "correct": "Seven"
+            },
+            {
+              "prompt": "What was the weather like yesterday?",
+              "options": [
+                "It was rainy",
+                "It was sunny",
+                "It was snowy"
+              ],
+              "correct": "It was sunny"
+            }
+          ]
+        }
+      },
+      {
+        "id": "simplepresent",
+        "title": "Grammar: Simple Present",
+        "emoji": "⏰",
+        "description": "Verbs for daily routines and habits",
+        "cefr": "A1",
+        "grammarTip": "In the simple present, we add -s or -es to the verb after he, she, or it, like 'goes,' 'watches,' or 'plays.' We use this tense for daily routines and habits, for example 'Tom eats breakfast every day.'",
+        "words": [
+          {
+            "id": "plays",
+            "en": "plays",
+            "pt": "joga/brinca",
+            "emoji": "⚽"
+          },
+          {
+            "id": "goes",
+            "en": "goes",
+            "pt": "vai",
+            "emoji": "🚶"
+          },
+          {
+            "id": "watches",
+            "en": "watches",
+            "pt": "assiste",
+            "emoji": "📺"
+          },
+          {
+            "id": "eats",
+            "en": "eats",
+            "pt": "come",
+            "emoji": "🍽️"
+          },
+          {
+            "id": "drinks",
+            "en": "drinks",
+            "pt": "bebe",
+            "emoji": "🥤"
+          },
+          {
+            "id": "reads",
+            "en": "reads",
+            "pt": "lê",
+            "emoji": "📖"
+          },
+          {
+            "id": "sleeps",
+            "en": "sleeps",
+            "pt": "dorme",
+            "emoji": "😴"
+          },
+          {
+            "id": "likes",
+            "en": "likes",
+            "pt": "gosta",
+            "emoji": "❤️"
+          },
+          {
+            "id": "washes",
+            "en": "washes",
+            "pt": "lava",
+            "emoji": "🧼"
+          },
+          {
+            "id": "brushes",
+            "en": "brushes",
+            "pt": "escova",
+            "emoji": "🪥"
+          },
+          {
+            "id": "getsup",
+            "en": "gets up",
+            "pt": "levanta",
+            "emoji": "⏰"
+          },
+          {
+            "id": "does",
+            "en": "does",
+            "pt": "faz",
+            "emoji": "✅"
+          },
+          {
+            "id": "studies",
+            "en": "studies",
+            "pt": "estuda",
+            "emoji": "📚"
+          }
+        ],
+        "readingTime": {
+          "text": "Every morning, Tom gets up at seven. He brushes his teeth and eats breakfast. Then he goes to school. In the evening, he watches TV and reads a book before bed.",
+          "questions": [
+            {
+              "prompt": "What time does Tom get up?",
+              "options": [
+                "Six o'clock",
+                "Seven o'clock",
+                "Eight o'clock"
+              ],
+              "correct": "Seven o'clock"
+            },
+            {
+              "prompt": "What does Tom do in the evening?",
+              "options": [
+                "He eats breakfast",
+                "He watches TV and reads",
+                "He goes to school"
+              ],
+              "correct": "He watches TV and reads"
+            }
+          ]
+        }
+      },
+      {
+        "id": "simplepastintro",
+        "title": "Grammar: Simple Past",
+        "emoji": "⏳",
+        "description": "Talk about things that happened before",
+        "cefr": "A1",
+        "grammarTip": "To talk about the past, many verbs add -ed, like 'walked,' 'played,' and 'cooked.' The verb 'to be' becomes 'was' or 'were' in the past, for example 'It was a fun day' or 'We were happy.'",
+        "words": [
+          {
+            "id": "walked",
+            "en": "walked",
+            "pt": "andou",
+            "emoji": "🚶"
+          },
+          {
+            "id": "played",
+            "en": "played",
+            "pt": "jogou/brincou",
+            "emoji": "⚽"
+          },
+          {
+            "id": "watched",
+            "en": "watched",
+            "pt": "assistiu",
+            "emoji": "📺"
+          },
+          {
+            "id": "jumped",
+            "en": "jumped",
+            "pt": "pulou",
+            "emoji": "🤸"
+          },
+          {
+            "id": "cleaned",
+            "en": "cleaned",
+            "pt": "limpou",
+            "emoji": "🧹"
+          },
+          {
+            "id": "cooked",
+            "en": "cooked",
+            "pt": "cozinhou",
+            "emoji": "🍳"
+          },
+          {
+            "id": "was",
+            "en": "was",
+            "pt": "era/estava",
+            "emoji": "⏪"
+          },
+          {
+            "id": "were",
+            "en": "were",
+            "pt": "eram/estavam",
+            "emoji": "⏪"
+          },
+          {
+            "id": "wasnt",
+            "en": "wasn't",
+            "pt": "não era/estava",
+            "emoji": "❌"
+          },
+          {
+            "id": "werent",
+            "en": "weren't",
+            "pt": "não eram/estavam",
+            "emoji": "❌"
+          },
+          {
+            "id": "visited",
+            "en": "visited",
+            "pt": "visitou",
+            "emoji": "🚗"
+          },
+          {
+            "id": "helped",
+            "en": "helped",
+            "pt": "ajudou",
+            "emoji": "🤝"
+          },
+          {
+            "id": "opened",
+            "en": "opened",
+            "pt": "abriu",
+            "emoji": "🚪"
+          }
+        ],
+        "readingTime": {
+          "text": "Yesterday was Saturday. I walked to the park with my mom. We played football and jumped a lot. In the afternoon, my dad cooked dinner and I helped him. It was a fun day!",
+          "questions": [
+            {
+              "prompt": "What did the family play in the park?",
+              "options": [
+                "Football",
+                "Basketball",
+                "Tennis"
+              ],
+              "correct": "Football"
+            },
+            {
+              "prompt": "Who cooked dinner?",
+              "options": [
+                "The mom",
+                "The dad",
+                "The child"
+              ],
+              "correct": "The dad"
+            }
+          ]
+        }
+      },
+      {
+        "id": "cancant",
+        "title": "Grammar: Can / Can't",
+        "emoji": "💪",
+        "description": "Talk about what you can and can't do",
+        "cefr": "A1",
+        "grammarTip": "We use 'can' to talk about ability, things we are able to do, like 'I can swim.' For the negative, we use 'can't,' like 'I can't fly.' To ask a question, we put 'can' before the subject: 'Can you swim?'",
+        "words": [
+          {
+            "id": "canswim",
+            "en": "can swim",
+            "pt": "sabe nadar",
+            "emoji": "🏊"
+          },
+          {
+            "id": "cantfly",
+            "en": "can't fly",
+            "pt": "não consegue voar",
+            "emoji": "🙅"
+          },
+          {
+            "id": "canrun",
+            "en": "can run",
+            "pt": "consegue correr",
+            "emoji": "🏃"
+          },
+          {
+            "id": "canjump",
+            "en": "can jump",
+            "pt": "consegue pular",
+            "emoji": "🤸"
+          },
+          {
+            "id": "cansing",
+            "en": "can sing",
+            "pt": "sabe cantar",
+            "emoji": "🎤"
+          },
+          {
+            "id": "candance",
+            "en": "can dance",
+            "pt": "sabe dançar",
+            "emoji": "💃"
+          },
+          {
+            "id": "cantdrive",
+            "en": "can't drive",
+            "pt": "não pode dirigir",
+            "emoji": "🙅"
+          },
+          {
+            "id": "canread",
+            "en": "can read",
+            "pt": "sabe ler",
+            "emoji": "📖"
+          },
+          {
+            "id": "cantcook",
+            "en": "can't cook",
+            "pt": "não sabe cozinhar",
+            "emoji": "🙅"
+          },
+          {
+            "id": "canride",
+            "en": "can ride a bike",
+            "pt": "sabe andar de bicicleta",
+            "emoji": "🚲"
+          },
+          {
+            "id": "canclimb",
+            "en": "can climb",
+            "pt": "consegue escalar",
+            "emoji": "🧗"
+          },
+          {
+            "id": "canyouswim",
+            "en": "Can you swim?",
+            "pt": "Você sabe nadar?",
+            "emoji": "❓"
+          },
+          {
+            "id": "cantswim",
+            "en": "can't swim",
+            "pt": "não sabe nadar",
+            "emoji": "🙅"
+          }
+        ],
+        "readingTime": {
+          "text": "Tom: Can you swim, Mia?\nMia: Yes, I can! I can swim very well.\nTom: Can you ride a bike?\nMia: No, I can't. I can't ride a bike yet.\nTom: Birds can fly, but people can't fly.\nMia: That's true! Let's go swimming.",
+          "questions": [
+            {
+              "prompt": "Can Mia swim?",
+              "options": [
+                "Yes, she can",
+                "No, she can't",
+                "She doesn't know"
+              ],
+              "correct": "Yes, she can"
+            },
+            {
+              "prompt": "What can't Mia do yet?",
+              "options": [
+                "Swim",
+                "Ride a bike",
+                "Sing"
+              ],
+              "correct": "Ride a bike"
+            }
+          ]
+        }
+      }
+    ]
   },
   {
-    id: 'a2',
-    code: 'A2',
-    name: 'Pre-Intermediate',
-    tagline: 'Talking about the wider world',
-    tier: 'teens',
-    color: '#8e6d86',
-    icon: '⚡',
-    topics: [
-      { id: 'travel',   title: 'Travel',       emoji: '✈️', description: 'Airports, maps and new places.',
-        image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'airplane', en: 'Airplane', emoji: '✈️', image: IMG('1436491865332-7a61a109cc05') },
-          { id: 'suitcase', en: 'Suitcase', emoji: '🧳', image: IMG('1553531384-cc64ac80f931') },
-          { id: 'passport', en: 'Passport', emoji: '🛂' },
-          { id: 'map', en: 'Map', emoji: '🗺️' },
-          { id: 'hotel', en: 'Hotel', emoji: '🏨' },
-          { id: 'train', en: 'Train', emoji: '🚆', image: IMG('1474487548417-781cb71495f3') },
-        ] },
-      { id: 'tech',     title: 'Technology',   emoji: '💻', description: 'Gadgets, apps and the internet.',
-        image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'computer', en: 'Computer', emoji: '💻', image: IMG('1496181133206-80ce9b88a853') },
-          { id: 'smartphone', en: 'Smartphone', emoji: '📱', image: IMG('1511707171634-5f897ff02aa9') },
-          { id: 'headphones', en: 'Headphones', emoji: '🎧', image: IMG('1505740420928-5e560c06d30e') },
-          { id: 'camera', en: 'Camera', emoji: '📷', image: IMG('1516035069371-29a1b244cc32') },
-          { id: 'robot', en: 'Robot', emoji: '🤖', image: IMG('1485827404703-89b55fcc595e') },
-          { id: 'tablet', en: 'Tablet', emoji: '📱' },
-        ] },
-      { id: 'sports',   title: 'Sports',       emoji: '🏀', description: 'Teams, rules and friendly matches.',
-        image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'basketball', en: 'Basketball', emoji: '🏀', image: IMG('1608245449230-4ac19066d2d0') },
-          { id: 'soccer', en: 'Soccer', emoji: '⚽', image: IMG('1614632537190-23e4146777db') },
-          { id: 'tennis', en: 'Tennis', emoji: '🎾', image: IMG('1554068865-24cecd4e34b8') },
-          { id: 'swimming', en: 'Swimming', emoji: '🏊' },
-          { id: 'running', en: 'Running', emoji: '🏃' },
-          { id: 'volleyball', en: 'Volleyball', emoji: '🏐' },
-        ] },
-      { id: 'environment', title: 'Environment', emoji: '🌍', description: 'Nature, recycling and caring for Earth.',
-        image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'tree', en: 'Tree', emoji: '🌳', image: IMG('1441974231531-c6227db76b6e') },
-          { id: 'ocean', en: 'Ocean', emoji: '🌊', image: IMG('1439066615861-d1af74d74000') },
-          { id: 'forest', en: 'Forest', emoji: '🌲', image: IMG('1441260038675-7329ab4cc264') },
-          { id: 'earth', en: 'Earth', emoji: '🌍', image: IMG('1614730321146-b6fa6a46bcb4') },
-          { id: 'recycle', en: 'Recycle', emoji: '♻️' },
-          { id: 'solar', en: 'Solar Panel', emoji: '🔆' },
-        ] },
-      { id: 'health',   title: 'Health',       emoji: '🩺', description: 'Feelings, the doctor and staying well.',
-        image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'doctor', en: 'Doctor', emoji: '🩺', image: IMG('1584982751601-97dcc096659c') },
-          { id: 'hospital', en: 'Hospital', emoji: '🏥', image: IMG('1519494026892-80bbd2d6fd0d') },
-          { id: 'medicine', en: 'Medicine', emoji: '💊' },
-          { id: 'exercise', en: 'Exercise', emoji: '🏋️' },
-          { id: 'vitamins', en: 'Vitamins', emoji: '🍊' },
-          { id: 'sleep', en: 'Sleep', emoji: '😴' },
-        ] },
-      { id: 'shopping', title: 'Shopping',     emoji: '🛍️', description: 'Prices, stores and asking for things.',
-        image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'money', en: 'Money', emoji: '💵', image: IMG('1580048915913-4f8f5cb481c4') },
-          { id: 'cart', en: 'Shopping Cart', emoji: '🛒', image: IMG('1601598851547-4302969d0614') },
-          { id: 'store', en: 'Store', emoji: '🏬' },
-          { id: 'pricetag', en: 'Price Tag', emoji: '🏷️' },
-          { id: 'bag', en: 'Bag', emoji: '🛍️' },
-          { id: 'card', en: 'Card', emoji: '💳' },
-        ] },
-      { id: 'verbtobe', title: 'Grammar: Verb To Be', emoji: '🔤', description: 'Am, is, are — the most useful verb in English.',
-        words: [
-          { id: 'am', en: 'Am', emoji: '🙋' },
-          { id: 'is', en: 'Is', emoji: '👤' },
-          { id: 'are', en: 'Are', emoji: '👥' },
-          { id: 'was', en: 'Was', emoji: '🕰️' },
-          { id: 'were', en: 'Were', emoji: '🕰️' },
-          { id: 'been', en: 'Been', emoji: '✅' },
-        ] },
-      { id: 'presentcontinuous', title: 'Grammar: Present Simple vs. Continuous', emoji: '⏳', description: 'What you always do vs. what you are doing right now.',
-        words: [
-          { id: 'plays', en: 'Plays', emoji: '⚽' },
-          { id: 'is-playing', en: 'Is Playing', emoji: '🏃' },
-          { id: 'eats', en: 'Eats', emoji: '🍽️' },
-          { id: 'is-eating', en: 'Is Eating', emoji: '😋' },
-          { id: 'studies', en: 'Studies', emoji: '📖' },
-          { id: 'is-studying', en: 'Is Studying', emoji: '✍️' },
-        ] },
-    ],
+    "id": "a2",
+    "code": "A2",
+    "name": "Pre-Intermediate",
+    "tagline": "Talking about the wider world",
+    "tier": "teens",
+    "color": "#8e6d86",
+    "icon": "⚡",
+    "topics": [
+      {
+        "id": "travel",
+        "title": "Travel & Transportation",
+        "emoji": "✈️",
+        "description": "Getting around and exploring new places",
+        "cefr": "A2",
+        "grammarTip": "We often use prepositions like 'at', 'in', and 'on' with travel words: 'at the airport', 'on the platform', 'in the suitcase'. We also use 'go by' + transport, like 'go by train' or 'go by plane'. Try making your own sentence, such as 'I am going to the airport by taxi.'",
+        "words": [
+          {
+            "id": "airport",
+            "en": "airport",
+            "pt": "aeroporto",
+            "emoji": "🛫"
+          },
+          {
+            "id": "ticket",
+            "en": "ticket",
+            "pt": "bilhete",
+            "emoji": "🎫"
+          },
+          {
+            "id": "passport",
+            "en": "passport",
+            "pt": "passaporte",
+            "emoji": "🛂"
+          },
+          {
+            "id": "suitcase",
+            "en": "suitcase",
+            "pt": "mala",
+            "emoji": "🧳"
+          },
+          {
+            "id": "trainstation",
+            "en": "train station",
+            "pt": "estação de trem",
+            "emoji": "🚉"
+          },
+          {
+            "id": "platform",
+            "en": "platform",
+            "pt": "plataforma",
+            "emoji": "🚏"
+          },
+          {
+            "id": "delay",
+            "en": "delay",
+            "pt": "atraso",
+            "emoji": "⏰"
+          },
+          {
+            "id": "boardingpass",
+            "en": "boarding pass",
+            "pt": "cartão de embarque",
+            "emoji": "🎟️"
+          },
+          {
+            "id": "journey",
+            "en": "journey",
+            "pt": "viagem",
+            "emoji": "🗺️"
+          },
+          {
+            "id": "destination",
+            "en": "destination",
+            "pt": "destino",
+            "emoji": "📍"
+          },
+          {
+            "id": "backpack",
+            "en": "backpack",
+            "pt": "mochila",
+            "emoji": "🎒"
+          },
+          {
+            "id": "tourist",
+            "en": "tourist",
+            "pt": "turista",
+            "emoji": "📸"
+          },
+          {
+            "id": "flight",
+            "en": "flight",
+            "pt": "voo",
+            "emoji": "✈️"
+          },
+          {
+            "id": "map",
+            "en": "map",
+            "pt": "mapa",
+            "emoji": "🧭"
+          }
+        ],
+        "readingTime": {
+          "text": "Marta: Do you have your passport and boarding pass?\nLucas: Yes, they're in my backpack with my ticket.\nMarta: Great! Our flight is at gate 12, but there's a delay.\nLucas: Oh no! I hope we don't miss our connection.\nMarta: Don't worry, our journey to the destination is still on time.\nLucas: I can't wait to be a tourist in Rome!",
+          "questions": [
+            {
+              "prompt": "What does Lucas have in his backpack?",
+              "options": [
+                "His passport and ticket",
+                "His suitcase and map",
+                "His camera and phone"
+              ],
+              "correct": "His passport and ticket"
+            },
+            {
+              "prompt": "What is the problem with the flight?",
+              "options": [
+                "It is cancelled",
+                "There is a delay",
+                "They lost the tickets"
+              ],
+              "correct": "There is a delay"
+            }
+          ]
+        }
+      },
+      {
+        "id": "jobs",
+        "title": "Jobs & Daily Work",
+        "emoji": "💼",
+        "description": "Different jobs and everyday work routines",
+        "cefr": "A2",
+        "grammarTip": "We use the present simple to talk about jobs and daily routines: 'He works at a hospital' or 'She starts her shift at 8 a.m.' Remember to add -s for he/she/it: 'work' becomes 'works'. Try describing your own daily routine using these job words.",
+        "words": [
+          {
+            "id": "teacher",
+            "en": "teacher",
+            "pt": "professor(a)",
+            "emoji": "👩‍🏫"
+          },
+          {
+            "id": "doctor",
+            "en": "doctor",
+            "pt": "médico(a)",
+            "emoji": "🩺"
+          },
+          {
+            "id": "engineer",
+            "en": "engineer",
+            "pt": "engenheiro(a)",
+            "emoji": "👷"
+          },
+          {
+            "id": "chef",
+            "en": "chef",
+            "pt": "chef de cozinha",
+            "emoji": "👨‍🍳"
+          },
+          {
+            "id": "office",
+            "en": "office",
+            "pt": "escritório",
+            "emoji": "🏢"
+          },
+          {
+            "id": "salary",
+            "en": "salary",
+            "pt": "salário",
+            "emoji": "💰"
+          },
+          {
+            "id": "schedule",
+            "en": "schedule",
+            "pt": "horário",
+            "emoji": "🗓️"
+          },
+          {
+            "id": "meeting",
+            "en": "meeting",
+            "pt": "reunião",
+            "emoji": "🧑‍💼"
+          },
+          {
+            "id": "colleague",
+            "en": "colleague",
+            "pt": "colega de trabalho",
+            "emoji": "🤝"
+          },
+          {
+            "id": "shift",
+            "en": "shift",
+            "pt": "turno",
+            "emoji": "⏱️"
+          },
+          {
+            "id": "boss",
+            "en": "boss",
+            "pt": "chefe",
+            "emoji": "🧑‍💻"
+          },
+          {
+            "id": "task",
+            "en": "task",
+            "pt": "tarefa",
+            "emoji": "📝"
+          },
+          {
+            "id": "break",
+            "en": "break",
+            "pt": "pausa",
+            "emoji": "☕"
+          },
+          {
+            "id": "deadline",
+            "en": "deadline",
+            "pt": "prazo",
+            "emoji": "⏳"
+          }
+        ],
+        "readingTime": {
+          "text": "Ana: What does your mom do, Pedro?\nPedro: She's an engineer. She works long shifts at a big office.\nAna: Does she like her colleagues?\nPedro: Yes, but she never has a break during a busy meeting!\nAna: My dad is a chef. His schedule changes every week.\nPedro: That sounds tiring, but I bet his salary is good!",
+          "questions": [
+            {
+              "prompt": "What is Pedro's mom's job?",
+              "options": [
+                "Teacher",
+                "Engineer",
+                "Chef"
+              ],
+              "correct": "Engineer"
+            },
+            {
+              "prompt": "What is true about Pedro's mom during a meeting?",
+              "options": [
+                "She takes a long break",
+                "She never has a break",
+                "She goes home early"
+              ],
+              "correct": "She never has a break"
+            }
+          ]
+        }
+      },
+      {
+        "id": "health",
+        "title": "Health & The Human Body",
+        "emoji": "🩺",
+        "description": "Body parts, symptoms, and staying healthy",
+        "cefr": "A2",
+        "grammarTip": "When we talk about how we feel, we use 'have' with symptoms: 'I have a headache' or 'She has a fever.' We use 'should' to give health advice: 'You should rest' or 'You shouldn't skip breakfast.' Practice describing symptoms and giving advice with these words.",
+        "words": [
+          {
+            "id": "headache",
+            "en": "headache",
+            "pt": "dor de cabeça",
+            "emoji": "🤕"
+          },
+          {
+            "id": "stomach",
+            "en": "stomach",
+            "pt": "estômago",
+            "emoji": "🤢"
+          },
+          {
+            "id": "fever",
+            "en": "fever",
+            "pt": "febre",
+            "emoji": "🌡️"
+          },
+          {
+            "id": "cough",
+            "en": "cough",
+            "pt": "tosse",
+            "emoji": "🤧"
+          },
+          {
+            "id": "medicine",
+            "en": "medicine",
+            "pt": "remédio",
+            "emoji": "💊"
+          },
+          {
+            "id": "nurse",
+            "en": "nurse",
+            "pt": "enfermeiro(a)",
+            "emoji": "👩‍⚕️"
+          },
+          {
+            "id": "injury",
+            "en": "injury",
+            "pt": "lesão",
+            "emoji": "🤕"
+          },
+          {
+            "id": "bandage",
+            "en": "bandage",
+            "pt": "atadura",
+            "emoji": "🩹"
+          },
+          {
+            "id": "exercise",
+            "en": "exercise",
+            "pt": "exercício",
+            "emoji": "🏃"
+          },
+          {
+            "id": "healthy",
+            "en": "healthy",
+            "pt": "saudável",
+            "emoji": "🥗"
+          },
+          {
+            "id": "symptom",
+            "en": "symptom",
+            "pt": "sintoma",
+            "emoji": "📋"
+          },
+          {
+            "id": "rest",
+            "en": "rest",
+            "pt": "descanso",
+            "emoji": "🛌"
+          },
+          {
+            "id": "throat",
+            "en": "throat",
+            "pt": "garganta",
+            "emoji": "😷"
+          },
+          {
+            "id": "appointment",
+            "en": "appointment",
+            "pt": "consulta",
+            "emoji": "📅"
+          }
+        ],
+        "readingTime": {
+          "text": "Sofia: I have a terrible headache and a sore throat.\nDoctor: Do you also have a fever or a cough?\nSofia: Yes, I have a small fever too.\nDoctor: You should take this medicine and get some rest.\nSofia: Should I still do exercise this week?\nDoctor: No, you shouldn't. Rest is more important right now.",
+          "questions": [
+            {
+              "prompt": "What symptoms does Sofia have?",
+              "options": [
+                "A headache and sore throat",
+                "A stomach ache and cough",
+                "A bandage and injury"
+              ],
+              "correct": "A headache and sore throat"
+            },
+            {
+              "prompt": "What does the doctor say about exercise?",
+              "options": [
+                "She should exercise every day",
+                "She shouldn't exercise this week",
+                "She must exercise twice"
+              ],
+              "correct": "She shouldn't exercise this week"
+            }
+          ]
+        }
+      },
+      {
+        "id": "hobbies",
+        "title": "Hobbies & Free Time",
+        "emoji": "🎨",
+        "description": "Fun activities we do in our free time",
+        "cefr": "A2",
+        "grammarTip": "We use love/like/enjoy + verb-ing to talk about hobbies: 'I enjoy painting' or 'She loves cycling.' Notice the verb after these expressions always ends in -ing. Try making sentences about your own free-time activities.",
+        "words": [
+          {
+            "id": "painting",
+            "en": "painting",
+            "pt": "pintura",
+            "emoji": "🎨"
+          },
+          {
+            "id": "guitar",
+            "en": "guitar",
+            "pt": "violão",
+            "emoji": "🎸"
+          },
+          {
+            "id": "skateboard",
+            "en": "skateboard",
+            "pt": "skate",
+            "emoji": "🛹"
+          },
+          {
+            "id": "videogame",
+            "en": "video game",
+            "pt": "videogame",
+            "emoji": "🎮"
+          },
+          {
+            "id": "photography",
+            "en": "photography",
+            "pt": "fotografia",
+            "emoji": "📷"
+          },
+          {
+            "id": "boardgame",
+            "en": "board game",
+            "pt": "jogo de tabuleiro",
+            "emoji": "🎲"
+          },
+          {
+            "id": "reading",
+            "en": "reading",
+            "pt": "leitura",
+            "emoji": "📚"
+          },
+          {
+            "id": "swimming",
+            "en": "swimming",
+            "pt": "natação",
+            "emoji": "🏊"
+          },
+          {
+            "id": "collecting",
+            "en": "collecting",
+            "pt": "colecionar",
+            "emoji": "🗃️"
+          },
+          {
+            "id": "dancing",
+            "en": "dancing",
+            "pt": "dança",
+            "emoji": "💃"
+          },
+          {
+            "id": "cycling",
+            "en": "cycling",
+            "pt": "ciclismo",
+            "emoji": "🚴"
+          },
+          {
+            "id": "drawing",
+            "en": "drawing",
+            "pt": "desenho",
+            "emoji": "✏️"
+          },
+          {
+            "id": "karate",
+            "en": "karate",
+            "pt": "caratê",
+            "emoji": "🥋"
+          },
+          {
+            "id": "team",
+            "en": "team",
+            "pt": "time",
+            "emoji": "👥"
+          }
+        ],
+        "readingTime": {
+          "text": "Ben: What do you like doing in your free time?\nMia: I enjoy painting and playing the guitar. What about you?\nBen: I love skateboarding with my team after school.\nMia: Do you also like video games?\nBen: Yes, but I prefer cycling and swimming outside.\nMia: That sounds fun! Maybe we can go cycling together this weekend.",
+          "questions": [
+            {
+              "prompt": "What does Mia enjoy doing?",
+              "options": [
+                "Painting and guitar",
+                "Skateboarding and karate",
+                "Swimming and reading"
+              ],
+              "correct": "Painting and guitar"
+            },
+            {
+              "prompt": "What does Ben suggest at the end?",
+              "options": [
+                "Playing video games together",
+                "Going cycling together",
+                "Joining a dance class"
+              ],
+              "correct": "Going cycling together"
+            }
+          ]
+        }
+      },
+      {
+        "id": "environment",
+        "title": "Environment & Animals",
+        "emoji": "🌍",
+        "description": "Nature, wildlife, and protecting our planet",
+        "cefr": "A2",
+        "grammarTip": "We often use 'should' and 'must' to talk about protecting the environment: 'We should recycle more' or 'We must protect endangered animals.' These modal verbs give advice or strong rules. Try writing one rule that could help the planet.",
+        "words": [
+          {
+            "id": "pollution",
+            "en": "pollution",
+            "pt": "poluição",
+            "emoji": "🏭"
+          },
+          {
+            "id": "recycle",
+            "en": "recycle",
+            "pt": "reciclar",
+            "emoji": "♻️"
+          },
+          {
+            "id": "endangered",
+            "en": "endangered",
+            "pt": "em perigo de extinção",
+            "emoji": "🐾"
+          },
+          {
+            "id": "forest",
+            "en": "forest",
+            "pt": "floresta",
+            "emoji": "🌳"
+          },
+          {
+            "id": "ocean",
+            "en": "ocean",
+            "pt": "oceano",
+            "emoji": "🌊"
+          },
+          {
+            "id": "wildlife",
+            "en": "wildlife",
+            "pt": "vida selvagem",
+            "emoji": "🦁"
+          },
+          {
+            "id": "climate",
+            "en": "climate",
+            "pt": "clima",
+            "emoji": "🌦️"
+          },
+          {
+            "id": "habitat",
+            "en": "habitat",
+            "pt": "habitat",
+            "emoji": "🏞️"
+          },
+          {
+            "id": "plastic",
+            "en": "plastic",
+            "pt": "plástico",
+            "emoji": "🥤"
+          },
+          {
+            "id": "species",
+            "en": "species",
+            "pt": "espécie",
+            "emoji": "🐢"
+          },
+          {
+            "id": "protect",
+            "en": "protect",
+            "pt": "proteger",
+            "emoji": "🛡️"
+          },
+          {
+            "id": "rainforest",
+            "en": "rainforest",
+            "pt": "floresta tropical",
+            "emoji": "🌴"
+          },
+          {
+            "id": "pollute",
+            "en": "pollute",
+            "pt": "poluir",
+            "emoji": "💨"
+          },
+          {
+            "id": "conservation",
+            "en": "conservation",
+            "pt": "conservação",
+            "emoji": "🌱"
+          }
+        ],
+        "readingTime": {
+          "text": "Every day, pollution damages our forests and oceans. Many endangered species, like sea turtles, are losing their natural habitat because of plastic waste. Scientists say the climate is changing faster than before, so wildlife conservation is more important than ever. We should recycle more and use less plastic at home. If people don't protect the rainforest soon, many animals could disappear forever. Small actions, like recycling, can really help our planet.",
+          "questions": [
+            {
+              "prompt": "Why are sea turtles losing their habitat?",
+              "options": [
+                "Because of plastic waste",
+                "Because of too many tourists",
+                "Because of cold weather"
+              ],
+              "correct": "Because of plastic waste"
+            },
+            {
+              "prompt": "According to the text, what should we do?",
+              "options": [
+                "Travel more by plane",
+                "Recycle more and use less plastic",
+                "Stop studying about animals"
+              ],
+              "correct": "Recycle more and use less plastic"
+            }
+          ]
+        }
+      },
+      {
+        "id": "personality",
+        "title": "Feelings & Personality Descriptions",
+        "emoji": "😊",
+        "description": "Words to describe emotions and character",
+        "cefr": "A2",
+        "grammarTip": "We use 'be' + adjective to describe feelings and personality: 'I am nervous' or 'She is very generous.' Some feelings change quickly (nervous, worried), while personality words describe someone all the time (shy, honest). Try describing yourself with three of these adjectives.",
+        "words": [
+          {
+            "id": "shy",
+            "en": "shy",
+            "pt": "tímido(a)",
+            "emoji": "😳"
+          },
+          {
+            "id": "confident",
+            "en": "confident",
+            "pt": "confiante",
+            "emoji": "😎"
+          },
+          {
+            "id": "generous",
+            "en": "generous",
+            "pt": "generoso(a)",
+            "emoji": "🎁"
+          },
+          {
+            "id": "curious",
+            "en": "curious",
+            "pt": "curioso(a)",
+            "emoji": "🧐"
+          },
+          {
+            "id": "nervous",
+            "en": "nervous",
+            "pt": "nervoso(a)",
+            "emoji": "😬"
+          },
+          {
+            "id": "friendly",
+            "en": "friendly",
+            "pt": "amigável",
+            "emoji": "🙂"
+          },
+          {
+            "id": "jealous",
+            "en": "jealous",
+            "pt": "com ciúmes",
+            "emoji": "😒"
+          },
+          {
+            "id": "patient",
+            "en": "patient",
+            "pt": "paciente",
+            "emoji": "⏳"
+          },
+          {
+            "id": "honest",
+            "en": "honest",
+            "pt": "honesto(a)",
+            "emoji": "😇"
+          },
+          {
+            "id": "stubborn",
+            "en": "stubborn",
+            "pt": "teimoso(a)",
+            "emoji": "😤"
+          },
+          {
+            "id": "cheerful",
+            "en": "cheerful",
+            "pt": "alegre",
+            "emoji": "😄"
+          },
+          {
+            "id": "embarrassed",
+            "en": "embarrassed",
+            "pt": "envergonhado(a)",
+            "emoji": "🙈"
+          },
+          {
+            "id": "proud",
+            "en": "proud",
+            "pt": "orgulhoso(a)",
+            "emoji": "😌"
+          },
+          {
+            "id": "worried",
+            "en": "worried",
+            "pt": "preocupado(a)",
+            "emoji": "😟"
+          }
+        ],
+        "readingTime": {
+          "text": "Julia: Why are you so nervous today, Tom?\nTom: I have to give a presentation, and I'm quite shy.\nJulia: Don't worry, you're one of the most confident people I know!\nTom: Thanks, but sometimes I feel embarrassed speaking in front of the class.\nJulia: Just be honest and speak slowly. Everyone will be patient with you.\nTom: You're right. I feel less worried now.",
+          "questions": [
+            {
+              "prompt": "Why is Tom nervous?",
+              "options": [
+                "He has a test",
+                "He has to give a presentation",
+                "He lost his homework"
+              ],
+              "correct": "He has to give a presentation"
+            },
+            {
+              "prompt": "How does Julia describe Tom?",
+              "options": [
+                "Shy and jealous",
+                "Confident",
+                "Stubborn and proud"
+              ],
+              "correct": "Confident"
+            }
+          ]
+        }
+      },
+      {
+        "id": "pastcontinuous",
+        "title": "Grammar: Past Continuous",
+        "emoji": "⏳",
+        "description": "Actions in progress in the past",
+        "cefr": "A2",
+        "grammarTip": "We use the past continuous (was/were + verb-ing) for an action in progress at a past moment: 'I was watching TV at 8 p.m.' We often use 'while' or 'when' to connect two past actions: 'I was cooking while she was studying' or 'The phone rang when I was sleeping.' 'While' usually joins two continuous actions, and 'when' often introduces a shorter, interrupting action.",
+        "words": [
+          {
+            "id": "waswatching",
+            "en": "was watching",
+            "pt": "estava assistindo",
+            "emoji": "📺"
+          },
+          {
+            "id": "wascooking",
+            "en": "was cooking",
+            "pt": "estava cozinhando",
+            "emoji": "🍳"
+          },
+          {
+            "id": "wereplaying",
+            "en": "were playing",
+            "pt": "estavam jogando",
+            "emoji": "⚽"
+          },
+          {
+            "id": "wassleeping",
+            "en": "was sleeping",
+            "pt": "estava dormindo",
+            "emoji": "😴"
+          },
+          {
+            "id": "werestudying",
+            "en": "were studying",
+            "pt": "estavam estudando",
+            "emoji": "📖"
+          },
+          {
+            "id": "wasraining",
+            "en": "was raining",
+            "pt": "estava chovendo",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "waswalking",
+            "en": "was walking",
+            "pt": "estava andando",
+            "emoji": "🚶"
+          },
+          {
+            "id": "weretalking",
+            "en": "were talking",
+            "pt": "estavam conversando",
+            "emoji": "💬"
+          },
+          {
+            "id": "wasreading",
+            "en": "was reading",
+            "pt": "estava lendo",
+            "emoji": "📕"
+          },
+          {
+            "id": "waslistening",
+            "en": "was listening",
+            "pt": "estava ouvindo",
+            "emoji": "🎧"
+          },
+          {
+            "id": "werewaiting",
+            "en": "were waiting",
+            "pt": "estavam esperando",
+            "emoji": "⏱️"
+          },
+          {
+            "id": "wasdriving",
+            "en": "was driving",
+            "pt": "estava dirigindo",
+            "emoji": "🚗"
+          },
+          {
+            "id": "wassinging",
+            "en": "was singing",
+            "pt": "estava cantando",
+            "emoji": "🎤"
+          },
+          {
+            "id": "wererunning",
+            "en": "were running",
+            "pt": "estavam correndo",
+            "emoji": "🏃"
+          }
+        ],
+        "readingTime": {
+          "text": "Yesterday afternoon, Leo was doing his homework while his sister was practicing the piano. Suddenly, it started raining outside. Leo was listening to music when his mom called him for dinner. Meanwhile, his friends were playing football in the park, but they got wet. While everyone was eating dinner, the rain stopped and the sky became clear.",
+          "questions": [
+            {
+              "prompt": "What was Leo doing when it started raining?",
+              "options": [
+                "He was doing homework",
+                "He was playing football",
+                "He was eating dinner"
+              ],
+              "correct": "He was doing homework"
+            },
+            {
+              "prompt": "What were Leo's friends doing when it started raining?",
+              "options": [
+                "They were sleeping",
+                "They were playing football",
+                "They were listening to music"
+              ],
+              "correct": "They were playing football"
+            }
+          ]
+        }
+      },
+      {
+        "id": "presentperfectbasic",
+        "title": "Grammar: Present Perfect Basic",
+        "emoji": "✅",
+        "description": "Life experiences with ever, never, already",
+        "cefr": "A2",
+        "grammarTip": "We use the present perfect (have/has + past participle) to talk about life experiences without saying exactly when they happened: 'I have visited Paris' or 'She has never eaten sushi.' We use 'ever' in questions ('Have you ever tried...?'), 'never' for zero experience, and 'already' when something happened sooner than expected. Remember: has = he/she/it, have = I/you/we/they.",
+        "words": [
+          {
+            "id": "havebeen",
+            "en": "have been",
+            "pt": "já estive/fui",
+            "emoji": "✈️"
+          },
+          {
+            "id": "hasnevertried",
+            "en": "has never tried",
+            "pt": "nunca experimentou",
+            "emoji": "🚫"
+          },
+          {
+            "id": "havealreadyfinished",
+            "en": "have already finished",
+            "pt": "já terminei",
+            "emoji": "✔️"
+          },
+          {
+            "id": "hasvisited",
+            "en": "has visited",
+            "pt": "visitou",
+            "emoji": "🗺️"
+          },
+          {
+            "id": "haveneverseen",
+            "en": "have never seen",
+            "pt": "nunca vi",
+            "emoji": "👀"
+          },
+          {
+            "id": "hasjustarrived",
+            "en": "has just arrived",
+            "pt": "acabou de chegar",
+            "emoji": "🚪"
+          },
+          {
+            "id": "haveeaten",
+            "en": "have eaten",
+            "pt": "comi/comeu",
+            "emoji": "🍽️"
+          },
+          {
+            "id": "hasbroken",
+            "en": "has broken",
+            "pt": "quebrou",
+            "emoji": "💥"
+          },
+          {
+            "id": "havewon",
+            "en": "have won",
+            "pt": "ganhei/ganharam",
+            "emoji": "🏆"
+          },
+          {
+            "id": "hasread",
+            "en": "has read",
+            "pt": "leu",
+            "emoji": "📖"
+          },
+          {
+            "id": "havelost",
+            "en": "have lost",
+            "pt": "perdi/perderam",
+            "emoji": "😞"
+          },
+          {
+            "id": "hasforgotten",
+            "en": "has forgotten",
+            "pt": "esqueceu",
+            "emoji": "🤔"
+          },
+          {
+            "id": "havetraveled",
+            "en": "have traveled",
+            "pt": "viajei/viajaram",
+            "emoji": "🧳"
+          },
+          {
+            "id": "hasneverflown",
+            "en": "has never flown",
+            "pt": "nunca voou",
+            "emoji": "🛬"
+          }
+        ],
+        "readingTime": {
+          "text": "Emma: Have you ever tried sushi, Noah?\nNoah: Yes, I have eaten sushi many times! Have you?\nEmma: No, I have never tried it, but I have already tasted Italian pizza.\nNoah: I have traveled to Italy too. It was amazing!\nEmma: Wow, has your sister ever visited Italy?\nNoah: No, she hasn't. She has never flown on a plane before!",
+          "questions": [
+            {
+              "prompt": "Has Emma ever tried sushi?",
+              "options": [
+                "Yes, many times",
+                "No, never",
+                "Yes, once last year"
+              ],
+              "correct": "No, never"
+            },
+            {
+              "prompt": "What has Noah's sister never done?",
+              "options": [
+                "Eaten pizza",
+                "Flown on a plane",
+                "Visited Italy with Noah"
+              ],
+              "correct": "Flown on a plane"
+            }
+          ]
+        }
+      },
+      {
+        "id": "futureforms",
+        "title": "Grammar: Will vs Going To",
+        "emoji": "🔮",
+        "description": "Spontaneous decisions vs planned intentions",
+        "cefr": "A2",
+        "grammarTip": "We use 'going to' + verb for plans we already decided: 'I am going to travel this summer.' We use 'will' + verb for quick decisions we make while speaking: 'It's cold, I will close the window.' A good trick: 'going to' means already planned, and 'will' means decided right now.",
+        "words": [
+          {
+            "id": "isgoingtotravel",
+            "en": "is going to travel",
+            "pt": "vai viajar",
+            "emoji": "🧳"
+          },
+          {
+            "id": "willhelp",
+            "en": "will help",
+            "pt": "vou ajudar",
+            "emoji": "🤝"
+          },
+          {
+            "id": "aregoingtostudy",
+            "en": "are going to study",
+            "pt": "vão estudar",
+            "emoji": "📚"
+          },
+          {
+            "id": "willanswer",
+            "en": "will answer",
+            "pt": "vou responder",
+            "emoji": "☎️"
+          },
+          {
+            "id": "isgoingtorain",
+            "en": "is going to rain",
+            "pt": "vai chover",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "willcall",
+            "en": "will call",
+            "pt": "vou ligar",
+            "emoji": "📞"
+          },
+          {
+            "id": "amgoingtovisit",
+            "en": "am going to visit",
+            "pt": "vou visitar",
+            "emoji": "🏠"
+          },
+          {
+            "id": "willtry",
+            "en": "will try",
+            "pt": "vou tentar",
+            "emoji": "💪"
+          },
+          {
+            "id": "isgoingtomove",
+            "en": "is going to move",
+            "pt": "vai se mudar",
+            "emoji": "📦"
+          },
+          {
+            "id": "willopen",
+            "en": "will open",
+            "pt": "vou abrir",
+            "emoji": "🚪"
+          },
+          {
+            "id": "aregoingtobuild",
+            "en": "are going to build",
+            "pt": "vão construir",
+            "emoji": "🏗️"
+          },
+          {
+            "id": "willbring",
+            "en": "will bring",
+            "pt": "vou trazer",
+            "emoji": "🎒"
+          },
+          {
+            "id": "isgoingtostart",
+            "en": "is going to start",
+            "pt": "vai começar",
+            "emoji": "▶️"
+          },
+          {
+            "id": "willpay",
+            "en": "will pay",
+            "pt": "vou pagar",
+            "emoji": "💳"
+          }
+        ],
+        "readingTime": {
+          "text": "Carlos: Look at those clouds! I think it is going to rain.\nDaniela: Really? Then I will bring an umbrella, just in case.\nCarlos: Next month, my family is going to travel to the coast.\nDaniela: That sounds fun! Oh, my phone is ringing. I will answer it now.\nCarlos: Okay. After the call, are you going to study with me?\nDaniela: Yes, I am going to visit the library first, then I'll come.",
+          "questions": [
+            {
+              "prompt": "Why does Daniela decide to bring an umbrella?",
+              "options": [
+                "Because she planned it yesterday",
+                "Because she sees it might rain",
+                "Because Carlos told her to"
+              ],
+              "correct": "Because she sees it might rain"
+            },
+            {
+              "prompt": "What has Carlos's family already planned?",
+              "options": [
+                "To travel to the coast",
+                "To study at the library",
+                "To build a new house"
+              ],
+              "correct": "To travel to the coast"
+            }
+          ]
+        }
+      },
+      {
+        "id": "modalverbs",
+        "title": "Grammar: Should, Must, Have To",
+        "emoji": "📏",
+        "description": "Giving advice and talking about obligation",
+        "cefr": "A2",
+        "grammarTip": "We use 'should' for advice: 'You should rest.' We use 'must' for strong rules, often written ones: 'You must wear a seatbelt.' We use 'have to' for obligations from outside us, like school or parents: 'I have to study for the test.' 'Must' and 'have to' are similar, but 'should' is softer, just a suggestion.",
+        "words": [
+          {
+            "id": "shouldrest",
+            "en": "should rest",
+            "pt": "deveria descansar",
+            "emoji": "🛌"
+          },
+          {
+            "id": "mustwear",
+            "en": "must wear",
+            "pt": "deve usar",
+            "emoji": "🦺"
+          },
+          {
+            "id": "havetostudy",
+            "en": "have to study",
+            "pt": "tenho que estudar",
+            "emoji": "📖"
+          },
+          {
+            "id": "shouldapologize",
+            "en": "should apologize",
+            "pt": "deveria pedir desculpas",
+            "emoji": "🙏"
+          },
+          {
+            "id": "mustnotrun",
+            "en": "must not run",
+            "pt": "não deve correr",
+            "emoji": "🚫"
+          },
+          {
+            "id": "hastofinish",
+            "en": "has to finish",
+            "pt": "tem que terminar",
+            "emoji": "✅"
+          },
+          {
+            "id": "shouldpractice",
+            "en": "should practice",
+            "pt": "deveria praticar",
+            "emoji": "🎯"
+          },
+          {
+            "id": "mustarrive",
+            "en": "must arrive",
+            "pt": "deve chegar",
+            "emoji": "⏰"
+          },
+          {
+            "id": "havetowait",
+            "en": "have to wait",
+            "pt": "tenho que esperar",
+            "emoji": "⌛"
+          },
+          {
+            "id": "shouldask",
+            "en": "should ask",
+            "pt": "deveria perguntar",
+            "emoji": "❓"
+          },
+          {
+            "id": "mustobey",
+            "en": "must obey",
+            "pt": "deve obedecer",
+            "emoji": "📜"
+          },
+          {
+            "id": "hastoclean",
+            "en": "has to clean",
+            "pt": "tem que limpar",
+            "emoji": "🧹"
+          },
+          {
+            "id": "shouldtry",
+            "en": "should try",
+            "pt": "deveria tentar",
+            "emoji": "💪"
+          },
+          {
+            "id": "mustnottalk",
+            "en": "must not talk",
+            "pt": "não deve falar",
+            "emoji": "🤫"
+          }
+        ],
+        "readingTime": {
+          "text": "Coach: Remember, players must wear their helmets during practice.\nLiam: Yes, coach. Do we have to arrive early tomorrow?\nCoach: Yes, you must arrive at 7 a.m. sharp.\nLiam: Okay. I think I should practice my kicks more this week.\nCoach: Good idea. Also, you have to finish your homework before the game.\nLiam: I know. I must not forget my schoolwork again!",
+          "questions": [
+            {
+              "prompt": "What must players wear during practice?",
+              "options": [
+                "Helmets",
+                "Gloves",
+                "Glasses"
+              ],
+              "correct": "Helmets"
+            },
+            {
+              "prompt": "What time must the players arrive tomorrow?",
+              "options": [
+                "6 a.m.",
+                "7 a.m.",
+                "8 a.m."
+              ],
+              "correct": "7 a.m."
+            }
+          ]
+        }
+      },
+      {
+        "id": "comparatives",
+        "title": "Grammar: Comparatives & Superlatives",
+        "emoji": "📊",
+        "description": "Comparing people, places, and things",
+        "cefr": "A2",
+        "grammarTip": "We add -er to short adjectives to compare two things, like 'bigger' or 'faster', and use 'more' for longer words, like 'more interesting'. For comparing three or more things, we use -est or 'most': 'the fastest', 'the most interesting'. Remember to use 'than' with comparatives: 'She is faster than me.'",
+        "words": [
+          {
+            "id": "bigger",
+            "en": "bigger",
+            "pt": "maior",
+            "emoji": "📏"
+          },
+          {
+            "id": "smaller",
+            "en": "smaller",
+            "pt": "menor",
+            "emoji": "🤏"
+          },
+          {
+            "id": "faster",
+            "en": "faster",
+            "pt": "mais rápido",
+            "emoji": "🏃"
+          },
+          {
+            "id": "thefastest",
+            "en": "the fastest",
+            "pt": "o mais rápido",
+            "emoji": "🥇"
+          },
+          {
+            "id": "moreinteresting",
+            "en": "more interesting",
+            "pt": "mais interessante",
+            "emoji": "🤓"
+          },
+          {
+            "id": "themostinteresting",
+            "en": "the most interesting",
+            "pt": "o mais interessante",
+            "emoji": "🌟"
+          },
+          {
+            "id": "taller",
+            "en": "taller",
+            "pt": "mais alto",
+            "emoji": "📐"
+          },
+          {
+            "id": "thetallest",
+            "en": "the tallest",
+            "pt": "o mais alto",
+            "emoji": "🏔️"
+          },
+          {
+            "id": "cheaper",
+            "en": "cheaper",
+            "pt": "mais barato",
+            "emoji": "💵"
+          },
+          {
+            "id": "thecheapest",
+            "en": "the cheapest",
+            "pt": "o mais barato",
+            "emoji": "🏷️"
+          },
+          {
+            "id": "moreexpensive",
+            "en": "more expensive",
+            "pt": "mais caro",
+            "emoji": "💎"
+          },
+          {
+            "id": "themostexpensive",
+            "en": "the most expensive",
+            "pt": "o mais caro",
+            "emoji": "👑"
+          },
+          {
+            "id": "better",
+            "en": "better",
+            "pt": "melhor",
+            "emoji": "👍"
+          },
+          {
+            "id": "thebest",
+            "en": "the best",
+            "pt": "o melhor",
+            "emoji": "🏆"
+          },
+          {
+            "id": "worse",
+            "en": "worse",
+            "pt": "pior",
+            "emoji": "👎"
+          }
+        ],
+        "readingTime": {
+          "text": "My town has three parks. Central Park is bigger than Green Park, but River Park is the tallest one because of its tower. Central Park is more interesting because it has a zoo, but many students say River Park is the most interesting because of the tower. Snacks at Central Park are cheaper than snacks at River Park, but the roller coaster park is the most expensive place in town. In my opinion, River Park is the best place to spend a Saturday afternoon, even though the roller coaster park is more expensive.",
+          "questions": [
+            {
+              "prompt": "Which park is the tallest?",
+              "options": [
+                "Central Park",
+                "Green Park",
+                "River Park"
+              ],
+              "correct": "River Park"
+            },
+            {
+              "prompt": "Which place is the most expensive?",
+              "options": [
+                "Central Park",
+                "River Park",
+                "The roller coaster park"
+              ],
+              "correct": "The roller coaster park"
+            }
+          ]
+        }
+      }
+    ]
   },
   {
-    id: 'b1b2',
-    code: 'B1-B2',
-    name: 'Intermediate',
-    tagline: 'Expressing opinions with confidence',
-    tier: 'teens',
-    color: '#c9435c',
-    icon: '🏆',
-    topics: [
-      { id: 'careers',  title: 'Careers',       emoji: '💼', description: 'Jobs, dreams and future plans.',
-        image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'teacher', en: 'Teacher', emoji: '🧑‍🏫', image: IMG('1580582932707-520aed937b7b') },
-          { id: 'doctor', en: 'Doctor', emoji: '🩺', image: IMG('1584982751601-97dcc096659c') },
-          { id: 'chef', en: 'Chef', emoji: '👨‍🍳', image: IMG('1577219491135-ce391730fb2c') },
-          { id: 'artist', en: 'Artist', emoji: '🎨', image: IMG('1460661419201-fd4cecdf8a8b') },
-          { id: 'engineer', en: 'Engineer', emoji: '👷' },
-          { id: 'scientist', en: 'Scientist', emoji: '🔬' },
-        ] },
-      { id: 'culture',  title: 'Culture & Traditions', emoji: '🎎', description: 'Festivals and customs worldwide.',
-        image: 'https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'festival', en: 'Festival', emoji: '🎎', image: IMG('1533929736458-ca588d08c8be') },
-          { id: 'dance', en: 'Dance', emoji: '💃', image: IMG('1508700115892-45ecd05ae2ad') },
-          { id: 'costume', en: 'Costume', emoji: '🎭' },
-          { id: 'parade', en: 'Parade', emoji: '🎉' },
-          { id: 'tradmusic', en: 'Music', emoji: '🎶' },
-          { id: 'tradfood', en: 'Traditional Food', emoji: '🍜' },
-        ] },
-      { id: 'media',    title: 'Media & News',  emoji: '📰', description: 'Headlines, opinions and debate.',
-        image: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'newspaper', en: 'Newspaper', emoji: '📰', image: IMG('1495020689067-958852a7765e') },
-          { id: 'television', en: 'Television', emoji: '📺', image: IMG('1593359677879-a4bb92f829d1') },
-          { id: 'microphone', en: 'Microphone', emoji: '🎙️' },
-          { id: 'camera', en: 'Camera', emoji: '📷', image: IMG('1516035069371-29a1b244cc32') },
-          { id: 'internet', en: 'Internet', emoji: '🌐' },
-          { id: 'headline', en: 'Headline', emoji: '📢' },
-        ] },
-      { id: 'ecoissues', title: 'Environmental Issues', emoji: '♻️', description: 'Climate change and solutions.',
-        image: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'pollution', en: 'Pollution', emoji: '🏭' },
-          { id: 'climate', en: 'Climate Change', emoji: '🌡️' },
-          { id: 'recycle', en: 'Recycle', emoji: '♻️' },
-          { id: 'deforestation', en: 'Deforestation', emoji: '🪓' },
-          { id: 'renewable', en: 'Renewable Energy', emoji: '🔋' },
-          { id: 'plastic', en: 'Plastic Waste', emoji: '🥤' },
-        ] },
-      { id: 'debate',   title: 'Debate & Opinions', emoji: '🗣️', description: 'Agree, disagree and persuade.',
-        image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'agree', en: 'Agree', emoji: '👍' },
-          { id: 'disagree', en: 'Disagree', emoji: '👎' },
-          { id: 'argument', en: 'Argument', emoji: '💬' },
-          { id: 'opinion', en: 'Opinion', emoji: '🗯️' },
-          { id: 'discussion', en: 'Discussion', emoji: '🤝' },
-          { id: 'vote', en: 'Vote', emoji: '🗳️' },
-        ] },
-      { id: 'science',  title: 'Science & Innovation', emoji: '🔬', description: 'Discoveries that shape tomorrow.',
-        image: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500&q=60&auto=format&fit=crop',
-        words: [
-          { id: 'microscope', en: 'Microscope', emoji: '🔬', image: IMG('1532187863486-abf9dbad1b69') },
-          { id: 'rocket', en: 'Rocket', emoji: '🚀', image: IMG('1541185933-ef5d8ed016c2') },
-          { id: 'robot', en: 'Robot', emoji: '🤖', image: IMG('1485827404703-89b55fcc595e') },
-          { id: 'dna', en: 'DNA', emoji: '🧬' },
-          { id: 'invention', en: 'Invention', emoji: '💡' },
-          { id: 'laboratory', en: 'Laboratory', emoji: '⚗️' },
-        ] },
-      { id: 'simplepast', title: 'Grammar: Simple Past', emoji: '📜', description: 'Regular (-ed) and irregular verbs for talking about yesterday.',
-        words: [
-          { id: 'walked', en: 'Walked', emoji: '🚶' },
-          { id: 'played', en: 'Played', emoji: '⚽' },
-          { id: 'watched', en: 'Watched', emoji: '📺' },
-          { id: 'went', en: 'Went', emoji: '🚗' },
-          { id: 'ate', en: 'Ate', emoji: '🍽️' },
-          { id: 'saw', en: 'Saw', emoji: '👀' },
-        ] },
-      { id: 'future', title: 'Grammar: Future Tense', emoji: '🔮', description: '"Will" and "going to" for plans and predictions.',
-        words: [
-          { id: 'will', en: 'Will', emoji: '🔮' },
-          { id: 'goingto', en: 'Going To', emoji: '➡️' },
-          { id: 'tomorrow', en: 'Tomorrow', emoji: '📅' },
-          { id: 'nextweek', en: 'Next Week', emoji: '🗓️' },
-          { id: 'soon', en: 'Soon', emoji: '⏳' },
-          { id: 'plan', en: 'Plan', emoji: '📝' },
-        ] },
-      { id: 'comparatives', title: 'Grammar: Comparatives', emoji: '⚖️', description: 'Bigger, faster, better — comparing two things.',
-        words: [
-          { id: 'bigger', en: 'Bigger', emoji: '🐘' },
-          { id: 'smaller', en: 'Smaller', emoji: '🐭' },
-          { id: 'faster', en: 'Faster', emoji: '🐆' },
-          { id: 'slower', en: 'Slower', emoji: '🐢' },
-          { id: 'better', en: 'Better', emoji: '👍' },
-          { id: 'worse', en: 'Worse', emoji: '👎' },
-        ] },
-    ],
+    "id": "b1",
+    "code": "B1",
+    "name": "Intermediate",
+    "tagline": "Real conversations, real opinions",
+    "tier": "teens",
+    "color": "#a8577d",
+    "icon": "🌐",
+    "topics": [
+      {
+        "id": "technology",
+        "title": "Technology & Digital Life",
+        "emoji": "📱",
+        "description": "Social media, AI, devices & staying safe online",
+        "cefr": "B1",
+        "grammarTip": "When talking about technology, we often use modal verbs like 'should' and 'shouldn't' to give advice about online safety. For example: 'You should use a strong password' or 'You shouldn't share personal information online.' These modals help you sound natural when discussing rules and recommendations.",
+        "words": [
+          {
+            "id": "socialmedia",
+            "en": "social media",
+            "pt": "rede social",
+            "emoji": "📲"
+          },
+          {
+            "id": "smartphone",
+            "en": "smartphone",
+            "pt": "smartphone/celular",
+            "emoji": "📱"
+          },
+          {
+            "id": "app",
+            "en": "app (application)",
+            "pt": "aplicativo",
+            "emoji": "🧩"
+          },
+          {
+            "id": "ai",
+            "en": "artificial intelligence",
+            "pt": "inteligência artificial",
+            "emoji": "🤖"
+          },
+          {
+            "id": "password",
+            "en": "password",
+            "pt": "senha",
+            "emoji": "🔒"
+          },
+          {
+            "id": "wifi",
+            "en": "Wi-Fi connection",
+            "pt": "conexão Wi-Fi",
+            "emoji": "📶"
+          },
+          {
+            "id": "upload",
+            "en": "to upload",
+            "pt": "fazer upload/enviar",
+            "emoji": "⬆️"
+          },
+          {
+            "id": "download",
+            "en": "to download",
+            "pt": "baixar",
+            "emoji": "⬇️"
+          },
+          {
+            "id": "screentime",
+            "en": "screen time",
+            "pt": "tempo de tela",
+            "emoji": "⏱️"
+          },
+          {
+            "id": "onlinesafety",
+            "en": "online safety",
+            "pt": "segurança online",
+            "emoji": "🛡️"
+          },
+          {
+            "id": "notification",
+            "en": "notification",
+            "pt": "notificação",
+            "emoji": "🔔"
+          },
+          {
+            "id": "videocall",
+            "en": "video call",
+            "pt": "chamada de vídeo",
+            "emoji": "📹"
+          },
+          {
+            "id": "govira",
+            "en": "to go viral",
+            "pt": "viralizar",
+            "emoji": "🔥"
+          },
+          {
+            "id": "privacysettings",
+            "en": "privacy settings",
+            "pt": "configurações de privacidade",
+            "emoji": "⚙️"
+          }
+        ],
+        "readingTime": {
+          "text": "Maria: Did you see the video that went viral on social media last night?\nLucas: Yes! My phone kept buzzing with notifications about it.\nMaria: I really need to check my screen time this week, it's too high.\nLucas: Same here. I downloaded a new app to track it.\nMaria: Good idea. Also, you should change your password for online safety.\nLucas: I already did, and I checked my privacy settings too.\nMaria: Smart! Let's do a video call later when the Wi-Fi connection is stronger.",
+          "questions": [
+            {
+              "prompt": "What does Lucas do to manage his screen time?",
+              "options": [
+                "He deletes social media",
+                "He downloaded an app to track it",
+                "He turns off his phone"
+              ],
+              "correct": "He downloaded an app to track it"
+            },
+            {
+              "prompt": "What does Maria say Lucas should do?",
+              "options": [
+                "He should change his password",
+                "He should delete the app",
+                "He should turn off notifications"
+              ],
+              "correct": "He should change his password"
+            }
+          ]
+        }
+      },
+      {
+        "id": "shoppingmoney",
+        "title": "Shopping, Money & Services",
+        "emoji": "🛍️",
+        "description": "Payment, discounts, refunds & negotiating prices",
+        "cefr": "B1",
+        "grammarTip": "When shopping or negotiating, we use polite question forms like 'Could you give me a discount?' or 'Would it be possible to pay in cash?' to sound respectful. Notice how 'could' and 'would' make requests softer than direct commands like 'Give me a discount.'",
+        "words": [
+          {
+            "id": "cash",
+            "en": "cash",
+            "pt": "dinheiro (em espécie)",
+            "emoji": "💵"
+          },
+          {
+            "id": "creditcard",
+            "en": "credit card",
+            "pt": "cartão de crédito",
+            "emoji": "💳"
+          },
+          {
+            "id": "discount",
+            "en": "discount",
+            "pt": "desconto",
+            "emoji": "🏷️"
+          },
+          {
+            "id": "receipt",
+            "en": "receipt",
+            "pt": "recibo/nota fiscal",
+            "emoji": "🧾"
+          },
+          {
+            "id": "bargain",
+            "en": "to bargain/negotiate",
+            "pt": "negociar/pechinchar",
+            "emoji": "🤝"
+          },
+          {
+            "id": "refund",
+            "en": "refund",
+            "pt": "reembolso",
+            "emoji": "💰"
+          },
+          {
+            "id": "customerservice",
+            "en": "customer service",
+            "pt": "atendimento ao cliente",
+            "emoji": "🙋"
+          },
+          {
+            "id": "onlinepayment",
+            "en": "online payment",
+            "pt": "pagamento online",
+            "emoji": "📲"
+          },
+          {
+            "id": "change",
+            "en": "change (money back)",
+            "pt": "troco",
+            "emoji": "🪙"
+          },
+          {
+            "id": "budget",
+            "en": "budget",
+            "pt": "orçamento",
+            "emoji": "📊"
+          },
+          {
+            "id": "exchange",
+            "en": "to exchange",
+            "pt": "trocar (um produto)",
+            "emoji": "🔄"
+          },
+          {
+            "id": "installments",
+            "en": "installments",
+            "pt": "parcelas",
+            "emoji": "📆"
+          },
+          {
+            "id": "sale",
+            "en": "sale (promotion)",
+            "pt": "liquidação/promoção",
+            "emoji": "🛒"
+          }
+        ],
+        "readingTime": {
+          "text": "Clerk: Good afternoon! How can I help you today?\nTeen: Hi, I'd like to buy this jacket, but could you give me a discount?\nClerk: I'm sorry, this item is already on sale this week.\nTeen: That's fine. Would it be possible to pay in installments?\nClerk: Of course, we accept credit cards for that.\nTeen: Great, and can I get a receipt for the purchase?\nClerk: Sure, here's your receipt and your change from the cash payment.",
+          "questions": [
+            {
+              "prompt": "How does the customer want to pay?",
+              "options": [
+                "In cash only",
+                "In installments with a credit card",
+                "With a refund"
+              ],
+              "correct": "In installments with a credit card"
+            },
+            {
+              "prompt": "Which phrase does the customer use to make a polite request?",
+              "options": [
+                "Give me a discount!",
+                "Could you give me a discount?",
+                "I want a discount now"
+              ],
+              "correct": "Could you give me a discount?"
+            }
+          ]
+        }
+      },
+      {
+        "id": "sustainability",
+        "title": "Global Issues & Sustainability",
+        "emoji": "🌍",
+        "description": "Recycling, climate change & renewable energy",
+        "cefr": "B1",
+        "grammarTip": "We often use 'to' or 'in order to' to explain the purpose of an action, especially when talking about protecting the environment. For example: 'We recycle plastic to reduce pollution' or 'Governments invest in solar power in order to fight climate change.'",
+        "words": [
+          {
+            "id": "recycling",
+            "en": "recycling",
+            "pt": "reciclagem",
+            "emoji": "♻️"
+          },
+          {
+            "id": "climatechange",
+            "en": "climate change",
+            "pt": "mudança climática",
+            "emoji": "🌡️"
+          },
+          {
+            "id": "renewableenergy",
+            "en": "renewable energy",
+            "pt": "energia renovável",
+            "emoji": "🔋"
+          },
+          {
+            "id": "pollution",
+            "en": "pollution",
+            "pt": "poluição",
+            "emoji": "🏭"
+          },
+          {
+            "id": "reducewaste",
+            "en": "to reduce waste",
+            "pt": "reduzir o lixo",
+            "emoji": "🗑️"
+          },
+          {
+            "id": "solarpanel",
+            "en": "solar panel",
+            "pt": "painel solar",
+            "emoji": "☀️"
+          },
+          {
+            "id": "volunteer",
+            "en": "volunteer",
+            "pt": "voluntário",
+            "emoji": "🙌"
+          },
+          {
+            "id": "endangeredspecies",
+            "en": "endangered species",
+            "pt": "espécie ameaçada",
+            "emoji": "🐾"
+          },
+          {
+            "id": "carbonfootprint",
+            "en": "carbon footprint",
+            "pt": "pegada de carbono",
+            "emoji": "👣"
+          },
+          {
+            "id": "sustainable",
+            "en": "sustainable",
+            "pt": "sustentável",
+            "emoji": "🌱"
+          },
+          {
+            "id": "deforestation",
+            "en": "deforestation",
+            "pt": "desmatamento",
+            "emoji": "🌳"
+          },
+          {
+            "id": "donate",
+            "en": "to donate",
+            "pt": "doar",
+            "emoji": "🎁"
+          },
+          {
+            "id": "naturalresources",
+            "en": "natural resources",
+            "pt": "recursos naturais",
+            "emoji": "💧"
+          },
+          {
+            "id": "environmentalawareness",
+            "en": "environmental awareness",
+            "pt": "consciência ambiental",
+            "emoji": "🌎"
+          }
+        ],
+        "readingTime": {
+          "text": "Last weekend, our school organized an event to raise environmental awareness among students.\nWe learned that climate change is getting worse because of pollution and deforestation around the world.\nMany families are now installing solar panels in order to use renewable energy instead of fossil fuels.\nOur class decided to volunteer at a local recycling center to help reduce waste in our community.\nWe also promised to reduce our carbon footprint by walking to school instead of driving.\nFinally, we started a campaign to donate old clothes and protect natural resources for future generations.",
+          "questions": [
+            {
+              "prompt": "Why did the class volunteer at the recycling center?",
+              "options": [
+                "To earn money",
+                "To help reduce waste",
+                "To buy solar panels"
+              ],
+              "correct": "To help reduce waste"
+            },
+            {
+              "prompt": "Why are many families installing solar panels?",
+              "options": [
+                "In order to save money on rent",
+                "In order to use renewable energy instead of fossil fuels",
+                "In order to stop deforestation immediately"
+              ],
+              "correct": "In order to use renewable energy instead of fossil fuels"
+            }
+          ]
+        }
+      },
+      {
+        "id": "entertainment",
+        "title": "Entertainment, Cinema & Music",
+        "emoji": "🎬",
+        "description": "Movies, music, festivals & giving reviews",
+        "cefr": "B1",
+        "grammarTip": "When reviewing movies, music, or events, we use comparative and superlative adjectives to compare things, like 'more exciting than' or 'the best concert I've ever seen.' These forms help you express opinions clearly when discussing entertainment.",
+        "words": [
+          {
+            "id": "moviegenre",
+            "en": "movie genre",
+            "pt": "gênero de filme",
+            "emoji": "🎬"
+          },
+          {
+            "id": "soundtrack",
+            "en": "soundtrack",
+            "pt": "trilha sonora",
+            "emoji": "🎵"
+          },
+          {
+            "id": "boxoffice",
+            "en": "box office",
+            "pt": "bilheteria",
+            "emoji": "🎟️"
+          },
+          {
+            "id": "plottwist",
+            "en": "plot twist",
+            "pt": "reviravolta na trama",
+            "emoji": "😲"
+          },
+          {
+            "id": "concert",
+            "en": "concert",
+            "pt": "show/concerto",
+            "emoji": "🎤"
+          },
+          {
+            "id": "streamingplatform",
+            "en": "streaming platform",
+            "pt": "plataforma de streaming",
+            "emoji": "📺"
+          },
+          {
+            "id": "festival",
+            "en": "festival",
+            "pt": "festival",
+            "emoji": "🎪"
+          },
+          {
+            "id": "cast",
+            "en": "cast (actors)",
+            "pt": "elenco",
+            "emoji": "🎭"
+          },
+          {
+            "id": "review",
+            "en": "review (critique)",
+            "pt": "crítica/resenha",
+            "emoji": "⭐"
+          },
+          {
+            "id": "blockbuster",
+            "en": "blockbuster",
+            "pt": "grande sucesso de bilheteria",
+            "emoji": "💥"
+          },
+          {
+            "id": "lyrics",
+            "en": "lyrics",
+            "pt": "letra de música",
+            "emoji": "📝"
+          },
+          {
+            "id": "subtitle",
+            "en": "subtitle",
+            "pt": "legenda",
+            "emoji": "💬"
+          },
+          {
+            "id": "audience",
+            "en": "audience",
+            "pt": "plateia/público",
+            "emoji": "👥"
+          }
+        ],
+        "readingTime": {
+          "text": "This weekend, I watched the new sci-fi blockbuster that broke box office records everywhere.\nThe plot twist at the end was more surprising than anything I've seen in that movie genre before.\nThe soundtrack was incredible, and the lyrics of the main song are still stuck in my head.\nCritics wrote that the cast gave the best performance of the year in their review.\nI watched it with subtitles on a streaming platform because the audience in the cinema was too loud.\nNext month, I'm going to a music festival, which will probably be the most exciting concert I've ever attended.",
+          "questions": [
+            {
+              "prompt": "Where did the person watch the movie with subtitles?",
+              "options": [
+                "At a music festival",
+                "On a streaming platform",
+                "At a concert"
+              ],
+              "correct": "On a streaming platform"
+            },
+            {
+              "prompt": "How does the writer describe the plot twist?",
+              "options": [
+                "Less surprising than usual",
+                "More surprising than anything in that genre before",
+                "As boring as other movies"
+              ],
+              "correct": "More surprising than anything in that genre before"
+            }
+          ]
+        }
+      },
+      {
+        "id": "presentperfectcontinuous",
+        "title": "Grammar: Present Perfect Continuous",
+        "emoji": "⏳",
+        "description": "Actions that started in the past and continue now",
+        "cefr": "B1",
+        "grammarTip": "We use the present perfect continuous (have/has + been + verb-ing) to talk about actions that started in the past and are still happening now, or that have just stopped but show a recent result. For example: 'I have been studying English for three years' shows the action continues, while 'She has been crying' explains why her eyes are red now.",
+        "words": [
+          {
+            "id": "hasbeenstudying",
+            "en": "has been studying",
+            "pt": "tem estudado",
+            "emoji": "📚"
+          },
+          {
+            "id": "havebeenwaiting",
+            "en": "have been waiting",
+            "pt": "têm esperado",
+            "emoji": "⏳"
+          },
+          {
+            "id": "hasbeenraining",
+            "en": "has been raining",
+            "pt": "tem chovido",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "havebeenworking",
+            "en": "have been working",
+            "pt": "têm trabalhado",
+            "emoji": "💼"
+          },
+          {
+            "id": "hasbeenplaying",
+            "en": "has been playing",
+            "pt": "tem jogado",
+            "emoji": "🎮"
+          },
+          {
+            "id": "havebeenliving",
+            "en": "have been living",
+            "pt": "têm morado",
+            "emoji": "🏠"
+          },
+          {
+            "id": "hasbeenfeeling",
+            "en": "has been feeling",
+            "pt": "tem se sentido",
+            "emoji": "😊"
+          },
+          {
+            "id": "havebeentalking",
+            "en": "have been talking",
+            "pt": "têm conversado",
+            "emoji": "🗣️"
+          },
+          {
+            "id": "hasbeenrunning",
+            "en": "has been running",
+            "pt": "tem corrido",
+            "emoji": "🏃"
+          },
+          {
+            "id": "havebeenpracticing",
+            "en": "have been practicing",
+            "pt": "têm praticado",
+            "emoji": "🎯"
+          },
+          {
+            "id": "hasbeenthinking",
+            "en": "has been thinking",
+            "pt": "tem pensado",
+            "emoji": "🤔"
+          },
+          {
+            "id": "havebeentrying",
+            "en": "have been trying",
+            "pt": "têm tentado",
+            "emoji": "💪"
+          }
+        ],
+        "readingTime": {
+          "text": "Ben: You look exhausted. What have you been doing all day?\nSara: I have been studying for my English exam since this morning.\nBen: No wonder! I have been waiting for you at the library for an hour.\nSara: Sorry! It has been raining really hard, so I got stuck at home.\nBen: That's okay. Have you been practicing the grammar exercises too?\nSara: Yes, I have been practicing them for the past two hours.\nBen: Great, because I have been thinking about asking you for help later!",
+          "questions": [
+            {
+              "prompt": "Why has Sara been stuck at home?",
+              "options": [
+                "She has been sleeping",
+                "It has been raining hard",
+                "She has been shopping"
+              ],
+              "correct": "It has been raining hard"
+            },
+            {
+              "prompt": "Which sentence shows an action that started in the past and continues now?",
+              "options": [
+                "I have been studying for my English exam since this morning",
+                "I study English every morning",
+                "I studied English yesterday"
+              ],
+              "correct": "I have been studying for my English exam since this morning"
+            }
+          ]
+        }
+      },
+      {
+        "id": "conditionals12",
+        "title": "Grammar: First & Second Conditionals",
+        "emoji": "🔀",
+        "description": "Real possibilities vs hypothetical situations with If",
+        "cefr": "B1",
+        "grammarTip": "The first conditional (If + present simple, ... will + verb) describes real and possible future situations, like 'If it rains, I will stay home.' The second conditional (If + past simple, ... would + verb) describes hypothetical or unlikely situations, like 'If I had more time, I would travel the world.' Notice how the verb tense changes the meaning from possible to imaginary.",
+        "words": [
+          {
+            "id": "ifitrains",
+            "en": "If it rains, I will stay home",
+            "pt": "Se chover, eu ficarei em casa",
+            "emoji": "☔"
+          },
+          {
+            "id": "ifihadtime",
+            "en": "If I had more time, I would travel",
+            "pt": "Se eu tivesse mais tempo, eu viajaria",
+            "emoji": "✈️"
+          },
+          {
+            "id": "ifyoustudy",
+            "en": "If you study, you will pass",
+            "pt": "Se você estudar, você passará",
+            "emoji": "📖"
+          },
+          {
+            "id": "ifiwonlottery",
+            "en": "If I won the lottery, I would buy a house",
+            "pt": "Se eu ganhasse na loteria, eu compraria uma casa",
+            "emoji": "🏡"
+          },
+          {
+            "id": "ifshecalls",
+            "en": "If she calls, I will answer",
+            "pt": "Se ela ligar, eu atenderei",
+            "emoji": "☎️"
+          },
+          {
+            "id": "ifiwereyou",
+            "en": "If I were you, I would apologize",
+            "pt": "Se eu fosse você, eu pediria desculpas",
+            "emoji": "🙏"
+          },
+          {
+            "id": "ifwehurry",
+            "en": "If we hurry, we will catch the bus",
+            "pt": "Se nos apressarmos, pegaremos o ônibus",
+            "emoji": "🚌"
+          },
+          {
+            "id": "ifiknewanswer",
+            "en": "If I knew the answer, I would tell you",
+            "pt": "Se eu soubesse a resposta, eu diria a você",
+            "emoji": "💡"
+          },
+          {
+            "id": "unless",
+            "en": "unless (if...not)",
+            "pt": "a menos que",
+            "emoji": "❗"
+          },
+          {
+            "id": "realpossibility",
+            "en": "real possibility",
+            "pt": "possibilidade real",
+            "emoji": "✅"
+          },
+          {
+            "id": "hypotheticalsituation",
+            "en": "hypothetical situation",
+            "pt": "situação hipotética",
+            "emoji": "💭"
+          },
+          {
+            "id": "wouldverb",
+            "en": "would + verb",
+            "pt": "forma condicional",
+            "emoji": "🔮"
+          }
+        ],
+        "readingTime": {
+          "text": "Our teacher gave us an interesting assignment about our future plans this week.\nIf I pass all my exams this year, I will apply for the international exchange program.\nMy best friend said, 'If I had more money, I would travel around Asia next summer.'\nHowever, if it doesn't rain tomorrow, our class will visit the science museum instead.\nMy sister told me, 'If I were older, I would get a part-time job at the mall.'\nI think both real plans and dream plans are important, because they help us stay motivated.\nIf you work hard now, you will have more choices in the future.",
+          "questions": [
+            {
+              "prompt": "What will the student do if they pass all their exams?",
+              "options": [
+                "Apply for the international exchange program",
+                "Get a part-time job",
+                "Travel around Asia"
+              ],
+              "correct": "Apply for the international exchange program"
+            },
+            {
+              "prompt": "Which sentence describes a hypothetical (imaginary) situation?",
+              "options": [
+                "If it doesn't rain tomorrow, our class will visit the science museum",
+                "If I had more money, I would travel around Asia next summer",
+                "If you work hard now, you will have more choices"
+              ],
+              "correct": "If I had more money, I would travel around Asia next summer"
+            }
+          ]
+        }
+      },
+      {
+        "id": "passivebasic",
+        "title": "Grammar: Passive Voice Basic",
+        "emoji": "🔧",
+        "description": "Present & past simple passive forms in action",
+        "cefr": "B1",
+        "grammarTip": "We use the passive voice when the action is more important than who does it, formed with 'be' + past participle. In the present simple passive we say 'The phone is made in China,' and in the past simple passive we say 'The bridge was built in 1980.' The passive shifts focus from the doer of the action to the receiver.",
+        "words": [
+          {
+            "id": "ismade",
+            "en": "is made",
+            "pt": "é feito",
+            "emoji": "🏗️"
+          },
+          {
+            "id": "wasbuilt",
+            "en": "was built",
+            "pt": "foi construído",
+            "emoji": "🏛️"
+          },
+          {
+            "id": "issold",
+            "en": "is sold",
+            "pt": "é vendido",
+            "emoji": "🛒"
+          },
+          {
+            "id": "waswritten",
+            "en": "was written",
+            "pt": "foi escrito",
+            "emoji": "✍️"
+          },
+          {
+            "id": "isproduced",
+            "en": "is produced",
+            "pt": "é produzido",
+            "emoji": "🏭"
+          },
+          {
+            "id": "wasdiscovered",
+            "en": "was discovered",
+            "pt": "foi descoberto",
+            "emoji": "🔍"
+          },
+          {
+            "id": "isrecycled",
+            "en": "is recycled",
+            "pt": "é reciclado",
+            "emoji": "♻️"
+          },
+          {
+            "id": "wasinvented",
+            "en": "was invented",
+            "pt": "foi inventado",
+            "emoji": "💡"
+          },
+          {
+            "id": "isdelivered",
+            "en": "is delivered",
+            "pt": "é entregue",
+            "emoji": "📦"
+          },
+          {
+            "id": "waspainted",
+            "en": "was painted",
+            "pt": "foi pintado",
+            "emoji": "🎨"
+          },
+          {
+            "id": "isused",
+            "en": "is used",
+            "pt": "é usado",
+            "emoji": "🔧"
+          },
+          {
+            "id": "wasdirected",
+            "en": "was directed",
+            "pt": "foi dirigido",
+            "emoji": "🎬"
+          },
+          {
+            "id": "isspoken",
+            "en": "is spoken",
+            "pt": "é falado",
+            "emoji": "🗣️"
+          }
+        ],
+        "readingTime": {
+          "text": "In our geography class, we learned interesting facts about products from around the world.\nMost smartphones are made in factories in Asia before they are shipped to other countries.\nOur teacher explained that the Great Wall of China was built over many centuries.\nShe also said that paper was invented in China almost two thousand years ago.\nToday, millions of packages are delivered every day by delivery companies around the world.\nIn art class, we saw a famous painting that was painted by a Portuguese artist.\nWe were surprised that so many everyday objects are produced using recycled materials.",
+          "questions": [
+            {
+              "prompt": "According to the text, what was invented in China almost two thousand years ago?",
+              "options": [
+                "The Great Wall",
+                "Paper",
+                "Smartphones"
+              ],
+              "correct": "Paper"
+            },
+            {
+              "prompt": "Which sentence is in the past simple passive?",
+              "options": [
+                "Most smartphones are made in factories in Asia",
+                "The Great Wall of China was built over many centuries",
+                "Millions of packages are delivered every day"
+              ],
+              "correct": "The Great Wall of China was built over many centuries"
+            }
+          ]
+        }
+      },
+      {
+        "id": "phrasalverbs",
+        "title": "Grammar: Common Phrasal Verbs",
+        "emoji": "🧩",
+        "description": "Everyday verb + particle combinations you need",
+        "cefr": "B1",
+        "grammarTip": "Phrasal verbs combine a verb with a particle (like 'up', 'out', or 'on') to create a new meaning that is often different from the original verb. For example, 'give up' means to stop trying, while 'look for' means to search for something. Learning these common combinations will make your English sound much more natural.",
+        "words": [
+          {
+            "id": "giveup",
+            "en": "give up",
+            "pt": "desistir",
+            "emoji": "🏳️"
+          },
+          {
+            "id": "lookfor",
+            "en": "look for",
+            "pt": "procurar",
+            "emoji": "🔍"
+          },
+          {
+            "id": "turnon",
+            "en": "turn on",
+            "pt": "ligar",
+            "emoji": "🔛"
+          },
+          {
+            "id": "turnoff",
+            "en": "turn off",
+            "pt": "desligar",
+            "emoji": "🔴"
+          },
+          {
+            "id": "findout",
+            "en": "find out",
+            "pt": "descobrir",
+            "emoji": "🕵️"
+          },
+          {
+            "id": "runoutof",
+            "en": "run out of",
+            "pt": "ficar sem",
+            "emoji": "⛽"
+          },
+          {
+            "id": "getup",
+            "en": "get up",
+            "pt": "levantar-se",
+            "emoji": "🛏️"
+          },
+          {
+            "id": "puton",
+            "en": "put on",
+            "pt": "vestir/colocar",
+            "emoji": "👕"
+          },
+          {
+            "id": "takeoff",
+            "en": "take off",
+            "pt": "decolar/tirar",
+            "emoji": "✈️"
+          },
+          {
+            "id": "bringback",
+            "en": "bring back",
+            "pt": "trazer de volta",
+            "emoji": "🔙"
+          },
+          {
+            "id": "figureout",
+            "en": "figure out",
+            "pt": "entender/resolver",
+            "emoji": "🧩"
+          },
+          {
+            "id": "hangout",
+            "en": "hang out",
+            "pt": "sair com amigos",
+            "emoji": "👯"
+          },
+          {
+            "id": "carryon",
+            "en": "carry on",
+            "pt": "continuar",
+            "emoji": "➡️"
+          },
+          {
+            "id": "breakdown",
+            "en": "break down",
+            "pt": "quebrar (parar de funcionar)",
+            "emoji": "🔧"
+          }
+        ],
+        "readingTime": {
+          "text": "Tom: Why do you look so tired today?\nAna: I woke up late because my alarm didn't turn on properly.\nTom: That's rough. Did you figure out what happened to it?\nAna: Yes, I found out the batteries had run out of power.\nTom: Well, don't give up on being on time tomorrow!\nAna: I won't. I'm going to put on a backup alarm clock too.\nTom: Good plan. Do you want to hang out after school to study?\nAna: Sure, but first I need to look for my missing notebook.",
+          "questions": [
+            {
+              "prompt": "Why was Ana late this morning?",
+              "options": [
+                "Her alarm's batteries ran out of power",
+                "She decided to hang out with friends",
+                "She lost her notebook"
+              ],
+              "correct": "Her alarm's batteries ran out of power"
+            },
+            {
+              "prompt": "What does 'give up' mean in this conversation?",
+              "options": [
+                "To search for something",
+                "To stop trying",
+                "To turn something on"
+              ],
+              "correct": "To stop trying"
+            }
+          ]
+        }
+      },
+      {
+        "id": "relativeclauses",
+        "title": "Grammar: Relative Clauses",
+        "emoji": "🔗",
+        "description": "Connecting ideas with who, which, that, where",
+        "cefr": "B1",
+        "grammarTip": "Relative clauses give extra information about a noun using words like 'who' (for people), 'which' (for things), 'that' (for people or things), and 'where' (for places). For example: 'The man who called is my teacher' or 'The city where I live is very old.' These clauses help you combine two short sentences into one clear sentence.",
+        "words": [
+          {
+            "id": "themanwho",
+            "en": "the man who called",
+            "pt": "o homem que ligou",
+            "emoji": "👨"
+          },
+          {
+            "id": "thebookwhich",
+            "en": "the book which I read",
+            "pt": "o livro que eu li",
+            "emoji": "📕"
+          },
+          {
+            "id": "thecitywhere",
+            "en": "the city where I live",
+            "pt": "a cidade onde eu moro",
+            "emoji": "🏙️"
+          },
+          {
+            "id": "thegirlthat",
+            "en": "the girl that helped me",
+            "pt": "a garota que me ajudou",
+            "emoji": "👧"
+          },
+          {
+            "id": "theteacherwhose",
+            "en": "the teacher whose class I love",
+            "pt": "a professora cuja aula eu amo",
+            "emoji": "👩‍🏫"
+          },
+          {
+            "id": "thedaywhen",
+            "en": "the day when we met",
+            "pt": "o dia em que nos conhecemos",
+            "emoji": "📅"
+          },
+          {
+            "id": "thereasonwhy",
+            "en": "the reason why I left",
+            "pt": "a razão pela qual eu saí",
+            "emoji": "❓"
+          },
+          {
+            "id": "thehousewhich",
+            "en": "the house which was sold",
+            "pt": "a casa que foi vendida",
+            "emoji": "🏠"
+          },
+          {
+            "id": "thedogthat",
+            "en": "the dog that barks",
+            "pt": "o cachorro que late",
+            "emoji": "🐕"
+          },
+          {
+            "id": "thefriendwho",
+            "en": "the friend who helped me",
+            "pt": "o amigo que me ajudou",
+            "emoji": "🤝"
+          },
+          {
+            "id": "themoviethat",
+            "en": "the movie that won an award",
+            "pt": "o filme que ganhou um prêmio",
+            "emoji": "🏆"
+          },
+          {
+            "id": "theplacewhere",
+            "en": "the place where we met",
+            "pt": "o lugar onde nos conhecemos",
+            "emoji": "📍"
+          }
+        ],
+        "readingTime": {
+          "text": "Last week, I met a girl who just moved to our school from another city.\nShe told me about the town where she used to live, which is famous for its old castle.\nHer best friend, who she still talks to every day, is planning to visit her soon.\nI also introduced her to my teacher, whose class is my favorite this year.\nWe talked about a book which we both read last summer for our English project.\nIt was the first day when I felt like we could become good friends.\nI'm really glad I met someone who shares so many of my interests.",
+          "questions": [
+            {
+              "prompt": "Where did the new girl use to live?",
+              "options": [
+                "A city famous for its beach",
+                "A town famous for its old castle",
+                "A city with no history"
+              ],
+              "correct": "A town famous for its old castle"
+            },
+            {
+              "prompt": "Which word is used to talk about the teacher's class in the text?",
+              "options": [
+                "who",
+                "where",
+                "whose"
+              ],
+              "correct": "whose"
+            }
+          ]
+        }
+      }
+    ]
   },
+  {
+    "id": "b1b2",
+    "code": "B2-C1",
+    "name": "Upper-Intermediate & Advanced",
+    "tagline": "Fluent, nuanced, real-world English",
+    "tier": "teens",
+    "color": "#c9435c",
+    "icon": "🏆",
+    "topics": [
+      {
+        "id": "society",
+        "title": "Society, Politics & Ethics",
+        "emoji": "⚖️",
+        "description": "Human rights, citizenship, laws & debates",
+        "cefr": "B2-C1",
+        "grammarTip": "Words like 'citizenship' and 'human rights' are often used with prepositions such as 'entitled to' or 'deprived of'. Note the difference between 'law' (a specific rule) and 'the law' (the legal system as a whole). For example: 'Every citizen is entitled to freedom of speech, but this right can be restricted by law in cases of hate speech.'",
+        "words": [
+          {
+            "id": "human-rights",
+            "en": "human rights",
+            "pt": "direitos humanos",
+            "emoji": "✊"
+          },
+          {
+            "id": "citizenship",
+            "en": "citizenship",
+            "pt": "cidadania",
+            "emoji": "🪪"
+          },
+          {
+            "id": "legislation",
+            "en": "legislation",
+            "pt": "legislação",
+            "emoji": "📜"
+          },
+          {
+            "id": "constitution",
+            "en": "constitution",
+            "pt": "constituição",
+            "emoji": "📖"
+          },
+          {
+            "id": "civil-liberties",
+            "en": "civil liberties",
+            "pt": "liberdades civis",
+            "emoji": "🕊️"
+          },
+          {
+            "id": "discrimination",
+            "en": "discrimination",
+            "pt": "discriminação",
+            "emoji": "🚫"
+          },
+          {
+            "id": "activism",
+            "en": "activism",
+            "pt": "ativismo",
+            "emoji": "📢"
+          },
+          {
+            "id": "referendum",
+            "en": "referendum",
+            "pt": "referendo",
+            "emoji": "🗳️"
+          },
+          {
+            "id": "accountability",
+            "en": "accountability",
+            "pt": "prestação de contas",
+            "emoji": "🔍"
+          },
+          {
+            "id": "injustice",
+            "en": "injustice",
+            "pt": "injustiça",
+            "emoji": "❗"
+          },
+          {
+            "id": "diplomacy",
+            "en": "diplomacy",
+            "pt": "diplomacia",
+            "emoji": "🤝"
+          },
+          {
+            "id": "censorship",
+            "en": "censorship",
+            "pt": "censura",
+            "emoji": "🔇"
+          },
+          {
+            "id": "equality",
+            "en": "equality",
+            "pt": "igualdade",
+            "emoji": "🟰"
+          },
+          {
+            "id": "jurisdiction",
+            "en": "jurisdiction",
+            "pt": "jurisdição",
+            "emoji": "🏛️"
+          },
+          {
+            "id": "advocacy",
+            "en": "advocacy",
+            "pt": "defesa de uma causa",
+            "emoji": "💬"
+          }
+        ],
+        "readingTime": {
+          "text": "Across the globe, citizens are increasingly demanding greater accountability from their governments.\nIn several countries, activism has grown after a referendum revealed deep divisions over civil liberties.\nSome argue that stricter legislation is needed to prevent discrimination, while others fear it could lead to censorship.\nMeanwhile, human rights organizations continue their advocacy for equality before the law.\nA recent constitutional court ruling reminded politicians that no institution is above the constitution.\nCritics claim that without real diplomacy, such disputes only deepen social injustice.\nStill, most analysts agree that transparent jurisdiction and public debate remain the best path forward.",
+          "questions": [
+            {
+              "prompt": "What is the main concern raised in the passage regarding new legislation?",
+              "options": [
+                "That it could lead to censorship",
+                "That it is too expensive",
+                "That it will end diplomacy"
+              ],
+              "correct": "That it could lead to censorship"
+            },
+            {
+              "prompt": "According to the text, what do most analysts believe is the best way forward?",
+              "options": [
+                "Stricter censorship laws",
+                "Transparent jurisdiction and public debate",
+                "Ending all referendums"
+              ],
+              "correct": "Transparent jurisdiction and public debate"
+            }
+          ]
+        }
+      },
+      {
+        "id": "economy",
+        "title": "Global Economy & Business",
+        "emoji": "💹",
+        "description": "Jobs, entrepreneurship, inflation & trade",
+        "cefr": "B2-C1",
+        "grammarTip": "Economic vocabulary often pairs with specific verbs: 'inflation rises/falls', 'a company launches/expands', 'trade barriers are imposed/lifted'. Note the difference between 'economic' (relating to the economy) and 'economical' (not wasteful). For example: 'As inflation rose, many entrepreneurs found it harder to secure investment for their startups.'",
+        "words": [
+          {
+            "id": "global-job-market",
+            "en": "global job market",
+            "pt": "mercado de trabalho global",
+            "emoji": "🌍"
+          },
+          {
+            "id": "entrepreneurship",
+            "en": "entrepreneurship",
+            "pt": "empreendedorismo",
+            "emoji": "🚀"
+          },
+          {
+            "id": "inflation",
+            "en": "inflation",
+            "pt": "inflação",
+            "emoji": "📈"
+          },
+          {
+            "id": "international-trade",
+            "en": "international trade",
+            "pt": "comércio internacional",
+            "emoji": "🚢"
+          },
+          {
+            "id": "investment",
+            "en": "investment",
+            "pt": "investimento",
+            "emoji": "💰"
+          },
+          {
+            "id": "startup",
+            "en": "startup",
+            "pt": "startup / empresa iniciante",
+            "emoji": "🏢"
+          },
+          {
+            "id": "supply-and-demand",
+            "en": "supply and demand",
+            "pt": "oferta e demanda",
+            "emoji": "⚖️"
+          },
+          {
+            "id": "recession",
+            "en": "recession",
+            "pt": "recessão",
+            "emoji": "📉"
+          },
+          {
+            "id": "outsourcing",
+            "en": "outsourcing",
+            "pt": "terceirização",
+            "emoji": "🌐"
+          },
+          {
+            "id": "revenue",
+            "en": "revenue",
+            "pt": "receita",
+            "emoji": "💵"
+          },
+          {
+            "id": "negotiation",
+            "en": "negotiation",
+            "pt": "negociação",
+            "emoji": "🤝"
+          },
+          {
+            "id": "tariff",
+            "en": "tariff",
+            "pt": "tarifa",
+            "emoji": "🧾"
+          },
+          {
+            "id": "unemployment",
+            "en": "unemployment",
+            "pt": "desemprego",
+            "emoji": "📊"
+          },
+          {
+            "id": "competitive-advantage",
+            "en": "competitive advantage",
+            "pt": "vantagem competitiva",
+            "emoji": "🏆"
+          },
+          {
+            "id": "sustainability",
+            "en": "sustainability",
+            "pt": "sustentabilidade",
+            "emoji": "♻️"
+          }
+        ],
+        "readingTime": {
+          "text": "Anna: Have you seen the latest report on the global job market?\nLuca: Yes, it says entrepreneurship is booming despite rising inflation.\nAnna: That's surprising, since international trade has slowed down this year.\nLuca: True, but many startups are attracting investment because they focus on sustainability.\nAnna: Still, outsourcing and automation are pushing unemployment higher in some sectors.\nLuca: Exactly, companies need a real competitive advantage to survive the next recession.\nAnna: Perhaps clever negotiation over tariffs could help stabilize supply and demand.\nLuca: Let's hope policymakers agree before revenue drops even further.",
+          "questions": [
+            {
+              "prompt": "According to Luca, what are many startups attracting despite inflation?",
+              "options": [
+                "Investment",
+                "Government subsidies",
+                "Free tariffs"
+              ],
+              "correct": "Investment"
+            },
+            {
+              "prompt": "What does Luca say companies need to survive the next recession?",
+              "options": [
+                "Lower unemployment",
+                "A real competitive advantage",
+                "More outsourcing"
+              ],
+              "correct": "A real competitive advantage"
+            }
+          ]
+        }
+      },
+      {
+        "id": "scienceuniverse",
+        "title": "Science, Innovation & The Universe",
+        "emoji": "🔭",
+        "description": "Space, genetics, medicine & scientific ethics",
+        "cefr": "B2-C1",
+        "grammarTip": "Scientific English often uses passive constructions and precise nominalizations, e.g. 'the experiment was conducted' rather than 'we did the experiment'. Distinguish 'discover' (find something that already existed) from 'invent' (create something new). For example: 'Scientists discovered the gene, but it took years before a treatment was invented.'",
+        "words": [
+          {
+            "id": "space-exploration",
+            "en": "space exploration",
+            "pt": "exploração espacial",
+            "emoji": "🚀"
+          },
+          {
+            "id": "genetics",
+            "en": "genetics",
+            "pt": "genética",
+            "emoji": "🧬"
+          },
+          {
+            "id": "medical-breakthrough",
+            "en": "medical breakthrough",
+            "pt": "avanço médico",
+            "emoji": "💊"
+          },
+          {
+            "id": "artificial-intelligence",
+            "en": "artificial intelligence",
+            "pt": "inteligência artificial",
+            "emoji": "🤖"
+          },
+          {
+            "id": "ethical-dilemma",
+            "en": "ethical dilemma",
+            "pt": "dilema ético",
+            "emoji": "🧭"
+          },
+          {
+            "id": "hypothesis",
+            "en": "hypothesis",
+            "pt": "hipótese",
+            "emoji": "🔬"
+          },
+          {
+            "id": "experiment",
+            "en": "experiment",
+            "pt": "experimento",
+            "emoji": "🧪"
+          },
+          {
+            "id": "telescope",
+            "en": "telescope",
+            "pt": "telescópio",
+            "emoji": "🔭"
+          },
+          {
+            "id": "genome",
+            "en": "genome",
+            "pt": "genoma",
+            "emoji": "🧬"
+          },
+          {
+            "id": "clinical-trial",
+            "en": "clinical trial",
+            "pt": "ensaio clínico",
+            "emoji": "🩺"
+          },
+          {
+            "id": "innovation",
+            "en": "innovation",
+            "pt": "inovação",
+            "emoji": "💡"
+          },
+          {
+            "id": "exoplanet",
+            "en": "exoplanet",
+            "pt": "exoplaneta",
+            "emoji": "🪐"
+          },
+          {
+            "id": "biotechnology",
+            "en": "biotechnology",
+            "pt": "biotecnologia",
+            "emoji": "🧫"
+          },
+          {
+            "id": "research",
+            "en": "research",
+            "pt": "pesquisa",
+            "emoji": "📚"
+          },
+          {
+            "id": "astronomer",
+            "en": "astronomer",
+            "pt": "astrônomo(a)",
+            "emoji": "👩‍🔬"
+          }
+        ],
+        "readingTime": {
+          "text": "Last month, a team of astronomers announced the discovery of a new exoplanet using a powerful space telescope.\nAt the same time, researchers in genetics revealed a medical breakthrough that could transform how clinical trials are conducted.\nThe hypothesis, first tested in a small experiment, was later confirmed through more rigorous research.\nHowever, the innovation has sparked an ethical dilemma about how far biotechnology should go in editing the human genome.\nSome scientists worry that artificial intelligence is now making decisions once reserved for human experts.\nOthers insist that responsible regulation, not fear, should guide future exploration of both space and the human body.\nEither way, this discovery reminds us that scientific progress rarely comes without difficult questions.",
+          "questions": [
+            {
+              "prompt": "What ethical concern is raised by the new genetic breakthrough?",
+              "options": [
+                "How far biotechnology should go in editing the genome",
+                "Whether telescopes are too expensive",
+                "Whether exoplanets are habitable"
+              ],
+              "correct": "How far biotechnology should go in editing the genome"
+            },
+            {
+              "prompt": "What do some scientists say about artificial intelligence?",
+              "options": [
+                "It has replaced all astronomers",
+                "It is now making decisions once reserved for human experts",
+                "It cannot be used in research"
+              ],
+              "correct": "It is now making decisions once reserved for human experts"
+            }
+          ]
+        }
+      },
+      {
+        "id": "artculture",
+        "title": "Art, Literature & Culture",
+        "emoji": "🎭",
+        "description": "Narrative analysis, movements & expression",
+        "cefr": "B2-C1",
+        "grammarTip": "When analyzing literature, use precise verbs like 'portray', 'convey', and 'evoke' instead of generic ones like 'show'. Note that 'a novel' is a long fictional work, while 'a narrative' refers to the way a story is told. For example: 'The author's narrative technique conveys a deep sense of nostalgia through vivid imagery.'",
+        "words": [
+          {
+            "id": "narrative",
+            "en": "narrative",
+            "pt": "narrativa",
+            "emoji": "📖"
+          },
+          {
+            "id": "protagonist",
+            "en": "protagonist",
+            "pt": "protagonista",
+            "emoji": "🧑‍🎤"
+          },
+          {
+            "id": "plot-twist",
+            "en": "plot twist",
+            "pt": "reviravolta na trama",
+            "emoji": "🔀"
+          },
+          {
+            "id": "symbolism",
+            "en": "symbolism",
+            "pt": "simbolismo",
+            "emoji": "🔣"
+          },
+          {
+            "id": "artistic-movement",
+            "en": "artistic movement",
+            "pt": "movimento artístico",
+            "emoji": "🎨"
+          },
+          {
+            "id": "imagery",
+            "en": "imagery",
+            "pt": "linguagem visual/figurativa",
+            "emoji": "🖼️"
+          },
+          {
+            "id": "metaphor",
+            "en": "metaphor",
+            "pt": "metáfora",
+            "emoji": "💬"
+          },
+          {
+            "id": "satire",
+            "en": "satire",
+            "pt": "sátira",
+            "emoji": "😏"
+          },
+          {
+            "id": "masterpiece",
+            "en": "masterpiece",
+            "pt": "obra-prima",
+            "emoji": "🏆"
+          },
+          {
+            "id": "cultural-heritage",
+            "en": "cultural heritage",
+            "pt": "patrimônio cultural",
+            "emoji": "🏛️"
+          },
+          {
+            "id": "irony",
+            "en": "irony",
+            "pt": "ironia",
+            "emoji": "🙃"
+          },
+          {
+            "id": "allegory",
+            "en": "allegory",
+            "pt": "alegoria",
+            "emoji": "📜"
+          },
+          {
+            "id": "folklore",
+            "en": "folklore",
+            "pt": "folclore",
+            "emoji": "🧙"
+          },
+          {
+            "id": "aesthetic",
+            "en": "aesthetic",
+            "pt": "estética",
+            "emoji": "✨"
+          }
+        ],
+        "readingTime": {
+          "text": "Great literature often relies on symbolism and imagery to convey ideas that words alone cannot fully express.\nIn one classic novel, the protagonist's journey becomes an allegory for the loss of cultural heritage in a rapidly changing world.\nThe author uses satire to criticize social norms, while a clever plot twist forces readers to reconsider everything they thought they knew.\nCritics often debate which artistic movement most influenced the writer's distinctive aesthetic.\nSome scholars highlight the irony in a tragic ending that initially seems hopeful.\nOthers trace the story's roots back to local folklore passed down through generations.\nWhatever the interpretation, the novel remains a masterpiece precisely because it invites so many readings.",
+          "questions": [
+            {
+              "prompt": "What literary device does the author use to criticize social norms?",
+              "options": [
+                "Satire",
+                "Folklore",
+                "Aesthetic description"
+              ],
+              "correct": "Satire"
+            },
+            {
+              "prompt": "What does the protagonist's journey become an allegory for?",
+              "options": [
+                "The loss of cultural heritage",
+                "A scientific discovery",
+                "An economic recession"
+              ],
+              "correct": "The loss of cultural heritage"
+            }
+          ]
+        }
+      },
+      {
+        "id": "idioms",
+        "title": "Complex Idioms & Proverbs",
+        "emoji": "💬",
+        "description": "Advanced idioms & classic English proverbs",
+        "cefr": "B2-C1",
+        "grammarTip": "Idioms cannot usually be translated word for word; instead, learn their overall meaning and typical context. Proverbs often use imperative or conditional structures to express timeless advice, such as 'Don't count your chickens before they hatch.' For example: 'After weeks of arguing, the siblings finally decided to bite the bullet and sell the old house.'",
+        "words": [
+          {
+            "id": "bite-the-bullet",
+            "en": "bite the bullet",
+            "pt": "enfrentar algo difícil com coragem",
+            "emoji": "💪"
+          },
+          {
+            "id": "see-eye-to-eye",
+            "en": "see eye to eye",
+            "pt": "concordar completamente com alguém",
+            "emoji": "👀"
+          },
+          {
+            "id": "once-in-a-blue-moon",
+            "en": "once in a blue moon",
+            "pt": "muito raramente",
+            "emoji": "🌕"
+          },
+          {
+            "id": "hit-the-nail",
+            "en": "hit the nail on the head",
+            "pt": "acertar exatamente no ponto",
+            "emoji": "🔨"
+          },
+          {
+            "id": "let-cat-out-of-bag",
+            "en": "let the cat out of the bag",
+            "pt": "revelar um segredo sem querer",
+            "emoji": "🐱"
+          },
+          {
+            "id": "arm-and-a-leg",
+            "en": "cost an arm and a leg",
+            "pt": "custar muito caro",
+            "emoji": "💸"
+          },
+          {
+            "id": "actions-speak",
+            "en": "actions speak louder than words",
+            "pt": "ações valem mais que palavras",
+            "emoji": "🗣️"
+          },
+          {
+            "id": "judge-book-cover",
+            "en": "don't judge a book by its cover",
+            "pt": "não julgue pelas aparências",
+            "emoji": "📚"
+          },
+          {
+            "id": "ball-in-your-court",
+            "en": "the ball is in your court",
+            "pt": "a decisão agora é sua",
+            "emoji": "🎾"
+          },
+          {
+            "id": "midnight-oil",
+            "en": "burn the midnight oil",
+            "pt": "trabalhar ou estudar até tarde da noite",
+            "emoji": "🕯️"
+          },
+          {
+            "id": "blessing-in-disguise",
+            "en": "a blessing in disguise",
+            "pt": "algo ruim que acaba sendo bom",
+            "emoji": "🍀"
+          },
+          {
+            "id": "when-in-rome",
+            "en": "when in Rome, do as the Romans do",
+            "pt": "adapte-se aos costumes locais",
+            "emoji": "🏛️"
+          },
+          {
+            "id": "cut-corners",
+            "en": "cut corners",
+            "pt": "fazer algo mais barato ou rápido sacrificando a qualidade",
+            "emoji": "✂️"
+          },
+          {
+            "id": "on-the-fence",
+            "en": "on the fence",
+            "pt": "indeciso, em cima do muro",
+            "emoji": "🚧"
+          }
+        ],
+        "readingTime": {
+          "text": "Maria: I've been putting off this decision for weeks, but I think it's time to bite the bullet.\nJames: Finally! To be honest, we've never really seen eye to eye on this project anyway.\nMaria: True, but your comment yesterday really hit the nail on the head about our biggest problem.\nJames: Thanks. Still, don't judge a book by its cover, the new manager might actually help us.\nMaria: Maybe, but changing suppliers now could cost an arm and a leg.\nJames: Fair point. Well, the ball is in your court now, so let me know what you decide.\nMaria: Once in a blue moon we actually agree on something this quickly.",
+          "questions": [
+            {
+              "prompt": "What does James think about the new manager?",
+              "options": [
+                "That people shouldn't judge her before knowing her",
+                "That she will cost too much money",
+                "That she agrees with everything Maria says"
+              ],
+              "correct": "That people shouldn't judge her before knowing her"
+            },
+            {
+              "prompt": "What does the idiom 'the ball is in your court' mean in this dialogue?",
+              "options": [
+                "The decision now belongs to Maria",
+                "The meeting is cancelled",
+                "James wants to play a game"
+              ],
+              "correct": "The decision now belongs to Maria"
+            }
+          ]
+        }
+      },
+      {
+        "id": "pastperfect",
+        "title": "Grammar: Past Perfect & Past Perfect Continuous",
+        "emoji": "⏪",
+        "description": "Actions completed before another past action",
+        "cefr": "B2-C1",
+        "grammarTip": "Use the Past Perfect ('had + past participle') to show that one past action was completed before another past action began. Use the Past Perfect Continuous ('had been + -ing') to emphasize the duration of an action up to that past moment. For example: 'By the time the film started, we had already eaten, and we had been waiting in line for over an hour.'",
+        "words": [
+          {
+            "id": "had-finished",
+            "en": "had finished",
+            "pt": "tinha terminado",
+            "emoji": "✅"
+          },
+          {
+            "id": "had-already-left",
+            "en": "had already left",
+            "pt": "já tinha saído",
+            "emoji": "🚪"
+          },
+          {
+            "id": "had-never-seen",
+            "en": "had never seen",
+            "pt": "nunca tinha visto",
+            "emoji": "👀"
+          },
+          {
+            "id": "had-been-waiting",
+            "en": "had been waiting",
+            "pt": "estava esperando havia um tempo",
+            "emoji": "⏳"
+          },
+          {
+            "id": "had-been-studying",
+            "en": "had been studying",
+            "pt": "estava estudando havia um tempo",
+            "emoji": "📚"
+          },
+          {
+            "id": "had-lived",
+            "en": "had lived",
+            "pt": "tinha morado",
+            "emoji": "🏠"
+          },
+          {
+            "id": "had-been-working",
+            "en": "had been working",
+            "pt": "estava trabalhando havia um tempo",
+            "emoji": "💼"
+          },
+          {
+            "id": "had-forgotten",
+            "en": "had forgotten",
+            "pt": "tinha esquecido",
+            "emoji": "🤦"
+          },
+          {
+            "id": "had-arrived",
+            "en": "had arrived",
+            "pt": "tinha chegado",
+            "emoji": "🛬"
+          },
+          {
+            "id": "had-been-raining",
+            "en": "had been raining",
+            "pt": "estava chovendo havia um tempo",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "had-told",
+            "en": "had told",
+            "pt": "tinha contado/dito",
+            "emoji": "🗣️"
+          },
+          {
+            "id": "had-realized",
+            "en": "had realized",
+            "pt": "tinha percebido",
+            "emoji": "💡"
+          },
+          {
+            "id": "had-been-planning",
+            "en": "had been planning",
+            "pt": "estava planejando havia um tempo",
+            "emoji": "📝"
+          },
+          {
+            "id": "had-not-expected",
+            "en": "had not expected",
+            "pt": "não tinha esperado/previsto",
+            "emoji": "😲"
+          }
+        ],
+        "readingTime": {
+          "text": "By the time Sarah arrived at the station, the train had already left.\nShe had been waiting for almost an hour when she finally realized her phone had died.\nEarlier that morning, she had told her brother she would be on time, but she had not expected such heavy traffic.\nIt had been raining all night, and the roads had turned to mud.\nSarah had lived in that town for years, yet she had never seen the streets so flooded.\nHer brother, who had been studying for an exam all week, had forgotten to check the weather report.\nBy the time they finally met, they had both been planning the same surprise for their mother.\nLooking back, Sarah realized she had been working too hard to notice the storm coming.",
+          "questions": [
+            {
+              "prompt": "Why did Sarah miss her train?",
+              "options": [
+                "It had already left by the time she arrived",
+                "She had never seen the station before",
+                "She had forgotten to buy a ticket"
+              ],
+              "correct": "It had already left by the time she arrived"
+            },
+            {
+              "prompt": "Which sentence correctly shows an action that continued for a period before another past event?",
+              "options": [
+                "The train had already left.",
+                "She had been waiting for almost an hour.",
+                "She had told her brother."
+              ],
+              "correct": "She had been waiting for almost an hour."
+            }
+          ]
+        }
+      },
+      {
+        "id": "futureperfect",
+        "title": "Grammar: Future Perfect & Future Perfect Continuous",
+        "emoji": "⏩",
+        "description": "Actions completed by a future point in time",
+        "cefr": "B2-C1",
+        "grammarTip": "Use the Future Perfect ('will have + past participle') to describe an action that will be completed before a specific future time. Use the Future Perfect Continuous ('will have been + -ing') to emphasize the duration of an ongoing action up to that future point. For example: 'By next June, she will have graduated, and by then she will have been living abroad for two full years.'",
+        "words": [
+          {
+            "id": "will-have-finished",
+            "en": "will have finished",
+            "pt": "terá terminado",
+            "emoji": "🏁"
+          },
+          {
+            "id": "will-have-arrived",
+            "en": "will have arrived",
+            "pt": "terá chegado",
+            "emoji": "🛬"
+          },
+          {
+            "id": "will-have-graduated",
+            "en": "will have graduated",
+            "pt": "terá se formado",
+            "emoji": "🎓"
+          },
+          {
+            "id": "will-have-been-working",
+            "en": "will have been working",
+            "pt": "estará trabalhando por um período",
+            "emoji": "💼"
+          },
+          {
+            "id": "will-have-left",
+            "en": "will have left",
+            "pt": "terá saído/partido",
+            "emoji": "🚪"
+          },
+          {
+            "id": "will-have-completed",
+            "en": "will have completed",
+            "pt": "terá concluído",
+            "emoji": "✅"
+          },
+          {
+            "id": "will-have-been-studying",
+            "en": "will have been studying",
+            "pt": "estará estudando por um período",
+            "emoji": "📚"
+          },
+          {
+            "id": "will-have-moved",
+            "en": "will have moved",
+            "pt": "terá se mudado",
+            "emoji": "📦"
+          },
+          {
+            "id": "will-have-been-living",
+            "en": "will have been living",
+            "pt": "estará morando por um período",
+            "emoji": "🏡"
+          },
+          {
+            "id": "will-have-decided",
+            "en": "will have decided",
+            "pt": "terá decidido",
+            "emoji": "🤔"
+          },
+          {
+            "id": "will-have-been-waiting",
+            "en": "will have been waiting",
+            "pt": "estará esperando por um período",
+            "emoji": "⏳"
+          },
+          {
+            "id": "will-have-saved",
+            "en": "will have saved",
+            "pt": "terá economizado",
+            "emoji": "💰"
+          },
+          {
+            "id": "will-have-retired",
+            "en": "will have retired",
+            "pt": "terá se aposentado",
+            "emoji": "🧓"
+          },
+          {
+            "id": "will-have-been-traveling",
+            "en": "will have been traveling",
+            "pt": "estará viajando por um período",
+            "emoji": "✈️"
+          }
+        ],
+        "readingTime": {
+          "text": "By the time you read this letter, I will have moved to a new city and will have started my first real job.\nIn ten years, I imagine I will have completed my degree and will have been working in the same field for quite a while.\nMy sister, on the other hand, will have graduated much earlier and will probably have saved enough money to travel.\nBy next summer, our parents will have retired, and they will have been living in the countryside for almost a year.\nI wonder if, by then, I will have decided where I truly want to settle down.\nPerhaps by the time we meet again, you will have been traveling for months and will have countless stories to tell.\nWhatever happens, I hope that by next year we will have finished this long chapter of uncertainty together.",
+          "questions": [
+            {
+              "prompt": "What does the writer imagine about their sister?",
+              "options": [
+                "She will have graduated earlier and saved money to travel",
+                "She will have retired by next summer",
+                "She will never finish her degree"
+              ],
+              "correct": "She will have graduated earlier and saved money to travel"
+            },
+            {
+              "prompt": "Which phrase correctly emphasizes the duration of an action up to a future point?",
+              "options": [
+                "will have moved",
+                "will have been living",
+                "will have decided"
+              ],
+              "correct": "will have been living"
+            }
+          ]
+        }
+      },
+      {
+        "id": "mixedconditionals",
+        "title": "Grammar: Mixed Conditionals",
+        "emoji": "🔀",
+        "description": "Mixing past & present hypothetical situations",
+        "cefr": "B2-C1",
+        "grammarTip": "Mixed conditionals combine a hypothetical condition from one time period with a hypothetical result in another, most commonly a past condition producing a present result. The typical structure is 'If + past perfect, ... would + base verb'. For example: 'If I had studied medicine, I would be a doctor now,' shows how a past decision still affects the present.",
+        "words": [
+          {
+            "id": "mc-medicine",
+            "en": "If I had studied medicine, I would be a doctor now.",
+            "pt": "Se eu tivesse estudado medicina, eu seria médico(a) agora.",
+            "emoji": "🩺"
+          },
+          {
+            "id": "mc-job-abroad",
+            "en": "If she had taken that job, she would be living abroad now.",
+            "pt": "Se ela tivesse aceitado aquele emprego, ela estaria morando no exterior agora.",
+            "emoji": "✈️"
+          },
+          {
+            "id": "mc-traffic",
+            "en": "If we had left earlier, we wouldn't be stuck in traffic now.",
+            "pt": "Se tivéssemos saído mais cedo, não estaríamos presos no trânsito agora.",
+            "emoji": "🚦"
+          },
+          {
+            "id": "mc-flight",
+            "en": "If he hadn't missed the flight, he would be at the conference now.",
+            "pt": "Se ele não tivesse perdido o voo, ele estaria na conferência agora.",
+            "emoji": "🎤"
+          },
+          {
+            "id": "mc-debt",
+            "en": "If they had saved money, they wouldn't be in debt today.",
+            "pt": "Se eles tivessem economizado dinheiro, não estariam endividados hoje.",
+            "emoji": "💳"
+          },
+          {
+            "id": "mc-helped",
+            "en": "If I weren't so busy, I would have helped you yesterday.",
+            "pt": "Se eu não estivesse tão ocupado(a), eu teria te ajudado ontem.",
+            "emoji": "🤝"
+          },
+          {
+            "id": "mc-applied",
+            "en": "If she were more confident, she would have applied for the job.",
+            "pt": "Se ela fosse mais confiante, ela teria se candidatado ao emprego.",
+            "emoji": "📄"
+          },
+          {
+            "id": "mc-beach",
+            "en": "If it hadn't rained all week, we would be at the beach now.",
+            "pt": "Se não tivesse chovido a semana toda, estaríamos na praia agora.",
+            "emoji": "🏖️"
+          },
+          {
+            "id": "mc-life",
+            "en": "If I hadn't met you, my life would be completely different.",
+            "pt": "Se eu não tivesse te conhecido, minha vida seria completamente diferente.",
+            "emoji": "💞"
+          },
+          {
+            "id": "mc-house",
+            "en": "If he were richer, he would have bought that house last year.",
+            "pt": "Se ele fosse mais rico, ele teria comprado aquela casa no ano passado.",
+            "emoji": "🏠"
+          },
+          {
+            "id": "mc-neighbors",
+            "en": "If they hadn't moved abroad, they would still be our neighbors.",
+            "pt": "Se eles não tivessem se mudado para o exterior, ainda seriam nossos vizinhos.",
+            "emoji": "👋"
+          },
+          {
+            "id": "mc-swim",
+            "en": "If I had learned to swim, I wouldn't be afraid of the water now.",
+            "pt": "Se eu tivesse aprendido a nadar, não teria medo da água agora.",
+            "emoji": "🏊"
+          }
+        ],
+        "readingTime": {
+          "text": "Tom: Sometimes I wonder, if I had studied medicine, I would be a doctor now.\nElla: Really? If I had taken that marketing job years ago, I would probably be living abroad today.\nTom: Instead, we're both here! If we had left our old jobs sooner, we wouldn't be feeling so stuck now.\nElla: True, and if you hadn't missed that scholarship interview, you would be at university right now.\nTom: Don't remind me. If I had saved more back then, I wouldn't be worrying about money today.\nElla: Well, if you weren't so hard on yourself, you would have applied for a new position months ago.\nTom: Maybe. If I hadn't met you, though, my life would be far less interesting.\nElla: Same here. If we hadn't both taken risks, we wouldn't be exactly where we are now.",
+          "questions": [
+            {
+              "prompt": "According to Tom, what would be true if he had studied medicine?",
+              "options": [
+                "He would be a doctor now",
+                "He would still be a student",
+                "He would have missed the interview"
+              ],
+              "correct": "He would be a doctor now"
+            },
+            {
+              "prompt": "Which sentence is an example of a mixed conditional (past condition, present result)?",
+              "options": [
+                "If we hadn't both taken risks, we wouldn't be exactly where we are now.",
+                "If it rains tomorrow, we will stay home.",
+                "If I study hard, I will pass the exam."
+              ],
+              "correct": "If we hadn't both taken risks, we wouldn't be exactly where we are now."
+            }
+          ]
+        }
+      },
+      {
+        "id": "reportedspeech",
+        "title": "Grammar: Advanced Reported Speech",
+        "emoji": "🗣️",
+        "description": "Complex tense shifts & varied reporting verbs",
+        "cefr": "B2-C1",
+        "grammarTip": "In reported speech, tenses usually shift backward (present becomes past, past becomes past perfect), and the choice of reporting verb ('admit', 'insist', 'deny', 'claim') adds nuance the listener would otherwise miss. For example, instead of 'He said he was innocent,' a more precise report might be 'He insisted that he had been innocent all along.' Some reporting verbs, like 'suggest' and 'recommend', also require a special subjunctive structure.",
+        "words": [
+          {
+            "id": "she-admitted-that",
+            "en": "she admitted that",
+            "pt": "ela admitiu que",
+            "emoji": "😳"
+          },
+          {
+            "id": "he-insisted-that",
+            "en": "he insisted that",
+            "pt": "ele insistiu que",
+            "emoji": "💪"
+          },
+          {
+            "id": "they-denied-that",
+            "en": "they denied that",
+            "pt": "eles negaram que",
+            "emoji": "🙅"
+          },
+          {
+            "id": "she-claimed-that",
+            "en": "she claimed that",
+            "pt": "ela alegou que",
+            "emoji": "🗯️"
+          },
+          {
+            "id": "he-pointed-out-that",
+            "en": "he pointed out that",
+            "pt": "ele observou/apontou que",
+            "emoji": "👉"
+          },
+          {
+            "id": "she-warned-not-to",
+            "en": "she warned me not to",
+            "pt": "ela me avisou para não",
+            "emoji": "⚠️"
+          },
+          {
+            "id": "they-suggested-that",
+            "en": "they suggested that",
+            "pt": "eles sugeriram que",
+            "emoji": "💡"
+          },
+          {
+            "id": "he-recommended-that",
+            "en": "he recommended that",
+            "pt": "ele recomendou que",
+            "emoji": "📋"
+          },
+          {
+            "id": "she-wondered-whether",
+            "en": "she wondered whether",
+            "pt": "ela se perguntou se",
+            "emoji": "🤔"
+          },
+          {
+            "id": "he-explained-that",
+            "en": "he explained that",
+            "pt": "ele explicou que",
+            "emoji": "📖"
+          },
+          {
+            "id": "they-confirmed-that",
+            "en": "they confirmed that",
+            "pt": "eles confirmaram que",
+            "emoji": "✅"
+          },
+          {
+            "id": "she-accused-him-of",
+            "en": "she accused him of",
+            "pt": "ela o acusou de",
+            "emoji": "😠"
+          },
+          {
+            "id": "he-apologized-for",
+            "en": "he apologized for",
+            "pt": "ele se desculpou por",
+            "emoji": "🙏"
+          },
+          {
+            "id": "they-agreed-that",
+            "en": "they agreed that",
+            "pt": "eles concordaram que",
+            "emoji": "🤝"
+          }
+        ],
+        "readingTime": {
+          "text": "During the interview, the manager finally admitted that the project had been delayed for months.\nWhen reporters asked about the missing funds, the director denied that anyone in his team had acted improperly.\nHowever, one former employee claimed that she had warned the company not to ignore the audit results.\nAnother colleague pointed out that similar problems had occurred the previous year.\nThe committee explained that they had recommended stronger financial controls long before the scandal broke.\nA spokesperson later confirmed that an independent investigation would begin the following week.\nStill, critics insisted that the company had known about the issue far earlier than it admitted.\nIn the end, the board agreed that transparency had been lacking throughout the whole process.",
+          "questions": [
+            {
+              "prompt": "What did the former employee claim she had done?",
+              "options": [
+                "Warned the company not to ignore the audit results",
+                "Denied all responsibility",
+                "Recommended firing the director"
+              ],
+              "correct": "Warned the company not to ignore the audit results"
+            },
+            {
+              "prompt": "Which reported speech structure correctly shows a backshifted tense?",
+              "options": [
+                "The manager admitted that the project had been delayed.",
+                "The manager admits the project is delayed.",
+                "The manager will admit the project is delayed."
+              ],
+              "correct": "The manager admitted that the project had been delayed."
+            }
+          ]
+        }
+      },
+      {
+        "id": "passiveall",
+        "title": "Grammar: Passive Voice — All Tenses & Impersonal Structures",
+        "emoji": "🔄",
+        "description": "Passive across tenses & impersonal 'it is said' forms",
+        "cefr": "B2-C1",
+        "grammarTip": "The passive voice ('be' + past participle) shifts focus from the doer of an action to the action itself or its receiver, and can be formed in nearly every tense. Impersonal structures like 'It is said that...' or 'It is believed that...' are used to report general opinions without naming a specific source. For example: 'It is widely believed that the ancient library was destroyed by fire, although the exact cause has never been confirmed.'",
+        "words": [
+          {
+            "id": "is-made",
+            "en": "is made",
+            "pt": "é feito",
+            "emoji": "🏭"
+          },
+          {
+            "id": "was-built",
+            "en": "was built",
+            "pt": "foi construído",
+            "emoji": "🏛️"
+          },
+          {
+            "id": "has-been-discovered",
+            "en": "has been discovered",
+            "pt": "foi descoberto",
+            "emoji": "🔍"
+          },
+          {
+            "id": "will-be-announced",
+            "en": "will be announced",
+            "pt": "será anunciado",
+            "emoji": "📢"
+          },
+          {
+            "id": "is-being-repaired",
+            "en": "is being repaired",
+            "pt": "está sendo consertado",
+            "emoji": "🔧"
+          },
+          {
+            "id": "had-been-forgotten",
+            "en": "had been forgotten",
+            "pt": "tinha sido esquecido",
+            "emoji": "😶"
+          },
+          {
+            "id": "is-said-that",
+            "en": "it is said that",
+            "pt": "diz-se que",
+            "emoji": "🗣️"
+          },
+          {
+            "id": "is-believed-that",
+            "en": "it is believed that",
+            "pt": "acredita-se que",
+            "emoji": "💭"
+          },
+          {
+            "id": "is-thought-that",
+            "en": "it is thought that",
+            "pt": "pensa-se que",
+            "emoji": "🤔"
+          },
+          {
+            "id": "is-known-that",
+            "en": "it is known that",
+            "pt": "sabe-se que",
+            "emoji": "📚"
+          },
+          {
+            "id": "is-reported-that",
+            "en": "it is reported that",
+            "pt": "é relatado que",
+            "emoji": "📰"
+          },
+          {
+            "id": "was-invented",
+            "en": "was invented",
+            "pt": "foi inventado",
+            "emoji": "💡"
+          },
+          {
+            "id": "will-have-been-completed",
+            "en": "will have been completed",
+            "pt": "terá sido concluído",
+            "emoji": "✅"
+          },
+          {
+            "id": "is-being-investigated",
+            "en": "is being investigated",
+            "pt": "está sendo investigado",
+            "emoji": "🕵️"
+          }
+        ],
+        "readingTime": {
+          "text": "It is often said that necessity is the mother of invention, and few stories illustrate this better than the history of the printing press.\nThe first version is believed to have been built in the fifteenth century, although similar techniques had already been used in Asia much earlier.\nIt is known that the machine was gradually improved over decades until it could produce books far more quickly than before.\nToday, an ancient prototype is being investigated by historians who suspect it was invented independently in several regions.\nIt is reported that a nearly complete model was recently discovered in a museum archive, where it had been forgotten for over a century.\nRestoration work is currently being carried out, and the results will be announced once the project is finished.\nExperts estimate that the full analysis will have been completed by the end of next year.",
+          "questions": [
+            {
+              "prompt": "What is currently happening to the ancient prototype, according to the text?",
+              "options": [
+                "It is being investigated by historians",
+                "It has been destroyed",
+                "It will be sold at auction"
+              ],
+              "correct": "It is being investigated by historians"
+            },
+            {
+              "prompt": "Which phrase is an example of an impersonal passive structure?",
+              "options": [
+                "It is often said that necessity is the mother of invention.",
+                "Historians investigated the prototype.",
+                "The museum found the model."
+              ],
+              "correct": "It is often said that necessity is the mother of invention."
+            }
+          ]
+        }
+      },
+      {
+        "id": "advancedphrasals",
+        "title": "Grammar: Advanced Phrasal Verbs & Prepositional Idioms",
+        "emoji": "🧩",
+        "description": "Multi-word verbs like 'get away with', 'look down on'",
+        "cefr": "B2-C1",
+        "grammarTip": "Phrasal verbs combine a verb with one or two particles to create a meaning that is often impossible to guess from the individual words, and many are separable ('put the meeting off') while others are not ('come across a photo'). Prepositional idioms follow a similar pattern but always keep the preposition attached to a noun or pronoun. For example: 'She couldn't believe he had gotten away with copying her homework for months.'",
+        "words": [
+          {
+            "id": "come-across",
+            "en": "come across",
+            "pt": "encontrar por acaso / dar de cara com",
+            "emoji": "🔎"
+          },
+          {
+            "id": "put-up-with",
+            "en": "put up with",
+            "pt": "tolerar / aguentar",
+            "emoji": "😤"
+          },
+          {
+            "id": "get-away-with",
+            "en": "get away with",
+            "pt": "sair impune de algo / se safar de algo",
+            "emoji": "🏃‍♂️"
+          },
+          {
+            "id": "look-down-on",
+            "en": "look down on",
+            "pt": "menosprezar, olhar com desdém para",
+            "emoji": "👇"
+          },
+          {
+            "id": "come-up-with",
+            "en": "come up with",
+            "pt": "inventar/apresentar uma ideia",
+            "emoji": "💡"
+          },
+          {
+            "id": "go-through-with",
+            "en": "go through with",
+            "pt": "levar adiante algo planejado",
+            "emoji": "🚶"
+          },
+          {
+            "id": "take-after",
+            "en": "take after",
+            "pt": "puxar a alguém, parecer-se com",
+            "emoji": "👨‍👩‍👧"
+          },
+          {
+            "id": "make-up-for",
+            "en": "make up for",
+            "pt": "compensar",
+            "emoji": "⚖️"
+          },
+          {
+            "id": "fall-back-on",
+            "en": "fall back on",
+            "pt": "recorrer a, como último recurso",
+            "emoji": "🪂"
+          },
+          {
+            "id": "look-forward-to",
+            "en": "look forward to",
+            "pt": "ansiar por, esperar com expectativa",
+            "emoji": "😊"
+          },
+          {
+            "id": "put-off",
+            "en": "put off",
+            "pt": "adiar",
+            "emoji": "⏰"
+          },
+          {
+            "id": "run-into",
+            "en": "run into",
+            "pt": "encontrar por acaso uma pessoa",
+            "emoji": "🚶‍♀️"
+          },
+          {
+            "id": "catch-up-on",
+            "en": "catch up on",
+            "pt": "se atualizar sobre / recuperar o atraso em",
+            "emoji": "📚"
+          },
+          {
+            "id": "stand-up-for",
+            "en": "stand up for",
+            "pt": "defender uma causa ou pessoa",
+            "emoji": "🛡️"
+          }
+        ],
+        "readingTime": {
+          "text": "Ben: I can't believe he got away with handing in the same essay twice.\nMia: Honestly, I've had to put up with his excuses for the whole semester.\nBen: True, but I actually came across his old notebook yesterday and understood why he struggles.\nMia: Still, you shouldn't look down on him just because he learns differently.\nBen: Fair enough. Maybe we should come up with a plan to help him catch up on the material.\nMia: Good idea. He clearly takes after his older brother, who also fell back on last-minute cramming.\nBen: If he doesn't go through with the makeup exam this time, though, I won't stand up for him again.\nMia: I look forward to seeing him finally take responsibility for once.",
+          "questions": [
+            {
+              "prompt": "What does Mia suggest Ben should not do to their classmate?",
+              "options": [
+                "Look down on him",
+                "Put up with him",
+                "Come up with a plan for him"
+              ],
+              "correct": "Look down on him"
+            },
+            {
+              "prompt": "What does the phrasal verb 'catch up on' mean in this context?",
+              "options": [
+                "To bring something up to date after falling behind",
+                "To argue with someone",
+                "To copy someone's work"
+              ],
+              "correct": "To bring something up to date after falling behind"
+            }
+          ]
+        }
+      }
+    ]
+  }
 ];

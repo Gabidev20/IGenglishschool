@@ -489,6 +489,20 @@ const GameEngine = (() => {
       if (fill) fill.style.width = `${(roundIndex / BALLOON_ROUND_SIZE) * 100}%`;
     }
 
+    // Grammar topics sometimes use a full example sentence as a "word" (e.g.
+    // "If I won the lottery, I would buy a house") — far longer than the
+    // balloon's default 74x88 size. Scale the balloon up and the font down
+    // for longer text instead of letting it overflow illegibly.
+    function balloonSizeFor(text) {
+      const len = text.length;
+      if (len <= 12) return { width: 74, height: 88, font: 0.72 };
+      return {
+        width: Math.round(Math.min(190, 74 + (len - 12) * 3.2)),
+        height: Math.round(Math.min(120, 88 + (len - 12) * 0.6)),
+        font: Math.max(0.5, Number((0.72 - (len - 12) * 0.006).toFixed(2))),
+      };
+    }
+
     function spawnBalloon() {
       if (ended) return;
       const stage = container.querySelector('#balloonStage');
@@ -502,7 +516,8 @@ const GameEngine = (() => {
       el.style.left = `${5 + Math.random() * 80}%`;
       el.style.animationDuration = `${duration}s`;
       const color = palette[(balloonSeq++) % palette.length];
-      el.innerHTML = `<div class="balloon-body" style="background:${color}">${word.en}</div><div class="balloon-string"></div>`;
+      const size = balloonSizeFor(word.en);
+      el.innerHTML = `<div class="balloon-body" style="background:${color};width:${size.width}px;height:${size.height}px;font-size:${size.font}rem">${word.en}</div><div class="balloon-string"></div>`;
 
       // Correctness is judged live against the on-screen target, not at spawn
       // time, so it always matches what the balloon currently displays.
@@ -586,13 +601,28 @@ const GameEngine = (() => {
     { dr: 0, dc: 1 }, { dr: 1, dc: 0 }, { dr: 1, dc: 1 }, { dr: 1, dc: -1 },
   ];
 
+  // Grammar topics often use a full example sentence as a "word" (e.g. "If I
+  // had more money, I would travel") — far longer than the GRID_SIZE grid
+  // can place whole. Rather than dropping those entirely, fall back to the
+  // longest single token that DOES fit, so every topic still has enough
+  // placeable words regardless of how long its vocabulary entries are.
+  function wordSearchKey(en) {
+    const full = en.toUpperCase().replace(/[^A-Z]/g, '');
+    if (full.length >= 3 && full.length <= GRID_SIZE) return full;
+    const tokens = en.toUpperCase().split(/[^A-Z]+/).filter(Boolean);
+    const fitting = tokens.filter(t => t.length >= 3 && t.length <= GRID_SIZE);
+    if (fitting.length === 0) return null;
+    fitting.sort((a, b) => b.length - a.length);
+    return fitting[0];
+  }
+
   function buildWordSearchGrid(words) {
     const grid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
     const placements = [];
 
     const targets = words
-      .map(w => ({ word: w, letters: w.en.toUpperCase().replace(/[^A-Z]/g, '') }))
-      .filter(t => t.letters.length >= 3 && t.letters.length <= GRID_SIZE)
+      .map(w => ({ word: w, letters: wordSearchKey(w.en) }))
+      .filter(t => t.letters)
       .sort((a, b) => b.letters.length - a.letters.length);
 
     targets.forEach(t => {

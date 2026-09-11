@@ -28,7 +28,8 @@ const LEVEL_OPTIONS = [
   { id: 'a0', label: 'Kids A0', tier: 'kids', levelLabel: 'Kids (A0)' },
   { id: 'a1', label: 'Juniors A1', tier: 'juniors', levelLabel: 'Juniors (A1)' },
   { id: 'a2', label: 'Teens A2', tier: 'teens', levelLabel: 'Teens (A2)' },
-  { id: 'b1b2', label: 'Advanced B1/B2', tier: 'teens', levelLabel: 'Advanced (B1/B2)' },
+  { id: 'b1', label: 'Teens B1', tier: 'teens', levelLabel: 'Teens (B1)' },
+  { id: 'b1b2', label: 'Advanced B2/C1', tier: 'teens', levelLabel: 'Advanced (B2/C1)' },
 ];
 function levelOption(levelId) {
   return LEVEL_OPTIONS.find(o => o.id === levelId) || LEVEL_OPTIONS[0];
