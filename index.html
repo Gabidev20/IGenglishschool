@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IGenglishschool — Learn, Play, Grow</title>
+<meta name="description" content="IGenglishschool — an interactive English learning platform with levels, games and a game maker for young learners." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐸</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="#top" class="logo" aria-label="IGenglishschool home">
+      <img src="logo.png" alt="IGenglishschool" class="logo-image"
+           onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-text-fallback',textContent:'IGenglishschool'}))" />
+    </a>
+
+    <nav class="main-nav" id="mainNav" aria-label="Primary">
+      <a href="#live-class" class="nav-link" data-section="live-class">Live Class</a>
+      <a href="#levels" class="nav-link" data-section="levels">Levels</a>
+      <a href="#games" class="nav-link" data-section="games">Games</a>
+      <a href="#game-maker" class="nav-link" data-section="game-maker">Game Maker</a>
+      <button class="nav-link nav-link-btn" id="reportsNavBtn" type="button">📊 Reports</button>
+    </nav>
+
+    <div class="header-actions">
+      <div class="profile-switcher" id="profileSwitcher">
+        <button class="profile-chip" id="profileChipBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span class="profile-avatar" id="profileAvatar">🦊</span>
+          <span class="profile-info">
+            <span class="profile-name" id="profileName">Alex</span>
+            <span class="profile-level" id="profileLevel">A1 · Elementary</span>
+          </span>
+          <svg class="chip-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <div class="profile-dropdown" id="profileDropdown" role="listbox">
+          <p class="dropdown-label">Who's learning?</p>
+          <div class="profile-list" id="profileList"></div>
+        </div>
+      </div>
+
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="student-greeting" id="studentGreeting"></div>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-blob blob-1" aria-hidden="true"></div>
+    <div class="hero-blob blob-2" aria-hidden="true"></div>
+    <div class="hero-blob blob-3" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">🎈 Learning English feels like play</span>
+        <h1>Hop into English, <br/>one square at a time.</h1>
+        <p class="hero-sub">Levels built for real progress, games that don't feel like homework, and a Game Maker where kids build their own challenges.</p>
+        <div class="hero-cta-row">
+          <a href="#levels" class="btn btn-primary">Start Learning</a>
+          <a href="#games" class="btn btn-ghost">Explore Games</a>
+        </div>
+      </div>
+
+      <div class="hero-cards" id="heroCards">
+        <a href="#levels" class="tilt-card card-a" data-tilt>
+          <span class="tilt-icon">📚</span>
+          <h3>Levels</h3>
+          <p>A0 to B1-B2 curriculum</p>
+        </a>
+        <a href="#games" class="tilt-card card-b" data-tilt>
+          <span class="tilt-icon">🎮</span>
+          <h3>Games</h3>
+          <p>Play to practice</p>
+        </a>
+        <a href="#game-maker" class="tilt-card card-c" data-tilt>
+          <span class="tilt-icon">🛠️</span>
+          <h3>Game Maker</h3>
+          <p>Build your own</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LIVE CLASS COCKPIT ============ -->
+  <section class="live-class-section" id="live-class">
+    <div class="section-head">
+      <span class="section-eyebrow">Teach</span>
+      <h2>Live Class Cockpit</h2>
+      <p>Everything you need for today's 30-minute lesson with the active student.</p>
+    </div>
+    <div class="live-class-cockpit" id="liveClassCockpit"></div>
+  </section>
+
+  <!-- ============ LEVELS & CURRICULUM ============ -->
+  <section class="levels-section" id="levels">
+    <div class="section-head">
+      <span class="section-eyebrow">Curriculum</span>
+      <h2>Levels &amp; Curriculum</h2>
+      <p>Four stages, each one unlocking new words, sounds and stories.</p>
+    </div>
+
+    <div class="level-tabs" id="levelTabs" role="tablist"></div>
+
+    <div class="topics-grid" id="topicsGrid"></div>
+  </section>
+
+  <!-- ============ GAMES ============ -->
+  <section class="teaser-section" id="games">
+    <div class="section-head">
+      <span class="section-eyebrow">Play</span>
+      <h2>Games</h2>
+      <p>Bite-sized challenges for every topic — matching, spelling, listening and more.</p>
+    </div>
+    <div class="teaser-grid">
+      <div class="teaser-card">
+        <span class="teaser-icon">🧩</span>
+        <h3>Word Match</h3>
+        <span class="soon-badge">Coming to this level</span>
+      </div>
+      <div class="teaser-card">
+        <span class="teaser-icon">🎯</span>
+        <h3>Quick Quiz</h3>
+        <span class="soon-badge">Coming to this level</span>
+      </div>
+      <div class="teaser-card">
+        <span class="teaser-icon">🔊</span>
+        <h3>Listen &amp; Repeat</h3>
+        <span class="soon-badge">Coming to this level</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GAME MAKER ============ -->
+  <section class="teaser-section" id="game-maker">
+    <div class="section-head">
+      <span class="section-eyebrow">Create</span>
+      <h2>Game Maker</h2>
+      <p>Build your own Hangman, Memory, Match-up, Balloon Pop or Word Search from any words you choose.</p>
+    </div>
+    <div id="gameMakerRoot"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Made with 🐸 for curious young learners — IGenglishschool</p>
+</footer>
+
+<!-- ============ MODAL BASE ============ -->
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button>
+    <div class="modal-body" id="modalBody"><!-- dynamic content mounts here --></div>
+  </div>
+</div>
+
+<!-- ============ LIVE TEACHER TOOLBAR ============ -->
+<div class="live-toolbar" id="liveToolbar">
+  <button class="live-toolbar-fab" id="liveToolbarFab" aria-label="Open live class tools" aria-expanded="false">🧰</button>
+  <div class="live-toolbar-panel" id="liveToolbarPanel">
+    <p class="live-toolbar-label">Live Class Tools</p>
+    <button class="live-tool-btn" data-tool="wheel">🎡 Wheel of Fortune</button>
+    <button class="live-tool-btn" data-tool="scoreboard">🏅 Scoreboard</button>
+    <button class="live-tool-btn" data-tool="timer">⏱️ Timer &amp; Bell</button>
+    <button class="live-tool-btn" data-tool="stickers">📔 Sticker Book</button>
+  </div>
+</div>
+
+<!-- ============ TODAY'S CLASS DRAWER ============ -->
+<div class="session-drawer" id="sessionDrawer">
+  <div class="session-drawer-header">
+    <h3>📋 Today's Class</h3>
+    <button class="modal-close" id="sessionDrawerCloseBtn" aria-label="Close">✕</button>
+  </div>
+  <div class="session-drawer-body" id="sessionDrawerBody"><!-- dynamic content mounts here --></div>
+</div>
+
+<script src="games.js"></script>
+<script src="students.js"></script>
+<script src="sessions.js"></script>
+<script src="reports.js"></script>
+<script src="gamemaker.js"></script>
+<script src="learning.js"></script>
+<script src="liveTools.js"></script>
+<script src="topicsData.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
