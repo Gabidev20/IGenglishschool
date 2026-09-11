@@ -198,6 +198,7 @@ function closeModal() {
   GameEngine.stopAll();
   if (typeof stopLearningModules === 'function') stopLearningModules();
   if (typeof LiveTools !== 'undefined') LiveTools.stopAll();
+  if (typeof ArcadeGames !== 'undefined') ArcadeGames.stopAll();
   modalOverlay.hidden = true;
   modalBody.innerHTML = '';
   modalEl.classList.remove('modal--game');
@@ -341,3 +342,621 @@ LiveTools.initFab();
 
 const reportsNavBtn = document.getElementById('reportsNavBtn');
 if (reportsNavBtn) reportsNavBtn.addEventListener('click', () => openReportsModal());
+
+// ---------------------------------------------------------------------------
+// ARCADE GAMES — "Games" section Play Now buttons (Word Match / Quick Quiz /
+// Listen & Repeat). Level-adaptive standalone mini-games, separate from the
+// per-topic Game tab in the topic modal (games.js's GameEngine).
+// ---------------------------------------------------------------------------
+const arcadeGamesGrid = document.getElementById('arcadeGamesGrid');
+if (arcadeGamesGrid) {
+  arcadeGamesGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-arcade]');
+    if (btn) ArcadeGames.open(btn.dataset.arcade);
+  });
+}
+
+const ArcadeGames = (() => {
+
+  // -------------------------------------------------------------------------
+  // SHARED HELPERS (small local duplicates of games.js's private utilities —
+  // kept self-contained here so this module doesn't need to reach into
+  // GameEngine's internals)
+  // -------------------------------------------------------------------------
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function pickN(arr, n) { return shuffle(arr).slice(0, n); }
+
+  function arcadeWordVisual(word, extraClass) {
+    if (word.swatch) return `<div class="word-visual swatch-visual ${extraClass || ''}" style="background:${word.swatch}"></div>`;
+    if (word.image) {
+      return `<div class="word-visual ${extraClass || ''}">
+        <img src="${word.image}" alt="${word.en}" loading="lazy"
+             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji-fallback',textContent:'${word.emoji}'}))" />
+      </div>`;
+    }
+    return `<div class="word-visual ${extraClass || ''}"><span class="emoji-fallback">${word.emoji}</span></div>`;
+  }
+
+  let audioCtx = null;
+  function ctx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+  function tone(freq, start, duration, type = 'sine', gain = 0.16) {
+    const c = ctx();
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    g.gain.value = gain;
+    osc.connect(g).connect(c.destination);
+    osc.start(c.currentTime + start);
+    g.gain.setValueAtTime(gain, c.currentTime + start);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + start + duration);
+    osc.stop(c.currentTime + start + duration);
+  }
+  function playCorrect() { try { tone(523, 0, 0.12); tone(784, 0.1, 0.18); } catch (e) {} }
+  function playWrong() { try { tone(160, 0, 0.22, 'sawtooth', 0.12); } catch (e) {} }
+
+  const CONFETTI_COLORS = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
+  function confettiBurst(x, y, subtle) {
+    const count = subtle ? 12 : 24;
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = (subtle ? 30 : 60) + Math.random() * (subtle ? 40 : 90);
+      el.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+      el.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+      el.style.setProperty('--rot', `${Math.random() * 360}deg`);
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }
+  }
+  function confettiFromElement(el, subtle) {
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, subtle);
+  }
+
+  let activeTimers = [];
+  function trackTimer(id) { activeTimers.push(id); return id; }
+  function clearAllTimers() {
+    activeTimers.forEach(id => { clearInterval(id); clearTimeout(id); });
+    activeTimers = [];
+  }
+
+  // -------------------------------------------------------------------------
+  // MODAL SHELL — topic picker (scoped to the active student's tier) +
+  // scoreboard + stage, shared by all 3 mini-games.
+  // -------------------------------------------------------------------------
+  const GAME_META = {
+    wordmatch: { title: 'Word Match', icon: '🧩' },
+    quickquiz: { title: 'Quick Quiz', icon: '🎯' },
+    listen: { title: 'Listen & Repeat', icon: '🔊' },
+  };
+
+  let kind = null;
+  let tier = 'kids';
+  let topics = [];
+  let topicKey = null;
+  let stageEl = null;
+  let cleanupCurrent = () => {};
+
+  function currentTier() {
+    const s = (typeof getActiveStudent === 'function') ? getActiveStudent() : null;
+    return (s && s.tier) || 'kids';
+  }
+
+  function tierTopics(t) {
+    return LEVELS.filter(l => l.tier === t)
+      .flatMap(l => l.topics.map(topic => ({ ...topic, levelId: l.id, levelCode: l.code })));
+  }
+
+  function keyOf(t) { return `${t.levelId}:${t.id}`; }
+
+  function setScoreLabel(text) {
+    const pill = document.getElementById('arcadeScorePill');
+    if (pill) pill.textContent = text;
+  }
+
+  function open(gameKind) {
+    kind = gameKind;
+    tier = currentTier();
+    topics = tierTopics(tier);
+    if (topics.length === 0) return;
+    topicKey = keyOf(topics[0]);
+    renderShell();
+    mountGame();
+  }
+
+  function renderShell() {
+    const meta = GAME_META[kind];
+    const tm = (typeof tierMeta === 'function') ? tierMeta(tier) : { icon: '🎓', label: '' };
+
+    openModal(`
+      <div class="modal-content-pad arcade-modal">
+        <span class="level-pill arcade-tier-pill" style="background:${levelSoftVar('#8e6d86')};color:#8e6d86">${tm.icon} ${tm.label}</span>
+        <h3 id="modalTitle">${meta.icon} ${meta.title}</h3>
+        <div class="arcade-topic-picker" id="arcadeTopicPicker"></div>
+        <div class="game-toolbar">
+          <span class="game-status-pill" id="arcadeScorePill">Score: 0</span>
+          <div class="game-btn-row">
+            <button class="game-btn secondary" id="arcadeRestartBtn">🔄 Restart</button>
+          </div>
+        </div>
+        <div class="arcade-stage" id="arcadeStage"></div>
+      </div>
+    `, true);
+
+    stageEl = document.getElementById('arcadeStage');
+    const pickerEl = document.getElementById('arcadeTopicPicker');
+
+    pickerEl.innerHTML = topics.map(t => `
+      <button class="arcade-topic-chip ${keyOf(t) === topicKey ? 'active' : ''}" data-key="${keyOf(t)}">${t.emoji} ${t.title}</button>
+    `).join('');
+
+    pickerEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.arcade-topic-chip');
+      if (!btn || btn.dataset.key === topicKey) return;
+      topicKey = btn.dataset.key;
+      pickerEl.querySelectorAll('.arcade-topic-chip').forEach(b => b.classList.toggle('active', b.dataset.key === topicKey));
+      mountGame();
+    });
+
+    document.getElementById('arcadeRestartBtn').addEventListener('click', mountGame);
+  }
+
+  function mountGame() {
+    cleanupCurrent();
+    clearAllTimers();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    const topic = topics.find(t => keyOf(t) === topicKey);
+    if (!topic || !stageEl) return;
+    if (!topic.words || topic.words.length < 4) {
+      stageEl.innerHTML = `<div class="game-end-banner lose">This topic doesn't have enough words for this game yet.</div>`;
+      cleanupCurrent = () => {};
+      return;
+    }
+    if (kind === 'wordmatch') cleanupCurrent = renderWordMatch(stageEl, topic, tier);
+    else if (kind === 'quickquiz') cleanupCurrent = renderQuickQuiz(stageEl, topic, tier);
+    else cleanupCurrent = renderListenRepeat(stageEl, topic, tier);
+  }
+
+  function stopAll() {
+    clearAllTimers();
+    cleanupCurrent();
+    cleanupCurrent = () => {};
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+
+  // -------------------------------------------------------------------------
+  // 1) WORD MATCH — click-to-connect columns with an SVG line + green glow
+  // -------------------------------------------------------------------------
+  function renderWordMatch(container, topic, tierId) {
+    let pairs, leftOrder, rightOrder, selectedLeft, selectedRight, connected, mistakes;
+
+    const CONTEXT_TEMPLATES = [
+      (w) => `I can see the ${w.toLowerCase()}.`,
+      (w) => `Look at that ${w.toLowerCase()}!`,
+      (w) => `This is my ${w.toLowerCase()}.`,
+      (w) => `Do you like ${w.toLowerCase()}?`,
+    ];
+    function contextPhrase(en) {
+      let sum = 0; for (const c of en) sum += c.charCodeAt(0);
+      return CONTEXT_TEMPLATES[sum % CONTEXT_TEMPLATES.length](en);
+    }
+
+    function leftVisual(word) {
+      return tierId === 'teens' ? `<span class="wordmatch-term">${word.en}</span>` : arcadeWordVisual(word);
+    }
+    function rightLabel(word) {
+      return tierId === 'teens' ? contextPhrase(word.en) : word.en;
+    }
+
+    function setup() {
+      pairs = pickN(topic.words, Math.min(6, topic.words.length));
+      leftOrder = shuffle(pairs);
+      rightOrder = shuffle(pairs);
+      selectedLeft = null; selectedRight = null;
+      connected = new Set();
+      mistakes = 0;
+      paint();
+    }
+
+    function paint() {
+      const won = connected.size === pairs.length;
+      container.innerHTML = `
+        <div class="wordmatch-board" id="wmBoard">
+          <svg class="wordmatch-lines" id="wmLines"></svg>
+          <div class="wordmatch-col" id="wmLeftCol">
+            ${leftOrder.map(w => `
+              <button class="wordmatch-item ${connected.has(w.id) ? 'matched' : ''} ${selectedLeft === w.id ? 'selected' : ''}"
+                      data-side="left" data-id="${w.id}" ${connected.has(w.id) ? 'disabled' : ''}>
+                ${leftVisual(w)}
+              </button>
+            `).join('')}
+          </div>
+          <div class="wordmatch-col" id="wmRightCol">
+            ${rightOrder.map(w => `
+              <button class="wordmatch-item ${connected.has(w.id) ? 'matched' : ''} ${selectedRight === w.id ? 'selected' : ''}"
+                      data-side="right" data-id="${w.id}" ${connected.has(w.id) ? 'disabled' : ''}>
+                ${rightLabel(w)}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+        ${won ? `<div class="game-end-banner win">🎉 Perfect Match! <p>${mistakes === 0 ? 'Zero mistakes — amazing!' : `${mistakes} mistake(s) along the way.`}</p></div>` : ''}
+        ${won ? `<div class="game-btn-row" style="margin-top:12px;justify-content:center"><button class="game-btn" data-action="wm-next">➡️ Next Round</button></div>` : ''}
+      `;
+      setScoreLabel(`${connected.size} / ${pairs.length} matched`);
+
+      container.querySelectorAll('.wordmatch-item').forEach(btn => {
+        btn.addEventListener('click', () => select(btn.dataset.side, btn.dataset.id));
+      });
+      drawLines();
+
+      const nextBtn = container.querySelector('[data-action="wm-next"]');
+      if (nextBtn) nextBtn.addEventListener('click', setup);
+
+      if (won) {
+        confettiFromElement(container.querySelector('.game-end-banner'));
+        if (typeof awardProgress === 'function') awardProgress(15, mistakes === 0 ? 2 : 0);
+      }
+    }
+
+    function drawLines() {
+      const board = container.querySelector('#wmBoard');
+      const svg = container.querySelector('#wmLines');
+      if (!board || !svg) return;
+      const boardRect = board.getBoundingClientRect();
+      let html = '';
+      connected.forEach(id => {
+        const leftEl = board.querySelector(`.wordmatch-item[data-side="left"][data-id="${id}"]`);
+        const rightEl = board.querySelector(`.wordmatch-item[data-side="right"][data-id="${id}"]`);
+        if (!leftEl || !rightEl) return;
+        const lr = leftEl.getBoundingClientRect(), rr = rightEl.getBoundingClientRect();
+        const x1 = lr.right - boardRect.left, y1 = lr.top + lr.height / 2 - boardRect.top;
+        const x2 = rr.left - boardRect.left, y2 = rr.top + rr.height / 2 - boardRect.top;
+        html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="wordmatch-line" />`;
+      });
+      svg.innerHTML = html;
+    }
+
+    function select(side, id) {
+      if (connected.has(id)) return;
+      if (side === 'left') selectedLeft = (selectedLeft === id) ? null : id;
+      else selectedRight = (selectedRight === id) ? null : id;
+
+      if (selectedLeft && selectedRight) {
+        if (selectedLeft === selectedRight) {
+          connected.add(selectedLeft);
+          playCorrect();
+          selectedLeft = null; selectedRight = null;
+          paint();
+        } else {
+          mistakes++;
+          playWrong();
+          const badLeft = selectedLeft, badRight = selectedRight;
+          paint();
+          const leftEl = container.querySelector(`.wordmatch-item[data-side="left"][data-id="${badLeft}"]`);
+          const rightEl = container.querySelector(`.wordmatch-item[data-side="right"][data-id="${badRight}"]`);
+          [leftEl, rightEl].forEach(el => el && el.classList.add('shake'));
+          const t = setTimeout(() => { selectedLeft = null; selectedRight = null; paint(); }, 500);
+          trackTimer(t);
+          return;
+        }
+      } else {
+        paint();
+      }
+    }
+
+    const resizeHandler = () => drawLines();
+    window.addEventListener('resize', resizeHandler);
+    setup();
+    return () => window.removeEventListener('resize', resizeHandler);
+  }
+
+  // -------------------------------------------------------------------------
+  // 2) QUICK QUIZ — timed multiple-choice rounds through the topic's words
+  // -------------------------------------------------------------------------
+  function renderQuickQuiz(container, topic, tierId) {
+    const TIME_BY_TIER = { kids: 30, juniors: 24, teens: 16 };
+    const totalTime = TIME_BY_TIER[tierId] || 24;
+    let deck, qIndex, correctCount, current, answered, timerId;
+
+    function buildQuestion(word) {
+      const distractors = shuffle(topic.words.filter(w => w.id !== word.id)).slice(0, 3);
+      return { word, options: shuffle([word, ...distractors]) };
+    }
+
+    function setup() {
+      deck = shuffle(topic.words);
+      qIndex = 0;
+      correctCount = 0;
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      if (qIndex >= deck.length) { paintSummary(); return; }
+      current = buildQuestion(deck[qIndex]);
+      answered = false;
+      paint();
+      startTimer();
+    }
+
+    function startTimer() {
+      const bar = container.querySelector('.quiz-timerbar-fill');
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '100%';
+        requestAnimationFrame(() => {
+          bar.style.transition = `width ${totalTime}s linear`;
+          bar.style.width = '0%';
+        });
+      }
+      timerId = trackTimer(setTimeout(() => { if (!answered) handleAnswer(null); }, totalTime * 1000));
+    }
+
+    function paint() {
+      container.innerHTML = `
+        <div class="quiz-progress-row">
+          <span class="game-status-pill">Question ${qIndex + 1} / ${deck.length}</span>
+          <span class="game-status-pill">✅ ${correctCount} correct</span>
+        </div>
+        <div class="quiz-timerbar"><div class="quiz-timerbar-fill"></div></div>
+        <div class="quiz-question">
+          ${arcadeWordVisual(current.word, 'quiz-visual')}
+          <h4>What is this in English?</h4>
+        </div>
+        <div class="quiz-options">
+          ${current.options.map(o => `<button class="quiz-option" data-id="${o.id}">${o.en}</button>`).join('')}
+        </div>
+      `;
+      setScoreLabel(`${correctCount} / ${deck.length} correct`);
+      container.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.addEventListener('click', () => handleAnswer(btn.dataset.id));
+      });
+    }
+
+    function handleAnswer(id) {
+      if (answered) return;
+      answered = true;
+      clearTimeout(timerId);
+      const bar = container.querySelector('.quiz-timerbar-fill');
+      if (bar) bar.style.transition = 'none';
+
+      const correct = current.word.id === id;
+      if (correct) {
+        correctCount++;
+        if (typeof awardProgress === 'function') awardProgress(8, 0);
+      }
+
+      container.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.disabled = true;
+        if (btn.dataset.id === current.word.id) btn.classList.add('correct');
+        else if (btn.dataset.id === id) btn.classList.add('wrong', 'shake');
+      });
+
+      if (correct) { playCorrect(); confettiFromElement(container.querySelector('.quiz-options'), true); }
+      else playWrong();
+
+      setScoreLabel(`${correctCount} / ${deck.length} correct`);
+
+      const row = document.createElement('div');
+      row.className = 'game-btn-row';
+      row.style.cssText = 'margin-top:14px;justify-content:center';
+      row.innerHTML = `<button class="game-btn" data-action="quiz-next">${qIndex + 1 >= deck.length ? '🏁 See Results' : '➡️ Next Question'}</button>`;
+      container.appendChild(row);
+      row.querySelector('[data-action="quiz-next"]').addEventListener('click', () => { qIndex++; nextQuestion(); });
+    }
+
+    function paintSummary() {
+      const pct = Math.round((correctCount / deck.length) * 100);
+      const stars = pct === 100 ? 3 : pct >= 70 ? 2 : pct >= 40 ? 1 : 0;
+      container.innerHTML = `
+        <div class="game-end-banner ${pct >= 50 ? 'win' : 'lose'}">
+          🏆 Quiz Complete! <p>${correctCount} / ${deck.length} correct (${pct}%)</p>
+          <p>${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</p>
+        </div>
+        <div class="game-btn-row" style="margin-top:14px;justify-content:center">
+          <button class="game-btn" data-action="quiz-again">🔄 Play Again</button>
+        </div>
+      `;
+      setScoreLabel(`${correctCount} / ${deck.length} correct`);
+      if (stars > 0 && typeof awardProgress === 'function') awardProgress(0, stars);
+      confettiFromElement(container.querySelector('.game-end-banner'));
+      container.querySelector('[data-action="quiz-again"]').addEventListener('click', setup);
+    }
+
+    setup();
+    return () => clearTimeout(timerId);
+  }
+
+  // -------------------------------------------------------------------------
+  // 3) LISTEN & REPEAT — speechSynthesis pronunciation + choice/spelling
+  // -------------------------------------------------------------------------
+  function renderListenRepeat(container, topic, tierId) {
+    let deck, qIndex, correctCount, current, mode, speed, answered;
+    mode = tierId === 'teens' ? 'spelling' : 'choice';
+    speed = tierId === 'kids' ? 0.7 : 1.0;
+
+    const PHRASE_TEMPLATES = [
+      (w) => `Can you say "${w}"?`,
+      (w) => `Listen carefully to "${w}".`,
+      (w) => `Try to repeat: "${w}".`,
+      (w) => `Practice saying "${w}" out loud.`,
+    ];
+    function contextSentence(en) {
+      let sum = 0; for (const c of en) sum += c.charCodeAt(0);
+      return PHRASE_TEMPLATES[sum % PHRASE_TEMPLATES.length](en);
+    }
+    function simplePhonetic(en) {
+      return en.toLowerCase().split(/\s+/).map(part => {
+        const clean = part.replace(/[^a-z]/g, '');
+        const groups = clean.match(/[^aeiouy]*[aeiouy]+[^aeiouy]*/g);
+        return groups && groups.length ? groups.join('·') : clean;
+      }).join(' ');
+    }
+
+    function speak(text, rate) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = rate;
+      u.pitch = 1;
+      window.speechSynthesis.speak(u);
+    }
+
+    function optionsFor(word) {
+      const distractors = shuffle(topic.words.filter(w => w.id !== word.id)).slice(0, 3);
+      return shuffle([word, ...distractors]);
+    }
+
+    function setup() {
+      deck = shuffle(topic.words);
+      qIndex = 0;
+      correctCount = 0;
+      nextRound();
+    }
+
+    function nextRound() {
+      if (qIndex >= deck.length) { paintSummary(); return; }
+      current = deck[qIndex];
+      answered = false;
+      paint();
+    }
+
+    function paint() {
+      const challengeHtml = mode === 'choice'
+        ? `<div class="listen-options">
+            ${optionsFor(current).map(o => `<button class="quiz-option" data-id="${o.id}">${o.en}</button>`).join('')}
+          </div>`
+        : `<div class="listen-spelling">
+            <input type="text" class="listen-input" id="listenInput" placeholder="Type what you heard..." autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <button class="game-btn" data-action="listen-check">✔️ Check</button>
+          </div>`;
+
+      container.innerHTML = `
+        <div class="quiz-progress-row">
+          <span class="game-status-pill">Word ${qIndex + 1} / ${deck.length}</span>
+          <span class="game-status-pill">✅ ${correctCount} correct</span>
+        </div>
+        <div class="listen-stage">
+          <button class="listen-speaker-btn" id="listenSpeakBtn" aria-label="Play pronunciation">🔊</button>
+          <div>
+            <span class="listen-speed-toggle">
+              <button class="listen-speed-btn ${speed === 0.7 ? 'active' : ''}" data-speed="0.7">🐢 Slow</button>
+              <button class="listen-speed-btn ${speed === 1.0 ? 'active' : ''}" data-speed="1.0">🐇 Normal</button>
+            </span>
+            <span class="listen-mode-toggle">
+              <button class="listen-mode-btn ${mode === 'choice' ? 'active' : ''}" data-mode="choice">🔘 Choose</button>
+              <button class="listen-mode-btn ${mode === 'spelling' ? 'active' : ''}" data-mode="spelling">⌨️ Spell it</button>
+            </span>
+          </div>
+        </div>
+        ${challengeHtml}
+        <div class="listen-feedback" id="listenFeedback" hidden></div>
+      `;
+      setScoreLabel(`${correctCount} / ${deck.length} correct`);
+
+      const speakBtn = container.querySelector('#listenSpeakBtn');
+      const doSpeak = () => {
+        speak(current.en, speed);
+        speakBtn.classList.add('speaking');
+        setTimeout(() => speakBtn.classList.remove('speaking'), 500);
+      };
+      speakBtn.addEventListener('click', doSpeak);
+      doSpeak();
+
+      container.querySelectorAll('.listen-speed-btn').forEach(btn => {
+        btn.addEventListener('click', () => { speed = Number(btn.dataset.speed); paint(); });
+      });
+      container.querySelectorAll('.listen-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => { mode = btn.dataset.mode; paint(); });
+      });
+
+      if (mode === 'choice') {
+        container.querySelectorAll('.listen-options .quiz-option').forEach(btn => {
+          btn.addEventListener('click', () => checkAnswer(btn.dataset.id === current.id, btn));
+        });
+      } else {
+        const input = container.querySelector('#listenInput');
+        const checkBtn = container.querySelector('[data-action="listen-check"]');
+        const submit = () => checkAnswer(input.value.trim().toLowerCase() === current.en.trim().toLowerCase(), null);
+        checkBtn.addEventListener('click', submit);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+      }
+    }
+
+    function checkAnswer(correct, btnEl) {
+      if (answered) return;
+      answered = true;
+      if (correct) {
+        correctCount++;
+        if (typeof awardProgress === 'function') awardProgress(8, 0);
+      }
+
+      if (mode === 'choice') {
+        container.querySelectorAll('.listen-options .quiz-option').forEach(b => {
+          b.disabled = true;
+          if (b.dataset.id === current.id) b.classList.add('correct');
+          else if (b === btnEl) b.classList.add('wrong', 'shake');
+        });
+      } else {
+        const input = container.querySelector('#listenInput');
+        if (input) { input.disabled = true; input.classList.add(correct ? 'correct' : 'wrong'); }
+        const checkBtn = container.querySelector('[data-action="listen-check"]');
+        if (checkBtn) checkBtn.disabled = true;
+      }
+
+      if (correct) { playCorrect(); confettiFromElement(container.querySelector('.listen-stage'), true); }
+      else playWrong();
+
+      setScoreLabel(`${correctCount} / ${deck.length} correct`);
+
+      const fb = container.querySelector('#listenFeedback');
+      fb.hidden = false;
+      fb.innerHTML = `
+        <p class="listen-phonetic">🗣️ Sounds like: <strong>${simplePhonetic(current.en)}</strong></p>
+        <p class="listen-phrase">💬 "${contextSentence(current.en)}"</p>
+        <button class="game-btn" data-action="listen-next">${qIndex + 1 >= deck.length ? '🏁 See Results' : '➡️ Next Word'}</button>
+      `;
+      fb.querySelector('[data-action="listen-next"]').addEventListener('click', () => { qIndex++; nextRound(); });
+    }
+
+    function paintSummary() {
+      const pct = Math.round((correctCount / deck.length) * 100);
+      const stars = pct === 100 ? 3 : pct >= 70 ? 2 : pct >= 40 ? 1 : 0;
+      container.innerHTML = `
+        <div class="game-end-banner ${pct >= 50 ? 'win' : 'lose'}">
+          🎧 Listening Complete! <p>${correctCount} / ${deck.length} correct (${pct}%)</p>
+          <p>${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</p>
+        </div>
+        <div class="game-btn-row" style="margin-top:14px;justify-content:center">
+          <button class="game-btn" data-action="listen-again">🔄 Play Again</button>
+        </div>
+      `;
+      setScoreLabel(`${correctCount} / ${deck.length} correct`);
+      if (stars > 0 && typeof awardProgress === 'function') awardProgress(0, stars);
+      confettiFromElement(container.querySelector('.game-end-banner'));
+      container.querySelector('[data-action="listen-again"]').addEventListener('click', setup);
+    }
+
+    setup();
+    return () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+  return { open, stopAll };
+})();
