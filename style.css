@@ -541,6 +541,39 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
   margin-bottom: 8px;
 }
 
+/* Level filter bar — quick-pick buttons per CEFR level */
+.level-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+  align-items: center;
+}
+.level-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.level-filter-btn:hover {
+  border-color: var(--filter-color, var(--primary));
+  color: var(--ink);
+}
+.level-filter-btn.active {
+  border-color: var(--filter-color, var(--primary));
+  background: color-mix(in srgb, var(--filter-color, var(--primary)) 14%, white);
+  color: var(--filter-color, var(--primary-dark));
+  box-shadow: var(--shadow-sm);
+}
+
 /* ==========================================================================
    Teaser sections (Games / Songs / Game Maker)
    ========================================================================== */

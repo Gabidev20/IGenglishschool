@@ -125,8 +125,10 @@ document.querySelectorAll('[data-tilt]').forEach(card => {
 // ---------------------------------------------------------------------------
 const levelTabsEl = document.getElementById('levelTabs');
 const topicsGridEl = document.getElementById('topicsGrid');
+const levelFilterBarEl = document.getElementById('levelFilterBar');
 
 let activeTierId = TIERS[0].id;
+let activeLevelFilter = 'all';
 
 function renderLevelTabs() {
   levelTabsEl.innerHTML = TIERS.map(tier => `
@@ -139,8 +141,37 @@ function renderLevelTabs() {
   `).join('');
 }
 
-function renderTopics() {
+function renderLevelFilters() {
   const levelsInTier = LEVELS.filter(l => l.tier === activeTierId);
+  const hasMultipleLevels = levelsInTier.length > 1;
+
+  if (!hasMultipleLevels) {
+    levelFilterBarEl.hidden = true;
+    return;
+  }
+
+  levelFilterBarEl.hidden = false;
+  levelFilterBarEl.innerHTML = `
+    <button class="level-filter-btn ${activeLevelFilter === 'all' ? 'active' : ''}" data-level="all">
+      All Levels
+    </button>
+    ${levelsInTier.map(level => `
+      <button class="level-filter-btn ${activeLevelFilter === level.id ? 'active' : ''}"
+              data-level="${level.id}"
+              style="--filter-color:${level.color}">
+        ${level.code} — ${level.name}
+      </button>
+    `).join('')}
+  `;
+}
+
+function renderTopics() {
+  let levelsInTier = LEVELS.filter(l => l.tier === activeTierId);
+
+  if (activeLevelFilter !== 'all') {
+    levelsInTier = levelsInTier.filter(l => l.id === activeLevelFilter);
+  }
+
   const cards = [];
   levelsInTier.forEach(level => level.topics.forEach(topic => cards.push({ level, topic })));
 
@@ -160,7 +191,9 @@ function renderTopics() {
 
 function setActiveTier(id) {
   activeTierId = id;
+  activeLevelFilter = 'all';
   renderLevelTabs();
+  renderLevelFilters();
   renderTopics();
 }
 
@@ -169,12 +202,22 @@ levelTabsEl.addEventListener('click', (e) => {
   if (btn) setActiveTier(btn.dataset.tier);
 });
 
+levelFilterBarEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-level]');
+  if (btn) {
+    activeLevelFilter = btn.dataset.level;
+    renderLevelFilters();
+    renderTopics();
+  }
+});
+
 topicsGridEl.addEventListener('click', (e) => {
   const card = e.target.closest('.topic-card');
   if (card) openTopicModal(card.dataset.level, card.dataset.topic);
 });
 
 renderLevelTabs();
+renderLevelFilters();
 renderTopics();
 
 // ---------------------------------------------------------------------------
