@@ -427,54 +427,70 @@ const GameEngine = (() => {
   }
 
   // -------------------------------------------------------------------------
-  // 4) BALLOON POP
+  // 4) BALLOON POP — exactly ROUND_SIZE target words per round, then a
+  // victory screen. Not deck-based/infinite like Hangman: the round has a
+  // hard end so spawning always stops and progress is always summarized.
   // -------------------------------------------------------------------------
-  function renderBalloon(container, topic) {
-    const deckKey = `${topic.id}:balloon`;
-    const palette = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
-    let target, score, misses, spawnTimer, balloonSeq = 0;
+  const BALLOON_ROUND_SIZE = 10;
 
-    function nextTarget() {
-      target = drawFromDeck(deckKey, topic.words);
+  function renderBalloon(container, topic) {
+    const palette = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
+    let targetQueue, roundIndex, target, score, misses, spawnTimer, balloonSeq, ended;
+
+    // Builds exactly BALLOON_ROUND_SIZE targets by concatenating fresh
+    // shuffles of the topic's word bank (which is usually smaller than 10),
+    // so a short list still produces a clean, bounded 10-word round instead
+    // of repeating the very same word back-to-back where avoidable.
+    function buildTargetQueue() {
+      const queue = [];
+      while (queue.length < BALLOON_ROUND_SIZE) queue.push(...shuffle(topic.words));
+      return queue.slice(0, BALLOON_ROUND_SIZE);
     }
 
     function setup() {
-      score = 0; misses = 0;
-      resetDeck(deckKey);
-      nextTarget();
+      targetQueue = buildTargetQueue();
+      roundIndex = 0;
+      target = targetQueue[0];
+      score = 0; misses = 0; ended = false;
+      balloonSeq = 0;
       paintShell();
-      spawnTimer = setInterval(spawnBalloon, 1400);
-      trackTimer(spawnTimer);
+      spawnTimer = trackTimer(setInterval(spawnBalloon, 1400));
       spawnBalloon();
+    }
+
+    function restart() {
+      clearInterval(spawnTimer);
+      container.querySelectorAll('.balloon').forEach(b => b.remove());
+      setup();
     }
 
     function paintShell() {
       container.innerHTML = `
         <div class="game-toolbar">
-          <span class="game-status-pill">✅ ${score} correct · ❌ ${misses} missed</span>
+          <span class="game-status-pill">Word ${roundIndex + 1} of ${BALLOON_ROUND_SIZE} · ✅ ${score} · ❌ ${misses}</span>
           <div class="game-btn-row">
             <button class="game-btn secondary" data-action="restart">🔄 Restart</button>
           </div>
         </div>
+        <div class="balloon-progress"><div class="balloon-progress-fill" style="width:${(roundIndex / BALLOON_ROUND_SIZE) * 100}%"></div></div>
         <div class="balloon-stage" id="balloonStage">
           <div class="balloon-target">Pop the balloon that says: <strong>${target.en}</strong></div>
         </div>
       `;
-      container.querySelector('[data-action="restart"]').addEventListener('click', () => {
-        clearInterval(spawnTimer);
-        container.querySelectorAll('.balloon').forEach(b => b.remove());
-        setup();
-      });
+      container.querySelector('[data-action="restart"]').addEventListener('click', restart);
     }
 
-    function updateTargetLabel() {
+    function updateHUD() {
       const label = container.querySelector('.balloon-target');
       if (label) label.innerHTML = `Pop the balloon that says: <strong>${target.en}</strong>`;
       const pill = container.querySelector('.game-status-pill');
-      if (pill) pill.textContent = `✅ ${score} correct · ❌ ${misses} missed`;
+      if (pill) pill.textContent = `Word ${roundIndex + 1} of ${BALLOON_ROUND_SIZE} · ✅ ${score} · ❌ ${misses}`;
+      const fill = container.querySelector('.balloon-progress-fill');
+      if (fill) fill.style.width = `${(roundIndex / BALLOON_ROUND_SIZE) * 100}%`;
     }
 
     function spawnBalloon() {
+      if (ended) return;
       const stage = container.querySelector('#balloonStage');
       if (!stage) return;
       const isTarget = Math.random() < 0.4 || stage.querySelectorAll('.balloon').length === 0;
@@ -493,7 +509,7 @@ const GameEngine = (() => {
       el.addEventListener('click', () => popBalloon(el, word));
       const endTimer = setTimeout(() => {
         if (el.isConnected) {
-          if (word.en === target.en) { misses++; updateTargetLabel(); }
+          if (!ended && word.en === target.en) { misses++; updateHUD(); }
           el.remove();
         }
       }, duration * 1000);
@@ -503,7 +519,7 @@ const GameEngine = (() => {
     }
 
     function popBalloon(el, word) {
-      if (el.classList.contains('popped')) return;
+      if (ended || el.classList.contains('popped')) return;
       const isCorrect = word.en === target.en;
       const rect = el.getBoundingClientRect();
       if (isCorrect) {
@@ -513,8 +529,13 @@ const GameEngine = (() => {
         confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
         el.classList.add('popped');
         setTimeout(() => el.remove(), 260);
-        nextTarget();
-        updateTargetLabel();
+        roundIndex++;
+        if (roundIndex >= BALLOON_ROUND_SIZE) {
+          endRound();
+        } else {
+          target = targetQueue[roundIndex];
+          updateHUD();
+        }
       } else {
         playWrong();
         el.style.transition = 'transform 0.2s ease';
@@ -522,6 +543,36 @@ const GameEngine = (() => {
         setTimeout(() => { if (el.isConnected) el.style.transform = 'translateX(-6px)'; }, 100);
         setTimeout(() => { if (el.isConnected) el.style.transform = ''; }, 200);
       }
+    }
+
+    function endRound() {
+      ended = true;
+      clearInterval(spawnTimer);
+      container.querySelectorAll('.balloon').forEach(b => b.remove());
+      const stars = misses === 0 ? 3 : misses <= 3 ? 2 : 1;
+      if (typeof awardProgress === 'function') awardProgress(10, stars);
+      paintVictory(stars);
+    }
+
+    function paintVictory(stars) {
+      container.innerHTML = `
+        <div class="balloon-victory">
+          <h3>${misses === 0 ? 'Level Complete! ⭐' : 'Awesome Job! 🎉'}</h3>
+          <p class="balloon-victory-score">${score} / ${BALLOON_ROUND_SIZE} <span>balloons popped</span></p>
+          <p class="balloon-victory-misses">❌ ${misses} missed</p>
+          <p class="balloon-victory-stars">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</p>
+          <div class="game-btn-row" style="justify-content:center;margin-top:18px">
+            <button class="game-btn" data-action="play-again">▶ Play Again</button>
+            <button class="game-btn secondary" data-action="back-to-topic">← Back to Topic</button>
+          </div>
+        </div>
+      `;
+      playWin();
+      confettiFromElement(container.querySelector('.balloon-victory'));
+      container.querySelector('[data-action="play-again"]').addEventListener('click', restart);
+      container.querySelector('[data-action="back-to-topic"]').addEventListener('click', () => {
+        if (typeof closeModal === 'function') closeModal();
+      });
     }
 
     setup();
