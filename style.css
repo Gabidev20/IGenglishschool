@@ -810,15 +810,47 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
    exceeds the viewport — .modal's flex-column + overflow:hidden (above) keeps
    the close button pinned, while the shrunk media banner below reclaims the
    vertical space games actually need. */
+/* Games are the part of the app a class actually looks at together, often on
+   a shared screen — so the game frame takes the whole window it can get,
+   and ⛶ / the F key push it edge to edge. */
 .modal.modal--game {
-  max-width: 1050px;
-  width: 95vw;
-  max-height: 92vh;
+  max-width: min(1800px, 97vw);
+  width: 97vw;
+  max-height: 95vh;
+  height: 95vh;
 }
+.modal.modal--fullscreen {
+  max-width: 100vw;
+  width: 100vw;
+  max-height: 100vh;
+  height: 100vh;
+  border-radius: 0;
+}
+.modal-overlay.is-fullscreen { padding: 0; }
+
+.modal-expand {
+  position: absolute;
+  top: 16px; right: 60px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--ink-soft);
+  font-size: 1rem;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.modal-expand[hidden] { display: none; }
+.modal-expand:hover { background: var(--primary-soft); color: var(--primary-dark); }
+
 .modal--game .modal-media {
   aspect-ratio: 21 / 6;
-  max-height: 130px;
+  max-height: 120px;
 }
+.modal--fullscreen .modal-media { max-height: 96px; }
+.modal--game .modal-content-pad { padding: 20px clamp(20px, 3vw, 48px) 24px; }
 .modal--game .modal-media .emoji-fallback { font-size: 2.6rem; }
 
 .game-picker {
@@ -1308,6 +1340,10 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 }
 
 @media (max-width: 640px) {
+  /* A phone has no room for a full-screen toggle — the modal already fills
+     the screen there. */
+  .modal-expand { display: none; }
+  .modal.modal--game { width: 100%; height: auto; max-height: 96vh; }
   .hangman-layout { grid-template-columns: 1fr; }
   .hangman-stage { max-width: 200px; margin: 0 auto; }
   .keyboard { grid-template-columns: repeat(7, 1fr); max-width: 100%; }
@@ -1324,8 +1360,9 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
    in landscape) need a tighter frame so the game still fits without the
    page itself ever needing to scroll. */
 @media (max-height: 720px) {
-  .modal.modal--game { max-height: 96vh; }
+  .modal.modal--game:not(.modal--fullscreen) { max-height: 96vh; height: auto; width: 97vw; }
   .modal--game .modal-media { max-height: 60px; }
+  .modal--fullscreen .modal-media { max-height: 48px; }
   .modal-content-pad { padding: 12px 20px 16px; }
   .modal-content-pad h3 { font-size: 1.15rem; margin-bottom: 4px; }
   .modal-content-pad > p { margin-bottom: 6px; }
@@ -2252,95 +2289,189 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 
 /* ==========================================================================
    Print stylesheet — used by the Quarterly Report's "Print / Save PDF"
-   IMPORTANT: #reportPrintArea stays hidden on screen (built fresh from the
-   live form right before printing) and is revealed ONLY inside @media print,
-   so the school letterhead never disturbs the on-screen editing view.
+   The sheet is rebuilt from the live form right before printing and mounted
+   at the end of <body>, outside the modal, so it can paginate across as many
+   A4 pages as the report needs.
    ========================================================================== */
 
-#reportPrintArea { display: none; }
+/* The print sheet is a direct child of <body> (see reports.js) so it can
+   paginate normally. On screen it is hidden; for print every OTHER top-level
+   element is display:none'd — not just made invisible — because an invisible
+   element still occupies space and still clips its overflowing children,
+   which is what used to cut the report off after page one. */
+
+#reportPrintRoot { display: none; }
 
 @media print {
-  body * { visibility: hidden; }
-  #reportPrintArea, #reportPrintArea * { visibility: visible; }
-  #reportPrintArea {
-    display: block !important;
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
+  html, body {
+    background: #fff !important;
+    height: auto !important;
+    overflow: visible !important;
     margin: 0;
     padding: 0;
   }
+  body > *:not(#reportPrintRoot) { display: none !important; }
+  #reportPrintRoot {
+    display: block !important;
+    position: static;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    color: #1f1b2e;
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
   .no-print { display: none !important; }
-  @page { size: A4; margin: 16mm; }
+
+  /* Keep the school colours on paper instead of letting the browser strip
+     backgrounds — the letterhead and the teacher's note rely on them. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page { size: A4 portrait; margin: 14mm 13mm; }
+
+  .report-print-section,
+  .report-print-note,
+  .report-print-header,
+  .report-print-signature,
+  .report-print-skills tr { break-inside: avoid; page-break-inside: avoid; }
+
+  .report-letterhead { break-after: avoid; page-break-after: avoid; }
+  .report-print-section h4 { break-after: avoid; page-break-after: avoid; }
 }
 
-.report-letterhead { text-align: center; margin-bottom: 24px; }
-.report-letterhead-logo { max-height: 64px; width: auto; margin: 0 auto 10px; object-fit: contain; }
-.report-letterhead-logo-fallback {
+/* --- letterhead + sheet --- */
+.report-sheet { max-width: 190mm; margin: 0 auto; }
+
+.report-letterhead { text-align: center; margin-bottom: 18px; }
+.report-letterhead-logo { max-height: 62px; width: auto; margin: 0 auto 8px; object-fit: contain; display: block; }
+.report-letterhead-logo-fallback,
+.report-letterhead .emoji-fallback {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.4rem;
-  color: var(--color-primary);
-  margin-bottom: 10px;
+  color: var(--color-primary, #6f7d68);
+  display: block;
+  margin-bottom: 8px;
 }
 .report-letterhead-title {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-primary, #6f7d68);
   margin: 0;
 }
 
 .report-print-card {
-  border: 2px solid var(--color-secondary);
-  border-radius: 18px;
-  padding: 28px 32px;
+  border: 2px solid var(--color-secondary, #b8953a);
+  border-radius: 16px;
+  padding: 22px 26px;
 }
 .report-print-header {
-  --accent-color: var(--color-primary);
+  --accent-color: var(--color-primary, #6f7d68);
   display: flex;
   align-items: center;
   gap: 16px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid color-mix(in srgb, var(--accent-color) 35%, white);
-  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--accent-color);
+  margin-bottom: 16px;
 }
 .report-print-avatar {
-  width: 56px; height: 56px;
+  width: 54px; height: 54px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   flex-shrink: 0;
 }
-.report-print-header h2 { margin-bottom: 2px; }
-.report-print-header p { margin: 0; color: var(--ink-faint); font-size: 0.88rem; }
+.report-print-header h2 { margin: 0 0 2px; font-size: 1.35rem; }
+.report-print-header p { margin: 0; color: #5d5872; font-size: 0.86rem; }
 
-.report-print-section { margin-bottom: 16px; break-inside: avoid; }
+.report-print-section { margin-bottom: 15px; }
 .report-print-section h4 {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-primary);
-  margin-bottom: 6px;
+  color: var(--color-primary, #6f7d68);
+  margin: 0 0 5px;
 }
-.report-print-section p { margin: 0; color: var(--ink); }
+.report-print-section p { margin: 0; line-height: 1.5; font-size: 0.9rem; }
 
-.report-print-skills { width: 100%; border-collapse: collapse; }
-.report-print-skills td { padding: 6px 8px; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: top; }
-.report-print-skills .skill-name { font-weight: 700; width: 140px; }
-.report-print-skills .skill-level { width: 140px; color: var(--color-primary); font-weight: 700; }
+.report-print-stats {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 8px 0 0;
+  padding: 0;
+  font-size: 0.84rem;
+}
+.report-print-stats strong { color: var(--color-primary, #6f7d68); font-size: 1rem; }
+
+.report-print-topics {
+  margin: 0;
+  padding-left: 18px;
+  columns: 2;
+  column-gap: 24px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.report-print-topics li { break-inside: avoid; }
+
+.report-print-skills { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.report-print-skills th {
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5d5872;
+  padding: 0 8px 5px;
+  border-bottom: 2px solid var(--color-secondary, #b8953a);
+}
+.report-print-skills td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #e4e1ec;
+  font-size: 0.87rem;
+  vertical-align: top;
+}
+.report-print-skills .skill-name { font-weight: 700; width: 32%; }
+.report-print-skills .skill-level { width: 30%; color: var(--color-primary, #6f7d68); font-weight: 700; white-space: nowrap; }
+.report-print-skills .skill-stars { letter-spacing: 1px; }
 
 .report-print-note {
-  background: var(--color-accent-soft);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin-top: 20px;
-  font-style: italic;
+  background: var(--color-accent-soft, #f7f2e4);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 18px;
 }
-.report-print-note p { margin: 0; color: var(--color-text-dark); }
+.report-print-note h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary, #6f7d68);
+  margin: 0 0 5px;
+}
+.report-print-note p { margin: 0; font-style: italic; line-height: 1.5; font-size: 0.9rem; }
+
+.report-print-signature {
+  margin-top: 26px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+.report-signature-line {
+  border-top: 1px solid #8b8698;
+  padding-top: 4px;
+  min-width: 200px;
+  text-align: center;
+  font-size: 0.76rem;
+  color: #5d5872;
+}
+.report-print-date { margin: 0; font-size: 0.74rem; color: #8b8698; }
 
 /* ==========================================================================
    Arcade Games (Word Match / Quick Quiz / Listen & Repeat)
@@ -2550,3 +2681,202 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
   .wordmatch-item { font-size: 0.8rem; padding: 8px 10px; }
   .quiz-options, .listen-options { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   Content & Games Editor
+   ==========================================================================
+   Every game plays from a topic's word bank, so this one editor is what
+   makes all of them editable. It lives in the wide game modal frame. */
+
+.section-edit-btn { margin-top: 14px; }
+
+.content-editor { gap: 0; }
+.ce-intro {
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  max-width: 70ch;
+}
+
+.ce-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.ce-level-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.ce-level-tab {
+  --tab-color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.ce-level-tab.active { border-color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 14%, white); color: var(--ink); }
+.ce-level-count {
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.72rem;
+}
+.ce-toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ce-change-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-faint);
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+.ce-list { flex: 1; min-height: 0; overflow-y: auto; padding-right: 4px; }
+.ce-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.ce-list-head h4 { margin: 0; font-size: 1rem; }
+.ce-empty { color: var(--ink-faint); padding: 24px; text-align: center; }
+
+.ce-topic-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  background: var(--surface);
+}
+.ce-topic-media {
+  width: 52px; height: 52px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+}
+.ce-topic-media img { width: 100%; height: 100%; object-fit: cover; }
+.ce-topic-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.ce-topic-info strong { font-size: 0.95rem; }
+.ce-topic-meta { font-size: 0.78rem; color: var(--ink-faint); }
+.ce-topic-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.ce-topic-actions .game-btn { padding: 6px 12px; font-size: 0.78rem; }
+
+.ce-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.ce-badge.is-new { background: var(--a0-soft, #e8efe6); color: #4f6248; }
+.ce-badge.is-edited { background: var(--primary-soft); color: var(--primary-dark); }
+
+/* --- topic form --- */
+.ce-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.ce-span-2 { grid-column: 1 / -1; }
+
+.ce-word-head,
+.ce-word-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1.2fr) minmax(0, 1.2fr) 70px minmax(0, 2fr) 110px 34px;
+  gap: 8px;
+  align-items: center;
+}
+.ce-word-head {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  padding: 0 2px 6px;
+}
+.ce-word-rows { display: flex; flex-direction: column; gap: 6px; }
+.ce-word-row { padding: 4px 2px; }
+.ce-word-preview { display: block; }
+.ce-word-visual { width: 46px; height: 46px; font-size: 1.4rem; }
+.ce-input-swatch { font-family: monospace; }
+
+.ce-question {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--bg);
+}
+.ce-question-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.ce-question > .gm-input { width: 100%; margin-bottom: 8px; }
+.ce-options { display: grid; gap: 6px; }
+.ce-option { display: flex; align-items: center; gap: 8px; }
+.ce-option input[type="radio"] { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--primary); }
+.ce-option .gm-input { flex: 1; }
+.ce-hint { font-size: 0.78rem; color: var(--ink-faint); margin: 6px 0 0; }
+
+.quiz-empty { color: var(--ink-faint); font-size: 0.88rem; }
+
+/* Flashcards now reveal the Portuguese translation under the English word. */
+.flashcard-word-pt {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.62em;
+  font-weight: 600;
+  opacity: 0.82;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@media (max-width: 900px) {
+  .ce-form-grid { grid-template-columns: 1fr; }
+  .ce-word-head { display: none; }
+  .ce-word-row {
+    grid-template-columns: 56px 1fr 34px;
+    grid-template-areas:
+      "preview en    remove"
+      "preview pt    remove"
+      "emoji   image image"
+      "swatch  swatch swatch";
+    row-gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px;
+  }
+  .ce-word-row .ce-word-preview { grid-area: preview; }
+  .ce-word-row [data-field="en"] { grid-area: en; }
+  .ce-word-row [data-field="pt"] { grid-area: pt; }
+  .ce-word-row [data-field="emoji"] { grid-area: emoji; }
+  .ce-word-row [data-field="image"] { grid-area: image; }
+  .ce-word-row [data-field="swatch"] { grid-area: swatch; }
+  .ce-word-row .gm-remove-row { grid-area: remove; }
+  /* Inputs default to a content-based min-width, which pushes a grid track
+     wider than its share and scrolls the row sideways on a phone. */
+  .ce-word-row .gm-input { min-width: 0; width: 100%; }
+  .ce-topic-row { flex-wrap: wrap; }
+  .ce-topic-actions { width: 100%; justify-content: flex-start; }
+}
+
+/* The timer keeps the "Time's Up!" state on screen until it is reset. */
+.timer-display.finished { color: var(--color-secondary-deep, #b8953a); letter-spacing: 0; }

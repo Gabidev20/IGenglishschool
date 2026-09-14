@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>IGenglishschool — Learn, Play, Grow</title>
 <meta name="description" content="IGenglishschool — an interactive English learning platform with levels, games and a game maker for young learners." />
-<link rel="icon" type="image/png" href="logo.png" />
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="apple-touch-icon" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -26,6 +27,7 @@
       <a href="#levels" class="nav-link" data-section="levels">Levels</a>
       <a href="#games" class="nav-link" data-section="games">Games</a>
       <a href="#game-maker" class="nav-link" data-section="game-maker">Game Maker</a>
+      <button class="nav-link nav-link-btn" id="editorNavBtn" type="button">🧩 Editor</button>
       <button class="nav-link nav-link-btn" id="reportsNavBtn" type="button">📊 Reports</button>
     </nav>
 
@@ -125,6 +127,7 @@
       <span class="section-eyebrow">Play</span>
       <h2>Games</h2>
       <p>Bite-sized challenges for every topic — matching, spelling, listening and more.</p>
+      <button class="btn btn-ghost section-edit-btn" id="editGamesBtn" type="button">🧩 Edit games &amp; word banks</button>
     </div>
     <div class="teaser-grid" id="arcadeGamesGrid">
       <div class="teaser-card game-card" data-arcade="wordmatch">
@@ -154,6 +157,7 @@
       <span class="section-eyebrow">Create</span>
       <h2>Game Maker</h2>
       <p>Build your own Hangman, Memory, Match-up, Balloon Pop or Word Search from any words you choose.</p>
+      <button class="btn btn-ghost section-edit-btn" id="editCurriculumBtn" type="button">🧩 Edit the curriculum word banks</button>
     </div>
     <div id="gameMakerRoot"></div>
   </section>
@@ -167,6 +171,7 @@
 <!-- ============ MODAL BASE ============ -->
 <div class="modal-overlay" id="modalOverlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-expand" id="modalExpandBtn" aria-label="Toggle full screen" title="Full screen (F)">⛶</button>
     <button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button>
     <div class="modal-body" id="modalBody"><!-- dynamic content mounts here --></div>
   </div>
@@ -193,6 +198,7 @@
   <div class="session-drawer-body" id="sessionDrawerBody"><!-- dynamic content mounts here --></div>
 </div>
 
+<script src="utils.js"></script>
 <script src="games.js"></script>
 <script src="students.js"></script>
 <script src="sessions.js"></script>
@@ -201,6 +207,7 @@
 <script src="learning.js"></script>
 <script src="liveTools.js"></script>
 <script src="topicsData.js"></script>
+<script src="contentStore.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

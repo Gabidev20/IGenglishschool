@@ -18,12 +18,7 @@ function lmEscape(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 function lmWordVisual(word, sizeClass) {
-  if (word.swatch) return `<div class="word-visual ${sizeClass}" style="background:${word.swatch}"></div>`;
-  if (word.image) {
-    return `<div class="word-visual ${sizeClass}"><img src="${word.image}" alt="${lmEscape(word.en)}" loading="lazy"
-      onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji-fallback',textContent:'${word.emoji}'}))" /></div>`;
-  }
-  return `<div class="word-visual ${sizeClass}"><span class="emoji-fallback">${word.emoji}</span></div>`;
+  return igWordVisualHTML(word, sizeClass);
 }
 function lmSpeak(text, rate) {
   if (!('speechSynthesis' in window)) return;
@@ -69,6 +64,19 @@ const TOPIC_CATEGORY = {
   simplepast: { noun: 'past tense verb', article: 'a' },
   future: { noun: 'future expression', article: 'a' },
   comparatives: { noun: 'comparative word', article: 'a' },
+  // Topics added alongside the Ordinal/Cardinal numbers, pronouns,
+  // possessives, prepositions, 12-tenses and "describing …" units.
+  fruitsfood: { noun: 'food', article: 'a' },
+  cardinalnumbers: { noun: 'number', article: 'a' },
+  ordinalnumbers: { noun: 'ordinal number', article: 'an' },
+  objectpronouns: { noun: 'object pronoun', article: 'an' },
+  possessives: { noun: 'possessive word', article: 'a' },
+  prepositionsplace: { noun: 'preposition of place', article: 'a' },
+  describingpeople: { noun: 'word to describe people', article: 'a' },
+  describinganimals: { noun: 'word to describe animals', article: 'a' },
+  describingplaces: { noun: 'word to describe places', article: 'a' },
+  futurecontinuous: { noun: 'future continuous form', article: 'a' },
+  twelvetenses: { noun: 'verb tense', article: 'a' },
 };
 function lmCategory(topic) {
   return TOPIC_CATEGORY[topic.id] || { noun: 'word', article: 'a' };
@@ -79,10 +87,30 @@ function lmCategory(topic) {
    ========================================================================== */
 
 // Custom content helpers — allows teachers to override with their own text
+// Stored as { text, questions } — normalised here into the same shape
+// buildReadingContent() returns, so every consumer (Reading Time's renderer
+// AND the Practice Arena, which needs `sentences`) can treat both sources
+// identically instead of crashing on the missing fields.
 function getCustomReadingContent(topicId) {
   const key = `custom_reading_${topicId}`;
   const stored = localStorage.getItem(key);
-  return stored ? JSON.parse(stored) : null;
+  if (!stored) return null;
+  let parsed;
+  try { parsed = JSON.parse(stored); } catch (e) { return null; }
+  if (!parsed || typeof parsed.text !== 'string') return null;
+  const questions = Array.isArray(parsed.questions) ? parsed.questions : (Array.isArray(parsed.quiz) ? parsed.quiz : []);
+  return {
+    authored: true,
+    custom: true,
+    text: parsed.text,
+    sentences: lmSentencesFromText(parsed.text),
+    quiz: questions.map(q => ({
+      prompt: q.prompt,
+      visual: null,
+      options: Array.isArray(q.options) ? q.options.slice() : [],
+      correct: q.correct,
+    })),
+  };
 }
 function saveCustomReadingContent(topicId, text, questions) {
   const key = `custom_reading_${topicId}`;
@@ -91,11 +119,26 @@ function saveCustomReadingContent(topicId, text, questions) {
 function getCustomPracticeContent(topicId) {
   const key = `custom_practice_${topicId}`;
   const stored = localStorage.getItem(key);
-  return stored ? JSON.parse(stored) : null;
+  if (!stored) return null;
+  // A corrupt entry must not take the whole Practice tab down with it.
+  try { return JSON.parse(stored); } catch (e) { return null; }
 }
 function saveCustomPracticeContent(topicId, description, instructions) {
   const key = `custom_practice_${topicId}`;
   localStorage.setItem(key, JSON.stringify({ description, instructions }));
+}
+
+// Splits an authored passage into individual sentence objects with the same
+// shape the generated path produces. The Practice Arena builds its
+// word-order exercises from `sentences`, so EVERY content source has to
+// expose that field — authored passages included.
+function lmSentencesFromText(text) {
+  return String(text || '')
+    .split(/\n+/)
+    .flatMap(line => line.split(/(?<=[.!?])\s+/))
+    .map(s => s.trim())
+    .filter(s => s.length > 0)
+    .map(s => ({ text: s, glossaryWord: null, grammarTerm: null }));
 }
 
 function buildReadingContent(level, topic) {
@@ -107,7 +150,8 @@ function buildReadingContent(level, topic) {
     return {
       authored: true,
       text: topic.readingTime.text,
-      quiz: topic.readingTime.questions.map(q => ({ prompt: q.prompt, visual: null, options: q.options, correct: q.correct })),
+      sentences: lmSentencesFromText(topic.readingTime.text),
+      quiz: topic.readingTime.questions.map(q => ({ prompt: q.prompt, visual: null, options: q.options.slice(), correct: q.correct })),
     };
   }
 
@@ -154,6 +198,43 @@ function lmMakeTypo(word) {
   return letters.join('');
 }
 
+// Swapping two neighbouring letters is a no-op when they're identical
+// ("bee" -> "bee"), and two independent swaps can easily collide. Either
+// case would put the correct spelling in the list twice and make the
+// "which is the correct spelling?" question unanswerable — so build the
+// decoys as a set that is guaranteed distinct from each other AND from the
+// real word, falling back to a letter substitution when swaps run out.
+function lmMakeDistinctTypos(word, count) {
+  const out = [];
+  const taken = new Set([word.toLowerCase()]);
+  const push = (candidate) => {
+    const key = candidate.toLowerCase();
+    if (taken.has(key)) return false;
+    taken.add(key);
+    out.push(candidate);
+    return true;
+  };
+
+  for (let attempt = 0; attempt < 40 && out.length < count; attempt++) {
+    push(lmMakeTypo(word));
+  }
+
+  const VOWELS = 'aeiou';
+  for (let i = 0; i < word.length && out.length < count; i++) {
+    const ch = word[i];
+    const lower = ch.toLowerCase();
+    const vowelIdx = VOWELS.indexOf(lower);
+    const swapped = vowelIdx >= 0
+      ? VOWELS[(vowelIdx + 1 + i) % VOWELS.length]
+      : ch + ch;
+    const replacement = ch === ch.toUpperCase() && vowelIdx >= 0 ? swapped.toUpperCase() : swapped;
+    push(word.slice(0, i) + replacement + word.slice(i + 1));
+  }
+
+  while (out.length < count) push(word + '_'.repeat(out.length + 1));
+  return out.slice(0, count);
+}
+
 function buildReadingQuiz(level, topic) {
   const words = lmShuffle(topic.words);
   const q1w = words[0], q2w = words[1 % words.length], q3w = words[2 % words.length];
@@ -172,9 +253,13 @@ function buildReadingQuiz(level, topic) {
   // Q2 — odd one out (pick a word from a different topic as the intruder)
   const otherTopics = [];
   LEVELS.forEach(l => l.topics.forEach(t => { if (t.id !== topic.id) otherTopics.push(t); }));
-  const intruderTopic = lmShuffle(otherTopics)[0];
-  const intruderWord = intruderTopic ? lmShuffle(intruderTopic.words)[0] : null;
   const q2Real = lmShuffle(words.filter(w => w.id !== q2w.id)).slice(0, 2);
+  // The intruder has to be textually distinct from the two real options, or
+  // the question would have two identical answers and no single right one.
+  const q2Taken = new Set(q2Real.map(w => w.en.toLowerCase()));
+  const intruderWord = lmShuffle(otherTopics)
+    .flatMap(t => lmShuffle(t.words))
+    .find(w => !q2Taken.has(w.en.toLowerCase())) || null;
   const q2Options = lmShuffle(intruderWord ? [...q2Real, intruderWord] : [...q2Real, q2w]);
   const q2 = {
     prompt: `Which word does NOT belong with "${topic.title}"?`,
@@ -193,7 +278,7 @@ function buildReadingQuiz(level, topic) {
     const q3Options = lmShuffle([q3Target, ...q3Distractors]);
     q3 = { prompt: `Which word matches this picture?`, visual: q3Target, options: q3Options.map(o => o.en), correct: q3Target.en };
   } else {
-    const wrongSpellings = [lmMakeTypo(q3w.en), lmMakeTypo(q3w.en)];
+    const wrongSpellings = lmMakeDistinctTypos(q3w.en, 2);
     const q3Options = lmShuffle([q3w.en, ...wrongSpellings]);
     q3 = { prompt: `Which is the correct spelling?`, visual: q3w, options: q3Options, correct: q3w.en };
   }
@@ -208,8 +293,8 @@ function grammarTipHTML(topic) {
 
 function renderReadingModule(container, level, topic) {
   const customContent = getCustomReadingContent(topic.id);
-  const content = customContent || buildReadingContent(level, topic);
-  const isCustom = !!customContent;
+  let content = customContent || buildReadingContent(level, topic);
+  let isCustom = !!customContent;
 
   function renderContent() {
     if (content.authored || isCustom) {
@@ -276,11 +361,12 @@ function renderReadingModule(container, level, topic) {
       <div class="edit-content-panel">
         <h4>✏️ Edit Reading Content</h4>
         <label>Reading Text (paste your story, dialogue, or article):</label>
-        <textarea id="editReadingText" style="width:100%;height:150px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:0.9rem">${content.text || ''}</textarea>
+        <textarea id="editReadingText" style="width:100%;height:150px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:0.9rem">${lmEscape(content.text || (content.sentences || []).map(s => s.text).join('\n'))}</textarea>
         <label style="margin-top:12px;display:block">Quick Check Questions (JSON format):</label>
-        <textarea id="editReadingQuiz" style="width:100%;height:120px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:0.85rem">${JSON.stringify(content.quiz || [], null, 2)}</textarea>
+        <textarea id="editReadingQuiz" style="width:100%;height:120px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;font-size:0.85rem">${lmEscape(JSON.stringify((content.quiz || []).map(q => ({ prompt: q.prompt, options: q.options, correct: q.correct })), null, 2))}</textarea>
         <div style="margin-top:16px;display:flex;gap:8px">
           <button id="saveReadingBtn" style="flex:1;padding:10px;background:#6f7d68;color:white;border:none;border-radius:6px;font-weight:700;cursor:pointer">💾 Save Content</button>
+          <button id="resetReadingBtn" style="flex:1;padding:10px;background:#fff;color:#c9435c;border:2px solid #c9435c;border-radius:6px;font-weight:700;cursor:pointer">↺ Restore Original</button>
           <button id="cancelReadingBtn" style="flex:1;padding:10px;background:#ccc;color:#333;border:none;border-radius:6px;font-weight:700;cursor:pointer">Cancel</button>
         </div>
       </div>
@@ -288,17 +374,36 @@ function renderReadingModule(container, level, topic) {
     document.body.appendChild(modal);
 
     document.getElementById('saveReadingBtn').addEventListener('click', () => {
-      const text = document.getElementById('editReadingText').value;
+      const text = document.getElementById('editReadingText').value.trim();
+      if (!text) { alert('The reading text cannot be empty.'); return; }
+      let quiz;
       try {
-        const quiz = JSON.parse(document.getElementById('editReadingQuiz').value);
-        saveCustomReadingContent(topic.id, text, quiz);
-        content.text = text;
-        content.quiz = quiz;
-        document.body.removeChild(modal);
-        renderContent();
+        quiz = JSON.parse(document.getElementById('editReadingQuiz').value || '[]');
       } catch (e) {
         alert('Invalid JSON in questions field: ' + e.message);
+        return;
       }
+      if (!Array.isArray(quiz)) { alert('Questions must be a JSON array.'); return; }
+      // A question whose `correct` isn't one of its own `options` can never
+      // be answered right — reject it here instead of shipping a broken quiz.
+      const bad = quiz.findIndex(q => !q || !Array.isArray(q.options) || q.options.length < 2 || !q.options.includes(q.correct));
+      if (bad >= 0) {
+        alert(`Question ${bad + 1} is invalid: it needs at least 2 "options" and a "correct" value that exactly matches one of them.`);
+        return;
+      }
+      saveCustomReadingContent(topic.id, text, quiz);
+      content = getCustomReadingContent(topic.id) || content;
+      isCustom = true;
+      document.body.removeChild(modal);
+      renderContent();
+    });
+    document.getElementById('resetReadingBtn').addEventListener('click', () => {
+      if (!confirm('Restore the original reading for this topic? Your custom text will be deleted.')) return;
+      localStorage.removeItem(`custom_reading_${topic.id}`);
+      content = buildReadingContent(level, topic);
+      isCustom = false;
+      document.body.removeChild(modal);
+      renderContent();
     });
     document.getElementById('cancelReadingBtn').addEventListener('click', () => {
       document.body.removeChild(modal);
@@ -321,13 +426,22 @@ function renderSentenceHTML(sentence) {
   return html;
 }
 
+// Options are matched by INDEX, not by their text: authored quizzes (and
+// generated spelling questions) can legitimately repeat a string, and
+// matching on text would light up every duplicate button at once.
 function renderQuizList(container, quiz) {
-  container.innerHTML = quiz.map((q, i) => `
+  const questions = (Array.isArray(quiz) ? quiz : []).filter(q => q && Array.isArray(q.options) && q.options.length);
+  if (questions.length === 0) {
+    container.innerHTML = `<p class="quiz-empty">No comprehension questions for this text yet.</p>`;
+    return;
+  }
+
+  container.innerHTML = questions.map((q, i) => `
     <div class="quiz-question" data-q="${i}">
-      <p class="quiz-prompt">${i + 1}. ${q.prompt}</p>
+      <p class="quiz-prompt">${i + 1}. ${lmEscape(q.prompt)}</p>
       ${q.visual ? lmWordVisual(q.visual, 'quiz-visual') : ''}
       <div class="quiz-options">
-        ${q.options.map(opt => `<button class="quiz-option" data-answer="${lmEscape(opt)}">${lmEscape(opt)}</button>`).join('')}
+        ${q.options.map((opt, oi) => `<button class="quiz-option" data-opt="${oi}">${lmEscape(opt)}</button>`).join('')}
       </div>
     </div>
   `).join('') + `<p class="quiz-result" id="quizResult" hidden></p>`;
@@ -336,25 +450,28 @@ function renderQuizList(container, quiz) {
   let correctCount = 0;
 
   container.querySelectorAll('.quiz-question').forEach((qEl, i) => {
-    const correct = quiz[i].correct;
+    const q = questions[i];
+    const correctIdx = q.options.findIndex(o => o === q.correct);
     qEl.querySelectorAll('.quiz-option').forEach(btn => {
       btn.addEventListener('click', () => {
         if (qEl.classList.contains('answered')) return;
         qEl.classList.add('answered');
         answeredCount++;
-        const isRight = btn.dataset.answer === correct;
+        const chosen = Number(btn.dataset.opt);
+        const isRight = correctIdx >= 0 ? chosen === correctIdx : q.options[chosen] === q.correct;
         if (isRight) { btn.classList.add('correct'); correctCount++; }
         else {
           btn.classList.add('wrong');
-          qEl.querySelectorAll('.quiz-option').forEach(b => { if (b.dataset.answer === correct) b.classList.add('correct'); });
+          const rightBtn = qEl.querySelector(`.quiz-option[data-opt="${correctIdx}"]`);
+          if (rightBtn) rightBtn.classList.add('correct');
         }
-        qEl.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+        qEl.querySelectorAll('.quiz-option').forEach(b => { b.disabled = true; });
 
-        if (answeredCount === quiz.length) {
-          const resultEl = document.getElementById('quizResult');
+        if (answeredCount === questions.length) {
+          const resultEl = container.querySelector('#quizResult');
           resultEl.hidden = false;
-          resultEl.textContent = `You got ${correctCount}/${quiz.length}! 🎉`;
-          if (typeof awardProgress === 'function') awardProgress(correctCount * 5, correctCount === quiz.length ? 1 : 0);
+          resultEl.textContent = `You got ${correctCount}/${questions.length}! 🎉`;
+          if (typeof awardProgress === 'function') awardProgress(correctCount * 5, correctCount === questions.length ? 1 : 0);
         }
       });
     });
@@ -378,32 +495,66 @@ function makeFillBlankExercise(topic, words) {
   const cat = lmCategory(topic);
   const target = words[Math.floor(Math.random() * words.length)];
   const distractors = lmShuffle(words.filter(w => w.id !== target.id)).slice(0, 2);
+  // Grammar topics store verb forms and whole example sentences as "words",
+  // where "My favorite past tense verb is …" reads as nonsense. Ask those
+  // topics to recall the item instead of rating it.
+  const isGrammar = /^Grammar:/i.test(topic.title || '');
+  const before = isGrammar
+    ? `Which ${cat.noun} fits here? →`
+    : `My favorite ${cat.noun} is`;
   return {
     type: 'fillblank',
-    before: `My favorite ${cat.noun} is`,
-    after: '.',
+    before,
+    after: isGrammar ? '' : '.',
     correct: target.en,
     options: lmShuffle([target, ...distractors]).map(w => w.en),
   };
 }
+
+// Spelling only works on a single, reasonably short word — a 30-character
+// example sentence would produce an unplayable tile tray. Pick the best
+// candidate from the topic rather than whatever happened to be at index 1.
+function pickSpellableWord(words) {
+  const scored = words
+    .map(w => ({ w, len: w.en.replace(/[^A-Za-z]/g, '').length }))
+    .filter(x => x.len >= 2 && x.len <= 12);
+  if (scored.length) return lmShuffle(scored)[0].w;
+  return words.reduce((best, w) =>
+    w.en.replace(/[^A-Za-z]/g, '').length < best.en.replace(/[^A-Za-z]/g, '').length ? w : best, words[0]);
+}
+
 function makeSpellingExercise(word) {
-  const letters = word.en.toUpperCase().replace(/[^A-Z]/g, '').split('');
+  // Grammar banks hold whole example sentences; spell the first real word of
+  // one rather than laying out 30 letter tiles nobody can solve.
+  const cleaned = word.en.replace(/[^A-Za-z\s]/g, '').trim();
+  const answer = (cleaned.replace(/\s/g, '').length <= 12 ? cleaned.replace(/\s/g, '') : (cleaned.split(/\s+/).find(t => t.length >= 3 && t.length <= 12) || cleaned.slice(0, 10)))
+    .toUpperCase();
+  const letters = answer.split('');
   const decoyPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(l => !letters.includes(l));
   const decoys = lmShuffle(decoyPool).slice(0, 2);
-  return { type: 'spelling', word, letters, tiles: lmShuffle([...letters, ...decoys]) };
+  return { type: 'spelling', word, answer, letters, tiles: lmShuffle([...letters, ...decoys]) };
 }
 
 function buildPracticeSession(level, topic) {
-  const reading = buildReadingContent(level, topic);
+  const reading = getCustomReadingContent(topic.id) || buildReadingContent(level, topic);
   const words = lmShuffle(topic.words);
-  const longSentences = lmShuffle(reading.sentences.filter(s => s.text.split(' ').length >= 4));
-  const s = (i) => longSentences[i % longSentences.length] || reading.sentences[i % reading.sentences.length];
+
+  // Word-order exercises need a sentence of at least 4 tokens to be worth
+  // doing. Every content source now exposes `sentences`, but an authored
+  // passage may be short or made of long single lines — so fall back
+  // through: long sentences -> any sentence -> a sentence built from the
+  // topic's own vocabulary, which always exists.
+  const all = Array.isArray(reading.sentences) ? reading.sentences : [];
+  const usable = lmShuffle(all.filter(s => s && s.text && s.text.trim().split(/\s+/).length >= 4));
+  const pool = usable.length ? usable : all.filter(s => s && s.text);
+  const fallback = { text: `I can see ${words[0].en} and ${words[1 % words.length].en}.` };
+  const s = (i) => pool.length ? pool[i % pool.length] : fallback;
 
   return [
     makeSentenceExercise(s(0)),
     makeListeningExercise(words[0 % words.length], topic),
     makeFillBlankExercise(topic, words),
-    makeSpellingExercise(words[1 % words.length]),
+    makeSpellingExercise(pickSpellableWord(words)),
     makeListeningExercise(words[2 % words.length], topic),
     makeSentenceExercise(s(1)),
   ];
@@ -645,7 +796,7 @@ function renderSpellingExercise(container, ex, onAnswered) {
     if (!correct) {
       const hint = document.createElement('p');
       hint.className = 'practice-hint';
-      hint.textContent = `Correct spelling: ${ex.word.en}`;
+      hint.textContent = `Correct spelling: ${ex.answer || ex.word.en}`;
       container.appendChild(hint);
     }
     onAnswered(correct);
@@ -668,13 +819,19 @@ function drawPhonicsWord(topicId) {
 
 function renderPhonicsStation(container, level, topic) {
   let word = drawPhonicsWord(topic.id);
+  // Tiles are tracked by uid, not by letter: a word with a repeated letter
+  // ("egg") would otherwise disable every copy of it as soon as one is used.
   let placed = [null, null, null];
   let tiles = [];
+
+  function makeTiles(w) {
+    return lmShuffle(w.split('')).map((letter, i) => ({ letter, uid: i }));
+  }
 
   function newWord() {
     word = drawPhonicsWord(topic.id);
     placed = [null, null, null];
-    tiles = lmShuffle(word.split(''));
+    tiles = makeTiles(word);
     paint();
   }
 
@@ -691,10 +848,10 @@ function renderPhonicsStation(container, level, topic) {
         <h4>🧪 Blending Machine</h4>
         <p class="practice-instruction">Place the letters in order, then blend them into a word!</p>
         <div class="blend-slots" id="blendSlots">
-          ${[0, 1, 2].map(i => `<button class="blend-slot" data-slot="${i}">${placed[i] || '_'}</button>`).join('')}
+          ${[0, 1, 2].map(i => `<button class="blend-slot" data-slot="${i}">${placed[i] ? placed[i].letter : '_'}</button>`).join('')}
         </div>
         <div class="sentence-tray" id="blendTray">
-          ${tiles.map((t, i) => `<button class="word-tile letter-tile" data-uid="${i}" ${placed.includes(t) ? 'disabled' : ''}>${t}</button>`).join('')}
+          ${tiles.map(t => `<button class="word-tile letter-tile" data-uid="${t.uid}" ${placed.some(p => p && p.uid === t.uid) ? 'disabled' : ''}>${t.letter}</button>`).join('')}
         </div>
         <div class="game-btn-row" style="margin-top:14px">
           <button class="game-btn" id="blendPlayBtn" ${placed.some(p => !p) ? 'disabled' : ''}>▶️ Blend It!</button>
@@ -708,13 +865,13 @@ function renderPhonicsStation(container, level, topic) {
       btn.addEventListener('click', () => lmSpeak(btn.dataset.letter, 0.7));
     });
 
-    let trayIndex = 0;
     container.querySelectorAll('#blendTray .word-tile').forEach(btn => {
       btn.addEventListener('click', () => {
+        if (btn.disabled) return;
         const nextSlot = placed.findIndex(p => !p);
         if (nextSlot === -1) return;
-        placed[nextSlot] = btn.textContent;
-        btn.disabled = true;
+        const uid = Number(btn.dataset.uid);
+        placed[nextSlot] = tiles.find(t => t.uid === uid);
         paint();
       });
     });
@@ -729,10 +886,11 @@ function renderPhonicsStation(container, level, topic) {
     });
 
     document.getElementById('blendPlayBtn').addEventListener('click', () => {
+      const spelled = placed.map(p => (p ? p.letter : ''));
       let i = 0;
       const speakNext = () => {
-        if (i < placed.length) { lmSpeak(placed[i], 0.6); i++; setTimeout(speakNext, 550); }
-        else setTimeout(() => lmSpeak(placed.join(''), 0.8), 300);
+        if (i < spelled.length) { lmSpeak(spelled[i], 0.6); i++; setTimeout(speakNext, 550); }
+        else setTimeout(() => lmSpeak(spelled.join(''), 0.8), 300);
       };
       speakNext();
     });
@@ -740,7 +898,7 @@ function renderPhonicsStation(container, level, topic) {
     document.getElementById('blendNextBtn').addEventListener('click', newWord);
   }
 
-  tiles = lmShuffle(word.split(''));
+  tiles = makeTiles(word);
   paint();
 }
 
@@ -772,6 +930,7 @@ function renderFlashcards(container, level, topic) {
           </div>
           <div class="flashcard-word-overlay" id="flashcardWordOverlay" hidden>
             ${lmEscape(word.en.toUpperCase())}
+            ${word.pt ? `<span class="flashcard-word-pt">${lmEscape(word.pt)}</span>` : ''}
           </div>
         </div>
         <div class="game-btn-row" style="justify-content:center;margin:14px 0">

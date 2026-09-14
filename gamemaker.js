@@ -74,7 +74,7 @@ function gameCardHTML(game) {
         <span class="gamemaker-type-badge">${meta.icon} ${meta.label}</span>
         <span class="gamemaker-word-count">${game.words.length} words</span>
       </div>
-      <h3>${game.title}</h3>
+      <h3>${igEscapeHtml(game.title)}</h3>
       <div class="gamemaker-card-actions">
         <button class="game-btn" data-test="${game.id}">▶️ Test</button>
         <button class="game-btn secondary" data-edit="${game.id}">✏️ Edit</button>
@@ -137,11 +137,7 @@ function openGameForm(listContainer, existing) {
   }
 
   function wordVisualHTML(word, cls) {
-    if (word.image) {
-      return `<div class="word-visual ${cls}"><img src="${word.image}" alt="${word.en || 'preview'}"
-        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji-fallback',textContent:'${word.emoji || '⭐'}'}))" /></div>`;
-    }
-    return `<div class="word-visual ${cls}"><span class="emoji-fallback">${word.emoji || '⭐'}</span></div>`;
+    return igWordVisualHTML({ ...word, emoji: word.emoji || '⭐', swatch: null }, cls);
   }
 
   paintRows();
@@ -213,9 +209,33 @@ function testCustomGame(game) {
   openModal(`
     <div class="modal-content-pad">
       <span class="level-pill" style="background:var(--primary-soft);color:var(--primary-dark)">${meta.icon} ${meta.label} · Custom Game</span>
-      <h3 id="modalTitle">${game.title}</h3>
+      <h3 id="modalTitle">${igEscapeHtml(game.title)}</h3>
+      <div class="game-picker" id="gmPlayPicker">
+        ${GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === game.type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
+      </div>
       <div class="game-mount" id="gameMount"></div>
     </div>
   `, true);
-  GameEngine.mount(document.getElementById('gameMount'), { id: `custom-${game.id}`, words: game.words }, game.type);
+
+  // A custom word bank works in every engine, not only the one it was saved
+  // with — let the teacher switch without going back to edit the game.
+  const picker = document.getElementById('gmPlayPicker');
+  picker.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-game]');
+    if (!btn) return;
+    picker.querySelectorAll('.game-pick-btn').forEach(b => b.classList.toggle('active', b === btn));
+    GameEngine.mount(
+      document.getElementById('gameMount'),
+      { id: `custom-${game.id}`, title: game.title, emoji: '🛠️', words: game.words },
+      btn.dataset.game
+    );
+  });
+  // Hangman prints `topic.title` as the category hint — a custom game has a
+  // `title` of its own, so pass it through instead of letting it read
+  // "Category: undefined".
+  GameEngine.mount(
+    document.getElementById('gameMount'),
+    { id: `custom-${game.id}`, title: game.title, emoji: '🛠️', words: game.words },
+    game.type
+  );
 }

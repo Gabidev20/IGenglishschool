@@ -2,9 +2,10 @@
    IGenglishschool — Data + App Logic
    ========================================================================== */
 
-// TIERS, LEVELS and the IMG() helper now live in topicsData.js (loaded
-// before this file) — see that file's header comment for the data schema
-// and how to add new topics/vocabulary.
+// TIERS and LEVELS live in topicsData.js (the shipped curriculum) and are
+// then merged with the teacher's own edits by contentStore.js — both load
+// before this file. See topicsData.js's header for the data schema and how
+// to add new topics/vocabulary.
 
 // ---------------------------------------------------------------------------
 // HELPERS
@@ -17,9 +18,11 @@ function levelSoftVar(hex) {
 // has no `image` at all (grammar topics and other abstract subjects) — the
 // emoji directly, so the browser never issues a doomed request for it.
 function mediaMarkup(image, emoji, alt, tag, className) {
-  if (!image) return `<${tag} class="${className} emoji-fallback">${emoji}</${tag}>`;
-  return `<img class="${className}" src="${image}" alt="${alt}" loading="lazy"
-    onerror="this.replaceWith(Object.assign(document.createElement('${tag}'),{className:'${className} emoji-fallback',textContent:'${emoji}'}))" />`;
+  const safeEmoji = igEscapeHtml(emoji || '🖼️');
+  if (!image) return `<${tag} class="${className} emoji-fallback">${safeEmoji}</${tag}>`;
+  return `<img class="${className}" src="${igEscapeHtml(image)}" alt="${igEscapeHtml(alt)}" loading="lazy"
+    data-fallback="${safeEmoji}" data-fallback-tag="${tag}" data-fallback-class="${igEscapeHtml(className)}"
+    onerror="igImageFallback(this)" />`;
 }
 
 // ---------------------------------------------------------------------------
@@ -230,10 +233,39 @@ const modalEl = document.querySelector('.modal');
 
 let activeGameType = 'hangman';
 
+// Game/editor modals open in the large frame. The teacher can push them all
+// the way to full screen for a projector or a shared screen, and that choice
+// sticks across modals for the rest of the session.
+const MODAL_FULLSCREEN_KEY = 'hopscotch_modal_fullscreen';
+let modalFullscreen = localStorage.getItem(MODAL_FULLSCREEN_KEY) === '1';
+const modalExpandBtn = document.getElementById('modalExpandBtn');
+
+function applyModalFullscreen() {
+  const on = modalFullscreen && modalEl.classList.contains('modal--game');
+  modalEl.classList.toggle('modal--fullscreen', on);
+  modalOverlay.classList.toggle('is-fullscreen', on);
+  if (modalExpandBtn) {
+    modalExpandBtn.textContent = modalFullscreen ? '🗗' : '⛶';
+    modalExpandBtn.title = modalFullscreen ? 'Exit full screen (F)' : 'Full screen (F)';
+    modalExpandBtn.hidden = !modalEl.classList.contains('modal--game');
+  }
+}
+
+function toggleModalFullscreen() {
+  modalFullscreen = !modalFullscreen;
+  localStorage.setItem(MODAL_FULLSCREEN_KEY, modalFullscreen ? '1' : '0');
+  applyModalFullscreen();
+  window.dispatchEvent(new Event('resize'));
+}
+
+if (modalExpandBtn) modalExpandBtn.addEventListener('click', toggleModalFullscreen);
+
 function openModal(html, wide) {
   modalBody.innerHTML = html;
+  modalBody.scrollTop = 0;
   modalOverlay.hidden = false;
   modalEl.classList.toggle('modal--game', Boolean(wide));
+  applyModalFullscreen();
   document.body.style.overflow = 'hidden';
 }
 
@@ -244,7 +276,8 @@ function closeModal() {
   if (typeof ArcadeGames !== 'undefined') ArcadeGames.stopAll();
   modalOverlay.hidden = true;
   modalBody.innerHTML = '';
-  modalEl.classList.remove('modal--game');
+  modalEl.classList.remove('modal--game', 'modal--fullscreen');
+  modalOverlay.classList.remove('is-fullscreen');
   document.body.style.overflow = '';
 }
 
@@ -253,7 +286,18 @@ modalOverlay.addEventListener('click', (e) => {
   if (e.target === modalOverlay) closeModal();
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !modalOverlay.hidden) closeModal();
+  if (modalOverlay.hidden) return;
+  const typing = e.target.matches && e.target.matches('input, textarea, select, [contenteditable="true"]');
+  if (e.key === 'Escape') {
+    // Escape inside a text field should let the field handle it first —
+    // closing the modal there would throw away whatever was being typed.
+    if (typing) { e.target.blur(); return; }
+    closeModal();
+    return;
+  }
+  if (!typing && (e.key === 'f' || e.key === 'F') && modalEl.classList.contains('modal--game')) {
+    toggleModalFullscreen();
+  }
 });
 
 function openTopicModal(levelId, topicId) {
@@ -387,6 +431,33 @@ const reportsNavBtn = document.getElementById('reportsNavBtn');
 if (reportsNavBtn) reportsNavBtn.addEventListener('click', () => openReportsModal());
 
 // ---------------------------------------------------------------------------
+// CONTENT & GAMES EDITOR — entry points, plus the re-render hook so an edit
+// is reflected everywhere (topic cards, level counts, class topic picker)
+// without a page reload.
+// ---------------------------------------------------------------------------
+// Open the editor on whatever the teacher is already looking at: the level
+// they filtered to, otherwise the first level of the active age tier.
+function currentEditorLevelId() {
+  if (activeLevelFilter !== 'all') return activeLevelFilter;
+  const first = LEVELS.find(l => l.tier === activeTierId);
+  return first ? first.id : (LEVELS[0] && LEVELS[0].id);
+}
+
+['editorNavBtn', 'editGamesBtn', 'editCurriculumBtn'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', () => openContentEditor(currentEditorLevelId()));
+});
+
+ContentStore.onChange(() => {
+  // A deleted level filter must not leave the grid stuck on an empty view.
+  if (activeLevelFilter !== 'all' && !LEVELS.some(l => l.id === activeLevelFilter)) activeLevelFilter = 'all';
+  renderLevelTabs();
+  renderLevelFilters();
+  renderTopics();
+  if (typeof refreshSessionDrawerIfOpen === 'function') refreshSessionDrawerIfOpen();
+});
+
+// ---------------------------------------------------------------------------
 // ARCADE GAMES — "Games" section Play Now buttons (Word Match / Quick Quiz /
 // Listen & Repeat). Level-adaptive standalone mini-games, separate from the
 // per-topic Game tab in the topic modal (games.js's GameEngine).
@@ -416,16 +487,7 @@ const ArcadeGames = (() => {
   }
   function pickN(arr, n) { return shuffle(arr).slice(0, n); }
 
-  function arcadeWordVisual(word, extraClass) {
-    if (word.swatch) return `<div class="word-visual swatch-visual ${extraClass || ''}" style="background:${word.swatch}"></div>`;
-    if (word.image) {
-      return `<div class="word-visual ${extraClass || ''}">
-        <img src="${word.image}" alt="${word.en}" loading="lazy"
-             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji-fallback',textContent:'${word.emoji}'}))" />
-      </div>`;
-    }
-    return `<div class="word-visual ${extraClass || ''}"><span class="emoji-fallback">${word.emoji}</span></div>`;
-  }
+  const arcadeWordVisual = (word, extraClass) => igWordVisualHTML(word, extraClass);
 
   let audioCtx = null;
   function ctx() {
@@ -923,11 +985,26 @@ const ArcadeGames = (() => {
       speakBtn.addEventListener('click', doSpeak);
       doSpeak();
 
+      // Changing the speed or the answer mode used to repaint the whole
+      // round, wiping the feedback panel and re-reading the word aloud even
+      // after the student had already answered. Once answered, only the
+      // toggle's own highlight changes.
       container.querySelectorAll('.listen-speed-btn').forEach(btn => {
-        btn.addEventListener('click', () => { speed = Number(btn.dataset.speed); paint(); });
+        btn.addEventListener('click', () => {
+          speed = Number(btn.dataset.speed);
+          if (answered) {
+            container.querySelectorAll('.listen-speed-btn').forEach(b => b.classList.toggle('active', b === btn));
+          } else {
+            paint();
+          }
+        });
       });
       container.querySelectorAll('.listen-mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => { mode = btn.dataset.mode; paint(); });
+        btn.addEventListener('click', () => {
+          if (answered) return;
+          mode = btn.dataset.mode;
+          paint();
+        });
       });
 
       if (mode === 'choice') {

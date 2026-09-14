@@ -27,11 +27,13 @@
        emoji: string           // fallback shown if `image` fails/omitted
        description: string     // one line, shown on the topic card
        cefr?: string           // e.g. 'A0', 'B1', 'B2-C1' — display-only label
-       image?: string          // optional real photo URL (Unsplash etc.)
+       image?: string          // optional real photo URL (Wikimedia Commons)
                                 // — omit it entirely for abstract topics
                                 //   (e.g. grammar points); the emoji fallback
                                 //   is a first-class, intentional choice,
                                 //   not a degraded state.
+                                // Topic covers are set from the topic's first
+                                // word that has a photo.
        words: Word[]           // the vocabulary/example bank — powers EVERY
                                 // game (Hangman, Memory, Match-up, Balloon
                                 // Pop, Word Search, Word Match, Quick Quiz,
@@ -74,8 +76,19 @@
                                 // reveals the word. Purely additive: every
                                 // game already works from `en`/`emoji`/
                                 // `image`/`swatch` alone.
-       image?: string          // optional real photo URL. Use the IMG()
-                                // helper below for images.unsplash.com URLs.
+       image?: string          // optional real photo URL.
+                                // ONLY give a photo to a CONCRETE NOUN.
+                                // Photo lookups on adjectives and abstract
+                                // nouns are wrong far more often than they
+                                // are right (Wikipedia's lead image for
+                                // "one" is Elvis Presley, for "sunny" it is
+                                // the actress Sunny Leone) — and a wrong
+                                // picture teaches the wrong word. Those
+                                // entries keep the emoji on purpose.
+                                // Wikimedia only serves thumbnail widths it
+                                // has already rendered: paste the URL
+                                // exactly as you got it, never rewrite the
+                                // "/500px-" part, or it answers 400.
        swatch?: string         // optional hex color — use INSTEAD of image
                                 // for topics like Colors where a solid color
                                 // swatch communicates the word better than
@@ -86,6 +99,18 @@
    each "word" is simply a key example/form (e.g. { en: 'Was' }) instead of a
    noun. This means grammar topics get Hangman/Memory/Reading/Practice for
    free, with zero changes to any rendering code.
+
+   -------------------------------------------------------------------------
+   THIS FILE IS THE *SHIPPED* CURRICULUM — NOT THE LIVE ONE
+   -------------------------------------------------------------------------
+   contentStore.js loads after this file and merges the teacher's own edits
+   (from the 🧩 Content & Games Editor, stored in localStorage) on top of
+   what's here, mutating LEVELS in place. So:
+     - editing THIS file changes the defaults everyone starts from;
+     - topics a teacher has edited in the app keep their edited version until
+       they press "Restore" on that topic (or "Reset everything").
+   Words/topics added here are picked up automatically by teachers who never
+   touched them.
 
    -------------------------------------------------------------------------
    HOW TO ADD CONTENT FROM THE CANVA DECKS
@@ -102,7 +127,10 @@
       'teens'), and a generated Lesson Plan.
    ========================================================================== */
 
-const IMG = (id) => `https://images.unsplash.com/photo-${id}?w=400&q=60&auto=format&fit=crop`;
+// Unused: the curriculum's photos come from Wikimedia Commons (free to use,
+// and served at fixed pre-rendered widths), pasted into `image` verbatim.
+// The 🧩 Content & Games Editor's "Find real photos" button fills new words
+// the same way.
 
 const TIERS = [
   { id: 'kids', label: 'Kids', ages: '3–6', icon: '🧸', color: '#a9b4a4' },
@@ -132,79 +160,92 @@ const LEVELS = [
             "id": "a_apple",
             "en": "A is for Apple",
             "pt": "A de Maçã",
-            "emoji": "🍎"
+            "emoji": "🍎",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
           },
           {
             "id": "b_ball",
             "en": "B is for Ball",
             "pt": "B de Bola",
-            "emoji": "⚽"
+            "emoji": "⚽",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Many_balls.jpg/500px-Many_balls.jpg"
           },
           {
             "id": "c_cat",
             "en": "C is for Cat",
             "pt": "C de Gato",
-            "emoji": "🐱"
+            "emoji": "🐱",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg"
           },
           {
             "id": "cat",
             "en": "cat",
             "pt": "gato",
-            "emoji": "🐱"
+            "emoji": "🐱",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg"
           },
           {
             "id": "dog",
             "en": "dog",
             "pt": "cachorro",
-            "emoji": "🐶"
+            "emoji": "🐶",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
           },
           {
             "id": "sun",
             "en": "sun",
             "pt": "sol",
-            "emoji": "☀️"
+            "emoji": "☀️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/The_Sun_in_white_light.jpg/500px-The_Sun_in_white_light.jpg"
           },
           {
             "id": "hat",
             "en": "hat",
             "pt": "chapéu",
-            "emoji": "🎩"
+            "emoji": "🎩",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Chapeaux_en_peau_de_castor.jpg/500px-Chapeaux_en_peau_de_castor.jpg"
           },
           {
             "id": "bed",
             "en": "bed",
             "pt": "cama",
-            "emoji": "🛏️"
+            "emoji": "🛏️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg/500px-2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg"
           },
           {
             "id": "pig",
             "en": "pig",
             "pt": "porco",
-            "emoji": "🐷"
+            "emoji": "🐷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Pig_farm_Vampula_1.jpg/500px-Pig_farm_Vampula_1.jpg"
           },
           {
             "id": "cup",
             "en": "cup",
             "pt": "xícara",
-            "emoji": "☕"
+            "emoji": "☕",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Cup_and_Saucer_LACMA_47.35.6a-b_%281_of_3%29.jpg/500px-Cup_and_Saucer_LACMA_47.35.6a-b_%281_of_3%29.jpg"
           },
           {
             "id": "bus",
             "en": "bus",
             "pt": "ônibus",
-            "emoji": "🚌"
+            "emoji": "🚌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/LTZ1328-19-20241030-160332.jpg/500px-LTZ1328-19-20241030-160332.jpg"
           },
           {
             "id": "pen",
             "en": "pen",
             "pt": "caneta",
-            "emoji": "🖊️"
+            "emoji": "🖊️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Carandache_Ecridor.jpg"
           },
           {
             "id": "box",
             "en": "box",
             "pt": "caixa",
-            "emoji": "📦"
+            "emoji": "📦",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/L%C3%A5da_-_Livrustkammaren_-_107142.tif/lossy-page1-500px-L%C3%A5da_-_Livrustkammaren_-_107142.tif.jpg"
           }
         ],
         "readingTime": {
@@ -229,7 +270,8 @@ const LEVELS = [
               "correct": "The dog"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
       },
       {
         "id": "greetings",
@@ -698,6 +740,277 @@ const LEVELS = [
             }
           ]
         }
+      },
+      {
+        "id": "animals",
+        "title": "Animals & Pets",
+        "emoji": "🐶",
+        "description": "Farm animals, pets and wild animals",
+        "cefr": "A0",
+        "grammarTip": "Use 'a' before a consonant sound (a dog, a cat) and 'an' before a vowel sound (an elephant). To talk about more than one animal, add -s: one dog, two dogs.",
+        "words": [
+          {
+            "id": "dog",
+            "en": "dog",
+            "pt": "cachorro",
+            "emoji": "🐶",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+          },
+          {
+            "id": "cat",
+            "en": "cat",
+            "pt": "gato",
+            "emoji": "🐱",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg"
+          },
+          {
+            "id": "rabbit",
+            "en": "rabbit",
+            "pt": "coelho",
+            "emoji": "🐰",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Oryctolagus_cuniculus_Rcdo.jpg/500px-Oryctolagus_cuniculus_Rcdo.jpg"
+          },
+          {
+            "id": "horse",
+            "en": "horse",
+            "pt": "cavalo",
+            "emoji": "🐴",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Nokota_Horses_cropped.jpg/500px-Nokota_Horses_cropped.jpg"
+          },
+          {
+            "id": "cow",
+            "en": "cow",
+            "pt": "vaca",
+            "emoji": "🐮",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg/500px-Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg"
+          },
+          {
+            "id": "pig",
+            "en": "pig",
+            "pt": "porco",
+            "emoji": "🐷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Pig_farm_Vampula_1.jpg/500px-Pig_farm_Vampula_1.jpg"
+          },
+          {
+            "id": "sheep",
+            "en": "sheep",
+            "pt": "ovelha",
+            "emoji": "🐑",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flock_of_sheep.jpg/500px-Flock_of_sheep.jpg"
+          },
+          {
+            "id": "chicken",
+            "en": "chicken",
+            "pt": "galinha",
+            "emoji": "🐔",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/500px-Male_and_female_chicken_sitting_together.jpg"
+          },
+          {
+            "id": "duck",
+            "en": "duck",
+            "pt": "pato",
+            "emoji": "🦆",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Bucephala-albeola-010.jpg/500px-Bucephala-albeola-010.jpg"
+          },
+          {
+            "id": "fish",
+            "en": "fish",
+            "pt": "peixe",
+            "emoji": "🐟",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Balantiocheilos_melanopterus_-_Karlsruhe_Zoo_02_%28cropped%29.jpg/500px-Balantiocheilos_melanopterus_-_Karlsruhe_Zoo_02_%28cropped%29.jpg"
+          },
+          {
+            "id": "bird",
+            "en": "bird",
+            "pt": "pássaro",
+            "emoji": "🐦",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Kleiber_Flug.jpg/500px-Kleiber_Flug.jpg"
+          },
+          {
+            "id": "elephant",
+            "en": "elephant",
+            "pt": "elefante",
+            "emoji": "🐘",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/500px-African_Bush_Elephant.jpg"
+          },
+          {
+            "id": "lion",
+            "en": "lion",
+            "pt": "leão",
+            "emoji": "🦁",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/020_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg/500px-020_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg"
+          },
+          {
+            "id": "monkey",
+            "en": "monkey",
+            "pt": "macaco",
+            "emoji": "🐵",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ubud_Monkey_Family.jpg/500px-Ubud_Monkey_Family.jpg"
+          },
+          {
+            "id": "turtle",
+            "en": "turtle",
+            "pt": "tartaruga",
+            "emoji": "🐢",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Turtle_diversity.jpg/500px-Turtle_diversity.jpg"
+          }
+        ],
+        "readingTime": {
+          "text": "I have a dog. His name is Rex.\nRex is brown and he is very happy.\nMy sister has a cat. The cat is small and white.\nAt the farm we can see a cow, a horse and three ducks.\nI love animals!",
+          "questions": [
+            {
+              "prompt": "What is the dog's name?",
+              "options": [
+                "Rex",
+                "Max",
+                "Bob"
+              ],
+              "correct": "Rex"
+            },
+            {
+              "prompt": "What colour is the cat?",
+              "options": [
+                "brown",
+                "white",
+                "black"
+              ],
+              "correct": "white"
+            }
+          ]
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+      },
+      {
+        "id": "fruitsfood",
+        "title": "Fruits & Food",
+        "emoji": "🍎",
+        "description": "Fruits, snacks and everyday food words",
+        "cefr": "A0",
+        "grammarTip": "Say 'I like apples' for things you like in general, and 'I want an apple' for one single thing. Use 'I don't like…' to say what you do not enjoy.",
+        "words": [
+          {
+            "id": "apple",
+            "en": "apple",
+            "pt": "maçã",
+            "emoji": "🍎",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
+          },
+          {
+            "id": "banana",
+            "en": "banana",
+            "pt": "banana",
+            "emoji": "🍌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg"
+          },
+          {
+            "id": "orange",
+            "en": "orange",
+            "pt": "laranja",
+            "emoji": "🍊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Oranges_-_whole-halved-segment.jpg/500px-Oranges_-_whole-halved-segment.jpg"
+          },
+          {
+            "id": "grape",
+            "en": "grape",
+            "pt": "uva",
+            "emoji": "🍇",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Grapes%2C_Rostov-on-Don%2C_Russia.jpg/500px-Grapes%2C_Rostov-on-Don%2C_Russia.jpg"
+          },
+          {
+            "id": "strawberry",
+            "en": "strawberry",
+            "pt": "morango",
+            "emoji": "🍓",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Garden_strawberry_%28Fragaria_%C3%97_ananassa%29_single2.jpg/500px-Garden_strawberry_%28Fragaria_%C3%97_ananassa%29_single2.jpg"
+          },
+          {
+            "id": "watermelon",
+            "en": "watermelon",
+            "pt": "melancia",
+            "emoji": "🍉",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg/500px-Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg"
+          },
+          {
+            "id": "lemon",
+            "en": "lemon",
+            "pt": "limão",
+            "emoji": "🍋",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/P1030323.JPG/500px-P1030323.JPG"
+          },
+          {
+            "id": "pineapple",
+            "en": "pineapple",
+            "pt": "abacaxi",
+            "emoji": "🍍",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg/500px-%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg"
+          },
+          {
+            "id": "bread",
+            "en": "bread",
+            "pt": "pão",
+            "emoji": "🍞",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Korb_mit_Br%C3%B6tchen.JPG/500px-Korb_mit_Br%C3%B6tchen.JPG"
+          },
+          {
+            "id": "cheese",
+            "en": "cheese",
+            "pt": "queijo",
+            "emoji": "🧀",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Cheese_platter.jpg/500px-Cheese_platter.jpg"
+          },
+          {
+            "id": "egg",
+            "en": "egg",
+            "pt": "ovo",
+            "emoji": "🥚",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Adolphe_Millot_oeufs-fixed.jpg/500px-Adolphe_Millot_oeufs-fixed.jpg"
+          },
+          {
+            "id": "milk",
+            "en": "milk",
+            "pt": "leite",
+            "emoji": "🥛",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glass_of_Milk_%2833657535532%29.jpg/500px-Glass_of_Milk_%2833657535532%29.jpg"
+          },
+          {
+            "id": "rice",
+            "en": "rice",
+            "pt": "arroz",
+            "emoji": "🍚",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/20201102.Hengnan.Hybrid_rice_Sanyou-1.6.jpg/500px-20201102.Hengnan.Hybrid_rice_Sanyou-1.6.jpg"
+          },
+          {
+            "id": "cake",
+            "en": "cake",
+            "pt": "bolo",
+            "emoji": "🍰",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Pound_layer_cake.jpg/500px-Pound_layer_cake.jpg"
+          }
+        ],
+        "readingTime": {
+          "text": "I am hungry. I want an apple.\nMy mum has bread, cheese and milk.\nMy favourite fruit is the banana. It is yellow and sweet.\nMy brother likes cake, but he does not like rice.\nWe eat together every day.",
+          "questions": [
+            {
+              "prompt": "What is the writer's favourite fruit?",
+              "options": [
+                "the apple",
+                "the banana",
+                "the orange"
+              ],
+              "correct": "the banana"
+            },
+            {
+              "prompt": "What does the brother NOT like?",
+              "options": [
+                "cake",
+                "rice",
+                "milk"
+              ],
+              "correct": "rice"
+            }
+          ]
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
       }
     ]
   },
@@ -839,43 +1152,50 @@ const LEVELS = [
             "id": "house",
             "en": "house",
             "pt": "casa",
-            "emoji": "🏠"
+            "emoji": "🏠",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/500px-Katsura_Imperial_Villa_in_Spring.jpg"
           },
           {
             "id": "kitchen",
             "en": "kitchen",
             "pt": "cozinha",
-            "emoji": "🍳"
+            "emoji": "🍳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/La_cuisine_%28mus%C3%A9e_dart_nouveau%2C_Riga%29_%287563655820%29.jpg/500px-La_cuisine_%28mus%C3%A9e_dart_nouveau%2C_Riga%29_%287563655820%29.jpg"
           },
           {
             "id": "bedroom",
             "en": "bedroom",
             "pt": "quarto",
-            "emoji": "🛏️"
+            "emoji": "🛏️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Berlin_Villa_Borsig_Tegel_asv2019-08_img09.jpg/500px-Berlin_Villa_Borsig_Tegel_asv2019-08_img09.jpg"
           },
           {
             "id": "bathroom",
             "en": "bathroom",
             "pt": "banheiro",
-            "emoji": "🛁"
+            "emoji": "🛁",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Modern_bath_rooms_and_appliances_-_a_few_suggestions_about_plumbing_valuable_to_home_builders_or_those_about_to_remodel_their_present_dwellings._%281903%29_%2814778178805%29.jpg/500px-thumbnail.jpg"
           },
           {
             "id": "livingroom",
             "en": "living room",
             "pt": "sala de estar",
-            "emoji": "🛋️"
+            "emoji": "🛋️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Sittingroom-edit1.jpg/500px-Sittingroom-edit1.jpg"
           },
           {
             "id": "garden",
             "en": "garden",
             "pt": "jardim",
-            "emoji": "🌳"
+            "emoji": "🌳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Brooklyn_Botanic_Garden_New_York_May_2015_010.jpg/500px-Brooklyn_Botanic_Garden_New_York_May_2015_010.jpg"
           },
           {
             "id": "door",
             "en": "door",
             "pt": "porta",
-            "emoji": "🚪"
+            "emoji": "🚪",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/L-door.png/500px-L-door.png"
           },
           {
             "id": "window",
@@ -887,13 +1207,15 @@ const LEVELS = [
             "id": "roof",
             "en": "roof",
             "pt": "telhado",
-            "emoji": "🏚️"
+            "emoji": "🏚️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Tak_-_Ystad-2022.jpg/500px-Tak_-_Ystad-2022.jpg"
           },
           {
             "id": "stairs",
             "en": "stairs",
             "pt": "escada",
-            "emoji": "🪜"
+            "emoji": "🪜",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/At_Victoria_and_Albert_Museum_2025_018.jpg/500px-At_Victoria_and_Albert_Museum_2025_018.jpg"
           },
           {
             "id": "table",
@@ -905,13 +1227,15 @@ const LEVELS = [
             "id": "chair",
             "en": "chair",
             "pt": "cadeira",
-            "emoji": "🪑"
+            "emoji": "🪑",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Set_of_fourteen_side_chairs_MET_DP110780.jpg/500px-Set_of_fourteen_side_chairs_MET_DP110780.jpg"
           },
           {
             "id": "bed",
             "en": "bed",
             "pt": "cama",
-            "emoji": "🛌"
+            "emoji": "🛌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg/500px-2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg"
           }
         ],
         "readingTime": {
@@ -936,7 +1260,8 @@ const LEVELS = [
               "correct": "In the garden"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/500px-Katsura_Imperial_Villa_in_Spring.jpg"
       },
       {
         "id": "clothesweather",
@@ -950,37 +1275,43 @@ const LEVELS = [
             "id": "shirt",
             "en": "shirt",
             "pt": "camisa",
-            "emoji": "👔"
+            "emoji": "👔",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/0/01/Charvet_shirt.jpg"
           },
           {
             "id": "tshirt",
             "en": "T-shirt",
             "pt": "camiseta",
-            "emoji": "👕"
+            "emoji": "👕",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Leipzig2012.jpg/500px-Leipzig2012.jpg"
           },
           {
             "id": "dress",
             "en": "dress",
             "pt": "vestido",
-            "emoji": "👗"
+            "emoji": "👗",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Afternoon_ensemble_MET_63.212a-b_CP4.jpg/500px-Afternoon_ensemble_MET_63.212a-b_CP4.jpg"
           },
           {
             "id": "shoes",
             "en": "shoes",
             "pt": "sapatos",
-            "emoji": "👟"
+            "emoji": "👟",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Skor_fr%C3%A5n_1700-_till_1960-talet_-_Nordiska_Museet_-_NMA.0056302.jpg/500px-Skor_fr%C3%A5n_1700-_till_1960-talet_-_Nordiska_Museet_-_NMA.0056302.jpg"
           },
           {
             "id": "socks",
             "en": "socks",
             "pt": "meias",
-            "emoji": "🧦"
+            "emoji": "🧦",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/HandKnittedWhiteLaceSock.jpg/500px-HandKnittedWhiteLaceSock.jpg"
           },
           {
             "id": "hat",
             "en": "hat",
             "pt": "chapéu",
-            "emoji": "🎩"
+            "emoji": "🎩",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Chapeaux_en_peau_de_castor.jpg/500px-Chapeaux_en_peau_de_castor.jpg"
           },
           {
             "id": "coat",
@@ -992,7 +1323,8 @@ const LEVELS = [
             "id": "jacket",
             "en": "jacket",
             "pt": "jaqueta",
-            "emoji": "🧥"
+            "emoji": "🧥",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Jacket2-1.jpg/500px-Jacket2-1.jpg"
           },
           {
             "id": "sunny",
@@ -1053,7 +1385,8 @@ const LEVELS = [
               "correct": "A coat"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/0/01/Charvet_shirt.jpg"
       },
       {
         "id": "pronouns",
@@ -1615,6 +1948,696 @@ const LEVELS = [
             }
           ]
         }
+      },
+      {
+        "id": "cardinalnumbers",
+        "title": "Cardinal Numbers (1–100)",
+        "emoji": "🔢",
+        "description": "Counting numbers: one, two, three… one hundred",
+        "cefr": "A1",
+        "grammarTip": "Cardinal numbers say HOW MANY: one, two, three. From 13 to 19 we add -teen (thirteen, fourteen). For the tens we add -ty (twenty, thirty). Between 21 and 99 we use a hyphen: twenty-one, forty-five.",
+        "words": [
+          {
+            "id": "one",
+            "en": "one",
+            "pt": "um",
+            "emoji": "1️⃣"
+          },
+          {
+            "id": "five",
+            "en": "five",
+            "pt": "cinco",
+            "emoji": "5️⃣"
+          },
+          {
+            "id": "ten",
+            "en": "ten",
+            "pt": "dez",
+            "emoji": "🔟"
+          },
+          {
+            "id": "eleven",
+            "en": "eleven",
+            "pt": "onze",
+            "emoji": "🕚"
+          },
+          {
+            "id": "twelve",
+            "en": "twelve",
+            "pt": "doze",
+            "emoji": "🕛"
+          },
+          {
+            "id": "thirteen",
+            "en": "thirteen",
+            "pt": "treze",
+            "emoji": "🔢"
+          },
+          {
+            "id": "fifteen",
+            "en": "fifteen",
+            "pt": "quinze",
+            "emoji": "🔢"
+          },
+          {
+            "id": "twenty",
+            "en": "twenty",
+            "pt": "vinte",
+            "emoji": "🔢"
+          },
+          {
+            "id": "thirty",
+            "en": "thirty",
+            "pt": "trinta",
+            "emoji": "🔢"
+          },
+          {
+            "id": "forty",
+            "en": "forty",
+            "pt": "quarenta",
+            "emoji": "🔢"
+          },
+          {
+            "id": "fifty",
+            "en": "fifty",
+            "pt": "cinquenta",
+            "emoji": "🔢"
+          },
+          {
+            "id": "seventy",
+            "en": "seventy",
+            "pt": "setenta",
+            "emoji": "🔢"
+          },
+          {
+            "id": "ninety",
+            "en": "ninety",
+            "pt": "noventa",
+            "emoji": "🔢"
+          },
+          {
+            "id": "onehundred",
+            "en": "one hundred",
+            "pt": "cem",
+            "emoji": "💯"
+          }
+        ],
+        "readingTime": {
+          "text": "There are thirty students in my class.\nMy grandmother is seventy years old.\nI have twelve pencils and fifteen crayons in my bag.\nThe book has one hundred pages.\nHow many brothers do you have? I have two.",
+          "questions": [
+            {
+              "prompt": "How old is the grandmother?",
+              "options": [
+                "seventy",
+                "thirty",
+                "fifteen"
+              ],
+              "correct": "seventy"
+            },
+            {
+              "prompt": "How many pages does the book have?",
+              "options": [
+                "twelve",
+                "thirty",
+                "one hundred"
+              ],
+              "correct": "one hundred"
+            }
+          ]
+        }
+      },
+      {
+        "id": "ordinalnumbers",
+        "title": "Ordinal Numbers (1st–31st)",
+        "emoji": "🥇",
+        "description": "Order and dates: first, second, third…",
+        "cefr": "A1",
+        "grammarTip": "Ordinal numbers say the ORDER or position: first, second, third. Most are the cardinal number + -th (four → fourth, six → sixth). Only 1st, 2nd and 3rd are irregular. We use them for dates: 'My birthday is on the twelfth of May.'",
+        "words": [
+          {
+            "id": "first",
+            "en": "first",
+            "pt": "primeiro",
+            "emoji": "🥇"
+          },
+          {
+            "id": "second",
+            "en": "second",
+            "pt": "segundo",
+            "emoji": "🥈"
+          },
+          {
+            "id": "third",
+            "en": "third",
+            "pt": "terceiro",
+            "emoji": "🥉"
+          },
+          {
+            "id": "fourth",
+            "en": "fourth",
+            "pt": "quarto",
+            "emoji": "4️⃣"
+          },
+          {
+            "id": "fifth",
+            "en": "fifth",
+            "pt": "quinto",
+            "emoji": "5️⃣"
+          },
+          {
+            "id": "sixth",
+            "en": "sixth",
+            "pt": "sexto",
+            "emoji": "6️⃣"
+          },
+          {
+            "id": "seventh",
+            "en": "seventh",
+            "pt": "sétimo",
+            "emoji": "7️⃣"
+          },
+          {
+            "id": "eighth",
+            "en": "eighth",
+            "pt": "oitavo",
+            "emoji": "8️⃣"
+          },
+          {
+            "id": "ninth",
+            "en": "ninth",
+            "pt": "nono",
+            "emoji": "9️⃣"
+          },
+          {
+            "id": "tenth",
+            "en": "tenth",
+            "pt": "décimo",
+            "emoji": "🔟"
+          },
+          {
+            "id": "twelfth",
+            "en": "twelfth",
+            "pt": "décimo segundo",
+            "emoji": "📅"
+          },
+          {
+            "id": "twentieth",
+            "en": "twentieth",
+            "pt": "vigésimo",
+            "emoji": "📅"
+          },
+          {
+            "id": "twentyfirst",
+            "en": "twenty-first",
+            "pt": "vigésimo primeiro",
+            "emoji": "📅"
+          },
+          {
+            "id": "thirtyfirst",
+            "en": "thirty-first",
+            "pt": "trigésimo primeiro",
+            "emoji": "📅"
+          }
+        ],
+        "readingTime": {
+          "text": "January is the first month of the year and December is the twelfth.\nMy birthday is on the third of April.\nTom finished the race in second place.\nWe live on the tenth floor of a tall building.\nToday is the twenty-first of June.",
+          "questions": [
+            {
+              "prompt": "Which month is the twelfth?",
+              "options": [
+                "January",
+                "June",
+                "December"
+              ],
+              "correct": "December"
+            },
+            {
+              "prompt": "In which place did Tom finish the race?",
+              "options": [
+                "first",
+                "second",
+                "third"
+              ],
+              "correct": "second"
+            }
+          ]
+        }
+      },
+      {
+        "id": "objectpronouns",
+        "title": "Grammar: Object Pronouns",
+        "emoji": "🎯",
+        "description": "me, you, him, her, it, us, them",
+        "cefr": "A1",
+        "grammarTip": "Subject pronouns do the action (I, you, he, she, it, we, they). Object pronouns RECEIVE the action and come after the verb or after a preposition: 'She helps me', 'I talk to him', 'Give it to us'.",
+        "words": [
+          {
+            "id": "me",
+            "en": "me",
+            "pt": "me / mim",
+            "emoji": "🙋"
+          },
+          {
+            "id": "you_obj",
+            "en": "you",
+            "pt": "você / te",
+            "emoji": "👉"
+          },
+          {
+            "id": "him",
+            "en": "him",
+            "pt": "ele / o / lhe",
+            "emoji": "👦"
+          },
+          {
+            "id": "her_obj",
+            "en": "her",
+            "pt": "ela / a / lhe",
+            "emoji": "👧"
+          },
+          {
+            "id": "it_obj",
+            "en": "it",
+            "pt": "o / a (coisa)",
+            "emoji": "📦"
+          },
+          {
+            "id": "us",
+            "en": "us",
+            "pt": "nos",
+            "emoji": "👨‍👩‍👧‍👦"
+          },
+          {
+            "id": "them",
+            "en": "them",
+            "pt": "eles / elas / os",
+            "emoji": "👥"
+          },
+          {
+            "id": "callme",
+            "en": "Call me",
+            "pt": "Me ligue",
+            "emoji": "📞"
+          },
+          {
+            "id": "helpus",
+            "en": "Help us",
+            "pt": "Nos ajude",
+            "emoji": "🤝"
+          },
+          {
+            "id": "iseeher",
+            "en": "I see her",
+            "pt": "Eu a vejo",
+            "emoji": "👀"
+          },
+          {
+            "id": "welikethem",
+            "en": "We like them",
+            "pt": "Nós gostamos deles",
+            "emoji": "💛"
+          },
+          {
+            "id": "givehim",
+            "en": "Give him the book",
+            "pt": "Dê o livro a ele",
+            "emoji": "📕"
+          },
+          {
+            "id": "withyou",
+            "en": "with you",
+            "pt": "com você",
+            "emoji": "🫂"
+          }
+        ],
+        "readingTime": {
+          "text": "My friend Ana is very kind. I like her a lot.\nShe always helps me with my homework.\nOur teacher gives us new books every month. We thank him after every class.\nThese are my cousins. I play with them on Sundays.\nDo you want to come with us?",
+          "questions": [
+            {
+              "prompt": "In 'I like her a lot', who does 'her' refer to?",
+              "options": [
+                "the teacher",
+                "Ana",
+                "the cousins"
+              ],
+              "correct": "Ana"
+            },
+            {
+              "prompt": "Which pronoun refers to the teacher?",
+              "options": [
+                "him",
+                "them",
+                "us"
+              ],
+              "correct": "him"
+            }
+          ]
+        }
+      },
+      {
+        "id": "possessives",
+        "title": "Grammar: Possessives",
+        "emoji": "🔑",
+        "description": "my/mine, your/yours and the 's form",
+        "cefr": "A1",
+        "grammarTip": "Possessive adjectives come BEFORE a noun: 'my book', 'her dog'. Possessive pronouns stand ALONE: 'That book is mine'. For people we also add 's: 'Ana's bag'. Careful: 'its' shows possession, 'it's' means 'it is'.",
+        "words": [
+          {
+            "id": "my",
+            "en": "my",
+            "pt": "meu / minha",
+            "emoji": "🤚"
+          },
+          {
+            "id": "mine",
+            "en": "mine",
+            "pt": "meu (sozinho)",
+            "emoji": "🙋"
+          },
+          {
+            "id": "your_poss",
+            "en": "your",
+            "pt": "seu / sua",
+            "emoji": "👉"
+          },
+          {
+            "id": "yours",
+            "en": "yours",
+            "pt": "seu (sozinho)",
+            "emoji": "🫵"
+          },
+          {
+            "id": "his_poss",
+            "en": "his",
+            "pt": "dele",
+            "emoji": "👦"
+          },
+          {
+            "id": "hers",
+            "en": "hers",
+            "pt": "dela (sozinho)",
+            "emoji": "👧"
+          },
+          {
+            "id": "its",
+            "en": "its",
+            "pt": "dele/dela (coisa)",
+            "emoji": "📦"
+          },
+          {
+            "id": "our",
+            "en": "our",
+            "pt": "nosso / nossa",
+            "emoji": "👨‍👩‍👧‍👦"
+          },
+          {
+            "id": "ours",
+            "en": "ours",
+            "pt": "nosso (sozinho)",
+            "emoji": "🏠"
+          },
+          {
+            "id": "their_poss",
+            "en": "their",
+            "pt": "deles / delas",
+            "emoji": "👥"
+          },
+          {
+            "id": "theirs",
+            "en": "theirs",
+            "pt": "deles (sozinho)",
+            "emoji": "👪"
+          },
+          {
+            "id": "anasbag",
+            "en": "Ana's bag",
+            "pt": "a bolsa da Ana",
+            "emoji": "👜"
+          },
+          {
+            "id": "thedogstail",
+            "en": "the dog's tail",
+            "pt": "o rabo do cachorro",
+            "emoji": "🐕"
+          },
+          {
+            "id": "whose",
+            "en": "Whose is this?",
+            "pt": "De quem é isto?",
+            "emoji": "❓"
+          }
+        ],
+        "readingTime": {
+          "text": "This is my room and that is my sister's room.\nHer room is bigger than mine, but my window is nicer.\nWhose bag is on the table? It is Ana's bag, not yours.\nThe dog is sleeping in its bed.\nOur house is small, but we love it. Is that car theirs?",
+          "questions": [
+            {
+              "prompt": "Whose room is bigger?",
+              "options": [
+                "the writer's room",
+                "the sister's room",
+                "Ana's room"
+              ],
+              "correct": "the sister's room"
+            },
+            {
+              "prompt": "Whose bag is on the table?",
+              "options": [
+                "Ana's",
+                "yours",
+                "the dog's"
+              ],
+              "correct": "Ana's"
+            }
+          ]
+        }
+      },
+      {
+        "id": "prepositionsplace",
+        "title": "Grammar: Prepositions of Place",
+        "emoji": "📍",
+        "description": "in, on, under, behind, between and more",
+        "cefr": "A1",
+        "grammarTip": "Prepositions of place say WHERE something is. Use 'in' for inside a closed space (in the box), 'on' for a surface (on the table) and 'at' for a point or place (at school). 'Between' needs two things; 'among' needs three or more.",
+        "words": [
+          {
+            "id": "in",
+            "en": "in",
+            "pt": "dentro de / em",
+            "emoji": "📦"
+          },
+          {
+            "id": "on",
+            "en": "on",
+            "pt": "sobre / em cima de",
+            "emoji": "🔛"
+          },
+          {
+            "id": "under",
+            "en": "under",
+            "pt": "embaixo de",
+            "emoji": "⬇️"
+          },
+          {
+            "id": "behind",
+            "en": "behind",
+            "pt": "atrás de",
+            "emoji": "🙈"
+          },
+          {
+            "id": "infrontof",
+            "en": "in front of",
+            "pt": "na frente de",
+            "emoji": "🚶"
+          },
+          {
+            "id": "between",
+            "en": "between",
+            "pt": "entre (dois)",
+            "emoji": "↔️"
+          },
+          {
+            "id": "nextto",
+            "en": "next to",
+            "pt": "ao lado de",
+            "emoji": "👫"
+          },
+          {
+            "id": "above",
+            "en": "above",
+            "pt": "acima de",
+            "emoji": "⬆️"
+          },
+          {
+            "id": "below",
+            "en": "below",
+            "pt": "abaixo de",
+            "emoji": "🔽"
+          },
+          {
+            "id": "near",
+            "en": "near",
+            "pt": "perto de",
+            "emoji": "📍"
+          },
+          {
+            "id": "inside",
+            "en": "inside",
+            "pt": "dentro",
+            "emoji": "🏠"
+          },
+          {
+            "id": "outside",
+            "en": "outside",
+            "pt": "fora",
+            "emoji": "🌳"
+          },
+          {
+            "id": "opposite",
+            "en": "opposite",
+            "pt": "em frente a",
+            "emoji": "🔁"
+          },
+          {
+            "id": "atschool",
+            "en": "at school",
+            "pt": "na escola",
+            "emoji": "🏫"
+          }
+        ],
+        "readingTime": {
+          "text": "My bag is on the chair and my shoes are under the bed.\nThe cat is sleeping inside the box.\nThere is a big tree behind our house and a small garden in front of it.\nThe bank is between the bakery and the post office.\nMy best friend sits next to me at school.",
+          "questions": [
+            {
+              "prompt": "Where are the shoes?",
+              "options": [
+                "on the chair",
+                "under the bed",
+                "inside the box"
+              ],
+              "correct": "under the bed"
+            },
+            {
+              "prompt": "Where is the bank?",
+              "options": [
+                "behind the house",
+                "next to the tree",
+                "between the bakery and the post office"
+              ],
+              "correct": "between the bakery and the post office"
+            }
+          ]
+        }
+      },
+      {
+        "id": "presentcontinuous",
+        "title": "Grammar: Present Continuous",
+        "emoji": "🏃",
+        "description": "am/is/are + verb-ing — happening now",
+        "cefr": "A1",
+        "grammarTip": "Present Continuous = am/is/are + verb-ing. Use it for actions happening right now ('She is reading') or around now ('I am studying English this year'). Add -ing to the verb; drop a final silent -e (write → writing).",
+        "words": [
+          {
+            "id": "amreading",
+            "en": "I am reading",
+            "pt": "Eu estou lendo",
+            "emoji": "📖"
+          },
+          {
+            "id": "isplaying",
+            "en": "He is playing",
+            "pt": "Ele está jogando",
+            "emoji": "⚽"
+          },
+          {
+            "id": "areeating",
+            "en": "They are eating",
+            "pt": "Eles estão comendo",
+            "emoji": "🍽️"
+          },
+          {
+            "id": "iswriting",
+            "en": "She is writing",
+            "pt": "Ela está escrevendo",
+            "emoji": "✍️"
+          },
+          {
+            "id": "arerunning",
+            "en": "We are running",
+            "pt": "Nós estamos correndo",
+            "emoji": "🏃"
+          },
+          {
+            "id": "isnotsleeping",
+            "en": "It is not sleeping",
+            "pt": "Não está dormindo",
+            "emoji": "😴"
+          },
+          {
+            "id": "areyoulistening",
+            "en": "Are you listening?",
+            "pt": "Você está ouvindo?",
+            "emoji": "👂"
+          },
+          {
+            "id": "working",
+            "en": "working",
+            "pt": "trabalhando",
+            "emoji": "💼"
+          },
+          {
+            "id": "studying",
+            "en": "studying",
+            "pt": "estudando",
+            "emoji": "📚"
+          },
+          {
+            "id": "singing",
+            "en": "singing",
+            "pt": "cantando",
+            "emoji": "🎤"
+          },
+          {
+            "id": "cooking_pc",
+            "en": "cooking",
+            "pt": "cozinhando",
+            "emoji": "🍳"
+          },
+          {
+            "id": "swimming_pc",
+            "en": "swimming",
+            "pt": "nadando",
+            "emoji": "🏊"
+          },
+          {
+            "id": "rightnow",
+            "en": "right now",
+            "pt": "agora mesmo",
+            "emoji": "⏰"
+          }
+        ],
+        "readingTime": {
+          "text": "Look at my family right now!\nMy mother is cooking in the kitchen and my father is reading the newspaper.\nMy brother and I are playing a video game.\nThe dog is sleeping under the table. The birds are singing outside.\nWhat are you doing right now?",
+          "questions": [
+            {
+              "prompt": "What is the mother doing?",
+              "options": [
+                "reading",
+                "cooking",
+                "singing"
+              ],
+              "correct": "cooking"
+            },
+            {
+              "prompt": "Where is the dog sleeping?",
+              "options": [
+                "under the table",
+                "in the kitchen",
+                "outside"
+              ],
+              "correct": "under the table"
+            }
+          ]
+        }
       }
     ]
   },
@@ -1639,7 +2662,8 @@ const LEVELS = [
             "id": "airport",
             "en": "airport",
             "pt": "aeroporto",
-            "emoji": "🛫"
+            "emoji": "🛫",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/500px-Airport_infrastructure.png"
           },
           {
             "id": "ticket",
@@ -1651,19 +2675,22 @@ const LEVELS = [
             "id": "passport",
             "en": "passport",
             "pt": "passaporte",
-            "emoji": "🛂"
+            "emoji": "🛂",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Passports-assorted.jpg/500px-Passports-assorted.jpg"
           },
           {
             "id": "suitcase",
             "en": "suitcase",
             "pt": "mala",
-            "emoji": "🧳"
+            "emoji": "🧳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Suitcase1.jpg/500px-Suitcase1.jpg"
           },
           {
             "id": "trainstation",
             "en": "train station",
             "pt": "estação de trem",
-            "emoji": "🚉"
+            "emoji": "🚉",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Milan_CentralStation_016_4294.jpg/500px-Milan_CentralStation_016_4294.jpg"
           },
           {
             "id": "platform",
@@ -1681,7 +2708,8 @@ const LEVELS = [
             "id": "boardingpass",
             "en": "boarding pass",
             "pt": "cartão de embarque",
-            "emoji": "🎟️"
+            "emoji": "🎟️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Air_Canada_Boarding_Pass_20170911.jpg/500px-Air_Canada_Boarding_Pass_20170911.jpg"
           },
           {
             "id": "journey",
@@ -1699,7 +2727,8 @@ const LEVELS = [
             "id": "backpack",
             "en": "backpack",
             "pt": "mochila",
-            "emoji": "🎒"
+            "emoji": "🎒",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Rucksack1.jpg/500px-Rucksack1.jpg"
           },
           {
             "id": "tourist",
@@ -1717,7 +2746,8 @@ const LEVELS = [
             "id": "map",
             "en": "map",
             "pt": "mapa",
-            "emoji": "🧭"
+            "emoji": "🧭",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/World_Map_1689.JPG/500px-World_Map_1689.JPG"
           }
         ],
         "readingTime": {
@@ -1742,7 +2772,8 @@ const LEVELS = [
               "correct": "There is a delay"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/500px-Airport_infrastructure.png"
       },
       {
         "id": "jobs",
@@ -1756,7 +2787,8 @@ const LEVELS = [
             "id": "teacher",
             "en": "teacher",
             "pt": "professor(a)",
-            "emoji": "👩‍🏫"
+            "emoji": "👩‍🏫",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg/500px-A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg"
           },
           {
             "id": "doctor",
@@ -1768,7 +2800,8 @@ const LEVELS = [
             "id": "engineer",
             "en": "engineer",
             "pt": "engenheiro(a)",
-            "emoji": "👷"
+            "emoji": "👷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Kitty_Joyner_-_Electrical_Engineer_-_GPN-2000-001933.jpg/500px-Kitty_Joyner_-_Electrical_Engineer_-_GPN-2000-001933.jpg"
           },
           {
             "id": "chef",
@@ -1798,7 +2831,8 @@ const LEVELS = [
             "id": "meeting",
             "en": "meeting",
             "pt": "reunião",
-            "emoji": "🧑‍💼"
+            "emoji": "🧑‍💼",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Sitzung_von_Wiki_Loves_Broadcast_im_Kontor_Hamburg.jpg/500px-Sitzung_von_Wiki_Loves_Broadcast_im_Kontor_Hamburg.jpg"
           },
           {
             "id": "colleague",
@@ -1859,7 +2893,8 @@ const LEVELS = [
               "correct": "She never has a break"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg/500px-A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg"
       },
       {
         "id": "health",
@@ -1879,7 +2914,8 @@ const LEVELS = [
             "id": "stomach",
             "en": "stomach",
             "pt": "estômago",
-            "emoji": "🤢"
+            "emoji": "🤢",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Gray1046.svg/500px-Gray1046.svg.png"
           },
           {
             "id": "fever",
@@ -1891,7 +2927,8 @@ const LEVELS = [
             "id": "cough",
             "en": "cough",
             "pt": "tosse",
-            "emoji": "🤧"
+            "emoji": "🤧",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Toux_impromptue.jpg"
           },
           {
             "id": "medicine",
@@ -1903,7 +2940,8 @@ const LEVELS = [
             "id": "nurse",
             "en": "nurse",
             "pt": "enfermeiro(a)",
-            "emoji": "👩‍⚕️"
+            "emoji": "👩‍⚕️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Nurse_checks_blood_pressure.jpg/500px-Nurse_checks_blood_pressure.jpg"
           },
           {
             "id": "injury",
@@ -1945,7 +2983,8 @@ const LEVELS = [
             "id": "throat",
             "en": "throat",
             "pt": "garganta",
-            "emoji": "😷"
+            "emoji": "😷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Throat_Diagram.png/500px-Throat_Diagram.png"
           },
           {
             "id": "appointment",
@@ -1976,7 +3015,8 @@ const LEVELS = [
               "correct": "She shouldn't exercise this week"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Gray1046.svg/500px-Gray1046.svg.png"
       },
       {
         "id": "hobbies",
@@ -1996,31 +3036,36 @@ const LEVELS = [
             "id": "guitar",
             "en": "guitar",
             "pt": "violão",
-            "emoji": "🎸"
+            "emoji": "🎸",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/GuitareClassique5.png/500px-GuitareClassique5.png"
           },
           {
             "id": "skateboard",
             "en": "skateboard",
             "pt": "skate",
-            "emoji": "🛹"
+            "emoji": "🛹",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Hainerberg_Skate_Park_Now_Open_%286317086%29.jpg/500px-Hainerberg_Skate_Park_Now_Open_%286317086%29.jpg"
           },
           {
             "id": "videogame",
             "en": "video game",
             "pt": "videogame",
-            "emoji": "🎮"
+            "emoji": "🎮",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Universum_TV_Multispiel_2006.jpg/500px-Universum_TV_Multispiel_2006.jpg"
           },
           {
             "id": "photography",
             "en": "photography",
             "pt": "fotografia",
-            "emoji": "📷"
+            "emoji": "📷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Photographer_Photographing_Nevada_Mountains.jpg/500px-Photographer_Photographing_Nevada_Mountains.jpg"
           },
           {
             "id": "boardgame",
             "en": "board game",
             "pt": "jogo de tabuleiro",
-            "emoji": "🎲"
+            "emoji": "🎲",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/US_Navy_110713-N-NT881-124_Personnel_Specialist_2nd_Class_James_Vail%2C_left%2C_and_Boatswain%27s_Mate_2nd_Class_Nathaniel_Eaton_play_board_games_with_ch.jpg/500px-US_Navy_110713-N-NT881-124_Personnel_Specialist_2nd_Class_James_Vail%2C_left%2C_and_Boatswain%27s_Mate_2nd_Class_Nathaniel_Eaton_play_board_games_with_ch.jpg"
           },
           {
             "id": "reading",
@@ -2032,7 +3077,8 @@ const LEVELS = [
             "id": "swimming",
             "en": "swimming",
             "pt": "natação",
-            "emoji": "🏊"
+            "emoji": "🏊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Depart4x100.jpg/500px-Depart4x100.jpg"
           },
           {
             "id": "collecting",
@@ -2044,25 +3090,29 @@ const LEVELS = [
             "id": "dancing",
             "en": "dancing",
             "pt": "dança",
-            "emoji": "💃"
+            "emoji": "💃",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Two_dancers.jpg/500px-Two_dancers.jpg"
           },
           {
             "id": "cycling",
             "en": "cycling",
             "pt": "ciclismo",
-            "emoji": "🚴"
+            "emoji": "🚴",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Cycliste_%C3%A0_place_d%27Italie-Paris_crop.jpg/500px-Cycliste_%C3%A0_place_d%27Italie-Paris_crop.jpg"
           },
           {
             "id": "drawing",
             "en": "drawing",
             "pt": "desenho",
-            "emoji": "✏️"
+            "emoji": "✏️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Da_Vinci_Vitruve_Luc_Viatour.jpg/500px-Da_Vinci_Vitruve_Luc_Viatour.jpg"
           },
           {
             "id": "karate",
             "en": "karate",
             "pt": "caratê",
-            "emoji": "🥋"
+            "emoji": "🥋",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Hanashiro_Chomo.jpg"
           },
           {
             "id": "team",
@@ -2093,7 +3143,8 @@ const LEVELS = [
               "correct": "Going cycling together"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/GuitareClassique5.png/500px-GuitareClassique5.png"
       },
       {
         "id": "environment",
@@ -2107,13 +3158,15 @@ const LEVELS = [
             "id": "pollution",
             "en": "pollution",
             "pt": "poluição",
-            "emoji": "🏭"
+            "emoji": "🏭",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Air_pollution3.jpg/500px-Air_pollution3.jpg"
           },
           {
             "id": "recycle",
             "en": "recycle",
             "pt": "reciclar",
-            "emoji": "♻️"
+            "emoji": "♻️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/RecyclingSymbolGreen.png/500px-RecyclingSymbolGreen.png"
           },
           {
             "id": "endangered",
@@ -2125,19 +3178,22 @@ const LEVELS = [
             "id": "forest",
             "en": "forest",
             "pt": "floresta",
-            "emoji": "🌳"
+            "emoji": "🌳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/500px-Aerial_view_of_the_Amazon_Rainforest.jpg"
           },
           {
             "id": "ocean",
             "en": "ocean",
             "pt": "oceano",
-            "emoji": "🌊"
+            "emoji": "🌊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Pacific_Ocean_as_viewed_from_GOES-18_on_September_23%2C_2023.jpg/500px-Pacific_Ocean_as_viewed_from_GOES-18_on_September_23%2C_2023.jpg"
           },
           {
             "id": "wildlife",
             "en": "wildlife",
             "pt": "vida selvagem",
-            "emoji": "🦁"
+            "emoji": "🦁",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Wildlife_at_Maasai_Mara_%28Lion%29.jpg/500px-Wildlife_at_Maasai_Mara_%28Lion%29.jpg"
           },
           {
             "id": "climate",
@@ -2155,7 +3211,8 @@ const LEVELS = [
             "id": "plastic",
             "en": "plastic",
             "pt": "plástico",
-            "emoji": "🥤"
+            "emoji": "🥤",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Plastic_household_items.jpg/500px-Plastic_household_items.jpg"
           },
           {
             "id": "species",
@@ -2173,7 +3230,8 @@ const LEVELS = [
             "id": "rainforest",
             "en": "rainforest",
             "pt": "floresta tropical",
-            "emoji": "🌴"
+            "emoji": "🌴",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Chiapas_Rainforest_crop.jpg/500px-Chiapas_Rainforest_crop.jpg"
           },
           {
             "id": "pollute",
@@ -2210,7 +3268,8 @@ const LEVELS = [
               "correct": "Recycle more and use less plastic"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Air_pollution3.jpg/500px-Air_pollution3.jpg"
       },
       {
         "id": "personality",
@@ -2919,6 +3978,474 @@ const LEVELS = [
             }
           ]
         }
+      },
+      {
+        "id": "describingpeople",
+        "title": "Describing People",
+        "emoji": "🧑",
+        "description": "Appearance, age and personality",
+        "cefr": "A2",
+        "grammarTip": "Use 'to be' for permanent features (She is tall) and 'to have (got)' for parts of the body (She has long hair). The usual adjective order is opinion → size → age → colour: 'a lovely tall young woman'.",
+        "words": [
+          {
+            "id": "tall",
+            "en": "tall",
+            "pt": "alto(a)",
+            "emoji": "📏"
+          },
+          {
+            "id": "short_p",
+            "en": "short",
+            "pt": "baixo(a)",
+            "emoji": "🧍"
+          },
+          {
+            "id": "slim",
+            "en": "slim",
+            "pt": "magro(a)",
+            "emoji": "🚶"
+          },
+          {
+            "id": "strong",
+            "en": "strong",
+            "pt": "forte",
+            "emoji": "💪"
+          },
+          {
+            "id": "curlyhair",
+            "en": "curly hair",
+            "pt": "cabelo cacheado",
+            "emoji": "👩‍🦱"
+          },
+          {
+            "id": "straighthair",
+            "en": "straight hair",
+            "pt": "cabelo liso",
+            "emoji": "👩"
+          },
+          {
+            "id": "blondhair",
+            "en": "blond hair",
+            "pt": "cabelo loiro",
+            "emoji": "👱"
+          },
+          {
+            "id": "beard",
+            "en": "beard",
+            "pt": "barba",
+            "emoji": "🧔"
+          },
+          {
+            "id": "glasses",
+            "en": "glasses",
+            "pt": "óculos",
+            "emoji": "👓"
+          },
+          {
+            "id": "friendly",
+            "en": "friendly",
+            "pt": "simpático(a)",
+            "emoji": "😊"
+          },
+          {
+            "id": "shy_p",
+            "en": "shy",
+            "pt": "tímido(a)",
+            "emoji": "😳"
+          },
+          {
+            "id": "hardworking",
+            "en": "hard-working",
+            "pt": "trabalhador(a)",
+            "emoji": "🛠️"
+          },
+          {
+            "id": "generous",
+            "en": "generous",
+            "pt": "generoso(a)",
+            "emoji": "🎁"
+          },
+          {
+            "id": "middleaged",
+            "en": "middle-aged",
+            "pt": "de meia-idade",
+            "emoji": "🧓"
+          }
+        ],
+        "readingTime": {
+          "text": "My best friend Lucas is seventeen. He is tall and slim, and he has short curly hair and brown eyes.\nHe wears glasses when he reads.\nLucas is very friendly and generous — he always shares his lunch with me.\nHis older sister is quiet and a little shy, but she is extremely hard-working.\nPeople say they look very similar.",
+          "questions": [
+            {
+              "prompt": "What kind of hair does Lucas have?",
+              "options": [
+                "long and straight",
+                "short and curly",
+                "blond and wavy"
+              ],
+              "correct": "short and curly"
+            },
+            {
+              "prompt": "How is Lucas's sister described?",
+              "options": [
+                "loud and funny",
+                "quiet, shy and hard-working",
+                "tall and strong"
+              ],
+              "correct": "quiet, shy and hard-working"
+            }
+          ]
+        }
+      },
+      {
+        "id": "describinganimals",
+        "title": "Describing Animals",
+        "emoji": "🦒",
+        "description": "Size, body parts, habitat and behaviour",
+        "cefr": "A2",
+        "grammarTip": "Describe animals with 'have/has got' for body parts (A giraffe has got a long neck) and 'can' for abilities (Penguins can swim but they can't fly). Say where they live with 'lives in': 'The camel lives in the desert.'",
+        "words": [
+          {
+            "id": "furry",
+            "en": "furry",
+            "pt": "peludo",
+            "emoji": "🧸"
+          },
+          {
+            "id": "feathers",
+            "en": "feathers",
+            "pt": "penas",
+            "emoji": "🪶",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg/500px-Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg"
+          },
+          {
+            "id": "scales",
+            "en": "scales",
+            "pt": "escamas",
+            "emoji": "🐍",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Keeled_scales_on_a_southern_watersnake_%2826954310414%29.jpg/500px-Keeled_scales_on_a_southern_watersnake_%2826954310414%29.jpg"
+          },
+          {
+            "id": "wings",
+            "en": "wings",
+            "pt": "asas",
+            "emoji": "🦅",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Wing.two.arp.600pix.jpg/500px-Wing.two.arp.600pix.jpg"
+          },
+          {
+            "id": "tail",
+            "en": "tail",
+            "pt": "cauda / rabo",
+            "emoji": "🐕",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/White-tailed_deer%2C_tail_up.jpg/500px-White-tailed_deer%2C_tail_up.jpg"
+          },
+          {
+            "id": "paws",
+            "en": "paws",
+            "pt": "patas",
+            "emoji": "🐾",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Paw_and_pads.jpg/500px-Paw_and_pads.jpg"
+          },
+          {
+            "id": "longneck",
+            "en": "a long neck",
+            "pt": "um pescoço longo",
+            "emoji": "🦒"
+          },
+          {
+            "id": "sharpteeth",
+            "en": "sharp teeth",
+            "pt": "dentes afiados",
+            "emoji": "🦈"
+          },
+          {
+            "id": "wild",
+            "en": "wild",
+            "pt": "selvagem",
+            "emoji": "🐅"
+          },
+          {
+            "id": "tame",
+            "en": "tame",
+            "pt": "manso",
+            "emoji": "🐈"
+          },
+          {
+            "id": "dangerous",
+            "en": "dangerous",
+            "pt": "perigoso",
+            "emoji": "⚠️"
+          },
+          {
+            "id": "harmless",
+            "en": "harmless",
+            "pt": "inofensivo",
+            "emoji": "🕊️"
+          },
+          {
+            "id": "livesinthe",
+            "en": "lives in the jungle",
+            "pt": "vive na selva",
+            "emoji": "🌴"
+          },
+          {
+            "id": "cansim",
+            "en": "can swim",
+            "pt": "sabe nadar",
+            "emoji": "🏊"
+          }
+        ],
+        "readingTime": {
+          "text": "The giraffe is the tallest animal in the world. It has got a very long neck and small horns on its head.\nGiraffes are harmless and they live in Africa, where they eat leaves from tall trees.\nThe shark is very different. It has sharp teeth and it can swim extremely fast.\nSome people think sharks are dangerous, but most of them never attack humans.\nWhich animal do you prefer?",
+          "questions": [
+            {
+              "prompt": "Why does the giraffe have a long neck?",
+              "options": [
+                "to swim faster",
+                "to eat leaves from tall trees",
+                "to defend itself"
+              ],
+              "correct": "to eat leaves from tall trees"
+            },
+            {
+              "prompt": "What is said about most sharks?",
+              "options": [
+                "they never attack humans",
+                "they live in Africa",
+                "they have got feathers"
+              ],
+              "correct": "they never attack humans"
+            }
+          ]
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg/500px-Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg"
+      },
+      {
+        "id": "describingplaces",
+        "title": "Describing Places",
+        "emoji": "🏞️",
+        "description": "Cities, nature and what a place is like",
+        "cefr": "A2",
+        "grammarTip": "Use 'There is' for one thing and 'There are' for more than one: 'There is a park and there are two museums.' To ask what a place is like, say: 'What is your city like?' — the answer uses adjectives, not 'like'.",
+        "words": [
+          {
+            "id": "crowded",
+            "en": "crowded",
+            "pt": "lotado",
+            "emoji": "👥"
+          },
+          {
+            "id": "quiet_pl",
+            "en": "quiet",
+            "pt": "tranquilo",
+            "emoji": "🤫"
+          },
+          {
+            "id": "noisy",
+            "en": "noisy",
+            "pt": "barulhento",
+            "emoji": "🔊"
+          },
+          {
+            "id": "modern",
+            "en": "modern",
+            "pt": "moderno",
+            "emoji": "🏙️"
+          },
+          {
+            "id": "ancient",
+            "en": "ancient",
+            "pt": "antigo",
+            "emoji": "🏛️"
+          },
+          {
+            "id": "beautiful_pl",
+            "en": "beautiful",
+            "pt": "bonito",
+            "emoji": "✨"
+          },
+          {
+            "id": "beach_pl",
+            "en": "beach",
+            "pt": "praia",
+            "emoji": "🏖️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Beach_at_Fort_Lauderdale.jpg/500px-Beach_at_Fort_Lauderdale.jpg"
+          },
+          {
+            "id": "mountain_pl",
+            "en": "mountain",
+            "pt": "montanha",
+            "emoji": "⛰️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/500px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg"
+          },
+          {
+            "id": "forest_pl",
+            "en": "forest",
+            "pt": "floresta",
+            "emoji": "🌲",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/500px-Aerial_view_of_the_Amazon_Rainforest.jpg"
+          },
+          {
+            "id": "village_pl",
+            "en": "village",
+            "pt": "vilarejo",
+            "emoji": "🏘️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Bourton-on-the-Water_2010_PD_09.JPG/500px-Bourton-on-the-Water_2010_PD_09.JPG"
+          },
+          {
+            "id": "square_pl",
+            "en": "square",
+            "pt": "praça",
+            "emoji": "⛲"
+          },
+          {
+            "id": "museum_pl",
+            "en": "museum",
+            "pt": "museu",
+            "emoji": "🖼️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Museo_Chileno_de_Arte_Precolombino_-_2020_-_10.jpg/500px-Museo_Chileno_de_Arte_Precolombino_-_2020_-_10.jpg"
+          },
+          {
+            "id": "thereisa",
+            "en": "There is a park",
+            "pt": "Há um parque",
+            "emoji": "🌳"
+          },
+          {
+            "id": "thereare",
+            "en": "There are shops",
+            "pt": "Há lojas",
+            "emoji": "🏬"
+          }
+        ],
+        "readingTime": {
+          "text": "I live in a small village near the mountains. It is very quiet and the air is clean.\nThere is one square with an old church, and there are two little shops.\nLast summer I visited the capital city. It was modern, noisy and extremely crowded.\nThere were beautiful museums everywhere, but I missed my village.\nWhat is your town like?",
+          "questions": [
+            {
+              "prompt": "How is the writer's village described?",
+              "options": [
+                "quiet with clean air",
+                "modern and crowded",
+                "noisy and dirty"
+              ],
+              "correct": "quiet with clean air"
+            },
+            {
+              "prompt": "What did the writer find in the capital city?",
+              "options": [
+                "one small square",
+                "beautiful museums",
+                "two little shops"
+              ],
+              "correct": "beautiful museums"
+            }
+          ]
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Beach_at_Fort_Lauderdale.jpg/500px-Beach_at_Fort_Lauderdale.jpg"
+      },
+      {
+        "id": "futurecontinuous",
+        "title": "Grammar: Future Continuous",
+        "emoji": "⏭️",
+        "description": "will be + verb-ing — in progress in the future",
+        "cefr": "A2",
+        "grammarTip": "Future Continuous = will be + verb-ing. Use it for an action that will be IN PROGRESS at a moment in the future: 'At 8 pm tomorrow I will be studying.' It is also a polite way to ask about plans: 'Will you be using the car tonight?'",
+        "words": [
+          {
+            "id": "willbestudying",
+            "en": "I will be studying",
+            "pt": "Eu estarei estudando",
+            "emoji": "📚"
+          },
+          {
+            "id": "willbeworking",
+            "en": "She will be working",
+            "pt": "Ela estará trabalhando",
+            "emoji": "💼"
+          },
+          {
+            "id": "willbetravelling",
+            "en": "We will be travelling",
+            "pt": "Nós estaremos viajando",
+            "emoji": "✈️"
+          },
+          {
+            "id": "willbesleeping",
+            "en": "They will be sleeping",
+            "pt": "Eles estarão dormindo",
+            "emoji": "😴"
+          },
+          {
+            "id": "wontbewaiting",
+            "en": "He won't be waiting",
+            "pt": "Ele não estará esperando",
+            "emoji": "⌛"
+          },
+          {
+            "id": "willyoube",
+            "en": "Will you be using it?",
+            "pt": "Você estará usando?",
+            "emoji": "❓"
+          },
+          {
+            "id": "thistimetomorrow",
+            "en": "this time tomorrow",
+            "pt": "a esta hora amanhã",
+            "emoji": "🕗"
+          },
+          {
+            "id": "atnoon",
+            "en": "at noon",
+            "pt": "ao meio-dia",
+            "emoji": "🕛"
+          },
+          {
+            "id": "allevening",
+            "en": "all evening",
+            "pt": "a noite toda",
+            "emoji": "🌙"
+          },
+          {
+            "id": "whileyouare",
+            "en": "while you are away",
+            "pt": "enquanto você estiver fora",
+            "emoji": "🚪"
+          },
+          {
+            "id": "willbewaiting",
+            "en": "I will be waiting",
+            "pt": "Eu estarei esperando",
+            "emoji": "🙋"
+          },
+          {
+            "id": "willbeliving",
+            "en": "They will be living there",
+            "pt": "Eles estarão morando lá",
+            "emoji": "🏠"
+          }
+        ],
+        "readingTime": {
+          "text": "This time tomorrow I will be flying to London.\nMy parents will be waiting for me at the airport.\nAt noon on Saturday my sister will be taking her piano exam, so she won't be answering her phone.\nWhile we are away, our neighbour will be looking after the cat.\nDon't worry — I will be thinking of you all week!",
+          "questions": [
+            {
+              "prompt": "What will the writer be doing this time tomorrow?",
+              "options": [
+                "flying to London",
+                "taking a piano exam",
+                "looking after the cat"
+              ],
+              "correct": "flying to London"
+            },
+            {
+              "prompt": "Why won't the sister answer her phone?",
+              "options": [
+                "she will be at the airport",
+                "she will be taking an exam",
+                "she will be sleeping"
+              ],
+              "correct": "she will be taking an exam"
+            }
+          ]
+        }
       }
     ]
   },
@@ -2949,7 +4476,8 @@ const LEVELS = [
             "id": "smartphone",
             "en": "smartphone",
             "pt": "smartphone/celular",
-            "emoji": "📱"
+            "emoji": "📱",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg/500px-Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg"
           },
           {
             "id": "app",
@@ -3046,7 +4574,8 @@ const LEVELS = [
               "correct": "He should change his password"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg/500px-Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg"
       },
       {
         "id": "shoppingmoney",
@@ -3060,13 +4589,15 @@ const LEVELS = [
             "id": "cash",
             "en": "cash",
             "pt": "dinheiro (em espécie)",
-            "emoji": "💵"
+            "emoji": "💵",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg/500px-Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg"
           },
           {
             "id": "creditcard",
             "en": "credit card",
             "pt": "cartão de crédito",
-            "emoji": "💳"
+            "emoji": "💳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Credit-cards.jpg/500px-Credit-cards.jpg"
           },
           {
             "id": "discount",
@@ -3157,7 +4688,8 @@ const LEVELS = [
               "correct": "Could you give me a discount?"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg/500px-Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg"
       },
       {
         "id": "sustainability",
@@ -3171,7 +4703,8 @@ const LEVELS = [
             "id": "recycling",
             "en": "recycling",
             "pt": "reciclagem",
-            "emoji": "♻️"
+            "emoji": "♻️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/RecyclingSymbolGreen.png/500px-RecyclingSymbolGreen.png"
           },
           {
             "id": "climatechange",
@@ -3183,13 +4716,15 @@ const LEVELS = [
             "id": "renewableenergy",
             "en": "renewable energy",
             "pt": "energia renovável",
-            "emoji": "🔋"
+            "emoji": "🔋",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Andasol_Guadix_4.jpg/500px-Andasol_Guadix_4.jpg"
           },
           {
             "id": "pollution",
             "en": "pollution",
             "pt": "poluição",
-            "emoji": "🏭"
+            "emoji": "🏭",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Air_pollution3.jpg/500px-Air_pollution3.jpg"
           },
           {
             "id": "reducewaste",
@@ -3201,19 +4736,22 @@ const LEVELS = [
             "id": "solarpanel",
             "en": "solar panel",
             "pt": "painel solar",
-            "emoji": "☀️"
+            "emoji": "☀️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Dji_fly_20230602_13826_PM_27_1719032149374_photo_optimized.jpg/500px-Dji_fly_20230602_13826_PM_27_1719032149374_photo_optimized.jpg"
           },
           {
             "id": "volunteer",
             "en": "volunteer",
             "pt": "voluntário",
-            "emoji": "🙌"
+            "emoji": "🙌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Vilnius_Marathon_2015_volunteers_by_Augustas_Didzgalvis.jpg/500px-Vilnius_Marathon_2015_volunteers_by_Augustas_Didzgalvis.jpg"
           },
           {
             "id": "endangeredspecies",
             "en": "endangered species",
             "pt": "espécie ameaçada",
-            "emoji": "🐾"
+            "emoji": "🐾",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Golden_lion_tamarin_portrait3.jpg/500px-Golden_lion_tamarin_portrait3.jpg"
           },
           {
             "id": "carbonfootprint",
@@ -3231,7 +4769,8 @@ const LEVELS = [
             "id": "deforestation",
             "en": "deforestation",
             "pt": "desmatamento",
-            "emoji": "🌳"
+            "emoji": "🌳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Annual_deforestation%2C_World%2C_2020_%28cropped%29.svg/500px-Annual_deforestation%2C_World%2C_2020_%28cropped%29.svg.png"
           },
           {
             "id": "donate",
@@ -3274,7 +4813,8 @@ const LEVELS = [
               "correct": "In order to use renewable energy instead of fossil fuels"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/RecyclingSymbolGreen.png/500px-RecyclingSymbolGreen.png"
       },
       {
         "id": "entertainment",
@@ -3312,7 +4852,8 @@ const LEVELS = [
             "id": "concert",
             "en": "concert",
             "pt": "show/concerto",
-            "emoji": "🎤"
+            "emoji": "🎤",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg/500px-D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg"
           },
           {
             "id": "streamingplatform",
@@ -3324,7 +4865,8 @@ const LEVELS = [
             "id": "festival",
             "en": "festival",
             "pt": "festival",
-            "emoji": "🎪"
+            "emoji": "🎪",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Holi_Festival_of_Colors_Utah%2C_United_States_2013.jpg/500px-Holi_Festival_of_Colors_Utah%2C_United_States_2013.jpg"
           },
           {
             "id": "cast",
@@ -3354,13 +4896,15 @@ const LEVELS = [
             "id": "subtitle",
             "en": "subtitle",
             "pt": "legenda",
-            "emoji": "💬"
+            "emoji": "💬",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Example_of_subtitles_%28Charade%2C_1963%29.jpg/500px-Example_of_subtitles_%28Charade%2C_1963%29.jpg"
           },
           {
             "id": "audience",
             "en": "audience",
             "pt": "plateia/público",
-            "emoji": "👥"
+            "emoji": "👥",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Batsheva_theater_crowd_in_Tel_Aviv_by_David_Shankbone.jpg/500px-Batsheva_theater_crowd_in_Tel_Aviv_by_David_Shankbone.jpg"
           }
         ],
         "readingTime": {
@@ -3385,7 +4929,8 @@ const LEVELS = [
               "correct": "More surprising than anything in that genre before"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg/500px-D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg"
       },
       {
         "id": "presentperfectcontinuous",
@@ -3926,6 +5471,111 @@ const LEVELS = [
                 "whose"
               ],
               "correct": "whose"
+            }
+          ]
+        }
+      },
+      {
+        "id": "twelvetenses",
+        "title": "Grammar: The 12 English Tenses",
+        "emoji": "🕰️",
+        "description": "The full map: simple, continuous, perfect, perfect continuous",
+        "cefr": "B1",
+        "grammarTip": "English has 3 times (past, present, future) × 4 aspects (simple, continuous, perfect, perfect continuous) = 12 tenses. Simple = a fact or habit. Continuous = in progress. Perfect = finished before another point. Perfect continuous = how long it had been going on.",
+        "words": [
+          {
+            "id": "t_pressimple",
+            "en": "I work every day",
+            "pt": "Present Simple — rotina",
+            "emoji": "🔁"
+          },
+          {
+            "id": "t_prescont",
+            "en": "I am working now",
+            "pt": "Present Continuous — agora",
+            "emoji": "⏳"
+          },
+          {
+            "id": "t_presperf",
+            "en": "I have worked here for years",
+            "pt": "Present Perfect — até agora",
+            "emoji": "✅"
+          },
+          {
+            "id": "t_presperfcont",
+            "en": "I have been working all morning",
+            "pt": "Present Perfect Continuous",
+            "emoji": "🔄"
+          },
+          {
+            "id": "t_pastsimple",
+            "en": "I worked yesterday",
+            "pt": "Past Simple — passado",
+            "emoji": "📅"
+          },
+          {
+            "id": "t_pastcont",
+            "en": "I was working at 8 pm",
+            "pt": "Past Continuous — em progresso",
+            "emoji": "🕗"
+          },
+          {
+            "id": "t_pastperf",
+            "en": "I had worked before she arrived",
+            "pt": "Past Perfect — antes de outro fato",
+            "emoji": "⏮️"
+          },
+          {
+            "id": "t_pastperfcont",
+            "en": "I had been working for hours",
+            "pt": "Past Perfect Continuous",
+            "emoji": "⌛"
+          },
+          {
+            "id": "t_futsimple",
+            "en": "I will work tomorrow",
+            "pt": "Future Simple — futuro",
+            "emoji": "➡️"
+          },
+          {
+            "id": "t_futcont",
+            "en": "I will be working at noon",
+            "pt": "Future Continuous",
+            "emoji": "⏭️"
+          },
+          {
+            "id": "t_futperf",
+            "en": "I will have worked by Friday",
+            "pt": "Future Perfect",
+            "emoji": "🏁"
+          },
+          {
+            "id": "t_futperfcont",
+            "en": "I will have been working for a year",
+            "pt": "Future Perfect Continuous",
+            "emoji": "♾️"
+          }
+        ],
+        "readingTime": {
+          "text": "English has twelve tenses, and they all follow the same pattern.\nRight now I am writing this text, but I write something every single day.\nI have written three pages today and I have been writing since seven o'clock.\nYesterday I wrote for two hours; at nine I was still writing, and by then I had already written the introduction because I had been planning it all week.\nTomorrow I will write again. At noon I will be writing chapter four, and by Friday I will have written the whole book — by then I will have been working on it for a year.",
+          "questions": [
+            {
+              "prompt": "How many tenses does English have, according to the text?",
+              "options": [
+                "eight",
+                "ten",
+                "twelve"
+              ],
+              "correct": "twelve"
+            },
+            {
+              "prompt": "Which tense is used in 'by Friday I will have written the whole book'?",
+              "options": [
+                "Future Simple",
+                "Future Perfect",
+                "Future Continuous"
+              ],
+              "correct": "Future Perfect"
             }
           ]
         }

@@ -29,18 +29,7 @@ const GameEngine = (() => {
     return shuffle(arr).slice(0, n);
   }
 
-  function wordVisualHTML(word, extraClass) {
-    if (word.swatch) {
-      return `<div class="word-visual swatch-visual ${extraClass || ''}" style="background:${word.swatch}"></div>`;
-    }
-    if (word.image) {
-      return `<div class="word-visual ${extraClass || ''}">
-        <img src="${word.image}" alt="${word.en}" loading="lazy"
-             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji-fallback',textContent:'${word.emoji}'}))" />
-      </div>`;
-    }
-    return `<div class="word-visual ${extraClass || ''}"><span class="emoji-fallback">${word.emoji}</span></div>`;
-  }
+  const wordVisualHTML = (word, extraClass) => igWordVisualHTML(word, extraClass);
 
   // Web Audio synthesized feedback sounds (no external audio files needed)
   let audioCtx = null;
@@ -525,9 +514,15 @@ const GameEngine = (() => {
       // Correctness is judged live against the on-screen target, not at spawn
       // time, so it always matches what the balloon currently displays.
       el.addEventListener('click', () => popBalloon(el, word));
+      // A balloon only counts as "missed" if it was still showing the CURRENT
+      // target when it floated off AND it was actually spawned for that
+      // target. Without the second check, a stale balloon left over from the
+      // previous word could be charged as a miss the moment the new target
+      // happened to use the same text.
+      const spawnedForRound = roundIndex;
       const endTimer = setTimeout(() => {
         if (el.isConnected) {
-          if (!ended && word.en === target.en) { misses++; updateHUD(); }
+          if (!ended && spawnedForRound === roundIndex && word.en === target.en) { misses++; updateHUD(); }
           el.remove();
         }
       }, duration * 1000);
@@ -669,7 +664,7 @@ const GameEngine = (() => {
   }
 
   function renderWordSearch(container, topic) {
-    let words, grid, placements, found, selecting, startCell, currentPath;
+    let words, grid, placements, found, selecting, startCell, currentPath, gridEl;
 
     function setup() {
       words = pickN(topic.words, Math.min(6, topic.words.length));
@@ -705,12 +700,7 @@ const GameEngine = (() => {
         ${won ? `<div class="game-end-banner win">🎉 All words found!</div>` : ''}
       `;
 
-      const cells = container.querySelectorAll('.ws-cell');
-      cells.forEach(cell => {
-        cell.addEventListener('mousedown', onStart);
-        cell.addEventListener('mouseenter', onEnter);
-        cell.addEventListener('touchstart', onTouchStart, { passive: true });
-      });
+      gridEl = container.querySelector('.wordsearch-grid');
       container.querySelector('[data-action="restart"]').addEventListener('click', setup);
 
       if (won) {
@@ -719,35 +709,51 @@ const GameEngine = (() => {
       }
     }
 
-    function onStart(e) {
+    // Highlighting the drag path used to call paint(), rebuilding all 100
+    // cells on every pointer move — which also tore the element out from
+    // under the pointer mid-drag. Only the `selecting` class changes while
+    // dragging, so toggle that directly and leave the DOM alone.
+    function paintSelection() {
+      if (!gridEl) return;
+      const inPath = new Set(currentPath.map(([r, c]) => `${r},${c}`));
+      gridEl.querySelectorAll('.ws-cell').forEach(cell => {
+        cell.classList.toggle('selecting', inPath.has(`${cell.dataset.r},${cell.dataset.c}`));
+      });
+    }
+
+    function cellFromPoint(x, y) {
+      const el = document.elementFromPoint(x, y);
+      return el && el.classList && el.classList.contains('ws-cell') ? el : null;
+    }
+
+    // Pointer events cover mouse, pen AND touch with one code path — the old
+    // handlers listened for touchstart but never touchmove, so the puzzle was
+    // unplayable on a tablet.
+    function onPointerDown(e) {
+      const cell = e.target.closest && e.target.closest('.ws-cell');
+      if (!cell) return;
+      e.preventDefault();
       selecting = true;
-      startCell = [Number(e.target.dataset.r), Number(e.target.dataset.c)];
+      startCell = [Number(cell.dataset.r), Number(cell.dataset.c)];
       currentPath = [startCell];
-      paint();
+      paintSelection();
     }
-    function onEnter(e) {
+    function onPointerMove(e) {
       if (!selecting) return;
-      const r = Number(e.target.dataset.r), c = Number(e.target.dataset.c);
-      extendPath(r, c);
-    }
-    function onTouchStart(e) {
-      onStart({ target: e.target });
+      const cell = cellFromPoint(e.clientX, e.clientY);
+      if (!cell) return;
+      extendPath(Number(cell.dataset.r), Number(cell.dataset.c));
     }
     function extendPath(r, c) {
       const [sr, sc] = startCell;
       const dr = Math.sign(r - sr), dc = Math.sign(c - sc);
-      const path = [];
-      let cr = sr, cc = sc;
-      path.push([cr, cc]);
-      const steps = Math.max(Math.abs(r - sr), Math.abs(c - sc));
       const isStraight = (dr === 0 || dc === 0 || Math.abs(r - sr) === Math.abs(c - sc));
       if (!isStraight) return;
-      for (let i = 1; i <= steps; i++) {
-        cr = sr + dr * i; cc = sc + dc * i;
-        path.push([cr, cc]);
-      }
+      const steps = Math.max(Math.abs(r - sr), Math.abs(c - sc));
+      const path = [[sr, sc]];
+      for (let i = 1; i <= steps; i++) path.push([sr + dr * i, sc + dc * i]);
       currentPath = path;
-      paint();
+      paintSelection();
     }
     function onEnd() {
       if (!selecting) return;
@@ -768,17 +774,28 @@ const GameEngine = (() => {
       paint();
     }
 
-    container.addEventListener('mouseup', onEnd);
-    container.addEventListener('touchend', onEnd);
+    container.addEventListener('pointerdown', onPointerDown);
+    container.addEventListener('pointermove', onPointerMove);
+    container.addEventListener('pointerup', onEnd);
+    container.addEventListener('pointercancel', onEnd);
+    // A drag that ends outside the grid should still be evaluated.
+    window.addEventListener('pointerup', onEnd);
 
     setup();
+    return () => window.removeEventListener('pointerup', onEnd);
   }
 
   // -------------------------------------------------------------------------
   // MOUNT / TEARDOWN
   // -------------------------------------------------------------------------
+  // Games that attach listeners outside their own container (Word Search
+  // binds a window-level pointerup so a drag ending off-grid still counts)
+  // return a teardown function; keep it so the next mount can run it.
+  let activeCleanup = null;
+
   function stopAll() {
     clearAllTimers();
+    if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
   }
 
   function mount(rawContainer, topic, type) {
@@ -794,12 +811,12 @@ const GameEngine = (() => {
       return;
     }
     switch (type) {
-      case 'hangman': renderHangman(container, topic); break;
-      case 'memory': renderMemory(container, topic); break;
-      case 'matchup': renderMatchup(container, topic); break;
-      case 'balloon': renderBalloon(container, topic); break;
-      case 'wordsearch': renderWordSearch(container, topic); break;
-      default: renderHangman(container, topic);
+      case 'hangman': activeCleanup = renderHangman(container, topic); break;
+      case 'memory': activeCleanup = renderMemory(container, topic); break;
+      case 'matchup': activeCleanup = renderMatchup(container, topic); break;
+      case 'balloon': activeCleanup = renderBalloon(container, topic); break;
+      case 'wordsearch': activeCleanup = renderWordSearch(container, topic); break;
+      default: activeCleanup = renderHangman(container, topic);
     }
   }
 

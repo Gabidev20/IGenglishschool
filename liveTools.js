@@ -142,7 +142,11 @@ const LiveTools = (() => {
           wheelAnimId = null;
           const n = CHALLENGES.length;
           const slice = (Math.PI * 2) / n;
-          const normalized = ((-rotation % (Math.PI * 2)) + Math.PI * 2 * 2) % (Math.PI * 2);
+          // The pointer sits at the TOP of the wheel (3π/2 in canvas angles,
+          // where 0 is 3 o'clock). Reading the slice from angle 0 announced a
+          // challenge a quarter-turn away from the one actually under the ▼.
+          const POINTER_ANGLE = Math.PI * 1.5;
+          const normalized = (((POINTER_ANGLE - rotation) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
           const index = Math.floor(normalized / slice) % n;
           banner.hidden = false;
           banner.innerHTML = `🎯 Your challenge: <p>${CHALLENGES[index]}</p>`;
@@ -168,7 +172,7 @@ const LiveTools = (() => {
         <div class="scoreboard-student" style="--accent-color:${student.color}">
           <span class="student-card-avatar" style="background:${student.color}">${student.avatar}</span>
           <div>
-            <strong>${student.name}</strong>
+            <strong>${igEscapeHtml(student.name)}</strong>
             <span class="scoreboard-stars">⭐ ${progress.stars} stars</span>
           </div>
         </div>
@@ -208,12 +212,14 @@ const LiveTools = (() => {
       return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
+    let finished = false;
+
     function paint() {
       container.innerHTML = `
         <div class="timer-presets">
           ${presets.map(p => `<button class="game-btn secondary" data-preset="${p}">${p < 60 ? p + 's' : (p / 60) + 'm'}</button>`).join('')}
         </div>
-        <div class="timer-display ${running ? 'running' : ''}" id="timerDisplay">${format(remaining)}</div>
+        <div class="timer-display ${running ? 'running' : ''} ${finished ? 'finished' : ''}" id="timerDisplay">${finished ? "Time's Up! 🔔" : format(remaining)}</div>
         <div class="game-btn-row" style="justify-content:center">
           <button class="game-btn" id="timerStartBtn" ${remaining === 0 ? 'disabled' : ''}>${running ? '⏸ Pause' : '▶ Start'}</button>
           <button class="game-btn secondary" id="timerResetBtn">🔄 Reset</button>
@@ -223,6 +229,7 @@ const LiveTools = (() => {
         btn.addEventListener('click', () => {
           clearInterval(intervalId);
           running = false;
+          finished = false;
           remaining = Number(btn.dataset.preset);
           paint();
         });
@@ -231,15 +238,18 @@ const LiveTools = (() => {
         if (remaining === 0) return;
         running = !running;
         if (running) {
+          finished = false;
           intervalId = track(setInterval(() => {
             remaining -= 1;
             if (remaining <= 0) {
               remaining = 0;
               running = false;
+              finished = true;
               clearInterval(intervalId);
               playBell();
-              document.getElementById('timerDisplay').textContent = "Time's Up! 🔔";
             }
+            // paint() runs last and reads `finished`, so the bell message is
+            // no longer written and then immediately overwritten with 00:00.
             paint();
           }, 1000));
         } else {
@@ -250,6 +260,7 @@ const LiveTools = (() => {
       document.getElementById('timerResetBtn').addEventListener('click', () => {
         clearInterval(intervalId);
         running = false;
+        finished = false;
         remaining = 0;
         paint();
       });
@@ -309,5 +320,5 @@ const LiveTools = (() => {
     });
   }
 
-  return { initFab, stopAll };
+  return { initFab, stopAll, openTool };
 })();

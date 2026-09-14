@@ -81,14 +81,14 @@ function computeQuarterStats(student, quarterId) {
 
 function suggestStrengths(student, stats) {
   if (stats.topics.length === 0) {
-    return `${student.name} showed great enthusiasm and a positive attitude in every class this term.`;
+    return `${student.name} demonstrou muito entusiasmo e uma atitude positiva em todas as aulas deste trimestre.`;
   }
-  const sample = stats.topics.slice(0, 2).join(' and ');
-  return `${student.name} demonstrated great enthusiasm during activities on ${sample}, with consistent participation and steady progress this term.`;
+  const sample = stats.topics.slice(0, 2).join(' e ');
+  return `${student.name} demonstrou muito entusiasmo nas atividades de ${sample}, com participação constante e progresso contínuo neste trimestre.`;
 }
 
 function suggestTeacherNote(student) {
-  return `It has been a real pleasure teaching ${student.name} this term! Please keep encouraging a little practice at home — every bit helps. 💛`;
+  return `Foi um prazer enorme dar aula para ${student.name} neste trimestre! Continue incentivando um pouquinho de prática em casa — cada minuto conta. 💛`;
 }
 
 // ---------------------------------------------------------------------------
@@ -111,7 +111,7 @@ function getFormDefaults(student, quarterId, quarterLabel) {
     period: quarterLabel,
     attendanceText: stats.totalClasses
       ? `${stats.presentCount} de ${stats.totalClasses} aulas concluídas - ${stats.attendanceRate}% de frequência`
-      : 'No classes logged yet for this quarter.',
+      : 'Nenhuma aula registrada neste trimestre ainda.',
     topics: stats.topics.slice(),
     skills: {
       listening: { level: 'Em desenvolvimento', comment: '' },
@@ -261,8 +261,6 @@ function renderReportForm(container, student, quarterId, quarterLabel) {
       <button class="game-btn secondary" id="rpPrintBtn">🖨️ Salvar em PDF / Imprimir</button>
     </div>
     <p class="report-save-confirm no-print" id="rpSaveConfirm" hidden></p>
-
-    <div id="reportPrintArea"></div>
   `;
 
   paintTopicTags();
@@ -293,7 +291,7 @@ function renderReportForm(container, student, quarterId, quarterLabel) {
 
   document.getElementById('rpSaveBtn').addEventListener('click', () => saveCurrentReport(student, quarterId, quarterLabel));
   document.getElementById('rpWhatsAppBtn').addEventListener('click', () => exportReportToWhatsApp());
-  document.getElementById('rpPrintBtn').addEventListener('click', () => printReport(student));
+  document.getElementById('rpPrintBtn').addEventListener('click', () => printReport(student, quarterId));
 }
 
 function gatherReportFormData() {
@@ -405,67 +403,184 @@ function fallbackCopyReportText(text, done) {
 }
 
 // ---------------------------------------------------------------------------
-// EXPORT — printable A4 letterhead (built fresh from the live form so print
-// output always matches what's on screen, regardless of how browsers print
-// form controls)
+// EXPORT — printable A4 letterhead
 // ---------------------------------------------------------------------------
-function printReport(student) {
-  const d = gatherReportFormData();
-  const area = document.getElementById('reportPrintArea');
+// The print sheet used to be rendered INSIDE the modal and revealed with
+// `visibility`. That fails in two ways: the modal is a fixed-height,
+// overflow:hidden flex box, so anything past the first page was clipped
+// away; and an absolutely-positioned block does not paginate. It is now
+// built as a direct child of <body>, in normal flow, with every sibling
+// display:none'd for print — so it flows onto as many A4 pages as it needs.
+// ---------------------------------------------------------------------------
 
-  area.innerHTML = `
-    <div class="report-letterhead">
-      <img src="logo.png" alt="IGenglishschool" class="report-letterhead-logo"
-           onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'report-letterhead-logo-fallback',textContent:'IGenglishschool'}))" />
-      <p class="report-letterhead-title">Quarterly Progress Report</p>
-    </div>
-    <div class="report-print-card">
-      <div class="report-print-header" style="--accent-color:${student.color}">
-        <span class="report-print-avatar" style="background:${student.color}">${student.avatar}</span>
-        <div>
-          <h2>${escapeHtmlLite(d.name)}</h2>
-          <p>${escapeHtmlLite(String(d.age))} yrs · ${escapeHtmlLite(d.levelLabel)} · ${escapeHtmlLite(d.period)}</p>
+const PRINT_ROOT_ID = 'reportPrintRoot';
+
+function nl2brEscaped(text) {
+  return escapeHtmlLite(text || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => line.trim())
+    .join('<br />')
+    .replace(/(<br \/>){3,}/g, '<br /><br />');
+}
+
+function getPrintRoot() {
+  let root = document.getElementById(PRINT_ROOT_ID);
+  if (!root) {
+    root = document.createElement('div');
+    root.id = PRINT_ROOT_ID;
+    document.body.appendChild(root);
+  }
+  return root;
+}
+
+// Resolves once every <img> inside `root` has either loaded or failed, so we
+// never call print() on a half-painted letterhead. Capped so a hung request
+// can't block the teacher indefinitely.
+function waitForImages(root, timeoutMs) {
+  const images = Array.from(root.querySelectorAll('img'));
+  if (images.length === 0) return Promise.resolve();
+  const settled = images.map(img => (img.complete && img.naturalWidth > 0)
+    ? Promise.resolve()
+    : new Promise(resolve => {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      }));
+  return Promise.race([
+    Promise.all(settled),
+    new Promise(resolve => setTimeout(resolve, timeoutMs || 2500)),
+  ]);
+}
+
+function skillRatingIcon(levelLabel) {
+  if (levelLabel === 'Excelente') return '★★★';
+  if (levelLabel === 'Consolidado') return '★★☆';
+  return '★☆☆';
+}
+
+function buildReportPrintHTML(student, d) {
+  const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  const stats = d.autoStats || {};
+
+  return `
+    <div class="report-sheet">
+      <div class="report-letterhead">
+        <img src="logo.png" alt="IGenglishschool" class="report-letterhead-logo"
+             data-fallback="IGenglishschool" onerror="igImageFallback(this)" />
+        <p class="report-letterhead-title">Boletim Trimestral · Quarterly Progress Report</p>
+      </div>
+
+      <div class="report-print-card">
+        <div class="report-print-header" style="--accent-color:${escapeAttrLite(student.color)}">
+          <span class="report-print-avatar" style="background:${escapeAttrLite(student.color)}">${escapeHtmlLite(student.avatar)}</span>
+          <div>
+            <h2>${escapeHtmlLite(d.name)}</h2>
+            <p>${escapeHtmlLite(String(d.age))} anos · ${escapeHtmlLite(d.levelLabel)} · ${escapeHtmlLite(d.period)}</p>
+          </div>
         </div>
-      </div>
 
-      <div class="report-print-section">
-        <h4>Frequência &amp; Engajamento</h4>
-        <p>${escapeHtmlLite(d.attendanceText)}</p>
-      </div>
+        <div class="report-print-section">
+          <h4>Frequência &amp; Engajamento</h4>
+          <p>${nl2brEscaped(d.attendanceText) || '—'}</p>
+          ${(stats.totalClasses || stats.totalStars) ? `
+            <ul class="report-print-stats">
+              <li><strong>${stats.totalClasses || 0}</strong> aulas</li>
+              <li><strong>${stats.attendanceRate || 0}%</strong> presença</li>
+              <li><strong>${stats.totalStars || 0}</strong> estrelas</li>
+              <li><strong>${stats.stickerCount || 0}</strong> stickers</li>
+            </ul>` : ''}
+        </div>
 
-      <div class="report-print-section">
-        <h4>Conteúdos &amp; Tópicos Trabalhados</h4>
-        <p>${d.topics.length ? d.topics.map(escapeHtmlLite).join(' · ') : '—'}</p>
-      </div>
+        <div class="report-print-section">
+          <h4>Conteúdos &amp; Tópicos Trabalhados</h4>
+          ${d.topics.length
+            ? `<ul class="report-print-topics">${d.topics.map(t => `<li>${escapeHtmlLite(t)}</li>`).join('')}</ul>`
+            : '<p>—</p>'}
+        </div>
 
-      <div class="report-print-section">
-        <h4>Habilidades Avaliadas</h4>
-        <table class="report-print-skills">
-          ${SKILL_KEYS.map(k => `
-            <tr>
-              <td class="skill-name">${SKILL_LABELS[k]}</td>
-              <td class="skill-level">${escapeHtmlLite(d.skills[k].level)}</td>
-              <td class="skill-comment">${escapeHtmlLite(d.skills[k].comment)}</td>
-            </tr>
-          `).join('')}
-        </table>
-      </div>
+        <div class="report-print-section">
+          <h4>Habilidades Avaliadas</h4>
+          <table class="report-print-skills">
+            <thead>
+              <tr><th>Habilidade</th><th>Nível</th><th>Observação</th></tr>
+            </thead>
+            <tbody>
+              ${SKILL_KEYS.map(k => `
+                <tr>
+                  <td class="skill-name">${escapeHtmlLite(SKILL_LABELS[k])}</td>
+                  <td class="skill-level"><span class="skill-stars">${skillRatingIcon(d.skills[k].level)}</span> ${escapeHtmlLite(d.skills[k].level)}</td>
+                  <td class="skill-comment">${escapeHtmlLite(d.skills[k].comment) || '—'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
 
-      <div class="report-print-section">
-        <h4>Destaques do Aluno</h4>
-        <p>${escapeHtmlLite(d.strengths) || '—'}</p>
-      </div>
+        <div class="report-print-section">
+          <h4>✨ Destaques do Aluno</h4>
+          <p>${nl2brEscaped(d.strengths) || '—'}</p>
+        </div>
 
-      <div class="report-print-section">
-        <h4>Próximos Passos</h4>
-        <p>${escapeHtmlLite(d.nextGoals) || '—'}</p>
-      </div>
+        <div class="report-print-section">
+          <h4>🎯 Próximos Passos</h4>
+          <p>${nl2brEscaped(d.nextGoals) || '—'}</p>
+        </div>
 
-      <div class="report-print-note">
-        <p>${escapeHtmlLite(d.teacherNote)}</p>
+        <div class="report-print-note">
+          <h4>💌 Mensagem da Teacher</h4>
+          <p>${nl2brEscaped(d.teacherNote) || '—'}</p>
+        </div>
+
+        <div class="report-print-signature">
+          <div class="report-signature-line"><span>Assinatura da Teacher</span></div>
+          <p class="report-print-date">Emitido em ${escapeHtmlLite(today)}</p>
+        </div>
       </div>
     </div>
   `;
+}
 
-  window.print();
+function printReport(student, quarterId) {
+  const d = gatherReportFormData();
+
+  if (!d.name) {
+    alert('Preencha o nome do aluno antes de imprimir.');
+    return;
+  }
+
+  d.autoStats = quarterId ? computeQuarterStats(student, quarterId) : null;
+
+  const root = getPrintRoot();
+  root.innerHTML = buildReportPrintHTML(student, d);
+
+  const btn = document.getElementById('rpPrintBtn');
+  const originalLabel = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Preparando…'; }
+
+  const restoreButton = () => {
+    if (btn && btn.isConnected) { btn.disabled = false; btn.textContent = originalLabel; }
+  };
+
+  // The sheet is deliberately NOT torn down after printing: window.print()
+  // returns as soon as the dialog is dismissed in some browsers and while
+  // the preview is still rasterising in others, so clearing it here can
+  // blank the output. It is display:none on screen and rebuilt from the
+  // live form on every print, so leaving it in place costs nothing.
+  window.addEventListener('afterprint', restoreButton, { once: true });
+
+  waitForImages(root, 3000)
+    .then(() => {
+      // setTimeout, not requestAnimationFrame: rAF is paused in background
+      // tabs, which would leave the button stuck on "Preparando…" forever.
+      setTimeout(() => {
+        try {
+          window.print();
+        } catch (e) {
+          alert('O navegador bloqueou a impressão. Use Ctrl+P para imprimir o boletim.');
+        } finally {
+          setTimeout(restoreButton, 400);
+        }
+      }, 60);
+    })
+    .catch(restoreButton);
 }
