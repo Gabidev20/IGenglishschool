@@ -28,7 +28,7 @@
    uma professora, tudo salvo neste navegador, sem login.
    ========================================================================== */
 
-const SUPABASE_URL = 'https://tyeohandmesleovcyidc.supabase.co/rest/v1/';       // ex.: 'https://abcdefghijkl.supabase.co'
+const SUPABASE_URL = 'https://tyeohandmesleovcyidc.supabase.co';       // ex.: 'https://abcdefghijkl.supabase.co'
 const SUPABASE_ANON_KEY = 'sb_publishable_W2yITaI98F168LrHebRtUQ_FH_SCJBG';  // ex.: 'sb_publishable_...'  ou  'eyJhbGciOi...'
 
 /* --------------------------------------------------------------------------
@@ -58,8 +58,20 @@ const SUPABASE_SCHEMA = 'public';
 const SUPABASE_TABLE_PREFIX = 'igenglish_';
 
 // --------------------------------------------------------------------------
+// The dashboard shows the REST endpoint (…supabase.co/rest/v1/) in several
+// places, and supabase-js appends `/rest/v1` itself — pasting that version
+// would make every request hit /rest/v1/rest/v1/…. Take whichever form was
+// copied and reduce it to the project origin.
+function igNormalizeSupabaseUrl(value) {
+  let u = String(value || '').trim();
+  if (!u) return '';
+  u = u.replace(/\/+$/, '');                       // trailing slashes
+  u = u.replace(/\/(rest|auth|storage|realtime)\/v\d+$/i, '');
+  return u.replace(/\/+$/, '');
+}
+
 const IG_SUPABASE = {
-  url: String(SUPABASE_URL || '').trim(),
+  url: igNormalizeSupabaseUrl(SUPABASE_URL),
   anonKey: String(SUPABASE_ANON_KEY || '').trim(),
   schema: String(SUPABASE_SCHEMA || 'public').trim() || 'public',
   tablePrefix: String(typeof SUPABASE_TABLE_PREFIX === 'string' ? SUPABASE_TABLE_PREFIX : '').trim(),
