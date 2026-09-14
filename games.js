@@ -221,6 +221,7 @@ const GameEngine = (() => {
             ${gallowsSVG(state.wrong)}
           </div>
           <div>
+            <div class="hangman-category">Category: ${topic.title}</div>
             ${wordVisualHTML(state.word, 'hangman-word-visual')}
             <div class="hangman-word">${slots}</div>
             <div class="keyboard">${keyboard}</div>
@@ -263,7 +264,7 @@ const GameEngine = (() => {
 
     function cardFaceFront(card) {
       if (card.kind === 'visual') return wordVisualHTML(card.word);
-      return `<span class="memory-word-label">${card.word.en}</span>`;
+      return `<span class="memory-word-label">${card.word.en.toUpperCase()}</span>`;
     }
 
     function paint() {
@@ -275,17 +276,19 @@ const GameEngine = (() => {
             <button class="game-btn secondary" data-action="restart">🔄 Play Again</button>
           </div>
         </div>
-        <div class="memory-grid">
-          ${cards.map((card, i) => `
-            <button class="memory-card ${flipped.includes(i) || matched.has(i) ? 'flipped' : ''} ${matched.has(i) ? 'matched' : ''}" data-index="${i}">
-              <div class="memory-card-inner">
-                <div class="memory-face back">❓</div>
-                <div class="memory-face front">${cardFaceFront(card)}</div>
-              </div>
-            </button>
-          `).join('')}
+        <div class="memory-grid-wrapper">
+          <div class="memory-grid">
+            ${cards.map((card, i) => `
+              <button class="memory-card ${flipped.includes(i) || matched.has(i) ? 'flipped' : ''} ${matched.has(i) ? 'matched' : ''}" data-index="${i}">
+                <div class="memory-card-inner">
+                  <div class="memory-face back">❓</div>
+                  <div class="memory-face front">${cardFaceFront(card)}</div>
+                </div>
+              </button>
+            `).join('')}
+          </div>
+          ${won ? `<div class="game-end-banner win" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100">🎉 Great memory! <p>Solved in ${moves} moves.</p></div>` : ''}
         </div>
-        ${won ? `<div class="game-end-banner win">🎉 Great memory! <p>Solved in ${moves} moves.</p></div>` : ''}
       `;
 
       container.querySelectorAll('.memory-card').forEach(btn => {

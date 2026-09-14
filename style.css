@@ -665,7 +665,7 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 .modal {
   background: var(--surface);
   border-radius: var(--radius-xl);
-  max-width: 640px;
+  max-width: 1050px;
   width: 100%;
   max-height: 90vh;
   display: flex;
@@ -811,13 +811,13 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
    the close button pinned, while the shrunk media banner below reclaims the
    vertical space games actually need. */
 .modal.modal--game {
-  max-width: 900px;
+  max-width: 1050px;
   width: 95vw;
   max-height: 92vh;
 }
 .modal--game .modal-media {
   aspect-ratio: 21 / 6;
-  max-height: 110px;
+  max-height: 130px;
 }
 .modal--game .modal-media .emoji-fallback { font-size: 2.6rem; }
 
@@ -943,6 +943,15 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 /* clamp() ties these to viewport height, so the whole layout shrinks
    proportionally on short/split-screen windows instead of overflowing. */
 .gallows-svg { width: 100%; height: auto; max-width: clamp(80px, 14vh, 150px); }
+.hangman-category {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 .hangman-word-visual {
   width: 100%;
   max-width: clamp(46px, 9vh, 140px);
@@ -999,6 +1008,14 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
    viewport, and grid-auto-rows:1fr divides that fixed height evenly across
    rows so all 12 cards are always visible together, at whatever size fits —
    never overflowing into a scrollbar. */
+.memory-grid-wrapper {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .memory-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1054,10 +1071,12 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 .memory-face.front .word-visual { width: 100%; height: 70%; font-size: 1.8rem; min-height: 0; }
 .memory-face.front .word-visual img { object-fit: contain; }
 .memory-face.front .memory-word-label {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
   color: var(--ink);
-  padding: 0 4px;
+  padding: 0 8px;
+  text-align: center;
+  word-break: break-word;
 }
 .memory-card.matched .memory-face.front { border-color: var(--a0); background: var(--a0-soft); animation: matchPulse 0.5s ease; }
 @keyframes matchPulse { 0% { box-shadow: 0 0 0 0 rgba(6,214,160,0.5); } 100% { box-shadow: 0 0 0 12px rgba(6,214,160,0); } }
@@ -1115,9 +1134,9 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 .balloon-stage {
   position: relative;
   flex: 1 1 auto;
-  height: 340px;
-  min-height: 220px;
-  max-height: 420px;
+  height: 480px;
+  min-height: 450px;
+  max-height: 480px;
   border-radius: var(--radius-md);
   background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent-soft) 55%, white), var(--bg));
   overflow: hidden;
@@ -1771,7 +1790,36 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 }
 .flash-mode-btn.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
 
-.flashcard { text-align: center; }
+.flashcard-container {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.flashcard {
+  text-align: center;
+  position: relative;
+}
+.flashcard-word-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(30, 25, 35, 0.88);
+  color: #faefc2;
+  padding: 12px 32px;
+  border-radius: 999px;
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 10;
+  white-space: nowrap;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .flashcard-translation {
   margin: 10px 0 0;
   font-size: 0.95rem;
@@ -1788,6 +1836,7 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
   border-radius: var(--radius-lg);
   font-size: 5rem;
   transition: opacity 0.3s ease, filter 2.5s ease;
+  position: relative;
 }
 .flashcard-media.peek-mode.hidden-media { opacity: 0; }
 .flashcard-media.blur-mode.blurred { filter: blur(22px); }

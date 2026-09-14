@@ -765,15 +765,19 @@ function renderFlashcards(container, level, topic) {
         </div>
         <span class="game-status-pill">${index + 1} / ${words.length}</span>
       </div>
-      <div class="flashcard">
-        <div class="flashcard-media ${mode === 'blur' ? 'blur-mode blurred' : 'peek-mode hidden-media'}" id="flashcardMedia">
-          ${lmWordVisual(word, 'flashcard-visual')}
+      <div class="flashcard-container">
+        <div class="flashcard">
+          <div class="flashcard-media ${mode === 'blur' ? 'blur-mode blurred' : 'peek-mode hidden-media'}" id="flashcardMedia">
+            ${lmWordVisual(word, 'flashcard-visual')}
+          </div>
+          <div class="flashcard-word-overlay" id="flashcardWordOverlay" hidden>
+            ${lmEscape(word.en.toUpperCase())}
+          </div>
         </div>
         <div class="game-btn-row" style="justify-content:center;margin:14px 0">
           ${mode === 'peek' ? `<button class="game-btn" id="peekBtn">👀 Peek!</button>` : `<button class="game-btn" id="revealBlurBtn">🌫️ Reveal</button>`}
-          <button class="game-btn secondary" id="showWordBtn">${revealed ? lmEscape(word.en) : 'Show Word'}</button>
+          <button class="game-btn secondary" id="showWordBtn">${revealed ? 'Word Revealed' : 'Show Word'}</button>
         </div>
-        <p class="flashcard-translation" id="flashcardTranslation" hidden></p>
       </div>
       <div class="game-btn-row" style="justify-content:center;margin-top:10px">
         <button class="game-btn secondary" id="prevBtn">⬅ Prev</button>
@@ -786,6 +790,9 @@ function renderFlashcards(container, level, topic) {
     });
 
     const media = document.getElementById('flashcardMedia');
+    const wordOverlay = document.getElementById('flashcardWordOverlay');
+    const showWordBtn = document.getElementById('showWordBtn');
+
     if (mode === 'peek') {
       document.getElementById('peekBtn').addEventListener('click', () => {
         media.classList.remove('hidden-media');
@@ -797,14 +804,12 @@ function renderFlashcards(container, level, topic) {
       });
     }
 
-    document.getElementById('showWordBtn').addEventListener('click', (e) => {
+    showWordBtn.addEventListener('click', (e) => {
+      if (revealed) return;
       revealed = true;
-      e.target.textContent = word.en;
-      if (word.pt) {
-        const t = document.getElementById('flashcardTranslation');
-        t.textContent = word.pt;
-        t.hidden = false;
-      }
+      wordOverlay.hidden = false;
+      showWordBtn.textContent = 'Word Revealed';
+      lmSpeak(word.en, 0.9);
     });
     document.getElementById('prevBtn').addEventListener('click', () => { index = (index - 1 + words.length) % words.length; paint(); });
     document.getElementById('nextBtn').addEventListener('click', () => { index = (index + 1) % words.length; paint(); });
