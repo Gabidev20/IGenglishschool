@@ -680,8 +680,15 @@ function ceOpenPlayTester(level, topic) {
 
   openModal(`
     <div class="modal-content-pad">
-      <span class="level-pill" style="background:${level.color}22;color:${level.color}">${igEscapeHtml(level.code)} · ${igEscapeHtml(level.name)}</span>
-      <h3 id="modalTitle">${igEscapeHtml(topic.emoji)} ${igEscapeHtml(topic.title)}</h3>
+      <div class="modal-head">
+        <span class="modal-head-thumb">${igImageHTML(topic.image, topic.emoji, topic.title)}</span>
+        <div class="modal-head-text">
+          <h3 id="modalTitle">${igEscapeHtml(topic.title)}</h3>
+          <p class="modal-head-sub">
+            <span class="level-pill" style="background:${level.color}22;color:${level.color}">${igEscapeHtml(level.code)} · ${igEscapeHtml(level.name)}</span>
+          </p>
+        </div>
+      </div>
       <div class="game-picker" id="cePlayPicker">
         ${GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
       </div>

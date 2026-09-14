@@ -208,8 +208,15 @@ function testCustomGame(game) {
   const meta = gameTypeMeta(game.type);
   openModal(`
     <div class="modal-content-pad">
-      <span class="level-pill" style="background:var(--primary-soft);color:var(--primary-dark)">${meta.icon} ${meta.label} · Custom Game</span>
-      <h3 id="modalTitle">${igEscapeHtml(game.title)}</h3>
+      <div class="modal-head">
+        <span class="modal-head-thumb modal-head-thumb--icon">${meta.icon}</span>
+        <div class="modal-head-text">
+          <h3 id="modalTitle">${igEscapeHtml(game.title)}</h3>
+          <p class="modal-head-sub">
+            <span class="level-pill" style="background:var(--primary-soft);color:var(--primary-dark)">${meta.label} · Custom Game</span>
+          </p>
+        </div>
+      </div>
       <div class="game-picker" id="gmPlayPicker">
         ${GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === game.type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
       </div>

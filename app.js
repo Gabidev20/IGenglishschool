@@ -306,13 +306,17 @@ function openTopicModal(levelId, topicId) {
   activeGameType = 'hangman';
 
   openModal(`
-    <div class="modal-media">
-      ${mediaMarkup(topic.image, topic.emoji, topic.title, 'div', '')}
-    </div>
     <div class="modal-content-pad">
-      <span class="level-pill" style="background:${levelSoftVar(level.color)};color:${level.color}">${level.code} · ${level.name}</span>
-      <h3 id="modalTitle">${topic.emoji} ${topic.title}</h3>
-      <p>${topic.description}</p>
+      <div class="modal-head">
+        <span class="modal-head-thumb">${mediaMarkup(topic.image, topic.emoji, topic.title, 'span', '')}</span>
+        <div class="modal-head-text">
+          <h3 id="modalTitle">${igEscapeHtml(topic.title)}</h3>
+          <p class="modal-head-sub">
+            <span class="level-pill" style="background:${levelSoftVar(level.color)};color:${level.color}">${igEscapeHtml(level.code)} · ${igEscapeHtml(level.name)}</span>
+            <span class="modal-head-desc">${igEscapeHtml(topic.description)}</span>
+          </p>
+        </div>
+      </div>
 
       <div class="modal-tabs" id="modalTabs"></div>
       <div id="modalPaneContent"></div>
@@ -591,8 +595,15 @@ const ArcadeGames = (() => {
 
     openModal(`
       <div class="modal-content-pad arcade-modal">
-        <span class="level-pill arcade-tier-pill" style="background:${levelSoftVar('#8e6d86')};color:#8e6d86">${tm.icon} ${tm.label}</span>
-        <h3 id="modalTitle">${meta.icon} ${meta.title}</h3>
+        <div class="modal-head">
+          <span class="modal-head-thumb modal-head-thumb--icon">${meta.icon}</span>
+          <div class="modal-head-text">
+            <h3 id="modalTitle">${meta.title}</h3>
+            <p class="modal-head-sub">
+              <span class="level-pill arcade-tier-pill" style="background:${levelSoftVar('#8e6d86')};color:#8e6d86">${tm.icon} ${tm.label}</span>
+            </p>
+          </div>
+        </div>
         <div class="arcade-topic-picker" id="arcadeTopicPicker"></div>
         <div class="game-toolbar">
           <span class="game-status-pill" id="arcadeScorePill">Score: 0</span>
