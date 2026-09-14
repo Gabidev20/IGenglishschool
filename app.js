@@ -20,6 +20,8 @@ function levelSoftVar(hex) {
 function mediaMarkup(image, emoji, alt, tag, className) {
   const safeEmoji = igEscapeHtml(emoji || '🖼️');
   if (!image) return `<${tag} class="${className} emoji-fallback">${safeEmoji}</${tag}>`;
+  // The topic grid renders every level's cards at once, so these ARE worth
+  // deferring — unlike the handful of pictures on a game board.
   return `<img class="${className}" src="${igEscapeHtml(image)}" alt="${igEscapeHtml(alt)}" loading="lazy"
     data-fallback="${safeEmoji}" data-fallback-tag="${tag}" data-fallback-class="${igEscapeHtml(className)}"
     onerror="igImageFallback(this)" />`;
@@ -549,6 +551,9 @@ const ArcadeGames = (() => {
   // MODAL SHELL — topic picker (scoped to the active student's tier) +
   // scoreboard + stage, shared by all 3 mini-games.
   // -------------------------------------------------------------------------
+  // How many words one round of Quick Quiz / Listen & Repeat asks for.
+  const ROUND_LENGTH = 10;
+
   const GAME_META = {
     wordmatch: { title: 'Word Match', icon: '🧩' },
     quickquiz: { title: 'Quick Quiz', icon: '🎯' },
@@ -797,7 +802,10 @@ const ArcadeGames = (() => {
     }
 
     function setup() {
-      deck = shuffle(topic.words);
+      // A round is a fixed length, not the whole bank: topic word banks run
+      // to 20+ words and a 20-question quiz outlasts the lesson slot. Each
+      // round draws a fresh random subset, so playing again is new material.
+      deck = shuffle(topic.words).slice(0, ROUND_LENGTH);
       qIndex = 0;
       correctCount = 0;
       nextQuestion();
@@ -941,7 +949,7 @@ const ArcadeGames = (() => {
     }
 
     function setup() {
-      deck = shuffle(topic.words);
+      deck = shuffle(topic.words).slice(0, ROUND_LENGTH);
       qIndex = 0;
       correctCount = 0;
       nextRound();

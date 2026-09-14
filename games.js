@@ -109,14 +109,28 @@ const GameEngine = (() => {
   const MAX_WRONG = 6;
   const QWERTY = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
 
+  // Hangman is letter-by-letter, so a 16-letter phrase ("Nice to meet you")
+  // is a chore rather than a game. Word banks legitimately hold phrases —
+  // they're the right content for Memory, Match-up, Flashcards and the
+  // quizzes — so Hangman just prefers the guessable ones, and only falls
+  // back to the whole bank when a topic has nothing shorter (grammar topics
+  // built entirely from example sentences).
+  const HANGMAN_MAX_LETTERS = 10;
+
+  function hangmanPlayableWords(words) {
+    const short = words.filter(w => w.en.replace(/[^A-Za-z]/g, '').length <= HANGMAN_MAX_LETTERS);
+    return short.length >= 4 ? short : words;
+  }
+
   function renderHangman(container, topic) {
     const deckKey = `${topic.id}:hangman`;
+    const playable = hangmanPlayableWords(topic.words);
     let state = null;
 
     function newRound(resetWholeDeck) {
       if (resetWholeDeck) resetDeck(deckKey);
       state = {
-        word: drawFromDeck(deckKey, topic.words),
+        word: drawFromDeck(deckKey, playable),
         guessed: new Set(),
         wrong: 0,
         status: 'playing',
@@ -199,7 +213,7 @@ const GameEngine = (() => {
 
       container.innerHTML = `
         <div class="game-toolbar">
-          <span class="game-status-pill">${topic.words.length - (decks[deckKey] ? decks[deckKey].length : 0)} / ${topic.words.length} words · ${remaining} tries left</span>
+          <span class="game-status-pill">${playable.length - (decks[deckKey] ? decks[deckKey].length : 0)} / ${playable.length} words · ${remaining} tries left</span>
           <div class="game-btn-row">
             <button class="game-btn secondary" data-action="restart">🔄 New Game</button>
             <button class="game-btn" data-action="next">➡️ Next Word</button>

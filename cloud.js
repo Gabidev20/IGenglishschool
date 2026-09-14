@@ -38,6 +38,88 @@ const IGCloud = (() => {
 
   const enabled = () => Boolean(window.IG_SUPABASE && window.IG_SUPABASE.configured);
 
+  // The app's tables can live either in their own schema (`igenglish.students`)
+  // or in `public` behind a prefix (`public.igenglish_students`) — the second
+  // form needs no API configuration at all, which matters when the Supabase
+  // project is shared with another site. Everything below names tables
+  // logically and lets this one helper resolve them.
+  let layout = null;   // { schema, prefix } — resolved once, then cached
+
+  const tbl = (name) => (layout ? layout.prefix : ((window.IG_SUPABASE && window.IG_SUPABASE.tablePrefix) || '')) + name;
+
+  // The two SQL files put the tables in different places:
+  //   supabase-schema-public.sql -> public.igenglish_students
+  //   supabase-schema.sql        -> igenglish.students
+  // Asking the teacher to remember which one she ran is a question the app
+  // can answer itself in one round trip — so it does, and remembers.
+  const LAYOUT_CACHE_KEY = 'hopscotch_supabase_layout';
+
+  function configuredLayout() {
+    return {
+      schema: (window.IG_SUPABASE && window.IG_SUPABASE.schema) || 'public',
+      prefix: (window.IG_SUPABASE && window.IG_SUPABASE.tablePrefix) || '',
+    };
+  }
+
+  function layoutCandidates() {
+    const configured = configuredLayout();
+    const alternative = configured.prefix
+      ? { schema: 'igenglish', prefix: '' }          // configured for B -> try A
+      : { schema: 'public', prefix: 'igenglish_' };  // configured for A -> try B
+    return [configured, alternative];
+  }
+
+  // A "missing table/schema" answer means "look elsewhere"; anything else
+  // (no network, bad key, RLS) is a real failure and must not be masked.
+  function isMissingTable(error) {
+    const msg = String((error && error.message) || '');
+    return /relation .* does not exist|could not find the table|schema must be one of|does not exist.*schema/i.test(msg);
+  }
+
+  async function probeLayout(candidate) {
+    const sb = window.supabase.createClient(window.IG_SUPABASE.url, window.IG_SUPABASE.anonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'ig-english-auth' },
+      db: { schema: candidate.schema },
+    });
+    const { error } = await sb.from(candidate.prefix + 'students').select('teacher_id').limit(1);
+    if (error && isMissingTable(error)) return null;
+    if (error) throw error;                 // a real problem — surface it
+    return sb;
+  }
+
+  async function resolveLayout() {
+    try {
+      const cached = JSON.parse(localStorage.getItem(LAYOUT_CACHE_KEY));
+      if (cached && cached.schema) { layout = cached; return; }
+    } catch (e) {}
+
+    let lastRealError = null;
+    for (const candidate of layoutCandidates()) {
+      try {
+        const sb = await probeLayout(candidate);
+        if (sb) {
+          layout = candidate;
+          client = sb;
+          try { localStorage.setItem(LAYOUT_CACHE_KEY, JSON.stringify(candidate)); } catch (e) {}
+          const configured = configuredLayout();
+          if (candidate.schema !== configured.schema || candidate.prefix !== configured.prefix) {
+            console.info(
+              `[IGenglishschool] As tabelas foram encontradas em `
+              + `${candidate.schema}.${candidate.prefix}* — usando essa configuração. `
+              + `Para deixar explícito, ajuste supabaseConfig.js.`
+            );
+          }
+          return;
+        }
+      } catch (e) { lastRealError = e; }
+    }
+    if (lastRealError) throw lastRealError;
+    throw new Error(
+      'Não encontrei as tabelas no Supabase. Rode o supabase-schema-public.sql '
+      + '(ou o supabase-schema.sql) no SQL Editor e recarregue.'
+    );
+  }
+
   // Turns the two setup mistakes everyone makes into instructions.
   function describeError(err) {
     const msg = String((err && err.message) || err || '');
@@ -49,9 +131,11 @@ const IGCloud = (() => {
       );
     }
     if (/relation .* does not exist|could not find the table/i.test(msg)) {
+      const prefix = (window.IG_SUPABASE && window.IG_SUPABASE.tablePrefix) || '';
+      const file = prefix ? 'supabase-schema-public.sql' : 'supabase-schema.sql';
       return new Error(
-        `As tabelas ainda não existem no schema "${schema}". `
-        + 'Rode o supabase-schema.sql no SQL Editor do Supabase.'
+        `As tabelas ainda não existem${prefix ? '' : ` no schema "${schema}"`}. `
+        + `Rode o ${file} no SQL Editor do Supabase.`
       );
     }
     return err instanceof Error ? err : new Error(msg || 'Erro desconhecido.');
@@ -78,6 +162,7 @@ const IGCloud = (() => {
   async function getClient() {
     if (client) return client;
     await loadSDK();
+    const schema = layout ? layout.schema : ((window.IG_SUPABASE && window.IG_SUPABASE.schema) || 'public');
     client = window.supabase.createClient(window.IG_SUPABASE.url, window.IG_SUPABASE.anonKey, {
       auth: {
         persistSession: true,
@@ -90,7 +175,7 @@ const IGCloud = (() => {
       // All tables live in their own schema (see supabase-schema.sql), so
       // this project can share one free-tier Supabase database with another
       // site without either touching the other's tables.
-      db: { schema: window.IG_SUPABASE.schema || 'public' },
+      db: { schema },
     });
     return client;
   }
@@ -112,12 +197,12 @@ const IGCloud = (() => {
     const tid = teacher.id;
 
     const [students, progress, sessions, reports, games, overrides] = await Promise.all([
-      sb.from('students').select('*').eq('teacher_id', tid).order('sort_order'),
-      sb.from('student_progress').select('*').eq('teacher_id', tid),
-      sb.from('class_sessions').select('*').eq('teacher_id', tid),
-      sb.from('reports').select('*').eq('teacher_id', tid),
-      sb.from('custom_games').select('*').eq('teacher_id', tid),
-      sb.from('curriculum_overrides').select('*').eq('teacher_id', tid).maybeSingle(),
+      sb.from(tbl('students')).select('*').eq('teacher_id', tid).order('sort_order'),
+      sb.from(tbl('student_progress')).select('*').eq('teacher_id', tid),
+      sb.from(tbl('class_sessions')).select('*').eq('teacher_id', tid),
+      sb.from(tbl('reports')).select('*').eq('teacher_id', tid),
+      sb.from(tbl('custom_games')).select('*').eq('teacher_id', tid),
+      sb.from(tbl('curriculum_overrides')).select('*').eq('teacher_id', tid).maybeSingle(),
     ]);
 
     const firstError = [students, progress, sessions, reports, games, overrides].find(r => r.error);
@@ -206,10 +291,10 @@ const IGCloud = (() => {
         color: s.color || null, avatar: s.avatar || null, sort_order: i,
         updated_at: new Date().toISOString(),
       }));
-      if (rows.length) await sb.from('students').upsert(rows, { onConflict: 'teacher_id,id' });
+      if (rows.length) await sb.from(tbl('students')).upsert(rows, { onConflict: 'teacher_id,id' });
       // Students removed locally must disappear from the cloud too.
       const keepIds = list.map(s => s.id);
-      let del = sb.from('students').delete().eq('teacher_id', tid);
+      let del = sb.from(tbl('students')).delete().eq('teacher_id', tid);
       if (keepIds.length) del = del.not('id', 'in', `(${keepIds.map(id => `"${id}"`).join(',')})`);
       await del;
       return;
@@ -219,7 +304,7 @@ const IGCloud = (() => {
       const sid = key.slice('progress_'.length);
       const p = IGStore.getJSON(key, null);
       if (!p) return;
-      await sb.from('student_progress').upsert({
+      await sb.from(tbl('student_progress')).upsert({
         teacher_id: tid, student_id: sid,
         stars: p.stars || 0, xp: p.xp || 0,
         stickers: p.stickers || [], updated_at: new Date().toISOString(),
@@ -235,7 +320,7 @@ const IGCloud = (() => {
         present: Boolean(s.present), topic_label: s.topicLabel || null,
         notes: s.notes || null, stats: s.stats || {},
       }));
-      if (rows.length) await sb.from('class_sessions').upsert(rows, { onConflict: 'teacher_id,id' });
+      if (rows.length) await sb.from(tbl('class_sessions')).upsert(rows, { onConflict: 'teacher_id,id' });
       return;
     }
 
@@ -246,7 +331,7 @@ const IGCloud = (() => {
         teacher_id: tid, student_id: sid, quarter_id: r.quarterId,
         data: r, updated_at: new Date().toISOString(),
       }));
-      if (rows.length) await sb.from('reports').upsert(rows, { onConflict: 'teacher_id,student_id,quarter_id' });
+      if (rows.length) await sb.from(tbl('reports')).upsert(rows, { onConflict: 'teacher_id,student_id,quarter_id' });
       return;
     }
 
@@ -256,9 +341,9 @@ const IGCloud = (() => {
         id: g.id, teacher_id: tid, title: g.title, type: g.type,
         words: g.words || [], updated_at: new Date().toISOString(),
       }));
-      if (rows.length) await sb.from('custom_games').upsert(rows, { onConflict: 'teacher_id,id' });
+      if (rows.length) await sb.from(tbl('custom_games')).upsert(rows, { onConflict: 'teacher_id,id' });
       const keepIds = list.map(g => g.id);
-      let del = sb.from('custom_games').delete().eq('teacher_id', tid);
+      let del = sb.from(tbl('custom_games')).delete().eq('teacher_id', tid);
       if (keepIds.length) del = del.not('id', 'in', `(${keepIds.map(id => `"${id}"`).join(',')})`);
       await del;
       return;
@@ -269,7 +354,7 @@ const IGCloud = (() => {
       IGStore.keys()
         .filter(k => k.startsWith('custom_reading_') || k.startsWith('custom_practice_'))
         .forEach(k => { lessonDoc[k] = IGStore.getJSON(k, null); });
-      await sb.from('curriculum_overrides').upsert({
+      await sb.from(tbl('curriculum_overrides')).upsert({
         teacher_id: tid,
         doc: IGStore.getJSON('curriculum_v1', {}) || {},
         lesson_doc: lessonDoc,
@@ -358,7 +443,10 @@ const IGCloud = (() => {
       const sb = await getClient();
       await sb.auth.signOut();
     } catch (e) { console.error(e); }
-    try { localStorage.removeItem('hopscotch_workspace'); } catch (e) {}
+    try {
+      localStorage.removeItem('hopscotch_workspace');
+      localStorage.removeItem(LAYOUT_CACHE_KEY);
+    } catch (e) {}
     window.location.reload();
   }
 
@@ -378,7 +466,7 @@ const IGCloud = (() => {
   async function ensureTeacherRow() {
     try {
       const sb = await getClient();
-      await sb.from('teachers').upsert({
+      await sb.from(tbl('teachers')).upsert({
         id: teacher.id,
         name: teacher.name,
         updated_at: new Date().toISOString(),
@@ -397,9 +485,11 @@ const IGCloud = (() => {
       name: (session.user.user_metadata && session.user.user_metadata.name) || session.user.email,
     };
     ready = true;
+    await loadSDK();
     IGStore.onWrite(queue);
     notifyStatus();
 
+    await resolveLayout();
     await ensureTeacherRow();
     const result = await pull();
     // Re-render whatever the freshly pulled data affects.

@@ -178,6 +178,13 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg"
           },
           {
+            "id": "d_dog",
+            "en": "D is for Dog",
+            "pt": "D de Cachorro",
+            "emoji": "🐶",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+          },
+          {
             "id": "cat",
             "en": "cat",
             "pt": "gato",
@@ -224,7 +231,7 @@ const LEVELS = [
             "en": "cup",
             "pt": "xícara",
             "emoji": "☕",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Cup_and_Saucer_LACMA_47.35.6a-b_%281_of_3%29.jpg/500px-Cup_and_Saucer_LACMA_47.35.6a-b_%281_of_3%29.jpg"
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mug_of_Tea.JPG/500px-Mug_of_Tea.JPG"
           },
           {
             "id": "bus",
@@ -246,6 +253,62 @@ const LEVELS = [
             "pt": "caixa",
             "emoji": "📦",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/L%C3%A5da_-_Livrustkammaren_-_107142.tif/lossy-page1-500px-L%C3%A5da_-_Livrustkammaren_-_107142.tif.jpg"
+          },
+          {
+            "id": "fox",
+            "en": "fox",
+            "pt": "raposa",
+            "emoji": "🦊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Vulpes_vulpes_ssp_fulvus.jpg/500px-Vulpes_vulpes_ssp_fulvus.jpg"
+          },
+          {
+            "id": "van",
+            "en": "van",
+            "pt": "van",
+            "emoji": "🚐",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/2018_Ford_Transit_Custom_300_Base_2.0_facelift.jpg/500px-2018_Ford_Transit_Custom_300_Base_2.0_facelift.jpg"
+          },
+          {
+            "id": "jam",
+            "en": "jam",
+            "pt": "geleia",
+            "emoji": "🍓",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Fruits_jam_variants.jpg/500px-Fruits_jam_variants.jpg"
+          },
+          {
+            "id": "web",
+            "en": "web",
+            "pt": "teia",
+            "emoji": "🕸️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/A_classic_circular_form_spider%27s_web.jpg/500px-A_classic_circular_form_spider%27s_web.jpg"
+          },
+          {
+            "id": "map",
+            "en": "map",
+            "pt": "mapa",
+            "emoji": "🗺️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/World_Map_1689.JPG/500px-World_Map_1689.JPG"
+          },
+          {
+            "id": "log",
+            "en": "log",
+            "pt": "tronco",
+            "emoji": "🪵",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Felling_a_gumtree_c1884-1917_Powerhouse_Museum.jpg/500px-Felling_a_gumtree_c1884-1917_Powerhouse_Museum.jpg"
+          },
+          {
+            "id": "net",
+            "en": "net",
+            "pt": "rede",
+            "emoji": "🥅",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/A_fishing_net_in_Brandon_Creek_-_geograph.org.uk_-_921094.jpg/500px-A_fishing_net_in_Brandon_Creek_-_geograph.org.uk_-_921094.jpg"
+          },
+          {
+            "id": "zip",
+            "en": "zip",
+            "pt": "zíper",
+            "emoji": "🤐",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Coil_plastic_and_metal_zippers.jpg/500px-Coil_plastic_and_metal_zippers.jpg"
           }
         ],
         "readingTime": {
@@ -294,6 +357,30 @@ const LEVELS = [
             "emoji": "🙋"
           },
           {
+            "id": "goodmorning",
+            "en": "Good morning",
+            "pt": "Bom dia",
+            "emoji": "🌅"
+          },
+          {
+            "id": "goodafternoon",
+            "en": "Good afternoon",
+            "pt": "Boa tarde",
+            "emoji": "🌤️"
+          },
+          {
+            "id": "goodevening",
+            "en": "Good evening",
+            "pt": "Boa noite (ao chegar)",
+            "emoji": "🌆"
+          },
+          {
+            "id": "goodnight",
+            "en": "Good night",
+            "pt": "Boa noite (ao dormir)",
+            "emoji": "🌙"
+          },
+          {
             "id": "goodbye",
             "en": "Goodbye",
             "pt": "Tchau",
@@ -303,19 +390,25 @@ const LEVELS = [
             "id": "bye",
             "en": "Bye",
             "pt": "Tchau",
-            "emoji": "👋"
+            "emoji": "✌️"
           },
           {
-            "id": "good_morning",
-            "en": "Good morning",
-            "pt": "Bom dia",
-            "emoji": "🌞"
+            "id": "seeyoulater",
+            "en": "See you later",
+            "pt": "Até mais tarde",
+            "emoji": "🙌"
           },
           {
-            "id": "good_night",
-            "en": "Good night",
-            "pt": "Boa noite",
-            "emoji": "🌙"
+            "id": "seeyoutomorrow",
+            "en": "See you tomorrow",
+            "pt": "Até amanhã",
+            "emoji": "📅"
+          },
+          {
+            "id": "welcome",
+            "en": "Welcome",
+            "pt": "Bem-vindo",
+            "emoji": "🎉"
           },
           {
             "id": "please",
@@ -324,10 +417,28 @@ const LEVELS = [
             "emoji": "🙏"
           },
           {
-            "id": "thank_you",
+            "id": "thankyou",
             "en": "Thank you",
-            "pt": "Obrigado",
-            "emoji": "🙏"
+            "pt": "Obrigado(a)",
+            "emoji": "💛"
+          },
+          {
+            "id": "yourewelcome",
+            "en": "You're welcome",
+            "pt": "De nada",
+            "emoji": "😊"
+          },
+          {
+            "id": "sorry",
+            "en": "Sorry",
+            "pt": "Desculpe",
+            "emoji": "😔"
+          },
+          {
+            "id": "excuseme",
+            "en": "Excuse me",
+            "pt": "Com licença",
+            "emoji": "🤚"
           },
           {
             "id": "yes",
@@ -342,22 +453,40 @@ const LEVELS = [
             "emoji": "❌"
           },
           {
-            "id": "my_name_is",
-            "en": "My name is...",
-            "pt": "Meu nome é...",
-            "emoji": "🧑"
+            "id": "nicetomeetyou",
+            "en": "Nice to meet you",
+            "pt": "Prazer em conhecer",
+            "emoji": "🤝"
           },
           {
-            "id": "whats_your_name",
-            "en": "What is your name?",
-            "pt": "Qual é o seu nome?",
+            "id": "howareyou",
+            "en": "How are you?",
+            "pt": "Como você está?",
             "emoji": "❓"
           },
           {
-            "id": "friend",
-            "en": "Friend",
-            "pt": "Amigo",
-            "emoji": "🧑‍🤝‍🧑"
+            "id": "imfine",
+            "en": "I am fine",
+            "pt": "Estou bem",
+            "emoji": "😀"
+          },
+          {
+            "id": "whatsyourname",
+            "en": "What is your name?",
+            "pt": "Qual é o seu nome?",
+            "emoji": "🏷️"
+          },
+          {
+            "id": "mynameis",
+            "en": "My name is...",
+            "pt": "Meu nome é...",
+            "emoji": "🙋"
+          },
+          {
+            "id": "thisismyfriend",
+            "en": "This is my friend",
+            "pt": "Este é meu amigo",
+            "emoji": "👫"
           }
         ],
         "readingTime": {
@@ -423,10 +552,58 @@ const LEVELS = [
             "emoji": "5️⃣"
           },
           {
+            "id": "six",
+            "en": "six",
+            "pt": "seis",
+            "emoji": "6️⃣"
+          },
+          {
+            "id": "seven",
+            "en": "seven",
+            "pt": "sete",
+            "emoji": "7️⃣"
+          },
+          {
+            "id": "eight",
+            "en": "eight",
+            "pt": "oito",
+            "emoji": "8️⃣"
+          },
+          {
+            "id": "nine",
+            "en": "nine",
+            "pt": "nove",
+            "emoji": "9️⃣"
+          },
+          {
             "id": "ten",
             "en": "ten",
             "pt": "dez",
             "emoji": "🔟"
+          },
+          {
+            "id": "eleven",
+            "en": "eleven",
+            "pt": "onze",
+            "emoji": "🔢"
+          },
+          {
+            "id": "twelve",
+            "en": "twelve",
+            "pt": "doze",
+            "emoji": "🔢"
+          },
+          {
+            "id": "thirteen",
+            "en": "thirteen",
+            "pt": "treze",
+            "emoji": "🔢"
+          },
+          {
+            "id": "fourteen",
+            "en": "fourteen",
+            "pt": "catorze",
+            "emoji": "🔢"
           },
           {
             "id": "fifteen",
@@ -435,51 +612,33 @@ const LEVELS = [
             "emoji": "🔢"
           },
           {
+            "id": "sixteen",
+            "en": "sixteen",
+            "pt": "dezesseis",
+            "emoji": "🔢"
+          },
+          {
+            "id": "seventeen",
+            "en": "seventeen",
+            "pt": "dezessete",
+            "emoji": "🔢"
+          },
+          {
+            "id": "eighteen",
+            "en": "eighteen",
+            "pt": "dezoito",
+            "emoji": "🔢"
+          },
+          {
+            "id": "nineteen",
+            "en": "nineteen",
+            "pt": "dezenove",
+            "emoji": "🔢"
+          },
+          {
             "id": "twenty",
             "en": "twenty",
             "pt": "vinte",
-            "emoji": "🔢"
-          },
-          {
-            "id": "fifty",
-            "en": "fifty",
-            "pt": "cinquenta",
-            "emoji": "🔢"
-          },
-          {
-            "id": "hundred",
-            "en": "hundred",
-            "pt": "cem",
-            "emoji": "💯"
-          },
-          {
-            "id": "first",
-            "en": "first",
-            "pt": "primeiro",
-            "emoji": "🥇"
-          },
-          {
-            "id": "second",
-            "en": "second",
-            "pt": "segundo",
-            "emoji": "🥈"
-          },
-          {
-            "id": "third",
-            "en": "third",
-            "pt": "terceiro",
-            "emoji": "🥉"
-          },
-          {
-            "id": "count",
-            "en": "count",
-            "pt": "contar",
-            "emoji": "🧮"
-          },
-          {
-            "id": "number",
-            "en": "number",
-            "pt": "número",
             "emoji": "🔢"
           }
         ],
@@ -519,49 +678,85 @@ const LEVELS = [
             "id": "red",
             "en": "red",
             "pt": "vermelho",
-            "emoji": "🔴"
+            "emoji": "🔴",
+            "swatch": "#e63946"
           },
           {
             "id": "blue",
             "en": "blue",
             "pt": "azul",
-            "emoji": "🔵"
+            "emoji": "🔵",
+            "swatch": "#2b7fd4"
           },
           {
             "id": "yellow",
             "en": "yellow",
             "pt": "amarelo",
-            "emoji": "🟡"
+            "emoji": "🟡",
+            "swatch": "#f4c430"
           },
           {
             "id": "green",
             "en": "green",
             "pt": "verde",
-            "emoji": "🟢"
+            "emoji": "🟢",
+            "swatch": "#3fa34d"
           },
           {
             "id": "orange",
             "en": "orange",
             "pt": "laranja",
-            "emoji": "🟠"
+            "emoji": "🟠",
+            "swatch": "#f08a24"
           },
           {
             "id": "purple",
             "en": "purple",
             "pt": "roxo",
-            "emoji": "🟣"
+            "emoji": "🟣",
+            "swatch": "#8e5ea2"
+          },
+          {
+            "id": "pink",
+            "en": "pink",
+            "pt": "rosa",
+            "emoji": "🌸",
+            "swatch": "#f48fb1"
+          },
+          {
+            "id": "brown",
+            "en": "brown",
+            "pt": "marrom",
+            "emoji": "🟤",
+            "swatch": "#8b5e3c"
           },
           {
             "id": "black",
             "en": "black",
             "pt": "preto",
-            "emoji": "⚫"
+            "emoji": "⚫",
+            "swatch": "#222222"
           },
           {
             "id": "white",
             "en": "white",
             "pt": "branco",
-            "emoji": "⚪"
+            "emoji": "⚪",
+            "swatch": "#f7f7f7"
+          },
+          {
+            "id": "grey",
+            "en": "grey",
+            "pt": "cinza",
+            "emoji": "🩶",
+            "swatch": "#9aa0a6"
+          },
+          {
+            "id": "gold",
+            "en": "gold",
+            "pt": "dourado",
+            "emoji": "🥇",
+            "swatch": "#d4af37"
           },
           {
             "id": "circle",
@@ -573,13 +768,19 @@ const LEVELS = [
             "id": "square",
             "en": "square",
             "pt": "quadrado",
-            "emoji": "⬜"
+            "emoji": "🟦"
           },
           {
             "id": "triangle",
             "en": "triangle",
             "pt": "triângulo",
             "emoji": "🔺"
+          },
+          {
+            "id": "rectangle",
+            "en": "rectangle",
+            "pt": "retângulo",
+            "emoji": "▭"
           },
           {
             "id": "star",
@@ -594,10 +795,28 @@ const LEVELS = [
             "emoji": "❤️"
           },
           {
-            "id": "rectangle",
-            "en": "rectangle",
-            "pt": "retângulo",
-            "emoji": "▭"
+            "id": "oval",
+            "en": "oval",
+            "pt": "oval",
+            "emoji": "🥚"
+          },
+          {
+            "id": "diamond",
+            "en": "diamond",
+            "pt": "losango",
+            "emoji": "🔷"
+          },
+          {
+            "id": "cross",
+            "en": "cross",
+            "pt": "cruz",
+            "emoji": "➕"
+          },
+          {
+            "id": "arrow",
+            "en": "arrow",
+            "pt": "seta",
+            "emoji": "➡️"
           }
         ],
         "readingTime": {
@@ -645,12 +864,6 @@ const LEVELS = [
             "emoji": "👨"
           },
           {
-            "id": "baby",
-            "en": "baby",
-            "pt": "bebê",
-            "emoji": "👶"
-          },
-          {
             "id": "sister",
             "en": "sister",
             "pt": "irmã",
@@ -663,16 +876,52 @@ const LEVELS = [
             "emoji": "👦"
           },
           {
+            "id": "baby",
+            "en": "baby",
+            "pt": "bebê",
+            "emoji": "👶"
+          },
+          {
             "id": "grandma",
             "en": "grandma",
-            "pt": "vovó",
+            "pt": "avó",
             "emoji": "👵"
           },
           {
             "id": "grandpa",
             "en": "grandpa",
-            "pt": "vovô",
+            "pt": "avô",
             "emoji": "👴"
+          },
+          {
+            "id": "aunt",
+            "en": "aunt",
+            "pt": "tia",
+            "emoji": "👩‍🦰"
+          },
+          {
+            "id": "uncle",
+            "en": "uncle",
+            "pt": "tio",
+            "emoji": "👨‍🦰"
+          },
+          {
+            "id": "cousin",
+            "en": "cousin",
+            "pt": "primo(a)",
+            "emoji": "🧒"
+          },
+          {
+            "id": "son",
+            "en": "son",
+            "pt": "filho",
+            "emoji": "🧑"
+          },
+          {
+            "id": "daughter",
+            "en": "daughter",
+            "pt": "filha",
+            "emoji": "👧"
           },
           {
             "id": "family",
@@ -684,7 +933,7 @@ const LEVELS = [
             "id": "happy",
             "en": "happy",
             "pt": "feliz",
-            "emoji": "😃"
+            "emoji": "😀"
           },
           {
             "id": "sad",
@@ -709,6 +958,24 @@ const LEVELS = [
             "en": "tired",
             "pt": "cansado",
             "emoji": "😴"
+          },
+          {
+            "id": "excited",
+            "en": "excited",
+            "pt": "animado",
+            "emoji": "🤩"
+          },
+          {
+            "id": "hungry",
+            "en": "hungry",
+            "pt": "com fome",
+            "emoji": "🍽️"
+          },
+          {
+            "id": "thirsty",
+            "en": "thirsty",
+            "pt": "com sede",
+            "emoji": "🥤"
           },
           {
             "id": "love",
@@ -799,6 +1066,13 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flock_of_sheep.jpg/500px-Flock_of_sheep.jpg"
           },
           {
+            "id": "goat",
+            "en": "goat",
+            "pt": "cabra",
+            "emoji": "🐐",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hausziege_04.jpg/500px-Hausziege_04.jpg"
+          },
+          {
             "id": "chicken",
             "en": "chicken",
             "pt": "galinha",
@@ -827,6 +1101,20 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Kleiber_Flug.jpg/500px-Kleiber_Flug.jpg"
           },
           {
+            "id": "mouse",
+            "en": "mouse",
+            "pt": "rato",
+            "emoji": "🐭",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Mouse_white_background.jpg"
+          },
+          {
+            "id": "frog",
+            "en": "frog",
+            "pt": "sapo",
+            "emoji": "🐸",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Red-eyed_Leaf_Frog_%2849661076226%29.jpg/500px-Red-eyed_Leaf_Frog_%2849661076226%29.jpg"
+          },
+          {
             "id": "elephant",
             "en": "elephant",
             "pt": "elefante",
@@ -841,6 +1129,20 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/020_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg/500px-020_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg"
           },
           {
+            "id": "tiger",
+            "en": "tiger",
+            "pt": "tigre",
+            "emoji": "🐯",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg/500px-Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg"
+          },
+          {
+            "id": "bear",
+            "en": "bear",
+            "pt": "urso",
+            "emoji": "🐻",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Ours_brun_parcanimalierpyrenees_1.jpg/500px-Ours_brun_parcanimalierpyrenees_1.jpg"
+          },
+          {
             "id": "monkey",
             "en": "monkey",
             "pt": "macaco",
@@ -853,6 +1155,20 @@ const LEVELS = [
             "pt": "tartaruga",
             "emoji": "🐢",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Turtle_diversity.jpg/500px-Turtle_diversity.jpg"
+          },
+          {
+            "id": "penguin",
+            "en": "penguin",
+            "pt": "pinguim",
+            "emoji": "🐧",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarctica%29_04.jpg/500px-South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarctica%29_04.jpg"
+          },
+          {
+            "id": "butterfly",
+            "en": "butterfly",
+            "pt": "borboleta",
+            "emoji": "🦋",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Fesoj_-_Papilio_machaon_%28by%29.jpg/500px-Fesoj_-_Papilio_machaon_%28by%29.jpg"
           }
         ],
         "readingTime": {
@@ -945,6 +1261,48 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg/500px-%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg"
           },
           {
+            "id": "pear",
+            "en": "pear",
+            "pt": "pera",
+            "emoji": "🍐",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Pears.jpg/500px-Pears.jpg"
+          },
+          {
+            "id": "peach",
+            "en": "peach",
+            "pt": "pêssego",
+            "emoji": "🍑",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Illustration_Prunus_persica_clean_no_descr.jpg/500px-Illustration_Prunus_persica_clean_no_descr.jpg"
+          },
+          {
+            "id": "mango",
+            "en": "mango",
+            "pt": "manga",
+            "emoji": "🥭",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Mangos_-_single_and_halved.jpg/500px-Mangos_-_single_and_halved.jpg"
+          },
+          {
+            "id": "coconut",
+            "en": "coconut",
+            "pt": "coco",
+            "emoji": "🥥",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Cocos_nucifera_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-187.jpg/500px-Cocos_nucifera_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-187.jpg"
+          },
+          {
+            "id": "carrot",
+            "en": "carrot",
+            "pt": "cenoura",
+            "emoji": "🥕",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/500px-Vegetable-Carrot-Bundle-wStalks.jpg"
+          },
+          {
+            "id": "tomato",
+            "en": "tomato",
+            "pt": "tomate",
+            "emoji": "🍅",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/500px-Tomato_je.jpg"
+          },
+          {
             "id": "bread",
             "en": "bread",
             "pt": "pão",
@@ -963,7 +1321,7 @@ const LEVELS = [
             "en": "egg",
             "pt": "ovo",
             "emoji": "🥚",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Adolphe_Millot_oeufs-fixed.jpg/500px-Adolphe_Millot_oeufs-fixed.jpg"
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Huevo_frito.jpg/500px-Huevo_frito.jpg"
           },
           {
             "id": "milk",
@@ -971,6 +1329,20 @@ const LEVELS = [
             "pt": "leite",
             "emoji": "🥛",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glass_of_Milk_%2833657535532%29.jpg/500px-Glass_of_Milk_%2833657535532%29.jpg"
+          },
+          {
+            "id": "juice",
+            "en": "juice",
+            "pt": "suco",
+            "emoji": "🧃",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Orange_juice_1.jpg/500px-Orange_juice_1.jpg"
+          },
+          {
+            "id": "water",
+            "en": "water",
+            "pt": "água",
+            "emoji": "💧",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Clean_water_for_a_village_in_West_Lombok_%2810686572086%29.jpg/500px-Clean_water_for_a_village_in_West_Lombok_%2810686572086%29.jpg"
           },
           {
             "id": "rice",
@@ -1032,88 +1404,136 @@ const LEVELS = [
         "grammarTip": "We use capital letters for the names of days and months in English, like Monday and April. We often say 'on Monday' for days and 'in April' for months. Try saying today's day and this month out loud!",
         "words": [
           {
-            "id": "mon",
+            "id": "monday",
             "en": "Monday",
             "pt": "segunda-feira",
             "emoji": "1️⃣"
           },
           {
-            "id": "tue",
+            "id": "tuesday",
             "en": "Tuesday",
             "pt": "terça-feira",
             "emoji": "2️⃣"
           },
           {
-            "id": "wed",
+            "id": "wednesday",
             "en": "Wednesday",
             "pt": "quarta-feira",
             "emoji": "3️⃣"
           },
           {
-            "id": "thu",
+            "id": "thursday",
             "en": "Thursday",
             "pt": "quinta-feira",
             "emoji": "4️⃣"
           },
           {
-            "id": "fri",
+            "id": "friday",
             "en": "Friday",
             "pt": "sexta-feira",
             "emoji": "5️⃣"
           },
           {
-            "id": "sat",
+            "id": "saturday",
             "en": "Saturday",
             "pt": "sábado",
-            "emoji": "6️⃣"
+            "emoji": "🎉"
           },
           {
-            "id": "sun",
+            "id": "sunday",
             "en": "Sunday",
             "pt": "domingo",
-            "emoji": "7️⃣"
+            "emoji": "☀️"
           },
           {
-            "id": "jan",
+            "id": "january",
             "en": "January",
             "pt": "janeiro",
             "emoji": "❄️"
           },
           {
-            "id": "feb",
+            "id": "february",
             "en": "February",
             "pt": "fevereiro",
-            "emoji": "💌"
+            "emoji": "💝"
           },
           {
-            "id": "mar",
+            "id": "march",
             "en": "March",
             "pt": "março",
             "emoji": "🌱"
           },
           {
-            "id": "apr",
+            "id": "april",
             "en": "April",
             "pt": "abril",
-            "emoji": "☔"
+            "emoji": "🌦️"
           },
           {
             "id": "may",
             "en": "May",
             "pt": "maio",
-            "emoji": "🌷"
+            "emoji": "🌻"
           },
           {
-            "id": "jun",
+            "id": "june",
             "en": "June",
             "pt": "junho",
-            "emoji": "☀️"
+            "emoji": "🌞"
           },
           {
-            "id": "jul",
+            "id": "july",
             "en": "July",
             "pt": "julho",
-            "emoji": "🎇"
+            "emoji": "🏖️"
+          },
+          {
+            "id": "august",
+            "en": "August",
+            "pt": "agosto",
+            "emoji": "🌾"
+          },
+          {
+            "id": "september",
+            "en": "September",
+            "pt": "setembro",
+            "emoji": "🍂"
+          },
+          {
+            "id": "october",
+            "en": "October",
+            "pt": "outubro",
+            "emoji": "🎃"
+          },
+          {
+            "id": "november",
+            "en": "November",
+            "pt": "novembro",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "december",
+            "en": "December",
+            "pt": "dezembro",
+            "emoji": "🎄"
+          },
+          {
+            "id": "today",
+            "en": "today",
+            "pt": "hoje",
+            "emoji": "📅"
+          },
+          {
+            "id": "tomorrow",
+            "en": "tomorrow",
+            "pt": "amanhã",
+            "emoji": "⏭️"
+          },
+          {
+            "id": "weekend",
+            "en": "weekend",
+            "pt": "fim de semana",
+            "emoji": "🥳"
           }
         ],
         "readingTime": {
@@ -1173,7 +1593,7 @@ const LEVELS = [
             "id": "bathroom",
             "en": "bathroom",
             "pt": "banheiro",
-            "emoji": "🛁",
+            "emoji": "🚿",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Modern_bath_rooms_and_appliances_-_a_few_suggestions_about_plumbing_valuable_to_home_builders_or_those_about_to_remodel_their_present_dwellings._%281903%29_%2814778178805%29.jpg/500px-thumbnail.jpg"
           },
           {
@@ -1184,11 +1604,25 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Sittingroom-edit1.jpg/500px-Sittingroom-edit1.jpg"
           },
           {
+            "id": "diningroom",
+            "en": "dining room",
+            "pt": "sala de jantar",
+            "emoji": "🍽️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Heiligengrabe%2C_Kloster_Stift_zum_Heiligengrabe%2C_Abtei%2C_Speiseraum_--_2017_--_7082-8.jpg/500px-Heiligengrabe%2C_Kloster_Stift_zum_Heiligengrabe%2C_Abtei%2C_Speiseraum_--_2017_--_7082-8.jpg"
+          },
+          {
             "id": "garden",
             "en": "garden",
             "pt": "jardim",
-            "emoji": "🌳",
+            "emoji": "🌷",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Brooklyn_Botanic_Garden_New_York_May_2015_010.jpg/500px-Brooklyn_Botanic_Garden_New_York_May_2015_010.jpg"
+          },
+          {
+            "id": "garage",
+            "en": "garage",
+            "pt": "garagem",
+            "emoji": "🚗",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Residential_House_USA.JPG/500px-Residential_House_USA.JPG"
           },
           {
             "id": "door",
@@ -1211,6 +1645,18 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Tak_-_Ystad-2022.jpg/500px-Tak_-_Ystad-2022.jpg"
           },
           {
+            "id": "wall",
+            "en": "wall",
+            "pt": "parede",
+            "emoji": "🧱"
+          },
+          {
+            "id": "floor",
+            "en": "floor",
+            "pt": "chão",
+            "emoji": "⬜"
+          },
+          {
             "id": "stairs",
             "en": "stairs",
             "pt": "escada",
@@ -1221,7 +1667,8 @@ const LEVELS = [
             "id": "table",
             "en": "table",
             "pt": "mesa",
-            "emoji": "🍽️"
+            "emoji": "🪑",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Beautiful_Baroque_gilded_table_from_the_Cinquantenaire_Museum_%28Bruxelles%2C_Belgium%29.jpg/500px-Beautiful_Baroque_gilded_table_from_the_Cinquantenaire_Museum_%28Bruxelles%2C_Belgium%29.jpg"
           },
           {
             "id": "chair",
@@ -1231,11 +1678,46 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Set_of_fourteen_side_chairs_MET_DP110780.jpg/500px-Set_of_fourteen_side_chairs_MET_DP110780.jpg"
           },
           {
+            "id": "sofa",
+            "en": "sofa",
+            "pt": "sofá",
+            "emoji": "🛋️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/2009-05-16_Main_office_lobby_at_Hampton_Forest_Apartments.jpg/500px-2009-05-16_Main_office_lobby_at_Hampton_Forest_Apartments.jpg"
+          },
+          {
             "id": "bed",
             "en": "bed",
             "pt": "cama",
-            "emoji": "🛌",
+            "emoji": "🛏️",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg/500px-2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg"
+          },
+          {
+            "id": "lamp",
+            "en": "lamp",
+            "pt": "luminária",
+            "emoji": "💡",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Wide_array_of_lamps.jpg/500px-Wide_array_of_lamps.jpg"
+          },
+          {
+            "id": "mirror",
+            "en": "mirror",
+            "pt": "espelho",
+            "emoji": "🪞",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/5/52/Mirror.jpg"
+          },
+          {
+            "id": "fridge",
+            "en": "fridge",
+            "pt": "geladeira",
+            "emoji": "🧊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Open_refrigerator_with_food_at_night.jpg/500px-Open_refrigerator_with_food_at_night.jpg"
+          },
+          {
+            "id": "television",
+            "en": "television",
+            "pt": "televisão",
+            "emoji": "📺",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Cptvdisplay.jpg/500px-Cptvdisplay.jpg"
           }
         ],
         "readingTime": {
@@ -1293,11 +1775,39 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Afternoon_ensemble_MET_63.212a-b_CP4.jpg/500px-Afternoon_ensemble_MET_63.212a-b_CP4.jpg"
           },
           {
+            "id": "skirt",
+            "en": "skirt",
+            "pt": "saia",
+            "emoji": "👚",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Skirt.jpg/500px-Skirt.jpg"
+          },
+          {
+            "id": "trousers",
+            "en": "trousers",
+            "pt": "calça",
+            "emoji": "👖",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Trousers-colourisolated.jpg/500px-Trousers-colourisolated.jpg"
+          },
+          {
+            "id": "shorts",
+            "en": "shorts",
+            "pt": "shorts",
+            "emoji": "🩳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Modern_bermuda_shorts.jpg"
+          },
+          {
             "id": "shoes",
             "en": "shoes",
             "pt": "sapatos",
             "emoji": "👟",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Skor_fr%C3%A5n_1700-_till_1960-talet_-_Nordiska_Museet_-_NMA.0056302.jpg/500px-Skor_fr%C3%A5n_1700-_till_1960-talet_-_Nordiska_Museet_-_NMA.0056302.jpg"
+          },
+          {
+            "id": "boots",
+            "en": "boots",
+            "pt": "botas",
+            "emoji": "🥾",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Cliff_Climbers_Combat_boot_Shoes_Blast.png/500px-Cliff_Climbers_Combat_boot_Shoes_Blast.png"
           },
           {
             "id": "socks",
@@ -1314,6 +1824,13 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Chapeaux_en_peau_de_castor.jpg/500px-Chapeaux_en_peau_de_castor.jpg"
           },
           {
+            "id": "cap",
+            "en": "cap",
+            "pt": "boné",
+            "emoji": "🧢",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/5/58/Basecap_New_York_Yankees.jpg"
+          },
+          {
             "id": "coat",
             "en": "coat",
             "pt": "casaco",
@@ -1325,6 +1842,27 @@ const LEVELS = [
             "pt": "jaqueta",
             "emoji": "🧥",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Jacket2-1.jpg/500px-Jacket2-1.jpg"
+          },
+          {
+            "id": "sweater",
+            "en": "sweater",
+            "pt": "suéter",
+            "emoji": "🧶",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Selburose-sweater.jpg/500px-Selburose-sweater.jpg"
+          },
+          {
+            "id": "scarf",
+            "en": "scarf",
+            "pt": "cachecol",
+            "emoji": "🧣",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/100%25_Kaschmir_Wolle_vonk_kaschmirprodukte.de.jpg/500px-100%25_Kaschmir_Wolle_vonk_kaschmirprodukte.de.jpg"
+          },
+          {
+            "id": "gloves",
+            "en": "gloves",
+            "pt": "luvas",
+            "emoji": "🧤",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Centre_de_Documentaci%C3%B3_Museu_T%C3%A8xtil_de_Terrassa-_Reserves-_Teixits-_Guants002.JPG/500px-Centre_de_Documentaci%C3%B3_Museu_T%C3%A8xtil_de_Terrassa-_Reserves-_Teixits-_Guants002.JPG"
           },
           {
             "id": "sunny",
@@ -1353,14 +1891,26 @@ const LEVELS = [
           {
             "id": "snowy",
             "en": "snowy",
-            "pt": "nevando",
+            "pt": "com neve",
             "emoji": "❄️"
+          },
+          {
+            "id": "stormy",
+            "en": "stormy",
+            "pt": "com tempestade",
+            "emoji": "⛈️"
           },
           {
             "id": "hot",
             "en": "hot",
             "pt": "quente",
             "emoji": "🥵"
+          },
+          {
+            "id": "cold",
+            "en": "cold",
+            "pt": "frio",
+            "emoji": "🥶"
           }
         ],
         "readingTime": {
@@ -1627,7 +2177,7 @@ const LEVELS = [
           {
             "id": "plays",
             "en": "plays",
-            "pt": "joga/brinca",
+            "pt": "joga / toca",
             "emoji": "⚽"
           },
           {
@@ -1670,7 +2220,7 @@ const LEVELS = [
             "id": "likes",
             "en": "likes",
             "pt": "gosta",
-            "emoji": "❤️"
+            "emoji": "💛"
           },
           {
             "id": "washes",
@@ -1687,7 +2237,7 @@ const LEVELS = [
           {
             "id": "getsup",
             "en": "gets up",
-            "pt": "levanta",
+            "pt": "levanta-se",
             "emoji": "⏰"
           },
           {
@@ -1701,6 +2251,36 @@ const LEVELS = [
             "en": "studies",
             "pt": "estuda",
             "emoji": "📚"
+          },
+          {
+            "id": "works",
+            "en": "works",
+            "pt": "trabalha",
+            "emoji": "💼"
+          },
+          {
+            "id": "lives",
+            "en": "lives",
+            "pt": "mora",
+            "emoji": "🏠"
+          },
+          {
+            "id": "walks",
+            "en": "walks",
+            "pt": "caminha",
+            "emoji": "🚶"
+          },
+          {
+            "id": "doesnotlike",
+            "en": "doesn't like",
+            "pt": "não gosta",
+            "emoji": "🚫"
+          },
+          {
+            "id": "doyoulike",
+            "en": "Do you like...?",
+            "pt": "Você gosta...?",
+            "emoji": "❓"
           }
         ],
         "readingTime": {
@@ -1738,13 +2318,13 @@ const LEVELS = [
           {
             "id": "walked",
             "en": "walked",
-            "pt": "andou",
+            "pt": "caminhou",
             "emoji": "🚶"
           },
           {
             "id": "played",
             "en": "played",
-            "pt": "jogou/brincou",
+            "pt": "jogou",
             "emoji": "⚽"
           },
           {
@@ -1772,34 +2352,10 @@ const LEVELS = [
             "emoji": "🍳"
           },
           {
-            "id": "was",
-            "en": "was",
-            "pt": "era/estava",
-            "emoji": "⏪"
-          },
-          {
-            "id": "were",
-            "en": "were",
-            "pt": "eram/estavam",
-            "emoji": "⏪"
-          },
-          {
-            "id": "wasnt",
-            "en": "wasn't",
-            "pt": "não era/estava",
-            "emoji": "❌"
-          },
-          {
-            "id": "werent",
-            "en": "weren't",
-            "pt": "não eram/estavam",
-            "emoji": "❌"
-          },
-          {
             "id": "visited",
             "en": "visited",
             "pt": "visitou",
-            "emoji": "🚗"
+            "emoji": "🏡"
           },
           {
             "id": "helped",
@@ -1812,6 +2368,60 @@ const LEVELS = [
             "en": "opened",
             "pt": "abriu",
             "emoji": "🚪"
+          },
+          {
+            "id": "studied",
+            "en": "studied",
+            "pt": "estudou",
+            "emoji": "📚"
+          },
+          {
+            "id": "listened",
+            "en": "listened",
+            "pt": "ouviu",
+            "emoji": "🎧"
+          },
+          {
+            "id": "painted",
+            "en": "painted",
+            "pt": "pintou",
+            "emoji": "🎨"
+          },
+          {
+            "id": "was",
+            "en": "was",
+            "pt": "era / estava",
+            "emoji": "1️⃣"
+          },
+          {
+            "id": "were",
+            "en": "were",
+            "pt": "eram / estavam",
+            "emoji": "👥"
+          },
+          {
+            "id": "wasnt",
+            "en": "wasn't",
+            "pt": "não era / não estava",
+            "emoji": "🚫"
+          },
+          {
+            "id": "werent",
+            "en": "weren't",
+            "pt": "não eram / não estavam",
+            "emoji": "🚫"
+          },
+          {
+            "id": "didyouplay",
+            "en": "Did you play?",
+            "pt": "Você jogou?",
+            "emoji": "❓"
+          },
+          {
+            "id": "didnotwatch",
+            "en": "didn't watch",
+            "pt": "não assistiu",
+            "emoji": "🙅"
           }
         ],
         "readingTime": {
@@ -1855,19 +2465,19 @@ const LEVELS = [
           {
             "id": "cantfly",
             "en": "can't fly",
-            "pt": "não consegue voar",
-            "emoji": "🙅"
+            "pt": "não sabe voar",
+            "emoji": "🚫"
           },
           {
             "id": "canrun",
             "en": "can run",
-            "pt": "consegue correr",
+            "pt": "sabe correr",
             "emoji": "🏃"
           },
           {
             "id": "canjump",
             "en": "can jump",
-            "pt": "consegue pular",
+            "pt": "sabe pular",
             "emoji": "🤸"
           },
           {
@@ -1885,8 +2495,8 @@ const LEVELS = [
           {
             "id": "cantdrive",
             "en": "can't drive",
-            "pt": "não pode dirigir",
-            "emoji": "🙅"
+            "pt": "não sabe dirigir",
+            "emoji": "🚗"
           },
           {
             "id": "canread",
@@ -1898,10 +2508,10 @@ const LEVELS = [
             "id": "cantcook",
             "en": "can't cook",
             "pt": "não sabe cozinhar",
-            "emoji": "🙅"
+            "emoji": "🍳"
           },
           {
-            "id": "canride",
+            "id": "canrideabike",
             "en": "can ride a bike",
             "pt": "sabe andar de bicicleta",
             "emoji": "🚲"
@@ -1909,8 +2519,26 @@ const LEVELS = [
           {
             "id": "canclimb",
             "en": "can climb",
-            "pt": "consegue escalar",
+            "pt": "sabe escalar",
             "emoji": "🧗"
+          },
+          {
+            "id": "candraw",
+            "en": "can draw",
+            "pt": "sabe desenhar",
+            "emoji": "✏️"
+          },
+          {
+            "id": "canspeakenglish",
+            "en": "can speak English",
+            "pt": "sabe falar inglês",
+            "emoji": "🇬🇧"
+          },
+          {
+            "id": "cantski",
+            "en": "can't ski",
+            "pt": "não sabe esquiar",
+            "emoji": "⛷️"
           },
           {
             "id": "canyouswim",
@@ -1919,10 +2547,22 @@ const LEVELS = [
             "emoji": "❓"
           },
           {
-            "id": "cantswim",
-            "en": "can't swim",
-            "pt": "não sabe nadar",
-            "emoji": "🙅"
+            "id": "canihelp",
+            "en": "Can I help you?",
+            "pt": "Posso ajudar?",
+            "emoji": "🙋"
+          },
+          {
+            "id": "yesican",
+            "en": "Yes, I can",
+            "pt": "Sim, eu sei",
+            "emoji": "✅"
+          },
+          {
+            "id": "noicant",
+            "en": "No, I can't",
+            "pt": "Não, eu não sei",
+            "emoji": "❌"
           }
         ],
         "readingTime": {
@@ -2268,6 +2908,36 @@ const LEVELS = [
             "en": "with you",
             "pt": "com você",
             "emoji": "🫂"
+          },
+          {
+            "id": "tellme",
+            "en": "Tell me",
+            "pt": "Me diga",
+            "emoji": "💬"
+          },
+          {
+            "id": "listentohim",
+            "en": "Listen to him",
+            "pt": "Escute ele",
+            "emoji": "👂"
+          },
+          {
+            "id": "showus",
+            "en": "Show us",
+            "pt": "Nos mostre",
+            "emoji": "👐"
+          },
+          {
+            "id": "forher",
+            "en": "for her",
+            "pt": "para ela",
+            "emoji": "🎁"
+          },
+          {
+            "id": "aboutthem",
+            "en": "about them",
+            "pt": "sobre eles",
+            "emoji": "💭"
           }
         ],
         "readingTime": {
@@ -2579,6 +3249,12 @@ const LEVELS = [
             "emoji": "👂"
           },
           {
+            "id": "whatareyoudoing",
+            "en": "What are you doing?",
+            "pt": "O que você está fazendo?",
+            "emoji": "❓"
+          },
+          {
             "id": "working",
             "en": "working",
             "pt": "trabalhando",
@@ -2609,10 +3285,34 @@ const LEVELS = [
             "emoji": "🏊"
           },
           {
+            "id": "watching",
+            "en": "watching",
+            "pt": "assistindo",
+            "emoji": "📺"
+          },
+          {
+            "id": "sitting",
+            "en": "sitting",
+            "pt": "sentando",
+            "emoji": "🪑"
+          },
+          {
+            "id": "smiling",
+            "en": "smiling",
+            "pt": "sorrindo",
+            "emoji": "😄"
+          },
+          {
             "id": "rightnow",
             "en": "right now",
             "pt": "agora mesmo",
             "emoji": "⏰"
+          },
+          {
+            "id": "atthemoment",
+            "en": "at the moment",
+            "pt": "no momento",
+            "emoji": "🕐"
           }
         ],
         "readingTime": {
@@ -2668,8 +3368,9 @@ const LEVELS = [
           {
             "id": "ticket",
             "en": "ticket",
-            "pt": "bilhete",
-            "emoji": "🎫"
+            "pt": "passagem",
+            "emoji": "🎫",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Ticket_%28unseparated%29_Kurkino-Berchtesgaden.JPG/500px-Ticket_%28unseparated%29_Kurkino-Berchtesgaden.JPG"
           },
           {
             "id": "passport",
@@ -2686,6 +3387,20 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Suitcase1.jpg/500px-Suitcase1.jpg"
           },
           {
+            "id": "luggage",
+            "en": "luggage",
+            "pt": "bagagem",
+            "emoji": "🧳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/20180520_Away_carryon_%281%29.jpg/500px-20180520_Away_carryon_%281%29.jpg"
+          },
+          {
+            "id": "backpack",
+            "en": "backpack",
+            "pt": "mochila",
+            "emoji": "🎒",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Rucksack1.jpg/500px-Rucksack1.jpg"
+          },
+          {
             "id": "trainstation",
             "en": "train station",
             "pt": "estação de trem",
@@ -2696,13 +3411,8 @@ const LEVELS = [
             "id": "platform",
             "en": "platform",
             "pt": "plataforma",
-            "emoji": "🚏"
-          },
-          {
-            "id": "delay",
-            "en": "delay",
-            "pt": "atraso",
-            "emoji": "⏰"
+            "emoji": "🚏",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Warszawa_1963.jpg/500px-Warszawa_1963.jpg"
           },
           {
             "id": "boardingpass",
@@ -2712,29 +3422,40 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Air_Canada_Boarding_Pass_20170911.jpg/500px-Air_Canada_Boarding_Pass_20170911.jpg"
           },
           {
-            "id": "journey",
-            "en": "journey",
-            "pt": "viagem",
-            "emoji": "🗺️"
+            "id": "gate",
+            "en": "gate",
+            "pt": "portão de embarque",
+            "emoji": "🚪"
           },
           {
-            "id": "destination",
-            "en": "destination",
-            "pt": "destino",
-            "emoji": "📍"
+            "id": "checkin",
+            "en": "check-in",
+            "pt": "check-in",
+            "emoji": "🖥️"
           },
           {
-            "id": "backpack",
-            "en": "backpack",
-            "pt": "mochila",
-            "emoji": "🎒",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Rucksack1.jpg/500px-Rucksack1.jpg"
+            "id": "customs",
+            "en": "customs",
+            "pt": "alfândega",
+            "emoji": "🛃"
           },
           {
-            "id": "tourist",
-            "en": "tourist",
-            "pt": "turista",
-            "emoji": "📸"
+            "id": "departure",
+            "en": "departure",
+            "pt": "partida",
+            "emoji": "🛫"
+          },
+          {
+            "id": "arrival",
+            "en": "arrival",
+            "pt": "chegada",
+            "emoji": "🛬"
+          },
+          {
+            "id": "delay",
+            "en": "delay",
+            "pt": "atraso",
+            "emoji": "⏰"
           },
           {
             "id": "flight",
@@ -2743,10 +3464,41 @@ const LEVELS = [
             "emoji": "✈️"
           },
           {
+            "id": "journey",
+            "en": "journey",
+            "pt": "jornada",
+            "emoji": "🧭"
+          },
+          {
+            "id": "destination",
+            "en": "destination",
+            "pt": "destino",
+            "emoji": "📍"
+          },
+          {
+            "id": "hotel",
+            "en": "hotel",
+            "pt": "hotel",
+            "emoji": "🏨",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Livorno_-_Hotel_Palazzo_-_2025-09-29_20-09-38_001.jpg/500px-Livorno_-_Hotel_Palazzo_-_2025-09-29_20-09-38_001.jpg"
+          },
+          {
+            "id": "tourist",
+            "en": "tourist",
+            "pt": "turista",
+            "emoji": "📸"
+          },
+          {
+            "id": "souvenir",
+            "en": "souvenir",
+            "pt": "lembrança",
+            "emoji": "🎁"
+          },
+          {
             "id": "map",
             "en": "map",
             "pt": "mapa",
-            "emoji": "🧭",
+            "emoji": "🗺️",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/World_Map_1689.JPG/500px-World_Map_1689.JPG"
           }
         ],
@@ -2794,7 +3546,14 @@ const LEVELS = [
             "id": "doctor",
             "en": "doctor",
             "pt": "médico(a)",
-            "emoji": "🩺"
+            "emoji": "👨‍⚕️"
+          },
+          {
+            "id": "nurse",
+            "en": "nurse",
+            "pt": "enfermeiro(a)",
+            "emoji": "👩‍⚕️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Nurse_checks_blood_pressure.jpg/500px-Nurse_checks_blood_pressure.jpg"
           },
           {
             "id": "engineer",
@@ -2807,13 +3566,49 @@ const LEVELS = [
             "id": "chef",
             "en": "chef",
             "pt": "chef de cozinha",
-            "emoji": "👨‍🍳"
+            "emoji": "👨‍🍳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Ribot_Theodule_The_Cook_And_The_Cat-1.jpg/500px-Ribot_Theodule_The_Cook_And_The_Cat-1.jpg"
+          },
+          {
+            "id": "lawyer",
+            "en": "lawyer",
+            "pt": "advogado(a)",
+            "emoji": "⚖️"
+          },
+          {
+            "id": "dentist",
+            "en": "dentist",
+            "pt": "dentista",
+            "emoji": "🦷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/GI_at_Guantanamo_visits_the_dentist.JPG/500px-GI_at_Guantanamo_visits_the_dentist.JPG"
+          },
+          {
+            "id": "mechanic",
+            "en": "mechanic",
+            "pt": "mecânico(a)",
+            "emoji": "🔧",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/2008-04-17_1989_Saab_900_Turbo_getting_new_tyres.jpg/500px-2008-04-17_1989_Saab_900_Turbo_getting_new_tyres.jpg"
+          },
+          {
+            "id": "firefighter",
+            "en": "firefighter",
+            "pt": "bombeiro(a)",
+            "emoji": "🚒",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/FiremenFightBurningBarn.jpg/500px-FiremenFightBurningBarn.jpg"
+          },
+          {
+            "id": "farmer",
+            "en": "farmer",
+            "pt": "agricultor(a)",
+            "emoji": "🚜",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Woman_at_work%2C_Gujarat.jpg/500px-Woman_at_work%2C_Gujarat.jpg"
           },
           {
             "id": "office",
             "en": "office",
             "pt": "escritório",
-            "emoji": "🏢"
+            "emoji": "🏢",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/West_side_of_Manhattan_from_Hudson_Commons_%2895103p%29.jpg/500px-West_side_of_Manhattan_from_Hudson_Commons_%2895103p%29.jpg"
           },
           {
             "id": "salary",
@@ -2831,44 +3626,55 @@ const LEVELS = [
             "id": "meeting",
             "en": "meeting",
             "pt": "reunião",
-            "emoji": "🧑‍💼",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Sitzung_von_Wiki_Loves_Broadcast_im_Kontor_Hamburg.jpg/500px-Sitzung_von_Wiki_Loves_Broadcast_im_Kontor_Hamburg.jpg"
+            "emoji": "🤝"
           },
           {
             "id": "colleague",
             "en": "colleague",
             "pt": "colega de trabalho",
-            "emoji": "🤝"
-          },
-          {
-            "id": "shift",
-            "en": "shift",
-            "pt": "turno",
-            "emoji": "⏱️"
+            "emoji": "🧑‍🤝‍🧑"
           },
           {
             "id": "boss",
             "en": "boss",
             "pt": "chefe",
-            "emoji": "🧑‍💻"
+            "emoji": "🧑‍💼"
+          },
+          {
+            "id": "shift",
+            "en": "shift",
+            "pt": "turno",
+            "emoji": "🔁"
           },
           {
             "id": "task",
             "en": "task",
             "pt": "tarefa",
-            "emoji": "📝"
-          },
-          {
-            "id": "break",
-            "en": "break",
-            "pt": "pausa",
-            "emoji": "☕"
+            "emoji": "📋"
           },
           {
             "id": "deadline",
             "en": "deadline",
-            "pt": "prazo",
+            "pt": "prazo final",
             "emoji": "⏳"
+          },
+          {
+            "id": "interview",
+            "en": "job interview",
+            "pt": "entrevista de emprego",
+            "emoji": "💬"
+          },
+          {
+            "id": "uniform",
+            "en": "uniform",
+            "pt": "uniforme",
+            "emoji": "🥼"
+          },
+          {
+            "id": "career",
+            "en": "career",
+            "pt": "carreira",
+            "emoji": "📈"
           }
         ],
         "readingTime": {
@@ -2911,11 +3717,16 @@ const LEVELS = [
             "emoji": "🤕"
           },
           {
-            "id": "stomach",
-            "en": "stomach",
-            "pt": "estômago",
-            "emoji": "🤢",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Gray1046.svg/500px-Gray1046.svg.png"
+            "id": "stomachache",
+            "en": "stomach ache",
+            "pt": "dor de barriga",
+            "emoji": "🤢"
+          },
+          {
+            "id": "sorethroat",
+            "en": "sore throat",
+            "pt": "dor de garganta",
+            "emoji": "😷"
           },
           {
             "id": "fever",
@@ -2927,14 +3738,59 @@ const LEVELS = [
             "id": "cough",
             "en": "cough",
             "pt": "tosse",
-            "emoji": "🤧",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Toux_impromptue.jpg"
+            "emoji": "😮‍💨"
+          },
+          {
+            "id": "flu",
+            "en": "flu",
+            "pt": "gripe",
+            "emoji": "🤧"
+          },
+          {
+            "id": "allergy",
+            "en": "allergy",
+            "pt": "alergia",
+            "emoji": "🌾"
+          },
+          {
+            "id": "injury",
+            "en": "injury",
+            "pt": "lesão",
+            "emoji": "🩹"
+          },
+          {
+            "id": "bandage",
+            "en": "bandage",
+            "pt": "curativo",
+            "emoji": "🩹",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg/500px-Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg"
           },
           {
             "id": "medicine",
             "en": "medicine",
             "pt": "remédio",
-            "emoji": "💊"
+            "emoji": "💊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/12-08-18-tilidin-retard.jpg/500px-12-08-18-tilidin-retard.jpg"
+          },
+          {
+            "id": "prescription",
+            "en": "prescription",
+            "pt": "receita médica",
+            "emoji": "📝"
+          },
+          {
+            "id": "pharmacy",
+            "en": "pharmacy",
+            "pt": "farmácia",
+            "emoji": "💊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/PharmacistsMortar.svg/500px-PharmacistsMortar.svg.png"
+          },
+          {
+            "id": "hospital",
+            "en": "hospital",
+            "pt": "hospital",
+            "emoji": "🏥",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Hospital-de-Bellvitge.jpg/500px-Hospital-de-Bellvitge.jpg"
           },
           {
             "id": "nurse",
@@ -2944,22 +3800,16 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Nurse_checks_blood_pressure.jpg/500px-Nurse_checks_blood_pressure.jpg"
           },
           {
-            "id": "injury",
-            "en": "injury",
-            "pt": "lesão",
-            "emoji": "🤕"
+            "id": "appointment",
+            "en": "appointment",
+            "pt": "consulta",
+            "emoji": "🗓️"
           },
           {
-            "id": "bandage",
-            "en": "bandage",
-            "pt": "atadura",
-            "emoji": "🩹"
-          },
-          {
-            "id": "exercise",
-            "en": "exercise",
-            "pt": "exercício",
-            "emoji": "🏃"
+            "id": "symptom",
+            "en": "symptom",
+            "pt": "sintoma",
+            "emoji": "🔍"
           },
           {
             "id": "healthy",
@@ -2968,10 +3818,10 @@ const LEVELS = [
             "emoji": "🥗"
           },
           {
-            "id": "symptom",
-            "en": "symptom",
-            "pt": "sintoma",
-            "emoji": "📋"
+            "id": "exercise",
+            "en": "exercise",
+            "pt": "exercício",
+            "emoji": "🏃"
           },
           {
             "id": "rest",
@@ -2980,17 +3830,25 @@ const LEVELS = [
             "emoji": "🛌"
           },
           {
-            "id": "throat",
-            "en": "throat",
-            "pt": "garganta",
-            "emoji": "😷",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Throat_Diagram.png/500px-Throat_Diagram.png"
+            "id": "heart",
+            "en": "heart",
+            "pt": "coração",
+            "emoji": "🫀",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Heart_anterior_exterior_view.png/500px-Heart_anterior_exterior_view.png"
           },
           {
-            "id": "appointment",
-            "en": "appointment",
-            "pt": "consulta",
-            "emoji": "📅"
+            "id": "lungs",
+            "en": "lungs",
+            "pt": "pulmões",
+            "emoji": "🫁",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Lungs_diagram_detailed.svg/500px-Lungs_diagram_detailed.svg.png"
+          },
+          {
+            "id": "bone",
+            "en": "bone",
+            "pt": "osso",
+            "emoji": "🦴",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Left_femur_of_extinct_elephant%2C_Alaska%2C_Ice_Age_Wellcome_L0057714.jpg/500px-Left_femur_of_extinct_elephant%2C_Alaska%2C_Ice_Age_Wellcome_L0057714.jpg"
           }
         ],
         "readingTime": {
@@ -3016,7 +3874,7 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Gray1046.svg/500px-Gray1046.svg.png"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg/500px-Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg"
       },
       {
         "id": "hobbies",
@@ -3030,75 +3888,8 @@ const LEVELS = [
             "id": "painting",
             "en": "painting",
             "pt": "pintura",
-            "emoji": "🎨"
-          },
-          {
-            "id": "guitar",
-            "en": "guitar",
-            "pt": "violão",
-            "emoji": "🎸",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/GuitareClassique5.png/500px-GuitareClassique5.png"
-          },
-          {
-            "id": "skateboard",
-            "en": "skateboard",
-            "pt": "skate",
-            "emoji": "🛹",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Hainerberg_Skate_Park_Now_Open_%286317086%29.jpg/500px-Hainerberg_Skate_Park_Now_Open_%286317086%29.jpg"
-          },
-          {
-            "id": "videogame",
-            "en": "video game",
-            "pt": "videogame",
-            "emoji": "🎮",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Universum_TV_Multispiel_2006.jpg/500px-Universum_TV_Multispiel_2006.jpg"
-          },
-          {
-            "id": "photography",
-            "en": "photography",
-            "pt": "fotografia",
-            "emoji": "📷",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Photographer_Photographing_Nevada_Mountains.jpg/500px-Photographer_Photographing_Nevada_Mountains.jpg"
-          },
-          {
-            "id": "boardgame",
-            "en": "board game",
-            "pt": "jogo de tabuleiro",
-            "emoji": "🎲",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/US_Navy_110713-N-NT881-124_Personnel_Specialist_2nd_Class_James_Vail%2C_left%2C_and_Boatswain%27s_Mate_2nd_Class_Nathaniel_Eaton_play_board_games_with_ch.jpg/500px-US_Navy_110713-N-NT881-124_Personnel_Specialist_2nd_Class_James_Vail%2C_left%2C_and_Boatswain%27s_Mate_2nd_Class_Nathaniel_Eaton_play_board_games_with_ch.jpg"
-          },
-          {
-            "id": "reading",
-            "en": "reading",
-            "pt": "leitura",
-            "emoji": "📚"
-          },
-          {
-            "id": "swimming",
-            "en": "swimming",
-            "pt": "natação",
-            "emoji": "🏊",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Depart4x100.jpg/500px-Depart4x100.jpg"
-          },
-          {
-            "id": "collecting",
-            "en": "collecting",
-            "pt": "colecionar",
-            "emoji": "🗃️"
-          },
-          {
-            "id": "dancing",
-            "en": "dancing",
-            "pt": "dança",
-            "emoji": "💃",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Two_dancers.jpg/500px-Two_dancers.jpg"
-          },
-          {
-            "id": "cycling",
-            "en": "cycling",
-            "pt": "ciclismo",
-            "emoji": "🚴",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Cycliste_%C3%A0_place_d%27Italie-Paris_crop.jpg/500px-Cycliste_%C3%A0_place_d%27Italie-Paris_crop.jpg"
+            "emoji": "🎨",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
           },
           {
             "id": "drawing",
@@ -3108,6 +3899,94 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Da_Vinci_Vitruve_Luc_Viatour.jpg/500px-Da_Vinci_Vitruve_Luc_Viatour.jpg"
           },
           {
+            "id": "guitar",
+            "en": "playing the guitar",
+            "pt": "tocar violão",
+            "emoji": "🎸",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/GuitareClassique5.png/500px-GuitareClassique5.png"
+          },
+          {
+            "id": "singing",
+            "en": "singing",
+            "pt": "cantar",
+            "emoji": "🎤"
+          },
+          {
+            "id": "dancing",
+            "en": "dancing",
+            "pt": "dançar",
+            "emoji": "💃"
+          },
+          {
+            "id": "reading",
+            "en": "reading",
+            "pt": "leitura",
+            "emoji": "📚"
+          },
+          {
+            "id": "photography",
+            "en": "photography",
+            "pt": "fotografia",
+            "emoji": "📷",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Photographer_Photographing_Nevada_Mountains.jpg/500px-Photographer_Photographing_Nevada_Mountains.jpg"
+          },
+          {
+            "id": "videogame",
+            "en": "video game",
+            "pt": "videogame",
+            "emoji": "🎮",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Universum_TV_Multispiel_2006.jpg/500px-Universum_TV_Multispiel_2006.jpg"
+          },
+          {
+            "id": "boardgame",
+            "en": "board game",
+            "pt": "jogo de tabuleiro",
+            "emoji": "🎲",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/US_Navy_110713-N-NT881-124_Personnel_Specialist_2nd_Class_James_Vail%2C_left%2C_and_Boatswain%27s_Mate_2nd_Class_Nathaniel_Eaton_play_board_games_with_ch.jpg/500px-US_Navy_110713-N-NT881-124_Personnel_Specialist_2nd_Class_James_Vail%2C_left%2C_and_Boatswain%27s_Mate_2nd_Class_Nathaniel_Eaton_play_board_games_with_ch.jpg"
+          },
+          {
+            "id": "chess",
+            "en": "chess",
+            "pt": "xadrez",
+            "emoji": "♟️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/500px-ChessSet.jpg"
+          },
+          {
+            "id": "skateboard",
+            "en": "skateboarding",
+            "pt": "andar de skate",
+            "emoji": "🛹",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/BackSmithGrind.jpg/500px-BackSmithGrind.jpg"
+          },
+          {
+            "id": "cycling",
+            "en": "cycling",
+            "pt": "ciclismo",
+            "emoji": "🚴",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Cycliste_%C3%A0_place_d%27Italie-Paris_crop.jpg/500px-Cycliste_%C3%A0_place_d%27Italie-Paris_crop.jpg"
+          },
+          {
+            "id": "swimming",
+            "en": "swimming",
+            "pt": "natação",
+            "emoji": "🏊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Depart4x100.jpg/500px-Depart4x100.jpg"
+          },
+          {
+            "id": "running",
+            "en": "running",
+            "pt": "corrida",
+            "emoji": "🏃",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Speedsuit.jpg/500px-Speedsuit.jpg"
+          },
+          {
+            "id": "football",
+            "en": "football",
+            "pt": "futebol",
+            "emoji": "⚽",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Football_in_Bloomington%2C_Indiana%2C_1995.jpg/500px-Football_in_Bloomington%2C_Indiana%2C_1995.jpg"
+          },
+          {
             "id": "karate",
             "en": "karate",
             "pt": "caratê",
@@ -3115,10 +3994,45 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Hanashiro_Chomo.jpg"
           },
           {
-            "id": "team",
-            "en": "team",
-            "pt": "time",
-            "emoji": "👥"
+            "id": "hiking",
+            "en": "hiking",
+            "pt": "caminhada",
+            "emoji": "🥾",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Hiking_to_the_Ice_Lakes._San_Juan_National_Forest%2C_Colorado.jpg/500px-Hiking_to_the_Ice_Lakes._San_Juan_National_Forest%2C_Colorado.jpg"
+          },
+          {
+            "id": "camping",
+            "en": "camping",
+            "pt": "acampar",
+            "emoji": "⛺",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Tent_camping_along_the_Sulayr_trail_in_La_Taha%2C_Sierra_Nevada_National_Park_%28DSCF5147%29.jpg/500px-Tent_camping_along_the_Sulayr_trail_in_La_Taha%2C_Sierra_Nevada_National_Park_%28DSCF5147%29.jpg"
+          },
+          {
+            "id": "fishing",
+            "en": "fishing",
+            "pt": "pescar",
+            "emoji": "🎣",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Stilts_fishermen_Sri_Lanka_02.jpg/500px-Stilts_fishermen_Sri_Lanka_02.jpg"
+          },
+          {
+            "id": "baking",
+            "en": "baking",
+            "pt": "fazer bolos",
+            "emoji": "🧁",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Freshly_baked_bread_loaves.jpg/500px-Freshly_baked_bread_loaves.jpg"
+          },
+          {
+            "id": "gardening",
+            "en": "gardening",
+            "pt": "jardinagem",
+            "emoji": "🪴",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Cementerio%2C_Tulc%C3%A1n%2C_Ecuador%2C_2015-07-21%2C_DD_60.JPG/500px-Cementerio%2C_Tulc%C3%A1n%2C_Ecuador%2C_2015-07-21%2C_DD_60.JPG"
+          },
+          {
+            "id": "collecting",
+            "en": "collecting",
+            "pt": "colecionar",
+            "emoji": "🗃️"
           }
         ],
         "readingTime": {
@@ -3144,7 +4058,7 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/GuitareClassique5.png/500px-GuitareClassique5.png"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
       },
       {
         "id": "environment",
@@ -3163,49 +4077,22 @@ const LEVELS = [
           },
           {
             "id": "recycle",
-            "en": "recycle",
+            "en": "to recycle",
             "pt": "reciclar",
-            "emoji": "♻️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/RecyclingSymbolGreen.png/500px-RecyclingSymbolGreen.png"
+            "emoji": "♻️"
           },
           {
-            "id": "endangered",
-            "en": "endangered",
-            "pt": "em perigo de extinção",
-            "emoji": "🐾"
+            "id": "litter",
+            "en": "litter",
+            "pt": "lixo na rua",
+            "emoji": "🗑️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Littering_in_Stockholm.jpg/500px-Littering_in_Stockholm.jpg"
           },
           {
-            "id": "forest",
-            "en": "forest",
-            "pt": "floresta",
-            "emoji": "🌳",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/500px-Aerial_view_of_the_Amazon_Rainforest.jpg"
-          },
-          {
-            "id": "ocean",
-            "en": "ocean",
-            "pt": "oceano",
-            "emoji": "🌊",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Pacific_Ocean_as_viewed_from_GOES-18_on_September_23%2C_2023.jpg/500px-Pacific_Ocean_as_viewed_from_GOES-18_on_September_23%2C_2023.jpg"
-          },
-          {
-            "id": "wildlife",
-            "en": "wildlife",
-            "pt": "vida selvagem",
-            "emoji": "🦁",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Wildlife_at_Maasai_Mara_%28Lion%29.jpg/500px-Wildlife_at_Maasai_Mara_%28Lion%29.jpg"
-          },
-          {
-            "id": "climate",
-            "en": "climate",
-            "pt": "clima",
-            "emoji": "🌦️"
-          },
-          {
-            "id": "habitat",
-            "en": "habitat",
-            "pt": "habitat",
-            "emoji": "🏞️"
+            "id": "waste",
+            "en": "waste",
+            "pt": "desperdício",
+            "emoji": "🚮"
           },
           {
             "id": "plastic",
@@ -3215,16 +4102,11 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Plastic_household_items.jpg/500px-Plastic_household_items.jpg"
           },
           {
-            "id": "species",
-            "en": "species",
-            "pt": "espécie",
-            "emoji": "🐢"
-          },
-          {
-            "id": "protect",
-            "en": "protect",
-            "pt": "proteger",
-            "emoji": "🛡️"
+            "id": "forest",
+            "en": "forest",
+            "pt": "floresta",
+            "emoji": "🌳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/500px-Aerial_view_of_the_Amazon_Rainforest.jpg"
           },
           {
             "id": "rainforest",
@@ -3234,15 +4116,97 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Chiapas_Rainforest_crop.jpg/500px-Chiapas_Rainforest_crop.jpg"
           },
           {
-            "id": "pollute",
-            "en": "pollute",
-            "pt": "poluir",
-            "emoji": "💨"
+            "id": "ocean",
+            "en": "ocean",
+            "pt": "oceano",
+            "emoji": "🌊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Pacific_Ocean_as_viewed_from_GOES-18_on_September_23%2C_2023.jpg/500px-Pacific_Ocean_as_viewed_from_GOES-18_on_September_23%2C_2023.jpg"
+          },
+          {
+            "id": "river",
+            "en": "river",
+            "pt": "rio",
+            "emoji": "🏞️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Pirogue_running_on_the_Mekong_at_golden_hour_between_Don_Det_and_Don_Khon_Laos.jpg/500px-Pirogue_running_on_the_Mekong_at_golden_hour_between_Don_Det_and_Don_Khon_Laos.jpg"
+          },
+          {
+            "id": "planet",
+            "en": "planet",
+            "pt": "planeta",
+            "emoji": "🌍",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Meteosat-12-fci-march-equinox-2025-noon.jpg/500px-Meteosat-12-fci-march-equinox-2025-noon.jpg"
+          },
+          {
+            "id": "wildlife",
+            "en": "wildlife",
+            "pt": "vida selvagem",
+            "emoji": "🦌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Wildlife_at_Maasai_Mara_%28Lion%29.jpg/500px-Wildlife_at_Maasai_Mara_%28Lion%29.jpg"
+          },
+          {
+            "id": "species",
+            "en": "species",
+            "pt": "espécie",
+            "emoji": "🐾"
+          },
+          {
+            "id": "endangered",
+            "en": "endangered",
+            "pt": "em extinção",
+            "emoji": "🐼"
+          },
+          {
+            "id": "habitat",
+            "en": "habitat",
+            "pt": "habitat",
+            "emoji": "🏕️"
+          },
+          {
+            "id": "climate",
+            "en": "climate",
+            "pt": "clima",
+            "emoji": "🌦️"
+          },
+          {
+            "id": "globalwarming",
+            "en": "global warming",
+            "pt": "aquecimento global",
+            "emoji": "🔥"
+          },
+          {
+            "id": "energy",
+            "en": "energy",
+            "pt": "energia",
+            "emoji": "⚡"
+          },
+          {
+            "id": "solarpower",
+            "en": "solar power",
+            "pt": "energia solar",
+            "emoji": "☀️"
+          },
+          {
+            "id": "protect",
+            "en": "to protect",
+            "pt": "proteger",
+            "emoji": "🛡️"
           },
           {
             "id": "conservation",
             "en": "conservation",
             "pt": "conservação",
+            "emoji": "🌿"
+          },
+          {
+            "id": "cleanwater",
+            "en": "clean water",
+            "pt": "água limpa",
+            "emoji": "💧"
+          },
+          {
+            "id": "plantatree",
+            "en": "to plant a tree",
+            "pt": "plantar uma árvore",
             "emoji": "🌱"
           }
         ],
@@ -3292,34 +4256,40 @@ const LEVELS = [
             "emoji": "😎"
           },
           {
+            "id": "friendly",
+            "en": "friendly",
+            "pt": "simpático(a)",
+            "emoji": "😊"
+          },
+          {
+            "id": "kind",
+            "en": "kind",
+            "pt": "gentil",
+            "emoji": "🤗"
+          },
+          {
             "id": "generous",
             "en": "generous",
             "pt": "generoso(a)",
             "emoji": "🎁"
           },
           {
-            "id": "curious",
-            "en": "curious",
-            "pt": "curioso(a)",
-            "emoji": "🧐"
+            "id": "polite",
+            "en": "polite",
+            "pt": "educado(a)",
+            "emoji": "🙇"
           },
           {
-            "id": "nervous",
-            "en": "nervous",
-            "pt": "nervoso(a)",
-            "emoji": "😬"
+            "id": "rude",
+            "en": "rude",
+            "pt": "mal-educado(a)",
+            "emoji": "😤"
           },
           {
-            "id": "friendly",
-            "en": "friendly",
-            "pt": "amigável",
-            "emoji": "🙂"
-          },
-          {
-            "id": "jealous",
-            "en": "jealous",
-            "pt": "com ciúmes",
-            "emoji": "😒"
+            "id": "honest",
+            "en": "honest",
+            "pt": "honesto(a)",
+            "emoji": "🤝"
           },
           {
             "id": "patient",
@@ -3328,40 +4298,82 @@ const LEVELS = [
             "emoji": "⏳"
           },
           {
-            "id": "honest",
-            "en": "honest",
-            "pt": "honesto(a)",
-            "emoji": "😇"
-          },
-          {
             "id": "stubborn",
             "en": "stubborn",
             "pt": "teimoso(a)",
-            "emoji": "😤"
+            "emoji": "🐏"
+          },
+          {
+            "id": "curious",
+            "en": "curious",
+            "pt": "curioso(a)",
+            "emoji": "🔎"
+          },
+          {
+            "id": "creative",
+            "en": "creative",
+            "pt": "criativo(a)",
+            "emoji": "🎨"
+          },
+          {
+            "id": "funny",
+            "en": "funny",
+            "pt": "engraçado(a)",
+            "emoji": "😂"
           },
           {
             "id": "cheerful",
             "en": "cheerful",
             "pt": "alegre",
-            "emoji": "😄"
+            "emoji": "😃"
           },
           {
-            "id": "embarrassed",
-            "en": "embarrassed",
-            "pt": "envergonhado(a)",
-            "emoji": "🙈"
+            "id": "brave",
+            "en": "brave",
+            "pt": "corajoso(a)",
+            "emoji": "🦸"
           },
           {
-            "id": "proud",
-            "en": "proud",
-            "pt": "orgulhoso(a)",
-            "emoji": "😌"
+            "id": "lazy",
+            "en": "lazy",
+            "pt": "preguiçoso(a)",
+            "emoji": "🦥"
           },
           {
-            "id": "worried",
-            "en": "worried",
-            "pt": "preocupado(a)",
-            "emoji": "😟"
+            "id": "talkative",
+            "en": "talkative",
+            "pt": "falante",
+            "emoji": "🗣️"
+          },
+          {
+            "id": "quiet",
+            "en": "quiet",
+            "pt": "quieto(a)",
+            "emoji": "🤫"
+          },
+          {
+            "id": "selfish",
+            "en": "selfish",
+            "pt": "egoísta",
+            "emoji": "🙅"
+          },
+          {
+            "id": "reliable",
+            "en": "reliable",
+            "pt": "confiável",
+            "emoji": "🛡️"
+          },
+          {
+            "id": "nervous",
+            "en": "nervous",
+            "pt": "nervoso(a)",
+            "emoji": "😬"
+          },
+          {
+            "id": "jealous",
+            "en": "jealous",
+            "pt": "ciumento(a)",
+            "emoji": "😒"
           }
         ],
         "readingTime": {
@@ -4000,6 +5012,12 @@ const LEVELS = [
             "emoji": "🧍"
           },
           {
+            "id": "mediumheight",
+            "en": "medium height",
+            "pt": "altura média",
+            "emoji": "📐"
+          },
+          {
             "id": "slim",
             "en": "slim",
             "pt": "magro(a)",
@@ -4010,6 +5028,24 @@ const LEVELS = [
             "en": "strong",
             "pt": "forte",
             "emoji": "💪"
+          },
+          {
+            "id": "young",
+            "en": "young",
+            "pt": "jovem",
+            "emoji": "🧒"
+          },
+          {
+            "id": "middleaged",
+            "en": "middle-aged",
+            "pt": "de meia-idade",
+            "emoji": "🧑"
+          },
+          {
+            "id": "elderly",
+            "en": "elderly",
+            "pt": "idoso(a)",
+            "emoji": "🧓"
           },
           {
             "id": "curlyhair",
@@ -4024,10 +5060,28 @@ const LEVELS = [
             "emoji": "👩"
           },
           {
+            "id": "wavyhair",
+            "en": "wavy hair",
+            "pt": "cabelo ondulado",
+            "emoji": "🌊"
+          },
+          {
             "id": "blondhair",
             "en": "blond hair",
             "pt": "cabelo loiro",
             "emoji": "👱"
+          },
+          {
+            "id": "darkhair",
+            "en": "dark hair",
+            "pt": "cabelo escuro",
+            "emoji": "🧑‍🦰"
+          },
+          {
+            "id": "bald",
+            "en": "bald",
+            "pt": "careca",
+            "emoji": "👨‍🦲"
           },
           {
             "id": "beard",
@@ -4036,19 +5090,37 @@ const LEVELS = [
             "emoji": "🧔"
           },
           {
+            "id": "moustache",
+            "en": "moustache",
+            "pt": "bigode",
+            "emoji": "👨"
+          },
+          {
+            "id": "freckles",
+            "en": "freckles",
+            "pt": "sardas",
+            "emoji": "😊"
+          },
+          {
             "id": "glasses",
             "en": "glasses",
             "pt": "óculos",
             "emoji": "👓"
           },
           {
-            "id": "friendly",
+            "id": "greeneyes",
+            "en": "green eyes",
+            "pt": "olhos verdes",
+            "emoji": "👀"
+          },
+          {
+            "id": "friendly_dp",
             "en": "friendly",
             "pt": "simpático(a)",
             "emoji": "😊"
           },
           {
-            "id": "shy_p",
+            "id": "shy_dp",
             "en": "shy",
             "pt": "tímido(a)",
             "emoji": "😳"
@@ -4058,18 +5130,6 @@ const LEVELS = [
             "en": "hard-working",
             "pt": "trabalhador(a)",
             "emoji": "🛠️"
-          },
-          {
-            "id": "generous",
-            "en": "generous",
-            "pt": "generoso(a)",
-            "emoji": "🎁"
-          },
-          {
-            "id": "middleaged",
-            "en": "middle-aged",
-            "pt": "de meia-idade",
-            "emoji": "🧓"
           }
         ],
         "readingTime": {
@@ -4105,10 +5165,17 @@ const LEVELS = [
         "grammarTip": "Describe animals with 'have/has got' for body parts (A giraffe has got a long neck) and 'can' for abilities (Penguins can swim but they can't fly). Say where they live with 'lives in': 'The camel lives in the desert.'",
         "words": [
           {
+            "id": "fur",
+            "en": "fur",
+            "pt": "pelo",
+            "emoji": "🧸",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/GrizzlyBearJeanBeaufort.jpg/500px-GrizzlyBearJeanBeaufort.jpg"
+          },
+          {
             "id": "furry",
             "en": "furry",
             "pt": "peludo",
-            "emoji": "🧸"
+            "emoji": "🐻"
           },
           {
             "id": "feathers",
@@ -4129,12 +5196,12 @@ const LEVELS = [
             "en": "wings",
             "pt": "asas",
             "emoji": "🦅",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Wing.two.arp.600pix.jpg/500px-Wing.two.arp.600pix.jpg"
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Domestic_Pigeon_Flock.jpg/500px-Domestic_Pigeon_Flock.jpg"
           },
           {
             "id": "tail",
             "en": "tail",
-            "pt": "cauda / rabo",
+            "pt": "cauda",
             "emoji": "🐕",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/White-tailed_deer%2C_tail_up.jpg/500px-White-tailed_deer%2C_tail_up.jpg"
           },
@@ -4144,6 +5211,41 @@ const LEVELS = [
             "pt": "patas",
             "emoji": "🐾",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Paw_and_pads.jpg/500px-Paw_and_pads.jpg"
+          },
+          {
+            "id": "claws",
+            "en": "claws",
+            "pt": "garras",
+            "emoji": "🦅",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Cat_claw_closeup.jpg/500px-Cat_claw_closeup.jpg"
+          },
+          {
+            "id": "beak",
+            "en": "beak",
+            "pt": "bico",
+            "emoji": "🐦",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toucans_%28Ramphastidae%29.jpg/500px-Toucans_%28Ramphastidae%29.jpg"
+          },
+          {
+            "id": "horns",
+            "en": "horns",
+            "pt": "chifres",
+            "emoji": "🐃",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Male_impala_profile.jpg/500px-Male_impala_profile.jpg"
+          },
+          {
+            "id": "spots",
+            "en": "spots",
+            "pt": "pintas",
+            "emoji": "🐆",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/African_leopard_male_%28cropped%29.jpg/500px-African_leopard_male_%28cropped%29.jpg"
+          },
+          {
+            "id": "stripes",
+            "en": "stripes",
+            "pt": "listras",
+            "emoji": "🦓",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Plains_Zebra_Equus_quagga_cropped.jpg/500px-Plains_Zebra_Equus_quagga_cropped.jpg"
           },
           {
             "id": "longneck",
@@ -4156,6 +5258,18 @@ const LEVELS = [
             "en": "sharp teeth",
             "pt": "dentes afiados",
             "emoji": "🦈"
+          },
+          {
+            "id": "huge",
+            "en": "huge",
+            "pt": "enorme",
+            "emoji": "🐘"
+          },
+          {
+            "id": "tiny",
+            "en": "tiny",
+            "pt": "minúsculo",
+            "emoji": "🐜"
           },
           {
             "id": "wild",
@@ -4182,16 +5296,16 @@ const LEVELS = [
             "emoji": "🕊️"
           },
           {
-            "id": "livesinthe",
-            "en": "lives in the jungle",
-            "pt": "vive na selva",
-            "emoji": "🌴"
-          },
-          {
-            "id": "cansim",
+            "id": "canswim",
             "en": "can swim",
             "pt": "sabe nadar",
             "emoji": "🏊"
+          },
+          {
+            "id": "livesinthejungle",
+            "en": "lives in the jungle",
+            "pt": "vive na selva",
+            "emoji": "🌴"
           }
         ],
         "readingTime": {
@@ -4217,7 +5331,7 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg/500px-Types_de_plumes._-_Larousse_pour_tous%2C_-1907-1910-.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/GrizzlyBearJeanBeaufort.jpg/500px-GrizzlyBearJeanBeaufort.jpg"
       },
       {
         "id": "describingplaces",
@@ -4246,6 +5360,18 @@ const LEVELS = [
             "emoji": "🔊"
           },
           {
+            "id": "busy",
+            "en": "busy",
+            "pt": "movimentado",
+            "emoji": "🚦"
+          },
+          {
+            "id": "peaceful",
+            "en": "peaceful",
+            "pt": "pacato",
+            "emoji": "🕊️"
+          },
+          {
             "id": "modern",
             "en": "modern",
             "pt": "moderno",
@@ -4258,10 +5384,28 @@ const LEVELS = [
             "emoji": "🏛️"
           },
           {
+            "id": "historic",
+            "en": "historic",
+            "pt": "histórico",
+            "emoji": "🏰"
+          },
+          {
             "id": "beautiful_pl",
             "en": "beautiful",
             "pt": "bonito",
             "emoji": "✨"
+          },
+          {
+            "id": "polluted",
+            "en": "polluted",
+            "pt": "poluído",
+            "emoji": "🏭"
+          },
+          {
+            "id": "expensive_pl",
+            "en": "expensive",
+            "pt": "caro",
+            "emoji": "💸"
           },
           {
             "id": "beach_pl",
@@ -4285,6 +5429,26 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/500px-Aerial_view_of_the_Amazon_Rainforest.jpg"
           },
           {
+            "id": "lake_pl",
+            "en": "lake",
+            "pt": "lago",
+            "emoji": "🏞️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Lake_Idro_Italy_2005-08-16.jpg/500px-Lake_Idro_Italy_2005-08-16.jpg"
+          },
+          {
+            "id": "countryside",
+            "en": "countryside",
+            "pt": "campo",
+            "emoji": "🌾",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Barossa_Valley_South_Australia.jpg/500px-Barossa_Valley_South_Australia.jpg"
+          },
+          {
+            "id": "citycentre",
+            "en": "city centre",
+            "pt": "centro da cidade",
+            "emoji": "🏢"
+          },
+          {
             "id": "village_pl",
             "en": "village",
             "pt": "vilarejo",
@@ -4293,9 +5457,10 @@ const LEVELS = [
           },
           {
             "id": "square_pl",
-            "en": "square",
+            "en": "town square",
             "pt": "praça",
-            "emoji": "⛲"
+            "emoji": "⛲",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Piazza_della_Signoria.jpg/500px-Piazza_della_Signoria.jpg"
           },
           {
             "id": "museum_pl",
@@ -4305,16 +5470,18 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Museo_Chileno_de_Arte_Precolombino_-_2020_-_10.jpg/500px-Museo_Chileno_de_Arte_Precolombino_-_2020_-_10.jpg"
           },
           {
-            "id": "thereisa",
-            "en": "There is a park",
-            "pt": "Há um parque",
-            "emoji": "🌳"
+            "id": "park_pl",
+            "en": "park",
+            "pt": "parque",
+            "emoji": "🌳",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Halleyparknovember_b_%28cropped%29.jpg/500px-Halleyparknovember_b_%28cropped%29.jpg"
           },
           {
-            "id": "thereare",
-            "en": "There are shops",
-            "pt": "Há lojas",
-            "emoji": "🏬"
+            "id": "market_pl",
+            "en": "market",
+            "pt": "mercado",
+            "emoji": "🧺",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/5/57/The_Moorish_Bazaar.jpg"
           }
         ],
         "readingTime": {
@@ -4387,6 +5554,36 @@ const LEVELS = [
             "emoji": "❓"
           },
           {
+            "id": "willbewaiting",
+            "en": "I will be waiting",
+            "pt": "Eu estarei esperando",
+            "emoji": "🙋"
+          },
+          {
+            "id": "willbeliving",
+            "en": "They will be living there",
+            "pt": "Eles estarão morando lá",
+            "emoji": "🏠"
+          },
+          {
+            "id": "willbedriving",
+            "en": "We will be driving home",
+            "pt": "Estaremos indo para casa",
+            "emoji": "🚗"
+          },
+          {
+            "id": "willbehaving",
+            "en": "She will be having lunch",
+            "pt": "Ela estará almoçando",
+            "emoji": "🍽️"
+          },
+          {
+            "id": "wontbeworking",
+            "en": "I won't be working",
+            "pt": "Eu não estarei trabalhando",
+            "emoji": "🚫"
+          },
+          {
             "id": "thistimetomorrow",
             "en": "this time tomorrow",
             "pt": "a esta hora amanhã",
@@ -4411,16 +5608,10 @@ const LEVELS = [
             "emoji": "🚪"
           },
           {
-            "id": "willbewaiting",
-            "en": "I will be waiting",
-            "pt": "Eu estarei esperando",
-            "emoji": "🙋"
-          },
-          {
-            "id": "willbeliving",
-            "en": "They will be living there",
-            "pt": "Eles estarão morando lá",
-            "emoji": "🏠"
+            "id": "thisweekend",
+            "en": "this time next week",
+            "pt": "a esta hora semana que vem",
+            "emoji": "📅"
           }
         ],
         "readingTime": {
@@ -4469,15 +5660,22 @@ const LEVELS = [
           {
             "id": "socialmedia",
             "en": "social media",
-            "pt": "rede social",
-            "emoji": "📲"
+            "pt": "redes sociais",
+            "emoji": "📱"
           },
           {
             "id": "smartphone",
             "en": "smartphone",
-            "pt": "smartphone/celular",
+            "pt": "smartphone",
             "emoji": "📱",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg/500px-Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg"
+          },
+          {
+            "id": "laptop",
+            "en": "laptop",
+            "pt": "notebook",
+            "emoji": "💻",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Laptop_collage.jpg/500px-Laptop_collage.jpg"
           },
           {
             "id": "app",
@@ -4490,6 +5688,12 @@ const LEVELS = [
             "en": "artificial intelligence",
             "pt": "inteligência artificial",
             "emoji": "🤖"
+          },
+          {
+            "id": "algorithm",
+            "en": "algorithm",
+            "pt": "algoritmo",
+            "emoji": "🧮"
           },
           {
             "id": "password",
@@ -4506,7 +5710,7 @@ const LEVELS = [
           {
             "id": "upload",
             "en": "to upload",
-            "pt": "fazer upload/enviar",
+            "pt": "enviar (upload)",
             "emoji": "⬆️"
           },
           {
@@ -4540,16 +5744,54 @@ const LEVELS = [
             "emoji": "📹"
           },
           {
-            "id": "govira",
+            "id": "goviral",
             "en": "to go viral",
             "pt": "viralizar",
-            "emoji": "🔥"
+            "emoji": "🚀"
           },
           {
             "id": "privacysettings",
             "en": "privacy settings",
-            "pt": "configurações de privacidade",
+            "pt": "config. de privacidade",
             "emoji": "⚙️"
+          },
+          {
+            "id": "cloudstorage",
+            "en": "cloud storage",
+            "pt": "armazenamento na nuvem",
+            "emoji": "☁️"
+          },
+          {
+            "id": "streaming",
+            "en": "streaming",
+            "pt": "streaming",
+            "emoji": "📺"
+          },
+          {
+            "id": "charger",
+            "en": "charger",
+            "pt": "carregador",
+            "emoji": "🔌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Car_Battery_Charger.jpg/500px-Car_Battery_Charger.jpg"
+          },
+          {
+            "id": "headphones",
+            "en": "headphones",
+            "pt": "fones de ouvido",
+            "emoji": "🎧",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/S%C5%82uchawki_referencyjne_K-701_firmy_AKG.jpg/500px-S%C5%82uchawki_referencyjne_K-701_firmy_AKG.jpg"
+          },
+          {
+            "id": "software",
+            "en": "software update",
+            "pt": "atualização de software",
+            "emoji": "🔄"
+          },
+          {
+            "id": "scam",
+            "en": "online scam",
+            "pt": "golpe online",
+            "emoji": "⚠️"
           }
         ],
         "readingTime": {
@@ -4588,9 +5830,9 @@ const LEVELS = [
           {
             "id": "cash",
             "en": "cash",
-            "pt": "dinheiro (em espécie)",
+            "pt": "dinheiro em espécie",
             "emoji": "💵",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg/500px-Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg"
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg/500px-Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg"
           },
           {
             "id": "creditcard",
@@ -4600,40 +5842,58 @@ const LEVELS = [
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Credit-cards.jpg/500px-Credit-cards.jpg"
           },
           {
+            "id": "debitcard",
+            "en": "debit card",
+            "pt": "cartão de débito",
+            "emoji": "💳"
+          },
+          {
             "id": "discount",
             "en": "discount",
             "pt": "desconto",
             "emoji": "🏷️"
           },
           {
+            "id": "sale",
+            "en": "sale (promotion)",
+            "pt": "promoção",
+            "emoji": "🔖"
+          },
+          {
             "id": "receipt",
             "en": "receipt",
-            "pt": "recibo/nota fiscal",
+            "pt": "recibo",
             "emoji": "🧾"
           },
           {
             "id": "bargain",
-            "en": "to bargain/negotiate",
-            "pt": "negociar/pechinchar",
+            "en": "to bargain",
+            "pt": "pechinchar",
             "emoji": "🤝"
           },
           {
             "id": "refund",
             "en": "refund",
             "pt": "reembolso",
-            "emoji": "💰"
+            "emoji": "↩️"
+          },
+          {
+            "id": "exchange",
+            "en": "to exchange",
+            "pt": "trocar",
+            "emoji": "🔁"
           },
           {
             "id": "customerservice",
             "en": "customer service",
             "pt": "atendimento ao cliente",
-            "emoji": "🙋"
+            "emoji": "📞"
           },
           {
             "id": "onlinepayment",
             "en": "online payment",
             "pt": "pagamento online",
-            "emoji": "📲"
+            "emoji": "🖱️"
           },
           {
             "id": "change",
@@ -4648,22 +5908,59 @@ const LEVELS = [
             "emoji": "📊"
           },
           {
-            "id": "exchange",
-            "en": "to exchange",
-            "pt": "trocar (um produto)",
-            "emoji": "🔄"
-          },
-          {
             "id": "installments",
             "en": "installments",
             "pt": "parcelas",
-            "emoji": "📆"
+            "emoji": "🗓️"
           },
           {
-            "id": "sale",
-            "en": "sale (promotion)",
-            "pt": "liquidação/promoção",
-            "emoji": "🛒"
+            "id": "shoppingcart",
+            "en": "shopping cart",
+            "pt": "carrinho de compras",
+            "emoji": "🛒",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Frau_mit_Einkaufswagen_%2837939692236%29.jpg/500px-Frau_mit_Einkaufswagen_%2837939692236%29.jpg"
+          },
+          {
+            "id": "price",
+            "en": "price tag",
+            "pt": "etiqueta de preço",
+            "emoji": "🏷️"
+          },
+          {
+            "id": "expensive",
+            "en": "expensive",
+            "pt": "caro",
+            "emoji": "💸"
+          },
+          {
+            "id": "cheap",
+            "en": "cheap",
+            "pt": "barato",
+            "emoji": "🪙"
+          },
+          {
+            "id": "toafford",
+            "en": "to afford",
+            "pt": "poder pagar",
+            "emoji": "✅"
+          },
+          {
+            "id": "tosave",
+            "en": "to save money",
+            "pt": "economizar",
+            "emoji": "🏦"
+          },
+          {
+            "id": "delivery",
+            "en": "delivery",
+            "pt": "entrega",
+            "emoji": "📦"
+          },
+          {
+            "id": "warranty",
+            "en": "warranty",
+            "pt": "garantia",
+            "emoji": "🛡️"
           }
         ],
         "readingTime": {
@@ -4689,7 +5986,7 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg/500px-Flickr_-_Nic%27s_events_-_London_-_14-15_Dec_2007_-_034.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg/500px-Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg"
       },
       {
         "id": "sustainability",
@@ -4716,8 +6013,21 @@ const LEVELS = [
             "id": "renewableenergy",
             "en": "renewable energy",
             "pt": "energia renovável",
-            "emoji": "🔋",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Andasol_Guadix_4.jpg/500px-Andasol_Guadix_4.jpg"
+            "emoji": "🌬️"
+          },
+          {
+            "id": "solarpanel",
+            "en": "solar panel",
+            "pt": "painel solar",
+            "emoji": "🔆",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Dji_fly_20230602_13826_PM_27_1719032149374_photo_optimized.jpg/500px-Dji_fly_20230602_13826_PM_27_1719032149374_photo_optimized.jpg"
+          },
+          {
+            "id": "windturbine",
+            "en": "wind turbine",
+            "pt": "turbina eólica",
+            "emoji": "🌀",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Windmills_D1-D4_%28Thornton_Bank%29.jpg/500px-Windmills_D1-D4_%28Thornton_Bank%29.jpg"
           },
           {
             "id": "pollution",
@@ -4729,29 +6039,14 @@ const LEVELS = [
           {
             "id": "reducewaste",
             "en": "to reduce waste",
-            "pt": "reduzir o lixo",
-            "emoji": "🗑️"
+            "pt": "reduzir o desperdício",
+            "emoji": "🚮"
           },
           {
-            "id": "solarpanel",
-            "en": "solar panel",
-            "pt": "painel solar",
-            "emoji": "☀️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Dji_fly_20230602_13826_PM_27_1719032149374_photo_optimized.jpg/500px-Dji_fly_20230602_13826_PM_27_1719032149374_photo_optimized.jpg"
-          },
-          {
-            "id": "volunteer",
-            "en": "volunteer",
-            "pt": "voluntário",
-            "emoji": "🙌",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Vilnius_Marathon_2015_volunteers_by_Augustas_Didzgalvis.jpg/500px-Vilnius_Marathon_2015_volunteers_by_Augustas_Didzgalvis.jpg"
-          },
-          {
-            "id": "endangeredspecies",
-            "en": "endangered species",
-            "pt": "espécie ameaçada",
-            "emoji": "🐾",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Golden_lion_tamarin_portrait3.jpg/500px-Golden_lion_tamarin_portrait3.jpg"
+            "id": "singleuse",
+            "en": "single-use plastic",
+            "pt": "plástico descartável",
+            "emoji": "🥤"
           },
           {
             "id": "carbonfootprint",
@@ -4763,14 +6058,33 @@ const LEVELS = [
             "id": "sustainable",
             "en": "sustainable",
             "pt": "sustentável",
-            "emoji": "🌱"
+            "emoji": "🌿"
           },
           {
             "id": "deforestation",
             "en": "deforestation",
             "pt": "desmatamento",
-            "emoji": "🌳",
+            "emoji": "🪓",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Annual_deforestation%2C_World%2C_2020_%28cropped%29.svg/500px-Annual_deforestation%2C_World%2C_2020_%28cropped%29.svg.png"
+          },
+          {
+            "id": "endangeredspecies",
+            "en": "endangered species",
+            "pt": "espécie em extinção",
+            "emoji": "🐼"
+          },
+          {
+            "id": "naturalresources",
+            "en": "natural resources",
+            "pt": "recursos naturais",
+            "emoji": "⛰️"
+          },
+          {
+            "id": "volunteer",
+            "en": "volunteer",
+            "pt": "voluntário(a)",
+            "emoji": "🙋",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Vilnius_Marathon_2015_volunteers_by_Augustas_Didzgalvis.jpg/500px-Vilnius_Marathon_2015_volunteers_by_Augustas_Didzgalvis.jpg"
           },
           {
             "id": "donate",
@@ -4779,16 +6093,48 @@ const LEVELS = [
             "emoji": "🎁"
           },
           {
-            "id": "naturalresources",
-            "en": "natural resources",
-            "pt": "recursos naturais",
+            "id": "awareness",
+            "en": "environmental awareness",
+            "pt": "consciência ambiental",
+            "emoji": "💡"
+          },
+          {
+            "id": "compost",
+            "en": "compost",
+            "pt": "compostagem",
+            "emoji": "🍂",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Compost_site_germany.JPG/500px-Compost_site_germany.JPG"
+          },
+          {
+            "id": "greenhousegas",
+            "en": "greenhouse gas",
+            "pt": "gás de efeito estufa",
+            "emoji": "💨"
+          },
+          {
+            "id": "conserve",
+            "en": "to conserve water",
+            "pt": "economizar água",
             "emoji": "💧"
           },
           {
-            "id": "environmentalawareness",
-            "en": "environmental awareness",
-            "pt": "consciência ambiental",
-            "emoji": "🌎"
+            "id": "ecofriendly",
+            "en": "eco-friendly",
+            "pt": "ecológico",
+            "emoji": "🌱"
+          },
+          {
+            "id": "reusable",
+            "en": "reusable bag",
+            "pt": "sacola reutilizável",
+            "emoji": "🧺"
+          },
+          {
+            "id": "publictransport",
+            "en": "public transport",
+            "pt": "transporte público",
+            "emoji": "🚌",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Series-E235-0_9.jpg/500px-Series-E235-0_9.jpg"
           }
         ],
         "readingTime": {
@@ -4834,7 +6180,7 @@ const LEVELS = [
             "id": "soundtrack",
             "en": "soundtrack",
             "pt": "trilha sonora",
-            "emoji": "🎵"
+            "emoji": "🎼"
           },
           {
             "id": "boxoffice",
@@ -4845,13 +6191,13 @@ const LEVELS = [
           {
             "id": "plottwist",
             "en": "plot twist",
-            "pt": "reviravolta na trama",
-            "emoji": "😲"
+            "pt": "reviravolta",
+            "emoji": "🔄"
           },
           {
             "id": "concert",
             "en": "concert",
-            "pt": "show/concerto",
+            "pt": "show",
             "emoji": "🎤",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg/500px-D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg"
           },
@@ -4875,22 +6221,28 @@ const LEVELS = [
             "emoji": "🎭"
           },
           {
+            "id": "director",
+            "en": "director",
+            "pt": "diretor(a)",
+            "emoji": "🎥"
+          },
+          {
             "id": "review",
             "en": "review (critique)",
-            "pt": "crítica/resenha",
-            "emoji": "⭐"
+            "pt": "crítica",
+            "emoji": "📝"
           },
           {
             "id": "blockbuster",
             "en": "blockbuster",
-            "pt": "grande sucesso de bilheteria",
+            "pt": "grande sucesso",
             "emoji": "💥"
           },
           {
             "id": "lyrics",
             "en": "lyrics",
-            "pt": "letra de música",
-            "emoji": "📝"
+            "pt": "letra da música",
+            "emoji": "🎵"
           },
           {
             "id": "subtitle",
@@ -4902,9 +6254,60 @@ const LEVELS = [
           {
             "id": "audience",
             "en": "audience",
-            "pt": "plateia/público",
-            "emoji": "👥",
+            "pt": "público",
+            "emoji": "👏",
             "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Batsheva_theater_crowd_in_Tel_Aviv_by_David_Shankbone.jpg/500px-Batsheva_theater_crowd_in_Tel_Aviv_by_David_Shankbone.jpg"
+          },
+          {
+            "id": "sequel",
+            "en": "sequel",
+            "pt": "continuação",
+            "emoji": "2️⃣"
+          },
+          {
+            "id": "trailer",
+            "en": "trailer",
+            "pt": "trailer",
+            "emoji": "📽️"
+          },
+          {
+            "id": "episode",
+            "en": "episode",
+            "pt": "episódio",
+            "emoji": "📼"
+          },
+          {
+            "id": "series",
+            "en": "TV series",
+            "pt": "série de TV",
+            "emoji": "📺"
+          },
+          {
+            "id": "stage",
+            "en": "stage",
+            "pt": "palco",
+            "emoji": "🎙️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/SFOperaHouse2_%288189967420%29.jpg/500px-SFOperaHouse2_%288189967420%29.jpg"
+          },
+          {
+            "id": "band",
+            "en": "band",
+            "pt": "banda",
+            "emoji": "🥁",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Jazzing_orchestra_1921.png/500px-Jazzing_orchestra_1921.png"
+          },
+          {
+            "id": "album",
+            "en": "album",
+            "pt": "álbum",
+            "emoji": "💿",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Compact_disc_album.jpg/500px-Compact_disc_album.jpg"
+          },
+          {
+            "id": "spoiler",
+            "en": "spoiler",
+            "pt": "spoiler",
+            "emoji": "🙊"
           }
         ],
         "readingTime": {
@@ -4949,7 +6352,7 @@ const LEVELS = [
           {
             "id": "havebeenwaiting",
             "en": "have been waiting",
-            "pt": "têm esperado",
+            "pt": "estão esperando (há tempo)",
             "emoji": "⏳"
           },
           {
@@ -4973,14 +6376,14 @@ const LEVELS = [
           {
             "id": "havebeenliving",
             "en": "have been living",
-            "pt": "têm morado",
+            "pt": "moram (há tempo)",
             "emoji": "🏠"
           },
           {
             "id": "hasbeenfeeling",
             "en": "has been feeling",
             "pt": "tem se sentido",
-            "emoji": "😊"
+            "emoji": "💭"
           },
           {
             "id": "havebeentalking",
@@ -4996,7 +6399,7 @@ const LEVELS = [
           },
           {
             "id": "havebeenpracticing",
-            "en": "have been practicing",
+            "en": "have been practising",
             "pt": "têm praticado",
             "emoji": "🎯"
           },
@@ -5011,6 +6414,30 @@ const LEVELS = [
             "en": "have been trying",
             "pt": "têm tentado",
             "emoji": "💪"
+          },
+          {
+            "id": "hasbeensleeping",
+            "en": "has been sleeping",
+            "pt": "tem dormido",
+            "emoji": "😴"
+          },
+          {
+            "id": "forthreehours",
+            "en": "for three hours",
+            "pt": "por três horas",
+            "emoji": "🕒"
+          },
+          {
+            "id": "sincemorning",
+            "en": "since this morning",
+            "pt": "desde esta manhã",
+            "emoji": "🌅"
+          },
+          {
+            "id": "howlonghaveyou",
+            "en": "How long have you been...?",
+            "pt": "Há quanto tempo você...?",
+            "emoji": "❓"
           }
         ],
         "readingTime": {
@@ -5048,74 +6475,98 @@ const LEVELS = [
           {
             "id": "ifitrains",
             "en": "If it rains, I will stay home",
-            "pt": "Se chover, eu ficarei em casa",
-            "emoji": "☔"
+            "pt": "Se chover, ficarei em casa",
+            "emoji": "🌧️"
           },
           {
             "id": "ifihadtime",
             "en": "If I had more time, I would travel",
-            "pt": "Se eu tivesse mais tempo, eu viajaria",
+            "pt": "Se eu tivesse mais tempo, viajaria",
             "emoji": "✈️"
           },
           {
             "id": "ifyoustudy",
             "en": "If you study, you will pass",
-            "pt": "Se você estudar, você passará",
-            "emoji": "📖"
+            "pt": "Se você estudar, vai passar",
+            "emoji": "📚"
           },
           {
             "id": "ifiwonlottery",
             "en": "If I won the lottery, I would buy a house",
-            "pt": "Se eu ganhasse na loteria, eu compraria uma casa",
-            "emoji": "🏡"
+            "pt": "Se eu ganhasse na loteria, compraria uma casa",
+            "emoji": "🎰"
           },
           {
             "id": "ifshecalls",
             "en": "If she calls, I will answer",
-            "pt": "Se ela ligar, eu atenderei",
-            "emoji": "☎️"
+            "pt": "Se ela ligar, eu atendo",
+            "emoji": "📞"
           },
           {
             "id": "ifiwereyou",
             "en": "If I were you, I would apologize",
-            "pt": "Se eu fosse você, eu pediria desculpas",
-            "emoji": "🙏"
+            "pt": "Se eu fosse você, pediria desculpas",
+            "emoji": "🙇"
           },
           {
             "id": "ifwehurry",
             "en": "If we hurry, we will catch the bus",
-            "pt": "Se nos apressarmos, pegaremos o ônibus",
+            "pt": "Se corrermos, pegamos o ônibus",
             "emoji": "🚌"
           },
           {
-            "id": "ifiknewanswer",
+            "id": "ifiknew",
             "en": "If I knew the answer, I would tell you",
-            "pt": "Se eu soubesse a resposta, eu diria a você",
+            "pt": "Se eu soubesse a resposta, te diria",
             "emoji": "💡"
           },
           {
+            "id": "ifyoudontsleep",
+            "en": "If you don't sleep, you will be tired",
+            "pt": "Se não dormir, ficará cansado",
+            "emoji": "😴"
+          },
+          {
+            "id": "ifhelived",
+            "en": "If he lived closer, we would meet more",
+            "pt": "Se morasse mais perto, nos veríamos mais",
+            "emoji": "🏠"
+          },
+          {
+            "id": "ifitissunny",
+            "en": "If it is sunny, we will go to the beach",
+            "pt": "Se fizer sol, iremos à praia",
+            "emoji": "🏖️"
+          },
+          {
+            "id": "ifshehadmoney",
+            "en": "If she had money, she would help",
+            "pt": "Se ela tivesse dinheiro, ajudaria",
+            "emoji": "💰"
+          },
+          {
             "id": "unless",
-            "en": "unless (if...not)",
+            "en": "unless",
             "pt": "a menos que",
-            "emoji": "❗"
-          },
-          {
-            "id": "realpossibility",
-            "en": "real possibility",
-            "pt": "possibilidade real",
-            "emoji": "✅"
-          },
-          {
-            "id": "hypotheticalsituation",
-            "en": "hypothetical situation",
-            "pt": "situação hipotética",
-            "emoji": "💭"
+            "emoji": "🚧"
           },
           {
             "id": "wouldverb",
             "en": "would + verb",
-            "pt": "forma condicional",
+            "pt": "would + verbo",
             "emoji": "🔮"
+          },
+          {
+            "id": "firstconditional",
+            "en": "first conditional",
+            "pt": "primeiro condicional",
+            "emoji": "1️⃣"
+          },
+          {
+            "id": "secondconditional",
+            "en": "second conditional",
+            "pt": "segundo condicional",
+            "emoji": "2️⃣"
           }
         ],
         "readingTime": {
@@ -5154,19 +6605,19 @@ const LEVELS = [
             "id": "ismade",
             "en": "is made",
             "pt": "é feito",
-            "emoji": "🏗️"
+            "emoji": "🏭"
           },
           {
             "id": "wasbuilt",
             "en": "was built",
             "pt": "foi construído",
-            "emoji": "🏛️"
+            "emoji": "🏗️"
           },
           {
             "id": "issold",
             "en": "is sold",
             "pt": "é vendido",
-            "emoji": "🛒"
+            "emoji": "🏷️"
           },
           {
             "id": "waswritten",
@@ -5178,7 +6629,7 @@ const LEVELS = [
             "id": "isproduced",
             "en": "is produced",
             "pt": "é produzido",
-            "emoji": "🏭"
+            "emoji": "⚙️"
           },
           {
             "id": "wasdiscovered",
@@ -5227,6 +6678,36 @@ const LEVELS = [
             "en": "is spoken",
             "pt": "é falado",
             "emoji": "🗣️"
+          },
+          {
+            "id": "arecleaned",
+            "en": "are cleaned",
+            "pt": "são limpos",
+            "emoji": "🧽"
+          },
+          {
+            "id": "werefound",
+            "en": "were found",
+            "pt": "foram encontrados",
+            "emoji": "🧭"
+          },
+          {
+            "id": "byplusagent",
+            "en": "by + the agent",
+            "pt": "by + o agente",
+            "emoji": "👤"
+          },
+          {
+            "id": "isgrown",
+            "en": "is grown",
+            "pt": "é cultivado",
+            "emoji": "🌾"
+          },
+          {
+            "id": "wastaken",
+            "en": "was taken",
+            "pt": "foi tirado",
+            "emoji": "📸"
           }
         ],
         "readingTime": {
@@ -5277,13 +6758,13 @@ const LEVELS = [
             "id": "turnon",
             "en": "turn on",
             "pt": "ligar",
-            "emoji": "🔛"
+            "emoji": "💡"
           },
           {
             "id": "turnoff",
             "en": "turn off",
             "pt": "desligar",
-            "emoji": "🔴"
+            "emoji": "🔌"
           },
           {
             "id": "findout",
@@ -5295,43 +6776,43 @@ const LEVELS = [
             "id": "runoutof",
             "en": "run out of",
             "pt": "ficar sem",
-            "emoji": "⛽"
+            "emoji": "🈳"
           },
           {
             "id": "getup",
             "en": "get up",
             "pt": "levantar-se",
-            "emoji": "🛏️"
+            "emoji": "⏰"
           },
           {
             "id": "puton",
             "en": "put on",
-            "pt": "vestir/colocar",
+            "pt": "vestir",
             "emoji": "👕"
           },
           {
             "id": "takeoff",
             "en": "take off",
-            "pt": "decolar/tirar",
-            "emoji": "✈️"
+            "pt": "tirar / decolar",
+            "emoji": "🛫"
           },
           {
             "id": "bringback",
             "en": "bring back",
             "pt": "trazer de volta",
-            "emoji": "🔙"
+            "emoji": "↩️"
           },
           {
             "id": "figureout",
             "en": "figure out",
-            "pt": "entender/resolver",
-            "emoji": "🧩"
+            "pt": "entender",
+            "emoji": "🧠"
           },
           {
             "id": "hangout",
             "en": "hang out",
             "pt": "sair com amigos",
-            "emoji": "👯"
+            "emoji": "🧑‍🤝‍🧑"
           },
           {
             "id": "carryon",
@@ -5342,8 +6823,56 @@ const LEVELS = [
           {
             "id": "breakdown",
             "en": "break down",
-            "pt": "quebrar (parar de funcionar)",
-            "emoji": "🔧"
+            "pt": "quebrar (máquina)",
+            "emoji": "🚗"
+          },
+          {
+            "id": "getalongwith",
+            "en": "get along with",
+            "pt": "dar-se bem com",
+            "emoji": "🤝"
+          },
+          {
+            "id": "lookafter",
+            "en": "look after",
+            "pt": "cuidar de",
+            "emoji": "🧑‍🍼"
+          },
+          {
+            "id": "growup",
+            "en": "grow up",
+            "pt": "crescer",
+            "emoji": "📏"
+          },
+          {
+            "id": "checkin",
+            "en": "check in",
+            "pt": "fazer check-in",
+            "emoji": "🏨"
+          },
+          {
+            "id": "callback",
+            "en": "call back",
+            "pt": "retornar a ligação",
+            "emoji": "📞"
+          },
+          {
+            "id": "wakeup",
+            "en": "wake up",
+            "pt": "acordar",
+            "emoji": "🌅"
+          },
+          {
+            "id": "sitdown",
+            "en": "sit down",
+            "pt": "sentar-se",
+            "emoji": "🪑"
+          },
+          {
+            "id": "throwaway",
+            "en": "throw away",
+            "pt": "jogar fora",
+            "emoji": "🗑️"
           }
         ],
         "readingTime": {
@@ -5382,7 +6911,7 @@ const LEVELS = [
             "id": "themanwho",
             "en": "the man who called",
             "pt": "o homem que ligou",
-            "emoji": "👨"
+            "emoji": "📞"
           },
           {
             "id": "thebookwhich",
@@ -5418,7 +6947,7 @@ const LEVELS = [
             "id": "thereasonwhy",
             "en": "the reason why I left",
             "pt": "a razão pela qual eu saí",
-            "emoji": "❓"
+            "emoji": "🚪"
           },
           {
             "id": "thehousewhich",
@@ -5448,6 +6977,30 @@ const LEVELS = [
             "id": "theplacewhere",
             "en": "the place where we met",
             "pt": "o lugar onde nos conhecemos",
+            "emoji": "📍"
+          },
+          {
+            "id": "who",
+            "en": "who",
+            "pt": "que / quem (pessoas)",
+            "emoji": "🧑"
+          },
+          {
+            "id": "which",
+            "en": "which",
+            "pt": "que / o qual (coisas)",
+            "emoji": "📦"
+          },
+          {
+            "id": "whose",
+            "en": "whose",
+            "pt": "cujo(a)",
+            "emoji": "🔑"
+          },
+          {
+            "id": "where",
+            "en": "where",
+            "pt": "onde",
             "emoji": "📍"
           }
         ],
@@ -5600,10 +7153,10 @@ const LEVELS = [
         "grammarTip": "Words like 'citizenship' and 'human rights' are often used with prepositions such as 'entitled to' or 'deprived of'. Note the difference between 'law' (a specific rule) and 'the law' (the legal system as a whole). For example: 'Every citizen is entitled to freedom of speech, but this right can be restricted by law in cases of hate speech.'",
         "words": [
           {
-            "id": "human-rights",
+            "id": "humanrights",
             "en": "human rights",
             "pt": "direitos humanos",
-            "emoji": "✊"
+            "emoji": "🕊️"
           },
           {
             "id": "citizenship",
@@ -5624,10 +7177,10 @@ const LEVELS = [
             "emoji": "📖"
           },
           {
-            "id": "civil-liberties",
+            "id": "civilliberties",
             "en": "civil liberties",
             "pt": "liberdades civis",
-            "emoji": "🕊️"
+            "emoji": "⛓️‍💥"
           },
           {
             "id": "discrimination",
@@ -5639,7 +7192,7 @@ const LEVELS = [
             "id": "activism",
             "en": "activism",
             "pt": "ativismo",
-            "emoji": "📢"
+            "emoji": "📣"
           },
           {
             "id": "referendum",
@@ -5651,13 +7204,13 @@ const LEVELS = [
             "id": "accountability",
             "en": "accountability",
             "pt": "prestação de contas",
-            "emoji": "🔍"
+            "emoji": "⚖️"
           },
           {
             "id": "injustice",
             "en": "injustice",
             "pt": "injustiça",
-            "emoji": "❗"
+            "emoji": "😠"
           },
           {
             "id": "diplomacy",
@@ -5669,13 +7222,13 @@ const LEVELS = [
             "id": "censorship",
             "en": "censorship",
             "pt": "censura",
-            "emoji": "🔇"
+            "emoji": "🤐"
           },
           {
             "id": "equality",
             "en": "equality",
             "pt": "igualdade",
-            "emoji": "🟰"
+            "emoji": "⚖️"
           },
           {
             "id": "jurisdiction",
@@ -5686,8 +7239,50 @@ const LEVELS = [
           {
             "id": "advocacy",
             "en": "advocacy",
-            "pt": "defesa de uma causa",
-            "emoji": "💬"
+            "pt": "defesa de causas",
+            "emoji": "✊"
+          },
+          {
+            "id": "democracy",
+            "en": "democracy",
+            "pt": "democracia",
+            "emoji": "🗳️"
+          },
+          {
+            "id": "welfare",
+            "en": "welfare state",
+            "pt": "estado de bem-estar",
+            "emoji": "🏥"
+          },
+          {
+            "id": "inequality",
+            "en": "social inequality",
+            "pt": "desigualdade social",
+            "emoji": "📉"
+          },
+          {
+            "id": "publicopinion",
+            "en": "public opinion",
+            "pt": "opinião pública",
+            "emoji": "💭"
+          },
+          {
+            "id": "corruption",
+            "en": "corruption",
+            "pt": "corrupção",
+            "emoji": "💼"
+          },
+          {
+            "id": "freedomofspeech",
+            "en": "freedom of speech",
+            "pt": "liberdade de expressão",
+            "emoji": "🗣️"
+          },
+          {
+            "id": "grassroots",
+            "en": "grassroots movement",
+            "pt": "movimento de base",
+            "emoji": "🌱"
           }
         ],
         "readingTime": {
@@ -5723,16 +7318,16 @@ const LEVELS = [
         "grammarTip": "Economic vocabulary often pairs with specific verbs: 'inflation rises/falls', 'a company launches/expands', 'trade barriers are imposed/lifted'. Note the difference between 'economic' (relating to the economy) and 'economical' (not wasteful). For example: 'As inflation rose, many entrepreneurs found it harder to secure investment for their startups.'",
         "words": [
           {
-            "id": "global-job-market",
+            "id": "jobmarket",
             "en": "global job market",
             "pt": "mercado de trabalho global",
-            "emoji": "🌍"
+            "emoji": "🌐"
           },
           {
             "id": "entrepreneurship",
             "en": "entrepreneurship",
             "pt": "empreendedorismo",
-            "emoji": "🚀"
+            "emoji": "💡"
           },
           {
             "id": "inflation",
@@ -5741,7 +7336,7 @@ const LEVELS = [
             "emoji": "📈"
           },
           {
-            "id": "international-trade",
+            "id": "internationaltrade",
             "en": "international trade",
             "pt": "comércio internacional",
             "emoji": "🚢"
@@ -5755,13 +7350,13 @@ const LEVELS = [
           {
             "id": "startup",
             "en": "startup",
-            "pt": "startup / empresa iniciante",
-            "emoji": "🏢"
+            "pt": "startup",
+            "emoji": "🚀"
           },
           {
-            "id": "supply-and-demand",
+            "id": "supplyanddemand",
             "en": "supply and demand",
-            "pt": "oferta e demanda",
+            "pt": "oferta e procura",
             "emoji": "⚖️"
           },
           {
@@ -5774,13 +7369,13 @@ const LEVELS = [
             "id": "outsourcing",
             "en": "outsourcing",
             "pt": "terceirização",
-            "emoji": "🌐"
+            "emoji": "🔗"
           },
           {
             "id": "revenue",
             "en": "revenue",
             "pt": "receita",
-            "emoji": "💵"
+            "emoji": "🧾"
           },
           {
             "id": "negotiation",
@@ -5792,25 +7387,67 @@ const LEVELS = [
             "id": "tariff",
             "en": "tariff",
             "pt": "tarifa",
-            "emoji": "🧾"
+            "emoji": "🛃"
           },
           {
             "id": "unemployment",
             "en": "unemployment",
             "pt": "desemprego",
-            "emoji": "📊"
+            "emoji": "🚷"
           },
           {
-            "id": "competitive-advantage",
+            "id": "competitiveadvantage",
             "en": "competitive advantage",
             "pt": "vantagem competitiva",
             "emoji": "🏆"
           },
           {
-            "id": "sustainability",
+            "id": "sustainability_e",
             "en": "sustainability",
             "pt": "sustentabilidade",
-            "emoji": "♻️"
+            "emoji": "🌿"
+          },
+          {
+            "id": "stockmarket",
+            "en": "stock market",
+            "pt": "bolsa de valores",
+            "emoji": "📊"
+          },
+          {
+            "id": "profitmargin",
+            "en": "profit margin",
+            "pt": "margem de lucro",
+            "emoji": "💹"
+          },
+          {
+            "id": "interestrate",
+            "en": "interest rate",
+            "pt": "taxa de juros",
+            "emoji": "🏦"
+          },
+          {
+            "id": "gdp",
+            "en": "GDP (gross domestic product)",
+            "pt": "PIB",
+            "emoji": "🌍"
+          },
+          {
+            "id": "shareholder",
+            "en": "shareholder",
+            "pt": "acionista",
+            "emoji": "👔"
+          },
+          {
+            "id": "costofliving",
+            "en": "cost of living",
+            "pt": "custo de vida",
+            "emoji": "🧮"
+          },
+          {
+            "id": "freelancer",
+            "en": "freelancer",
+            "pt": "freelancer",
+            "emoji": "💻"
           }
         ],
         "readingTime": {
@@ -5846,7 +7483,7 @@ const LEVELS = [
         "grammarTip": "Scientific English often uses passive constructions and precise nominalizations, e.g. 'the experiment was conducted' rather than 'we did the experiment'. Distinguish 'discover' (find something that already existed) from 'invent' (create something new). For example: 'Scientists discovered the gene, but it took years before a treatment was invented.'",
         "words": [
           {
-            "id": "space-exploration",
+            "id": "spaceexploration",
             "en": "space exploration",
             "pt": "exploração espacial",
             "emoji": "🚀"
@@ -5858,28 +7495,28 @@ const LEVELS = [
             "emoji": "🧬"
           },
           {
-            "id": "medical-breakthrough",
+            "id": "medicalbreakthrough",
             "en": "medical breakthrough",
             "pt": "avanço médico",
-            "emoji": "💊"
+            "emoji": "💉"
           },
           {
-            "id": "artificial-intelligence",
+            "id": "ai_sci",
             "en": "artificial intelligence",
             "pt": "inteligência artificial",
             "emoji": "🤖"
           },
           {
-            "id": "ethical-dilemma",
+            "id": "ethicaldilemma",
             "en": "ethical dilemma",
             "pt": "dilema ético",
-            "emoji": "🧭"
+            "emoji": "⚖️"
           },
           {
             "id": "hypothesis",
             "en": "hypothesis",
             "pt": "hipótese",
-            "emoji": "🔬"
+            "emoji": "❓"
           },
           {
             "id": "experiment",
@@ -5891,7 +7528,8 @@ const LEVELS = [
             "id": "telescope",
             "en": "telescope",
             "pt": "telescópio",
-            "emoji": "🔭"
+            "emoji": "🔭",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/100inchHooker.jpg/500px-100inchHooker.jpg"
           },
           {
             "id": "genome",
@@ -5900,10 +7538,10 @@ const LEVELS = [
             "emoji": "🧬"
           },
           {
-            "id": "clinical-trial",
+            "id": "clinicaltrial",
             "en": "clinical trial",
             "pt": "ensaio clínico",
-            "emoji": "🩺"
+            "emoji": "🏥"
           },
           {
             "id": "innovation",
@@ -5921,7 +7559,7 @@ const LEVELS = [
             "id": "biotechnology",
             "en": "biotechnology",
             "pt": "biotecnologia",
-            "emoji": "🧫"
+            "emoji": "🔬"
           },
           {
             "id": "research",
@@ -5933,7 +7571,53 @@ const LEVELS = [
             "id": "astronomer",
             "en": "astronomer",
             "pt": "astrônomo(a)",
-            "emoji": "👩‍🔬"
+            "emoji": "🌌"
+          },
+          {
+            "id": "galaxy",
+            "en": "galaxy",
+            "pt": "galáxia",
+            "emoji": "🌠",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/NGC_4414_%28NASA-med%29.jpg/500px-NGC_4414_%28NASA-med%29.jpg"
+          },
+          {
+            "id": "gravity",
+            "en": "gravity",
+            "pt": "gravidade",
+            "emoji": "🍎"
+          },
+          {
+            "id": "orbit",
+            "en": "orbit",
+            "pt": "órbita",
+            "emoji": "🛰️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Animation_of_Orbital_eccentricity.gif/500px-Animation_of_Orbital_eccentricity.gif"
+          },
+          {
+            "id": "vaccine",
+            "en": "vaccine",
+            "pt": "vacina",
+            "emoji": "💊",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Smallpox_vaccine.jpg/500px-Smallpox_vaccine.jpg"
+          },
+          {
+            "id": "peerreview",
+            "en": "peer review",
+            "pt": "revisão por pares",
+            "emoji": "🧐"
+          },
+          {
+            "id": "evidence",
+            "en": "scientific evidence",
+            "pt": "evidência científica",
+            "emoji": "📈"
+          },
+          {
+            "id": "blackhole",
+            "en": "black hole",
+            "pt": "buraco negro",
+            "emoji": "🕳️",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg/500px-Black_hole_-_Messier_87_crop_max_res.jpg"
           }
         ],
         "readingTime": {
@@ -5958,7 +7642,8 @@ const LEVELS = [
               "correct": "It is now making decisions once reserved for human experts"
             }
           ]
-        }
+        },
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/100inchHooker.jpg/500px-100inchHooker.jpg"
       },
       {
         "id": "artculture",
@@ -5978,13 +7663,13 @@ const LEVELS = [
             "id": "protagonist",
             "en": "protagonist",
             "pt": "protagonista",
-            "emoji": "🧑‍🎤"
+            "emoji": "🧍"
           },
           {
-            "id": "plot-twist",
+            "id": "plottwist_a",
             "en": "plot twist",
-            "pt": "reviravolta na trama",
-            "emoji": "🔀"
+            "pt": "reviravolta",
+            "emoji": "🔄"
           },
           {
             "id": "symbolism",
@@ -5993,40 +7678,40 @@ const LEVELS = [
             "emoji": "🔣"
           },
           {
-            "id": "artistic-movement",
+            "id": "artisticmovement",
             "en": "artistic movement",
             "pt": "movimento artístico",
-            "emoji": "🎨"
+            "emoji": "🖼️"
           },
           {
             "id": "imagery",
             "en": "imagery",
-            "pt": "linguagem visual/figurativa",
-            "emoji": "🖼️"
+            "pt": "imagética",
+            "emoji": "🌅"
           },
           {
             "id": "metaphor",
             "en": "metaphor",
             "pt": "metáfora",
-            "emoji": "💬"
+            "emoji": "💭"
           },
           {
             "id": "satire",
             "en": "satire",
             "pt": "sátira",
-            "emoji": "😏"
+            "emoji": "🎭"
           },
           {
             "id": "masterpiece",
             "en": "masterpiece",
             "pt": "obra-prima",
-            "emoji": "🏆"
+            "emoji": "🏛️"
           },
           {
-            "id": "cultural-heritage",
+            "id": "culturalheritage",
             "en": "cultural heritage",
             "pt": "patrimônio cultural",
-            "emoji": "🏛️"
+            "emoji": "🏺"
           },
           {
             "id": "irony",
@@ -6044,13 +7729,61 @@ const LEVELS = [
             "id": "folklore",
             "en": "folklore",
             "pt": "folclore",
-            "emoji": "🧙"
+            "emoji": "🪕"
           },
           {
             "id": "aesthetic",
             "en": "aesthetic",
             "pt": "estética",
             "emoji": "✨"
+          },
+          {
+            "id": "sculpture",
+            "en": "sculpture",
+            "pt": "escultura",
+            "emoji": "🗿"
+          },
+          {
+            "id": "exhibition",
+            "en": "exhibition",
+            "pt": "exposição",
+            "emoji": "🖼️"
+          },
+          {
+            "id": "genre_a",
+            "en": "genre",
+            "pt": "gênero",
+            "emoji": "🏷️"
+          },
+          {
+            "id": "characterarc",
+            "en": "character arc",
+            "pt": "arco do personagem",
+            "emoji": "📈"
+          },
+          {
+            "id": "foreshadowing",
+            "en": "foreshadowing",
+            "pt": "prenúncio",
+            "emoji": "🔮"
+          },
+          {
+            "id": "portrait",
+            "en": "portrait",
+            "pt": "retrato",
+            "emoji": "🧑‍🎨"
+          },
+          {
+            "id": "criticalacclaim",
+            "en": "critical acclaim",
+            "pt": "aclamação da crítica",
+            "emoji": "🏅"
+          },
+          {
+            "id": "avantgarde",
+            "en": "avant-garde",
+            "pt": "vanguarda",
+            "emoji": "🎨"
           }
         ],
         "readingTime": {
@@ -6086,88 +7819,136 @@ const LEVELS = [
         "grammarTip": "Idioms cannot usually be translated word for word; instead, learn their overall meaning and typical context. Proverbs often use imperative or conditional structures to express timeless advice, such as 'Don't count your chickens before they hatch.' For example: 'After weeks of arguing, the siblings finally decided to bite the bullet and sell the old house.'",
         "words": [
           {
-            "id": "bite-the-bullet",
+            "id": "bitethebullet",
             "en": "bite the bullet",
-            "pt": "enfrentar algo difícil com coragem",
-            "emoji": "💪"
+            "pt": "encarar a situação",
+            "emoji": "😬"
           },
           {
-            "id": "see-eye-to-eye",
+            "id": "seeeyetoeye",
             "en": "see eye to eye",
-            "pt": "concordar completamente com alguém",
+            "pt": "concordar plenamente",
             "emoji": "👀"
           },
           {
-            "id": "once-in-a-blue-moon",
+            "id": "blueMoon",
             "en": "once in a blue moon",
             "pt": "muito raramente",
-            "emoji": "🌕"
+            "emoji": "🌙"
           },
           {
-            "id": "hit-the-nail",
+            "id": "hitthenail",
             "en": "hit the nail on the head",
-            "pt": "acertar exatamente no ponto",
+            "pt": "acertar em cheio",
             "emoji": "🔨"
           },
           {
-            "id": "let-cat-out-of-bag",
+            "id": "catoutofbag",
             "en": "let the cat out of the bag",
-            "pt": "revelar um segredo sem querer",
+            "pt": "revelar um segredo",
             "emoji": "🐱"
           },
           {
-            "id": "arm-and-a-leg",
+            "id": "armandaleg",
             "en": "cost an arm and a leg",
-            "pt": "custar muito caro",
+            "pt": "custar os olhos da cara",
             "emoji": "💸"
           },
           {
-            "id": "actions-speak",
+            "id": "actionsspeak",
             "en": "actions speak louder than words",
             "pt": "ações valem mais que palavras",
-            "emoji": "🗣️"
+            "emoji": "💪"
           },
           {
-            "id": "judge-book-cover",
+            "id": "judgeabook",
             "en": "don't judge a book by its cover",
-            "pt": "não julgue pelas aparências",
-            "emoji": "📚"
+            "pt": "não julgue pela aparência",
+            "emoji": "📕"
           },
           {
-            "id": "ball-in-your-court",
+            "id": "ballinyourcourt",
             "en": "the ball is in your court",
-            "pt": "a decisão agora é sua",
+            "pt": "a decisão é sua",
             "emoji": "🎾"
           },
           {
-            "id": "midnight-oil",
+            "id": "midnightoil",
             "en": "burn the midnight oil",
-            "pt": "trabalhar ou estudar até tarde da noite",
+            "pt": "virar a noite estudando",
             "emoji": "🕯️"
           },
           {
-            "id": "blessing-in-disguise",
+            "id": "blessingindisguise",
             "en": "a blessing in disguise",
-            "pt": "algo ruim que acaba sendo bom",
-            "emoji": "🍀"
+            "pt": "há males que vêm para bem",
+            "emoji": "🎁"
           },
           {
-            "id": "when-in-rome",
+            "id": "wheninrome",
             "en": "when in Rome, do as the Romans do",
-            "pt": "adapte-se aos costumes locais",
+            "pt": "em Roma, como os romanos",
             "emoji": "🏛️"
           },
           {
-            "id": "cut-corners",
+            "id": "cutcorners",
             "en": "cut corners",
-            "pt": "fazer algo mais barato ou rápido sacrificando a qualidade",
+            "pt": "fazer nas coxas",
             "emoji": "✂️"
           },
           {
-            "id": "on-the-fence",
+            "id": "onthefence",
             "en": "on the fence",
-            "pt": "indeciso, em cima do muro",
+            "pt": "em cima do muro",
             "emoji": "🚧"
+          },
+          {
+            "id": "pieceofcake",
+            "en": "a piece of cake",
+            "pt": "moleza",
+            "emoji": "🍰"
+          },
+          {
+            "id": "undertheweather",
+            "en": "under the weather",
+            "pt": "indisposto",
+            "emoji": "🤒"
+          },
+          {
+            "id": "breaktheice",
+            "en": "break the ice",
+            "pt": "quebrar o gelo",
+            "emoji": "🧊"
+          },
+          {
+            "id": "pullyourleg",
+            "en": "pull someone's leg",
+            "pt": "tirar sarro",
+            "emoji": "😆"
+          },
+          {
+            "id": "spillthebeans",
+            "en": "spill the beans",
+            "pt": "dar com a língua nos dentes",
+            "emoji": "🫘"
+          },
+          {
+            "id": "raincatsdogs",
+            "en": "it's raining cats and dogs",
+            "pt": "chover canivetes",
+            "emoji": "🌧️"
+          },
+          {
+            "id": "sameboat",
+            "en": "in the same boat",
+            "pt": "no mesmo barco",
+            "emoji": "🚣"
+          },
+          {
+            "id": "thelastresort",
+            "en": "as a last resort",
+            "pt": "como último recurso",
+            "emoji": "🆘"
           }
         ],
         "readingTime": {
@@ -6437,76 +8218,100 @@ const LEVELS = [
         "grammarTip": "Mixed conditionals combine a hypothetical condition from one time period with a hypothetical result in another, most commonly a past condition producing a present result. The typical structure is 'If + past perfect, ... would + base verb'. For example: 'If I had studied medicine, I would be a doctor now,' shows how a past decision still affects the present.",
         "words": [
           {
-            "id": "mc-medicine",
-            "en": "If I had studied medicine, I would be a doctor now.",
-            "pt": "Se eu tivesse estudado medicina, eu seria médico(a) agora.",
+            "id": "mc1",
+            "en": "If I had studied medicine, I would be a doctor now",
+            "pt": "Se eu tivesse estudado medicina, hoje seria médico",
             "emoji": "🩺"
           },
           {
-            "id": "mc-job-abroad",
-            "en": "If she had taken that job, she would be living abroad now.",
-            "pt": "Se ela tivesse aceitado aquele emprego, ela estaria morando no exterior agora.",
+            "id": "mc2",
+            "en": "If she had taken that job, she would be living abroad now",
+            "pt": "Se tivesse aceitado o emprego, estaria morando fora",
+            "emoji": "🌍"
+          },
+          {
+            "id": "mc3",
+            "en": "If we had left earlier, we wouldn't be stuck in traffic now",
+            "pt": "Se tivéssemos saído antes, não estaríamos no trânsito",
+            "emoji": "🚗"
+          },
+          {
+            "id": "mc4",
+            "en": "If he hadn't missed the flight, he would be at the conference now",
+            "pt": "Se não tivesse perdido o voo, estaria na conferência",
             "emoji": "✈️"
           },
           {
-            "id": "mc-traffic",
-            "en": "If we had left earlier, we wouldn't be stuck in traffic now.",
-            "pt": "Se tivéssemos saído mais cedo, não estaríamos presos no trânsito agora.",
-            "emoji": "🚦"
+            "id": "mc5",
+            "en": "If they had saved money, they wouldn't be in debt today",
+            "pt": "Se tivessem poupado, não estariam endividados",
+            "emoji": "💸"
           },
           {
-            "id": "mc-flight",
-            "en": "If he hadn't missed the flight, he would be at the conference now.",
-            "pt": "Se ele não tivesse perdido o voo, ele estaria na conferência agora.",
-            "emoji": "🎤"
+            "id": "mc6",
+            "en": "If I weren't so busy, I would have helped you yesterday",
+            "pt": "Se eu não fosse tão ocupado, teria te ajudado ontem",
+            "emoji": "⏰"
           },
           {
-            "id": "mc-debt",
-            "en": "If they had saved money, they wouldn't be in debt today.",
-            "pt": "Se eles tivessem economizado dinheiro, não estariam endividados hoje.",
-            "emoji": "💳"
+            "id": "mc7",
+            "en": "If she were more confident, she would have applied for the job",
+            "pt": "Se ela fosse mais confiante, teria se candidatado",
+            "emoji": "💼"
           },
           {
-            "id": "mc-helped",
-            "en": "If I weren't so busy, I would have helped you yesterday.",
-            "pt": "Se eu não estivesse tão ocupado(a), eu teria te ajudado ontem.",
-            "emoji": "🤝"
-          },
-          {
-            "id": "mc-applied",
-            "en": "If she were more confident, she would have applied for the job.",
-            "pt": "Se ela fosse mais confiante, ela teria se candidatado ao emprego.",
-            "emoji": "📄"
-          },
-          {
-            "id": "mc-beach",
-            "en": "If it hadn't rained all week, we would be at the beach now.",
-            "pt": "Se não tivesse chovido a semana toda, estaríamos na praia agora.",
+            "id": "mc8",
+            "en": "If it hadn't rained all week, we would be at the beach now",
+            "pt": "Se não tivesse chovido a semana toda, estaríamos na praia",
             "emoji": "🏖️"
           },
           {
-            "id": "mc-life",
-            "en": "If I hadn't met you, my life would be completely different.",
-            "pt": "Se eu não tivesse te conhecido, minha vida seria completamente diferente.",
-            "emoji": "💞"
+            "id": "mc9",
+            "en": "If I hadn't met you, my life would be completely different",
+            "pt": "Se eu não tivesse te conhecido, minha vida seria diferente",
+            "emoji": "💛"
           },
           {
-            "id": "mc-house",
-            "en": "If he were richer, he would have bought that house last year.",
-            "pt": "Se ele fosse mais rico, ele teria comprado aquela casa no ano passado.",
-            "emoji": "🏠"
+            "id": "mc10",
+            "en": "If he were richer, he would have bought that house last year",
+            "pt": "Se fosse mais rico, teria comprado aquela casa",
+            "emoji": "🏡"
           },
           {
-            "id": "mc-neighbors",
-            "en": "If they hadn't moved abroad, they would still be our neighbors.",
-            "pt": "Se eles não tivessem se mudado para o exterior, ainda seriam nossos vizinhos.",
-            "emoji": "👋"
+            "id": "mc11",
+            "en": "If they hadn't moved abroad, they would still be our neighbours",
+            "pt": "Se não tivessem se mudado, ainda seriam nossos vizinhos",
+            "emoji": "🏘️"
           },
           {
-            "id": "mc-swim",
-            "en": "If I had learned to swim, I wouldn't be afraid of the water now.",
-            "pt": "Se eu tivesse aprendido a nadar, não teria medo da água agora.",
+            "id": "mc12",
+            "en": "If I had learned to swim, I wouldn't be afraid of the water now",
+            "pt": "Se eu tivesse aprendido a nadar, não teria medo da água",
             "emoji": "🏊"
+          },
+          {
+            "id": "mc13",
+            "en": "past condition, present result",
+            "pt": "condição no passado, resultado no presente",
+            "emoji": "⏮️"
+          },
+          {
+            "id": "mc14",
+            "en": "present condition, past result",
+            "pt": "condição no presente, resultado no passado",
+            "emoji": "⏭️"
+          },
+          {
+            "id": "mc15",
+            "en": "would be + now",
+            "pt": "would be + now",
+            "emoji": "🕐"
+          },
+          {
+            "id": "mc16",
+            "en": "would have + past participle",
+            "pt": "would have + particípio",
+            "emoji": "📜"
           }
         ],
         "readingTime": {
@@ -6776,88 +8581,136 @@ const LEVELS = [
         "grammarTip": "Phrasal verbs combine a verb with one or two particles to create a meaning that is often impossible to guess from the individual words, and many are separable ('put the meeting off') while others are not ('come across a photo'). Prepositional idioms follow a similar pattern but always keep the preposition attached to a noun or pronoun. For example: 'She couldn't believe he had gotten away with copying her homework for months.'",
         "words": [
           {
-            "id": "come-across",
+            "id": "comeacross",
             "en": "come across",
-            "pt": "encontrar por acaso / dar de cara com",
-            "emoji": "🔎"
+            "pt": "encontrar por acaso",
+            "emoji": "🎯"
           },
           {
-            "id": "put-up-with",
+            "id": "putupwith",
             "en": "put up with",
-            "pt": "tolerar / aguentar",
+            "pt": "tolerar",
             "emoji": "😤"
           },
           {
-            "id": "get-away-with",
+            "id": "getawaywith",
             "en": "get away with",
-            "pt": "sair impune de algo / se safar de algo",
-            "emoji": "🏃‍♂️"
+            "pt": "sair impune",
+            "emoji": "🏃"
           },
           {
-            "id": "look-down-on",
+            "id": "lookdownon",
             "en": "look down on",
-            "pt": "menosprezar, olhar com desdém para",
+            "pt": "menosprezar",
             "emoji": "👇"
           },
           {
-            "id": "come-up-with",
+            "id": "comeupwith",
             "en": "come up with",
-            "pt": "inventar/apresentar uma ideia",
+            "pt": "bolar / inventar",
             "emoji": "💡"
           },
           {
-            "id": "go-through-with",
+            "id": "gothroughwith",
             "en": "go through with",
-            "pt": "levar adiante algo planejado",
-            "emoji": "🚶"
+            "pt": "levar adiante",
+            "emoji": "✅"
           },
           {
-            "id": "take-after",
+            "id": "takeafter",
             "en": "take after",
-            "pt": "puxar a alguém, parecer-se com",
-            "emoji": "👨‍👩‍👧"
+            "pt": "puxar a (parecer-se)",
+            "emoji": "👨‍👦"
           },
           {
-            "id": "make-up-for",
+            "id": "makeupfor",
             "en": "make up for",
             "pt": "compensar",
             "emoji": "⚖️"
           },
           {
-            "id": "fall-back-on",
+            "id": "fallbackon",
             "en": "fall back on",
-            "pt": "recorrer a, como último recurso",
+            "pt": "recorrer a",
             "emoji": "🪂"
           },
           {
-            "id": "look-forward-to",
+            "id": "lookforwardto",
             "en": "look forward to",
-            "pt": "ansiar por, esperar com expectativa",
-            "emoji": "😊"
+            "pt": "ansiar por",
+            "emoji": "🤗"
           },
           {
-            "id": "put-off",
+            "id": "putoff",
             "en": "put off",
             "pt": "adiar",
-            "emoji": "⏰"
+            "emoji": "⏳"
           },
           {
-            "id": "run-into",
+            "id": "runinto",
             "en": "run into",
-            "pt": "encontrar por acaso uma pessoa",
-            "emoji": "🚶‍♀️"
+            "pt": "esbarrar com",
+            "emoji": "💥"
           },
           {
-            "id": "catch-up-on",
+            "id": "catchupon",
             "en": "catch up on",
-            "pt": "se atualizar sobre / recuperar o atraso em",
+            "pt": "pôr em dia",
             "emoji": "📚"
           },
           {
-            "id": "stand-up-for",
+            "id": "standupfor",
             "en": "stand up for",
-            "pt": "defender uma causa ou pessoa",
-            "emoji": "🛡️"
+            "pt": "defender",
+            "emoji": "✊"
+          },
+          {
+            "id": "getoverit",
+            "en": "get over",
+            "pt": "superar",
+            "emoji": "🌈"
+          },
+          {
+            "id": "lookupto",
+            "en": "look up to",
+            "pt": "admirar",
+            "emoji": "🙌"
+          },
+          {
+            "id": "backdown",
+            "en": "back down",
+            "pt": "recuar",
+            "emoji": "↩️"
+          },
+          {
+            "id": "bringupasubject",
+            "en": "bring up",
+            "pt": "trazer à tona",
+            "emoji": "💬"
+          },
+          {
+            "id": "carryout",
+            "en": "carry out",
+            "pt": "realizar",
+            "emoji": "🛠️"
+          },
+          {
+            "id": "cutdownon",
+            "en": "cut down on",
+            "pt": "reduzir",
+            "emoji": "✂️"
+          },
+          {
+            "id": "turndown",
+            "en": "turn down",
+            "pt": "recusar",
+            "emoji": "🙅"
+          },
+          {
+            "id": "workout",
+            "en": "work out",
+            "pt": "dar certo / treinar",
+            "emoji": "🏋️"
           }
         ],
         "readingTime": {

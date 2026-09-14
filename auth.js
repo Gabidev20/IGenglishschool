@@ -234,7 +234,26 @@ const IGAuth = (() => {
   // -------------------------------------------------------------------------
   // INIT
   // -------------------------------------------------------------------------
+  // A key that bypasses Row Level Security must never be the thing running
+  // the site: this file is downloaded by every visitor.
+  function showSecretKeyWarning() {
+    const bar = document.createElement('div');
+    bar.className = 'auth-config-warning';
+    bar.innerHTML = `
+      <strong>⚠️ Chave errada em supabaseConfig.js</strong>
+      <span>Você colou uma chave <em>secreta</em> (service_role / sb_secret_…). Ela ignora
+      todas as regras de segurança e ficaria visível para qualquer pessoa que abrisse o site.
+      Troque pela chave pública: <b>Settings → API Keys</b> → "Publishable key" ou "anon".</span>
+      <span class="auth-config-warning-note">O site segue funcionando sem login até você trocar.</span>
+    `;
+    document.body.appendChild(bar);
+  }
+
   async function init() {
+    if (window.IG_SUPABASE && window.IG_SUPABASE.secretKeyPasted) {
+      showSecretKeyWarning();
+      return;                                    // refuse to run on a secret key
+    }
     if (!IGCloud.enabled()) return;              // local mode — nothing to gate
 
     let session = null;

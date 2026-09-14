@@ -3250,3 +3250,29 @@ body.ig-gated { overflow: hidden; }
   .teacher-info { display: none; }
   .teacher-chip { padding: 5px; }
 }
+
+
+/* A misconfigured key is a security problem, so it gets a banner rather than
+   a console line nobody opens. */
+.auth-config-warning {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: #3c2b2f;
+  color: #ffe9ec;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.auth-config-warning strong { font-size: 0.95rem; }
+.auth-config-warning b { color: #ffd9a0; }
+.auth-config-warning-note { opacity: 0.75; font-size: 0.78rem; }
