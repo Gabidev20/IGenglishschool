@@ -8,11 +8,29 @@ const MIN_WORDS = 3;
 const MAX_WORDS = 10;
 
 function loadCustomGames() {
+  let games;
   try {
-    return JSON.parse(localStorage.getItem(CUSTOM_GAMES_KEY)) || [];
+    games = JSON.parse(localStorage.getItem(CUSTOM_GAMES_KEY)) || [];
   } catch (e) {
     return [];
   }
+  if (!Array.isArray(games)) return [];
+
+  // Repair games saved before the form told the two fields apart: an emoji
+  // typed into the wide "image URL" box was stored as `image`, rendered as a
+  // broken <img>, and fell back to the default star. Move it where it
+  // belongs, once, and write the fix back so it stays fixed.
+  let changed = false;
+  games.forEach(g => {
+    if (!Array.isArray(g.words)) { g.words = []; return; }
+    g.words = g.words.map(w => {
+      const fixed = igNormalizeWord(w);
+      if (fixed.image !== (w.image || '') || fixed.emoji !== w.emoji) changed = true;
+      return { ...fixed, emoji: String(fixed.emoji || '').trim() || '⭐' };
+    });
+  });
+  if (changed) saveCustomGames(games);
+  return games;
 }
 
 function saveCustomGames(games) {
@@ -110,9 +128,18 @@ function openGameForm(listContainer, existing) {
         </select>
       </div>
       <div class="gm-form-field">
-        <label>Words (${MIN_WORDS}-${MAX_WORDS}) — text is required, image URL and emoji are optional</label>
+        <label>Words (${MIN_WORDS}-${MAX_WORDS}) — only the English word is required</label>
+        <div class="gm-word-head">
+          <span aria-hidden="true"></span>
+          <span>English word</span>
+          <span>Emoji</span>
+          <span>Photo URL (optional)</span>
+          <span></span>
+        </div>
         <div class="gm-word-rows" id="gmWordRows"></div>
         <button class="game-btn secondary" id="gmAddWord" type="button">+ Add Word</button>
+        <p class="gm-hint">Paste an emoji in the <strong>Emoji</strong> box. The <strong>Photo URL</strong> box
+          only accepts a real link starting with <code>https://</code> — leave it empty to use the emoji.</p>
       </div>
       <p class="gm-form-error" id="gmFormError" hidden></p>
       <div class="game-btn-row" style="margin-top:18px">
@@ -128,12 +155,22 @@ function openGameForm(listContainer, existing) {
     rowsEl.innerHTML = state.words.map((w, i) => `
       <div class="gm-word-row" data-index="${i}">
         ${wordVisualHTML(w.image || w.emoji ? w : { emoji: '⭐' }, 'gm-word-preview')}
-        <input type="text" class="gm-input" data-field="en" placeholder="Word (e.g. Dog)" value="${escapeAttr(w.en)}" />
-        <input type="text" class="gm-input" data-field="image" placeholder="Image URL (optional)" value="${escapeAttr(w.image)}" />
-        <input type="text" class="gm-input gm-input-emoji" data-field="emoji" placeholder="🐶" value="${escapeAttr(w.emoji)}" />
+        <input type="text" class="gm-input" data-field="en" placeholder="Dog" value="${escapeAttr(w.en)}" />
+        <input type="text" class="gm-input gm-input-emoji" data-field="emoji" placeholder="🐶" value="${escapeAttr(w.emoji)}" aria-label="Emoji" />
+        <input type="text" class="gm-input" data-field="image" placeholder="https://… (optional)" value="${escapeAttr(w.image)}" aria-label="Photo URL" />
         <button class="gm-remove-row" data-remove="${i}" type="button" aria-label="Remove word" ${state.words.length <= 1 ? 'disabled' : ''}>✕</button>
       </div>
+      <p class="gm-row-warning" data-warn-for="${i}" ${badUrl(w.image) ? '' : 'hidden'}>
+        ⚠️ Not a link — this will be used as the emoji instead. For a real photo, paste a URL starting with https://
+      </p>
     `).join('');
+  }
+
+  // Empty is fine (the emoji is used); anything non-empty that isn't a URL
+  // is almost always an emoji typed into the wrong box.
+  function badUrl(value) {
+    const v = String(value || '').trim();
+    return v.length > 0 && !igLooksLikeImageUrl(v);
   }
 
   function wordVisualHTML(word, cls) {
@@ -151,6 +188,8 @@ function openGameForm(listContainer, existing) {
     if (field === 'image' || field === 'emoji') {
       const preview = row.querySelector('.word-visual');
       preview.outerHTML = wordVisualHTML(state.words[idx], 'gm-word-preview');
+      const warn = rowsEl.querySelector(`.gm-row-warning[data-warn-for="${idx}"]`);
+      if (warn) warn.hidden = !badUrl(state.words[idx].image);
     }
   });
 
@@ -170,8 +209,13 @@ function openGameForm(listContainer, existing) {
   document.getElementById('gmSaveBtn').addEventListener('click', () => {
     state.title = document.getElementById('gmTitle').value.trim();
     state.type = document.getElementById('gmType').value;
+    // igNormalizeWord moves an emoji typed into the photo box back where it
+    // belongs, so a mis-filled field can never reach a game as a broken <img>.
     const cleanWords = state.words
-      .map(w => ({ ...w, en: w.en.trim(), image: w.image.trim(), emoji: w.emoji.trim() || '⭐' }))
+      .map(w => {
+        const n = igNormalizeWord({ ...w, en: String(w.en || '').trim() });
+        return { ...n, emoji: String(n.emoji || '').trim() || '⭐' };
+      })
       .filter(w => w.en.length > 0);
 
     const errorEl = document.getElementById('gmFormError');

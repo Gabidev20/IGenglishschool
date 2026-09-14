@@ -444,7 +444,7 @@ function ceRenderWordRows(draft) {
       <input type="text" class="gm-input" data-field="en" placeholder="dog" value="${igEscapeHtml(w.en)}" />
       <input type="text" class="gm-input" data-field="pt" placeholder="cachorro" value="${igEscapeHtml(w.pt || '')}" />
       <input type="text" class="gm-input gm-input-emoji" data-field="emoji" maxlength="8" value="${igEscapeHtml(w.emoji || '')}" />
-      <input type="text" class="gm-input" data-field="image" placeholder="https://…" value="${igEscapeHtml(w.image || '')}" />
+      <input type="text" class="gm-input" data-field="image" placeholder="https://… (link only)" value="${igEscapeHtml(w.image || '')}" />
       <input type="text" class="gm-input ce-input-swatch" data-field="swatch" placeholder="#ff0000" value="${igEscapeHtml(w.swatch || '')}" />
       <button class="gm-remove-row" data-ce-remove="${i}" type="button" aria-label="Remove word">✕</button>
     </div>
@@ -558,14 +558,19 @@ function ceSaveTopic(levelId, draft, originalId, isNew) {
   if (!draft.title) return fail('Please give the topic a title.');
 
   const words = draft.words
-    .map(w => ({
-      id: w.id || ceId('w'),
-      en: String(w.en || '').trim(),
-      pt: String(w.pt || '').trim(),
-      emoji: String(w.emoji || '').trim() || '⭐',
-      image: String(w.image || '').trim(),
-      swatch: String(w.swatch || '').trim(),
-    }))
+    .map(w => {
+      // An emoji typed into the photo column is moved back to the emoji
+      // column rather than saved as an <img src> that can never load.
+      const n = igNormalizeWord(w);
+      return {
+        id: w.id || ceId('w'),
+        en: String(n.en || '').trim(),
+        pt: String(n.pt || '').trim(),
+        emoji: String(n.emoji || '').trim() || '⭐',
+        image: String(n.image || '').trim(),
+        swatch: String(n.swatch || '').trim(),
+      };
+    })
     .filter(w => w.en.length > 0)
     .map(w => {
       const clean = { id: w.id, en: w.en, emoji: w.emoji };

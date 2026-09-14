@@ -1033,6 +1033,9 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
   padding: 8px;
   overflow: hidden;
 }
+/* The board is sized from the HEIGHT it has, not the width: with `width:100%`
+   a wide game frame made a 4/3 grid taller than the modal and the bottom row
+   was clipped by the wrapper's overflow:hidden. */
 .memory-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1040,8 +1043,10 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
   gap: 8px;
   flex: 0 1 auto;
   min-height: 0;
-  width: 100%;
+  height: 100%;
+  width: auto;
   max-width: 100%;
+  max-height: 100%;
   aspect-ratio: 4 / 3;
   margin: 0 auto;
 }
@@ -1423,13 +1428,7 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 .gm-form-field input[type="text"]:focus, .gm-form-field select:focus { outline: none; border-color: var(--primary); }
 
 .gm-word-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-.gm-word-row {
-  display: grid;
-  grid-template-columns: 40px 1.2fr 1.6fr 70px 34px;
-  gap: 8px;
-  align-items: center;
-}
-.gm-word-row .word-visual.gm-word-preview { width: 40px; height: 40px; font-size: 1.2rem; border-radius: var(--radius-sm); }
+.gm-word-row .word-visual.gm-word-preview { width: 44px; height: 44px; font-size: 1.3rem; border-radius: var(--radius-sm); }
 .gm-input {
   padding: 8px 10px;
   border-radius: var(--radius-sm);
@@ -2947,4 +2946,77 @@ section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 @media (max-width: 640px) {
   .modal-head { padding-right: 44px; }
   .modal-head-desc { display: none; }
+}
+
+
+/* ==========================================================================
+   Game Maker — word rows
+   ==========================================================================
+   The emoji box now sits right after the word (it's what most custom games
+   actually use) and the photo URL box is last and clearly labelled, because
+   an emoji typed into the URL box used to save as a broken <img> and the
+   card fell back to a default star. */
+
+.gm-word-head {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1.4fr) 84px minmax(0, 2fr) 34px;
+  gap: 8px;
+  padding: 0 2px 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+/* The preview column is only 44px wide — a label there would spill into
+   the next heading. */
+.gm-word-head span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gm-word-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1.4fr) 84px minmax(0, 2fr) 34px;
+  gap: 8px;
+  align-items: center;
+}
+.gm-word-row .gm-input { min-width: 0; width: 100%; }
+.gm-input-emoji { text-align: center; font-size: 1.15rem; }
+
+.gm-hint { font-size: 0.78rem; color: var(--ink-faint); margin: 8px 0 0; }
+.gm-hint code {
+  background: var(--bg);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.92em;
+}
+
+.gm-row-warning {
+  margin: 2px 0 6px 52px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--color-secondary-deep, #b8953a);
+}
+.gm-row-warning[hidden] { display: none; }
+
+@media (max-width: 820px) {
+  .gm-word-head { display: none; }
+  .gm-word-row {
+    grid-template-columns: 44px 1fr 84px 34px;
+    grid-template-areas:
+      "preview en    emoji remove"
+      "preview image image image";
+    row-gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px;
+  }
+  .gm-word-row .gm-word-preview { grid-area: preview; }
+  .gm-word-row [data-field="en"] { grid-area: en; }
+  .gm-word-row [data-field="emoji"] { grid-area: emoji; }
+  .gm-word-row [data-field="image"] { grid-area: image; }
+  .gm-word-row .gm-remove-row { grid-area: remove; }
+  .gm-row-warning { margin-left: 0; }
 }
