@@ -3,14 +3,14 @@
    Teachers build custom games from their own words; persisted in localStorage.
    ========================================================================== */
 
-const CUSTOM_GAMES_KEY = 'hopscotch_custom_games';
+const CUSTOM_GAMES_KEY = 'custom_games';
 const MIN_WORDS = 3;
 const MAX_WORDS = 10;
 
 function loadCustomGames() {
   let games;
   try {
-    games = JSON.parse(localStorage.getItem(CUSTOM_GAMES_KEY)) || [];
+    games = IGStore.getJSON(CUSTOM_GAMES_KEY, []) || [];
   } catch (e) {
     return [];
   }
@@ -34,7 +34,7 @@ function loadCustomGames() {
 }
 
 function saveCustomGames(games) {
-  localStorage.setItem(CUSTOM_GAMES_KEY, JSON.stringify(games));
+  IGStore.setJSON(CUSTOM_GAMES_KEY, games);
 }
 
 function blankWord() {

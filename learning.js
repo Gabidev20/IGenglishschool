@@ -93,10 +93,7 @@ function lmCategory(topic) {
 // identically instead of crashing on the missing fields.
 function getCustomReadingContent(topicId) {
   const key = `custom_reading_${topicId}`;
-  const stored = localStorage.getItem(key);
-  if (!stored) return null;
-  let parsed;
-  try { parsed = JSON.parse(stored); } catch (e) { return null; }
+  const parsed = IGStore.getJSON(key, null);
   if (!parsed || typeof parsed.text !== 'string') return null;
   const questions = Array.isArray(parsed.questions) ? parsed.questions : (Array.isArray(parsed.quiz) ? parsed.quiz : []);
   return {
@@ -114,18 +111,16 @@ function getCustomReadingContent(topicId) {
 }
 function saveCustomReadingContent(topicId, text, questions) {
   const key = `custom_reading_${topicId}`;
-  localStorage.setItem(key, JSON.stringify({ text, questions }));
+  IGStore.setJSON(key, { text, questions });
 }
 function getCustomPracticeContent(topicId) {
   const key = `custom_practice_${topicId}`;
-  const stored = localStorage.getItem(key);
-  if (!stored) return null;
   // A corrupt entry must not take the whole Practice tab down with it.
-  try { return JSON.parse(stored); } catch (e) { return null; }
+  return IGStore.getJSON(key, null);
 }
 function saveCustomPracticeContent(topicId, description, instructions) {
   const key = `custom_practice_${topicId}`;
-  localStorage.setItem(key, JSON.stringify({ description, instructions }));
+  IGStore.setJSON(key, { description, instructions });
 }
 
 // Splits an authored passage into individual sentence objects with the same
@@ -399,7 +394,7 @@ function renderReadingModule(container, level, topic) {
     });
     document.getElementById('resetReadingBtn').addEventListener('click', () => {
       if (!confirm('Restore the original reading for this topic? Your custom text will be deleted.')) return;
-      localStorage.removeItem(`custom_reading_${topic.id}`);
+      IGStore.remove(`custom_reading_${topic.id}`);
       content = buildReadingContent(level, topic);
       isCustom = false;
       document.body.removeChild(modal);

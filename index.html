@@ -32,6 +32,9 @@
     </nav>
 
     <div class="header-actions">
+      <!-- Filled in by auth.js only when teacher accounts are switched on. -->
+      <div class="teacher-slot" id="teacherSlot" hidden></div>
+
       <div class="profile-switcher" id="profileSwitcher">
         <button class="profile-chip" id="profileChipBtn" aria-haspopup="listbox" aria-expanded="false">
           <span class="profile-avatar" id="profileAvatar">🦊</span>
@@ -45,6 +48,7 @@
         <div class="profile-dropdown" id="profileDropdown" role="listbox">
           <p class="dropdown-label">Who's learning?</p>
           <div class="profile-list" id="profileList"></div>
+          <div class="profile-actions" id="profileActions"></div>
         </div>
       </div>
 
@@ -199,6 +203,8 @@
 </div>
 
 <script src="utils.js"></script>
+<script src="supabaseConfig.js"></script>
+<script src="cloud.js"></script>
 <script src="games.js"></script>
 <script src="students.js"></script>
 <script src="sessions.js"></script>
@@ -209,5 +215,7 @@
 <script src="topicsData.js"></script>
 <script src="contentStore.js"></script>
 <script src="app.js"></script>
+<!-- Last: decides who is signed in, once the app has painted. -->
+<script src="auth.js"></script>
 </body>
 </html>

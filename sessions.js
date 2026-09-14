@@ -14,25 +14,26 @@ function lsShuffle(arr) {
 // ---------------------------------------------------------------------------
 // SESSION PERSISTENCE
 // ---------------------------------------------------------------------------
-function sessionKey(studentId) { return `hopscotch_sessions_${studentId}`; }
-function currentSessionKey(studentId) { return `hopscotch_currentSession_${studentId}`; }
+function sessionKey(studentId) { return `sessions_${studentId}`; }
+function currentSessionKey(studentId) { return `currentSession_${studentId}`; }
 
 function loadSessions(studentId) {
-  try { return JSON.parse(localStorage.getItem(sessionKey(studentId))) || []; } catch (e) { return []; }
+  const list = IGStore.getJSON(sessionKey(studentId), []);
+  return Array.isArray(list) ? list : [];
 }
 function saveSessions(studentId, list) {
-  localStorage.setItem(sessionKey(studentId), JSON.stringify(list));
+  IGStore.setJSON(sessionKey(studentId), list);
 }
 
 function loadCurrentSessionAccumulator(studentId) {
-  try { return JSON.parse(localStorage.getItem(currentSessionKey(studentId))) || { xp: 0, stars: 0 }; }
+  try { return IGStore.getJSON(currentSessionKey(studentId), null) || { xp: 0, stars: 0 }; }
   catch (e) { return { xp: 0, stars: 0 }; }
 }
 function saveCurrentSessionAccumulator(studentId, acc) {
-  localStorage.setItem(currentSessionKey(studentId), JSON.stringify(acc));
+  IGStore.setJSON(currentSessionKey(studentId), acc);
 }
 function resetCurrentSessionAccumulator(studentId) {
-  localStorage.removeItem(currentSessionKey(studentId));
+  IGStore.remove(currentSessionKey(studentId));
 }
 
 // Called by students.js's awardProgress() every time a game or practice

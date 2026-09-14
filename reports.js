@@ -40,13 +40,14 @@ function quarterDateRange(quarterId) {
 // ---------------------------------------------------------------------------
 // PERSISTENCE — one array of saved reports per student, keyed by quarterId
 // ---------------------------------------------------------------------------
-function reportsKey(studentId) { return `hopscotch_reports_${studentId}`; }
+function reportsKey(studentId) { return `reports_${studentId}`; }
 
 function loadReports(studentId) {
-  try { return JSON.parse(localStorage.getItem(reportsKey(studentId))) || []; } catch (e) { return []; }
+  const list = IGStore.getJSON(reportsKey(studentId), []);
+  return Array.isArray(list) ? list : [];
 }
 function saveReportsList(studentId, list) {
-  localStorage.setItem(reportsKey(studentId), JSON.stringify(list));
+  IGStore.setJSON(reportsKey(studentId), list);
 }
 function findSavedReport(studentId, quarterId) {
   return loadReports(studentId).find(r => r.quarterId === quarterId);

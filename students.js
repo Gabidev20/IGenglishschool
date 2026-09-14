@@ -2,9 +2,10 @@
    IGenglishschool — Student Management (CRUD + localStorage persistence)
    ========================================================================== */
 
-const STUDENTS_KEY = 'hopscotch_students';
-const ACTIVE_STUDENT_KEY = 'hopscotch_active_student';
-const PROGRESS_KEY_PREFIX = 'hopscotch_progress_';
+// Logical keys — IGStore namespaces them per signed-in teacher.
+const STUDENTS_KEY = 'students';
+const ACTIVE_STUDENT_KEY = 'active_student';
+const PROGRESS_KEY_PREFIX = 'progress_';
 
 const DEFAULT_STUDENTS = [
   { id: 's1', name: 'Arthur', age: 3, levelId: 'a0', tier: 'kids', levelLabel: 'Kids (A0)', color: '#FF6B6B', avatar: '🚗' },
@@ -62,7 +63,7 @@ const STICKERS = [
 // ---------------------------------------------------------------------------
 function loadStudents() {
   try {
-    const raw = JSON.parse(localStorage.getItem(STUDENTS_KEY));
+    const raw = IGStore.getJSON(STUDENTS_KEY, null);
     if (Array.isArray(raw) && raw.length > 0) {
       const normalized = raw.map(normalizeStudent);
       if (normalized.some((s, i) => s !== raw[i])) saveStudents(normalized);
@@ -74,7 +75,7 @@ function loadStudents() {
 }
 
 function saveStudents(list) {
-  localStorage.setItem(STUDENTS_KEY, JSON.stringify(list));
+  IGStore.setJSON(STUDENTS_KEY, list);
 }
 
 function resetStudentsToDefault() {
@@ -84,23 +85,23 @@ function resetStudentsToDefault() {
 }
 
 function getActiveStudentId() {
-  return localStorage.getItem(ACTIVE_STUDENT_KEY);
+  return IGStore.getRaw(ACTIVE_STUDENT_KEY);
 }
 
 function setActiveStudentId(id) {
-  localStorage.setItem(ACTIVE_STUDENT_KEY, id);
+  IGStore.setRaw(ACTIVE_STUDENT_KEY, id);
 }
 
 function loadProgress(studentId) {
   try {
-    const p = JSON.parse(localStorage.getItem(PROGRESS_KEY_PREFIX + studentId));
+    const p = IGStore.getJSON(PROGRESS_KEY_PREFIX + studentId, null);
     if (p) return { stars: 0, xp: 0, stickers: [], ...p };
   } catch (e) {}
   return { stars: 0, xp: 0, stickers: [] };
 }
 
 function saveProgress(studentId, progress) {
-  localStorage.setItem(PROGRESS_KEY_PREFIX + studentId, JSON.stringify(progress));
+  IGStore.setJSON(PROGRESS_KEY_PREFIX + studentId, progress);
 }
 
 function checkStickerUnlocks(studentId, progress) {
@@ -161,6 +162,10 @@ function renderProfileList() {
   const students = loadStudents();
   const activeId = getActiveStudentId();
   const list = document.getElementById('profileList');
+  // The student list scrolls on its own; the three action buttons live in a
+  // pinned footer below it. With them inside the list, a teacher with a dozen
+  // students had to scroll past everyone to reach "Add New Student" — and the
+  // last students were cut off by the bottom of the window entirely.
   list.innerHTML = students.map(s => `
     <div class="profile-option-row">
       <button class="profile-option ${s.id === activeId ? 'active' : ''}" data-student="${s.id}" role="option">
@@ -172,7 +177,10 @@ function renderProfileList() {
       </button>
       <button class="profile-edit-btn" data-edit-student="${s.id}" aria-label="Edit ${escapeHtmlLite(s.name)}" title="Edit student">✏️</button>
     </div>
-  `).join('') + `
+  `).join('') || '<p class="profile-empty">No students yet — add your first one below.</p>';
+
+  const actions = document.getElementById('profileActions');
+  actions.innerHTML = `
     <button class="profile-add-btn" id="addStudentQuickBtn">+ Add New Student</button>
     <button class="profile-manage-btn" id="reportsQuickBtn">📊 Relatório Trimestral</button>
     <button class="profile-manage-btn" id="manageStudentsBtn">⚙️ Manage All Students</button>
@@ -188,15 +196,15 @@ function renderProfileList() {
       openStudentForm(students.find(s => s.id === btn.dataset.editStudent));
     });
   });
-  document.getElementById('addStudentQuickBtn').addEventListener('click', () => {
+  actions.querySelector('#addStudentQuickBtn').addEventListener('click', () => {
     closeProfileDropdown();
     openStudentForm();
   });
-  document.getElementById('reportsQuickBtn').addEventListener('click', () => {
+  actions.querySelector('#reportsQuickBtn').addEventListener('click', () => {
     closeProfileDropdown();
     if (typeof openReportsModal === 'function') openReportsModal();
   });
-  document.getElementById('manageStudentsBtn').addEventListener('click', () => {
+  actions.querySelector('#manageStudentsBtn').addEventListener('click', () => {
     closeProfileDropdown();
     openStudentManager();
   });

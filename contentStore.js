@@ -17,7 +17,7 @@
    every module that already captured the array keeps working.
    ========================================================================== */
 
-const CURRICULUM_KEY = 'hopscotch_curriculum_v1';
+const CURRICULUM_KEY = 'curriculum_v1';
 
 // Pristine, never-mutated copy of what topicsData.js shipped.
 const BASE_LEVELS = JSON.parse(JSON.stringify(LEVELS));
@@ -31,7 +31,7 @@ const ContentStore = (() => {
 
   function load() {
     try {
-      const raw = JSON.parse(localStorage.getItem(CURRICULUM_KEY));
+      const raw = IGStore.getJSON(CURRICULUM_KEY, null);
       if (raw && typeof raw === 'object') {
         return {
           version: 1,
@@ -45,7 +45,7 @@ const ContentStore = (() => {
   }
 
   function persist(ov) {
-    localStorage.setItem(CURRICULUM_KEY, JSON.stringify(ov));
+    IGStore.setJSON(CURRICULUM_KEY, ov);
   }
 
   function key(levelId, topicId) { return `${levelId}:${topicId}`; }
@@ -146,7 +146,7 @@ const ContentStore = (() => {
   }
 
   function resetAll() {
-    localStorage.removeItem(CURRICULUM_KEY);
+    IGStore.remove(CURRICULUM_KEY);
     refresh();
   }
 
