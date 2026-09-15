@@ -47,7 +47,7 @@ function normalizeStudent(s) {
   return { ...s, levelId };
 }
 
-const STICKERS = [
+const DEFAULT_STICKERS = [
   { id: 'star', emoji: '⭐', name: 'First Star', threshold: 5 },
   { id: 'rocket', emoji: '🚀', name: 'Space Explorer', threshold: 10 },
   { id: 'trophy', emoji: '🏆', name: 'Champion', threshold: 20 },
@@ -57,6 +57,44 @@ const STICKERS = [
   { id: 'diamond', emoji: '💎', name: 'Diamond Mind', threshold: 80 },
   { id: 'medal', emoji: '🥇', name: 'Gold Medalist', threshold: 100 },
 ];
+
+// ---------------------------------------------------------------------------
+// STICKER BOOK — the teacher can change the emoji, paste a photo, rename a
+// sticker or move the star threshold. Stored as a patch so a sticker she
+// never touched keeps whatever the app ships.
+// ---------------------------------------------------------------------------
+const STICKERS_KEY = 'sticker_book';
+
+function loadStickerOverrides() {
+  const raw = IGStore.getJSON(STICKERS_KEY, null);
+  if (!raw || typeof raw !== 'object') return { patches: {}, added: [], deleted: [] };
+  return {
+    patches: raw.patches && typeof raw.patches === 'object' ? raw.patches : {},
+    added: Array.isArray(raw.added) ? raw.added : [],
+    deleted: Array.isArray(raw.deleted) ? raw.deleted : [],
+  };
+}
+
+function saveStickerOverrides(ov) { IGStore.setJSON(STICKERS_KEY, ov); }
+
+// The live sticker list. Use this everywhere instead of DEFAULT_STICKERS.
+function getStickers() {
+  const ov = loadStickerOverrides();
+  const deleted = new Set(ov.deleted);
+  const list = DEFAULT_STICKERS
+    .filter(s => !deleted.has(s.id))
+    .map(s => (ov.patches[s.id] ? { ...s, ...ov.patches[s.id] } : s))
+    .concat(ov.added.filter(s => !deleted.has(s.id)).map(s => (ov.patches[s.id] ? { ...s, ...ov.patches[s.id] } : s)));
+  return list.sort((a, b) => (a.threshold || 0) - (b.threshold || 0));
+}
+
+function stickerIsCustom(id) {
+  const ov = loadStickerOverrides();
+  if (ov.added.some(s => s.id === id)) return 'new';
+  return ov.patches[id] ? 'edited' : 'original';
+}
+
+function resetStickers() { IGStore.remove(STICKERS_KEY); }
 
 // ---------------------------------------------------------------------------
 // PERSISTENCE
@@ -105,12 +143,24 @@ function saveProgress(studentId, progress) {
 }
 
 function checkStickerUnlocks(studentId, progress) {
-  STICKERS.forEach(s => {
+  getStickers().forEach(s => {
     if (progress.stars >= s.threshold && !progress.stickers.includes(s.id)) {
       progress.stickers.push(s.id);
     }
   });
   return progress;
+}
+
+// Set the star count outright. The +/- buttons nudge; the Scoreboard's
+// number box uses this so a teacher can fix a total in one go.
+// Stickers already earned are deliberately NOT taken back when the number
+// goes down — a child who unlocked one should not watch it disappear.
+function setStars(studentId, value) {
+  const p = loadProgress(studentId);
+  p.stars = Math.max(0, Math.round(Number(value) || 0));
+  checkStickerUnlocks(studentId, p);
+  saveProgress(studentId, p);
+  return p;
 }
 
 function addStars(studentId, delta) {
@@ -440,14 +490,21 @@ function escapeAttrLite(str) {
 // ---------------------------------------------------------------------------
 function renderStickerBookHTML(studentId) {
   const progress = loadProgress(studentId);
+  const stickers = getStickers();
   return `
     <div class="sticker-grid">
-      ${STICKERS.map(s => {
+      ${stickers.map(s => {
         const unlocked = progress.stickers.includes(s.id);
+        // A pasted photo wins over the emoji; igNormalizeWord means an emoji
+        // typed into the photo box still shows as an emoji rather than a
+        // broken image.
+        const art = unlocked
+          ? igWordVisualHTML({ en: s.name, emoji: s.emoji, image: s.image || '' }, 'sticker-visual')
+          : '<span class="sticker-emoji">🔒</span>';
         return `
-          <div class="sticker-slot ${unlocked ? 'unlocked' : 'locked'}" title="${unlocked ? s.name : `Unlocks at ${s.threshold} stars`}">
-            <span class="sticker-emoji">${unlocked ? s.emoji : '🔒'}</span>
-            <span class="sticker-name">${unlocked ? s.name : `${s.threshold} ⭐`}</span>
+          <div class="sticker-slot ${unlocked ? 'unlocked' : 'locked'}" title="${escapeAttrLite(unlocked ? s.name : `Unlocks at ${s.threshold} stars`)}">
+            ${art}
+            <span class="sticker-name">${unlocked ? escapeHtmlLite(s.name) : `${s.threshold} ⭐`}</span>
           </div>
         `;
       }).join('')}

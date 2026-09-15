@@ -3276,3 +3276,129 @@ body.ig-gated { overflow: hidden; }
 .auth-config-warning strong { font-size: 0.95rem; }
 .auth-config-warning b { color: #ffd9a0; }
 .auth-config-warning-note { opacity: 0.75; font-size: 0.78rem; }
+
+
+/* ==========================================================================
+   Live Class Tools — editors
+   ==========================================================================
+   The Wheel's challenges and the Sticker Book are the teacher's own content,
+   so both get the same row-editor shape as the Game Maker. */
+
+.lt-count-note {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+}
+
+.lt-editor-intro {
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+  margin: 0 0 14px;
+  max-width: 62ch;
+}
+
+.lt-rows { display: flex; flex-direction: column; gap: 8px; }
+
+/* --- wheel challenges --- */
+.lt-row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 34px;
+  gap: 8px;
+  align-items: center;
+}
+.lt-row .gm-input { width: 100%; min-width: 0; }
+.lt-row-num {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+/* --- sticker book --- */
+.lt-sticker-head,
+.lt-sticker-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1.3fr) 76px minmax(0, 1.8fr) 82px 34px;
+  gap: 8px;
+  align-items: center;
+}
+.lt-sticker-head {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  padding: 0 2px 6px;
+}
+.lt-sticker-head span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lt-sticker-row .gm-input { width: 100%; min-width: 0; }
+.lt-sticker-preview { display: block; }
+
+/* The sticker art is a photo when one was pasted, the emoji otherwise —
+   igWordVisualHTML picks, this sizes it. */
+.sticker-visual {
+  width: 46px;
+  height: 46px;
+  font-size: 1.7rem;
+  border-radius: 12px;
+}
+.sticker-slot .sticker-visual {
+  width: 52px;
+  height: 52px;
+  font-size: 2rem;
+  margin: 0 auto 4px;
+  background: transparent;
+}
+.sticker-slot.locked .sticker-visual { opacity: 0.4; }
+
+/* --- scoreboard: exact total --- */
+.scoreboard-set-row {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.scoreboard-set-row > label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.scoreboard-set-controls { display: flex; gap: 8px; align-items: center; }
+.scoreboard-set-controls input {
+  width: 110px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+}
+.scoreboard-set-controls input:focus { outline: none; border-color: var(--primary); }
+.scoreboard-set-row .lt-count-note { text-align: left; margin: 8px 0 0; }
+
+@media (max-width: 760px) {
+  .lt-sticker-head { display: none; }
+  .lt-sticker-row {
+    grid-template-columns: 52px 1fr 76px 34px;
+    grid-template-areas:
+      "preview name  emoji remove"
+      "preview image image image"
+      "preview stars stars stars";
+    row-gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px;
+  }
+  .lt-sticker-row .lt-sticker-preview { grid-area: preview; }
+  .lt-sticker-row [data-f="name"] { grid-area: name; }
+  .lt-sticker-row [data-f="emoji"] { grid-area: emoji; }
+  .lt-sticker-row [data-f="image"] { grid-area: image; }
+  .lt-sticker-row [data-f="threshold"] { grid-area: stars; }
+  .lt-sticker-row .gm-remove-row { grid-area: remove; }
+}
