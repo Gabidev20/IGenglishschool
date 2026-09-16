@@ -189,6 +189,28 @@ const IGCloud = (() => {
   const LOCAL_ONLY = new Set(['active_student']);
   const isLocalOnly = (key) => LOCAL_ONLY.has(key) || key.startsWith('currentSession_');
 
+  // Which Supabase row a logical key is written into. Keys with a table of
+  // their own name it; EVERYTHING ELSE shares the curriculum_overrides row.
+  //
+  // That catch-all is the important part. pushKey used to fall off the end
+  // for any key it did not recognise, so the sticker book, the Wheel's
+  // challenges and anything added later were silently device-only — saved,
+  // never synced, and gone when the teacher signed in somewhere else. The
+  // overrides row already carries a free-form jsonb column, and pull() already
+  // writes every key it finds there straight back into IGStore, so routing
+  // the strays through it costs no schema change at all.
+  const OVERRIDES_BUCKET = 'curriculum_v1';
+  function bucketFor(key) {
+    if (key === 'students' || key === 'custom_games') return key;
+    if (key.startsWith('progress_') || key.startsWith('sessions_') || key.startsWith('reports_')) return key;
+    return OVERRIDES_BUCKET;
+  }
+
+  // The keys that ride along inside the overrides row.
+  function looseKeys() {
+    return IGStore.keys().filter(k => !isLocalOnly(k) && k !== 'curriculum_v1' && bucketFor(k) === OVERRIDES_BUCKET);
+  }
+
   // -------------------------------------------------------------------------
   // PULL — cloud -> localStorage
   // -------------------------------------------------------------------------
@@ -349,27 +371,24 @@ const IGCloud = (() => {
       return;
     }
 
-    if (key === 'curriculum_v1' || key.startsWith('custom_reading_') || key.startsWith('custom_practice_')) {
-      const lessonDoc = {};
-      IGStore.keys()
-        .filter(k => k.startsWith('custom_reading_') || k.startsWith('custom_practice_'))
-        .forEach(k => { lessonDoc[k] = IGStore.getJSON(k, null); });
-      await sb.from(tbl('curriculum_overrides')).upsert({
-        teacher_id: tid,
-        doc: IGStore.getJSON('curriculum_v1', {}) || {},
-        lesson_doc: lessonDoc,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'teacher_id' });
-    }
+    // The catch-all. Reached by curriculum_v1, the per-topic reading/practice
+    // overrides, and every other key without a table of its own.
+    const lessonDoc = {};
+    looseKeys().forEach(k => { lessonDoc[k] = IGStore.getJSON(k, null); });
+    await sb.from(tbl('curriculum_overrides')).upsert({
+      teacher_id: tid,
+      doc: IGStore.getJSON('curriculum_v1', {}) || {},
+      lesson_doc: lessonDoc,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'teacher_id' });
   }
 
   async function pushEverything() {
     const keys = IGStore.keys().filter(k => !isLocalOnly(k));
-    // curriculum_* all land in one row — push it once.
+    // Everything sharing the overrides row is pushed once, not once per key.
     const seen = new Set();
     for (const key of keys) {
-      const bucket = (key.startsWith('custom_reading_') || key.startsWith('custom_practice_'))
-        ? 'curriculum_v1' : key;
+      const bucket = bucketFor(key);
       if (seen.has(bucket)) continue;
       seen.add(bucket);
       try { await pushKey(bucket); } catch (e) { console.error('push failed for ' + bucket, e); }
@@ -385,8 +404,7 @@ const IGCloud = (() => {
 
   function queue(key) {
     if (!ready || isLocalOnly(key)) return;
-    const bucket = (key.startsWith('custom_reading_') || key.startsWith('custom_practice_'))
-      ? 'curriculum_v1' : key;
+    const bucket = bucketFor(key);
     pending.add(bucket);
     clearTimeout(flushTimer);
     flushTimer = setTimeout(flush, PUSH_DELAY_MS);

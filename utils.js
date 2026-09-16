@@ -243,3 +243,100 @@ window.igNormalizeWord = igNormalizeWord;
 window.IGStore = IGStore;
 window.igSetWorkspace = igSetWorkspace;
 window.igWorkspaceId = igWorkspaceId;
+
+/* ==========================================================================
+   IGSound — the two reward sounds the teacher triggers by hand
+   --------------------------------------------------------------------------
+   The games each carry their own private little synth (games.js, app.js's
+   ArcadeGames, liveTools.js) because they were written self-contained. These
+   two are different: they fire from students.js, which has no audio of its
+   own, and they have to be reachable from anywhere — so they live here, in
+   the file that loads first.
+
+   Synthesised rather than loaded: no asset to 404, no delay on first play,
+   and the whole thing is a few lines.
+
+   Muting is a per-DEVICE preference (raw localStorage, not IGStore): a
+   teacher who silences the tablet in a quiet classroom does not want that
+   choice syncing to her laptop, and it must survive signing out.
+   ========================================================================== */
+const IGSound = (() => {
+  const MUTE_KEY = 'hopscotch_sound_muted';
+  let ctx = null;
+
+  function muted() {
+    try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; }
+  }
+  function setMuted(on) {
+    try { localStorage.setItem(MUTE_KEY, on ? '1' : '0'); } catch (e) { /* private mode */ }
+  }
+
+  function audio() {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    if (!ctx) ctx = new Ctor();
+    // Browsers start the context suspended until a user gesture. Every caller
+    // here IS a click, so resuming is allowed — but it returns a promise we
+    // deliberately ignore, because the notes below are scheduled on the
+    // context clock and will simply play a few ms later.
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    return ctx;
+  }
+
+  // One note. `start` is an offset in seconds from now, so a whole phrase can
+  // be scheduled in a single synchronous pass.
+  function note(freq, start, duration, type, gain) {
+    const c = audio();
+    if (!c) return;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, c.currentTime + start);
+    osc.connect(g).connect(c.destination);
+    // Ramp from silence and back: a square wave switched on at full volume
+    // clicks, and the click is the loudest part of a short note.
+    g.gain.setValueAtTime(0.0001, c.currentTime + start);
+    g.gain.exponentialRampToValueAtTime(gain || 0.14, c.currentTime + start + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + start + duration);
+    osc.start(c.currentTime + start);
+    osc.stop(c.currentTime + start + duration + 0.02);
+  }
+
+  // ⭐ Stars added by hand — a quick rising sparkle. More stars, more notes,
+  // so +5 sounds bigger than +1 without being five times as long.
+  const SPARKLE = [784, 988, 1175, 1568, 1976, 2349];   // G5 B5 D6 G6 B6 D7
+  function stars(count) {
+    if (muted()) return;
+    const n = Math.max(1, Math.min(SPARKLE.length, Math.round(Math.abs(Number(count) || 1)) + 1));
+    try {
+      for (let i = 0; i < n; i++) note(SPARKLE[i], i * 0.055, 0.16, 'triangle', 0.13);
+      note(SPARKLE[n - 1] * 2, n * 0.055, 0.22, 'sine', 0.07);
+    } catch (e) { /* audio blocked — the stars still landed */ }
+  }
+
+  // ⭐ Stars taken away — the same shape falling, so a mis-click is audibly
+  // different from an award rather than silent.
+  function starsDown() {
+    if (muted()) return;
+    try {
+      note(660, 0, 0.12, 'triangle', 0.10);
+      note(494, 0.08, 0.16, 'triangle', 0.09);
+    } catch (e) { /* ignore */ }
+  }
+
+  // 📔 A new sticker — a little fanfare, clearly a bigger moment than a star.
+  function sticker() {
+    if (muted()) return;
+    try {
+      // C5 E5 G5 C6, then the octave held underneath
+      [523, 659, 784, 1047].forEach((f, i) => note(f, i * 0.09, 0.3, 'triangle', 0.15));
+      note(1319, 0.36, 0.5, 'sine', 0.12);
+      note(2093, 0.36, 0.45, 'sine', 0.05);
+      note(262, 0.36, 0.6, 'sine', 0.06);
+    } catch (e) { /* ignore */ }
+  }
+
+  return { stars, starsDown, sticker, muted, setMuted, note };
+})();
+
+window.IGSound = IGSound;

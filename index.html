@@ -23,6 +23,7 @@
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="Primary">
+      <a href="#dashboard" class="nav-link" data-section="dashboard">Painel</a>
       <a href="#live-class" class="nav-link" data-section="live-class">Live Class</a>
       <a href="#levels" class="nav-link" data-section="levels">Levels</a>
       <a href="#games" class="nav-link" data-section="games">Games</a>
@@ -62,6 +63,13 @@
 <div class="student-greeting" id="studentGreeting"></div>
 
 <main id="top">
+
+  <!-- ============ TEACHER DASHBOARD ============
+       First on the page on purpose: the teacher opens the site to find out
+       who she teaches today, who turned up last month and who has paid. -->
+  <section class="dashboard-section" id="dashboard">
+    <div id="teacherDashboard"></div>
+  </section>
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero">
@@ -210,6 +218,7 @@
 <script src="sessions.js"></script>
 <script src="reports.js"></script>
 <script src="gamemaker.js"></script>
+<script src="dashboard.js"></script>
 <script src="learning.js"></script>
 <script src="lessonKit.js"></script>
 <script src="liveTools.js"></script>

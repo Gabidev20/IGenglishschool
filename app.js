@@ -450,6 +450,9 @@ function renderLessonPlanHTML(level, topic) {
 renderGameMaker(document.getElementById('gameMakerRoot'));
 LiveTools.initFab();
 
+// The teacher dashboard sits above the hero and is the first thing drawn.
+if (typeof renderDashboard === 'function') renderDashboard();
+
 const reportsNavBtn = document.getElementById('reportsNavBtn');
 if (reportsNavBtn) reportsNavBtn.addEventListener('click', () => openReportsModal());
 

@@ -143,11 +143,16 @@ function saveProgress(studentId, progress) {
 }
 
 function checkStickerUnlocks(studentId, progress) {
+  let unlockedSomething = false;
   getStickers().forEach(s => {
     if (progress.stars >= s.threshold && !progress.stickers.includes(s.id)) {
       progress.stickers.push(s.id);
+      unlockedSomething = true;
     }
   });
+  // A new sticker is the biggest moment in the app, so it gets its fanfare
+  // whether it was won in a game or handed out from the Live Scoreboard.
+  if (unlockedSomething && typeof IGSound !== 'undefined') IGSound.sticker();
   return progress;
 }
 
@@ -165,20 +170,32 @@ function recordStarDelta(studentId, delta) {
 // number box uses this so a teacher can fix a total in one go.
 // Stickers already earned are deliberately NOT taken back when the number
 // goes down — a child who unlocked one should not watch it disappear.
-function setStars(studentId, value) {
+// The games already make their own noise when they award a star, so they
+// pass { silent: true }. What chimes is the teacher moving the number by
+// hand in the Live Scoreboard — which is the sound she asked for.
+function playStarSound(delta, opts) {
+  if ((opts && opts.silent) || !delta || typeof IGSound === 'undefined') return;
+  if (delta > 0) IGSound.stars(delta); else IGSound.starsDown();
+}
+
+function setStars(studentId, value, opts) {
   const p = loadProgress(studentId);
   const before = p.stars;
   p.stars = Math.max(0, Math.round(Number(value) || 0));
+  // Order matters: the sticker fanfare should land after the star sparkle,
+  // and checkStickerUnlocks plays it, so the sparkle goes first.
+  playStarSound(p.stars - before, opts);
   checkStickerUnlocks(studentId, p);
   saveProgress(studentId, p);
   recordStarDelta(studentId, p.stars - before);
   return p;
 }
 
-function addStars(studentId, delta) {
+function addStars(studentId, delta, opts) {
   const p = loadProgress(studentId);
   const before = p.stars;
   p.stars = Math.max(0, p.stars + delta);
+  playStarSound(p.stars - before, opts);
   checkStickerUnlocks(studentId, p);
   saveProgress(studentId, p);
   // The clamp at 0 means the effective change can be smaller than the requested delta.
@@ -200,7 +217,7 @@ function awardProgress(xp, stars) {
   const id = getActiveStudentId();
   if (!id) return;
   if (xp) addXP(id, xp);
-  if (stars) addStars(id, stars);   // addStars logs the stars to the session itself
+  if (stars) addStars(id, stars, { silent: true });   // addStars logs the stars to the session itself
   refreshHeaderForActiveStudent();
   // Only the XP is left to log — double-counting the stars here is exactly
   // the bug that made the Scoreboard's stars invisible in "Today's Class".
