@@ -4714,3 +4714,111 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 
   .lt-sticker-row { grid-template-columns: 68px 1fr 84px 34px; }
 }
+
+/* ==========================================================================
+   Sticker Book — fill the panel
+   ==========================================================================
+   The book had grown once already, but on a laptop it still sat as one thin
+   strip across the top of a mostly empty panel. The tiles now size from the
+   HEIGHT the panel actually has (clamp on vh), so the album fills the space a
+   teacher pointed at instead of floating in it — while a short window still
+   gets the smaller floor rather than a board that overflows. */
+
+/* Wide columns on purpose: eight stickers then wrap to TWO rows instead of
+   one thin strip across the top, and two rows of clamp(…25vh…) is what fills
+   the panel. Sizing the tiles from vh rather than from a fixed pixel value is
+   what makes the album grow with the window instead of leaving a hole in it. */
+.sticker-grid {
+  grid-template-columns: repeat(auto-fit, minmax(clamp(190px, 24vh, 260px), 1fr));
+  gap: clamp(12px, 1.8vh, 22px);
+  margin-bottom: clamp(12px, 2vh, 22px);
+}
+.sticker-slot {
+  gap: clamp(6px, 1.2vh, 14px);
+  padding: clamp(16px, 2.6vh, 30px) 12px;
+  justify-content: center;
+  min-height: clamp(150px, 25vh, 270px);
+}
+.sticker-slot .sticker-visual {
+  width: clamp(100px, 15vh, 180px);
+  height: clamp(100px, 15vh, 180px);
+  font-size: clamp(3.6rem, 11vh, 7rem);
+}
+.sticker-emoji { font-size: clamp(3.6rem, 11vh, 7rem); }
+.sticker-name { font-size: clamp(0.82rem, 1.7vh, 1.1rem); }
+.sticker-progress-note { font-size: clamp(0.9rem, 1.9vh, 1.1rem); }
+
+/* --------------------------------------------------------------------------
+   🎨 Canva Slides
+   -------------------------------------------------------------------------- */
+.canva-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 18vh, 200px), 1fr));
+  gap: 12px;
+}
+.canva-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  border-top: 5px solid var(--who, var(--color-primary));
+  background: var(--surface);
+  text-align: center;
+}
+.canva-card.is-empty { background: var(--bg); opacity: 0.75; }
+.canva-card-avatar { font-size: clamp(2rem, 5vh, 3rem); line-height: 1; }
+.canva-card-name { font-weight: 800; font-size: clamp(0.92rem, 2vh, 1.1rem); color: var(--ink); }
+
+.canva-open {
+  display: inline-block;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+.canva-open:hover { background: var(--primary-dark); }
+.canva-missing { font-size: 0.8rem; color: var(--ink-faint); font-style: italic; padding: 9px 0; }
+
+.canva-rows { display: flex; flex-direction: column; gap: 10px; }
+.canva-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 0.9fr) minmax(0, 2.2fr);
+  gap: 12px;
+  align-items: center;
+}
+.canva-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+}
+.canva-who { display: flex; flex-direction: column; min-width: 0; }
+.canva-who strong { font-size: 0.92rem; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.canva-who span { font-size: 0.76rem; color: var(--ink-faint); }
+.canva-input { width: 100%; min-width: 0; }
+
+@media (max-width: 640px) {
+  /* Width is the limit on a phone, not height — vh would make a tile taller
+     than the column it sits in. */
+  .sticker-grid { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 12px; }
+  .sticker-slot { min-height: 0; padding: 14px 8px; }
+  .sticker-slot .sticker-visual { width: 72px; height: 72px; font-size: 2.8rem; }
+  .sticker-emoji { font-size: 2.8rem; }
+
+  .canva-grid { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
+  .canva-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas: "avatar who" "input input";
+    row-gap: 8px;
+  }
+  .canva-avatar { grid-area: avatar; }
+  .canva-who { grid-area: who; }
+  .canva-input { grid-area: input; }
+}

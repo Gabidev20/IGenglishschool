@@ -567,6 +567,112 @@ const LiveTools = (() => {
   }
 
   // -------------------------------------------------------------------------
+  // CANVA SLIDES — one deck per student, opened in a new tab
+  //   The teacher builds a deck per student in Canva and pastes the link here;
+  //   during the lesson it is one click away instead of a hunt through tabs.
+  //   Links live in their own IGStore key, so they sync like everything else.
+  // -------------------------------------------------------------------------
+  const CANVA_KEY = 'canva_slides';
+
+  function canvaLinks() {
+    const raw = IGStore.getJSON(CANVA_KEY, null);
+    return (raw && typeof raw === 'object') ? raw : {};
+  }
+  function canvaLinkFor(studentId) { return String(canvaLinks()[studentId] || '').trim(); }
+  function saveCanvaLink(studentId, url) {
+    const all = canvaLinks();
+    const clean = String(url || '').trim();
+    if (clean) all[studentId] = clean; else delete all[studentId];
+    IGStore.setJSON(CANVA_KEY, all);
+  }
+
+  // Only http(s) is allowed through. A pasted `javascript:` URL would run in
+  // the page the moment it was clicked, and this field ends up in a shared
+  // Supabase row — so the check is a real one, not politeness.
+  function canvaIsValidUrl(value) {
+    const v = String(value || '').trim();
+    if (!v) return true;                       // empty just means "no deck yet"
+    try {
+      const u = new URL(v);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) { return false; }
+  }
+
+  function renderCanva(container) {
+    let editing = false;
+
+    function paint() {
+      const students = loadStudents();
+      const withLink = students.filter(s => canvaLinkFor(s.id)).length;
+
+      container.innerHTML = editing ? `
+        <p class="lt-editor-intro">Cole o link de compartilhamento do Canva de cada aluno.
+          No Canva: <strong>Compartilhar → Copiar link</strong>. Deixe em branco para remover.</p>
+        <div class="canva-rows">
+          ${students.map(s => `
+            <div class="canva-row" data-student="${igEscapeHtml(s.id)}">
+              <span class="canva-avatar" style="background:${igEscapeHtml(s.color || '#8e6d86')}22">${igEscapeHtml(s.avatar || '🙂')}</span>
+              <div class="canva-who">
+                <strong>${igEscapeHtml(s.name)}</strong>
+                <span>${igEscapeHtml(s.levelLabel || '')}</span>
+              </div>
+              <input class="gm-input canva-input" type="url" inputmode="url"
+                     placeholder="https://www.canva.com/design/…"
+                     value="${igEscapeHtml(canvaLinkFor(s.id))}" />
+            </div>
+          `).join('')}
+        </div>
+        <p class="gm-form-error" id="canvaErr" hidden></p>
+        <div class="game-btn-row" style="margin-top:16px">
+          <button class="btn btn-primary" id="canvaSave" type="button">💾 Salvar</button>
+          <button class="game-btn secondary" id="canvaCancel" type="button">Cancelar</button>
+        </div>
+      ` : `
+        <p class="lt-count-note">${withLink} de ${students.length} alunos com slides</p>
+        <div class="canva-grid">
+          ${students.map(s => {
+            const url = canvaLinkFor(s.id);
+            return `
+              <div class="canva-card ${url ? '' : 'is-empty'}" style="--who:${igEscapeHtml(s.color || '#8e6d86')}">
+                <span class="canva-card-avatar">${igEscapeHtml(s.avatar || '🙂')}</span>
+                <span class="canva-card-name">${igEscapeHtml(s.name)}</span>
+                ${url
+                  ? `<a class="canva-open" href="${igEscapeHtml(url)}" target="_blank" rel="noopener noreferrer">🎨 Abrir slides</a>`
+                  : `<span class="canva-missing">sem link</span>`}
+              </div>
+            `;
+          }).join('')}
+        </div>
+        <div class="game-btn-row" style="justify-content:center;margin-top:16px">
+          <button class="game-btn secondary" id="canvaEdit" type="button">✏️ Editar links</button>
+        </div>
+      `;
+
+      if (editing) {
+        container.querySelector('#canvaCancel').addEventListener('click', () => { editing = false; paint(); });
+        container.querySelector('#canvaSave').addEventListener('click', () => {
+          const rows = [...container.querySelectorAll('.canva-row')];
+          const bad = rows.find(r => !canvaIsValidUrl(r.querySelector('.canva-input').value));
+          const err = container.querySelector('#canvaErr');
+          if (bad) {
+            err.textContent = 'Esse link não parece um endereço válido. Ele precisa começar com https://';
+            err.hidden = false;
+            bad.querySelector('.canva-input').focus();
+            return;
+          }
+          rows.forEach(r => saveCanvaLink(r.dataset.student, r.querySelector('.canva-input').value));
+          editing = false;
+          paint();
+        });
+      } else {
+        container.querySelector('#canvaEdit').addEventListener('click', () => { editing = true; paint(); });
+      }
+    }
+
+    paint();
+  }
+
+  // -------------------------------------------------------------------------
   // MOUNT — each tool opens inside the shared modal
   // -------------------------------------------------------------------------
   const TOOL_META = {
@@ -574,6 +680,7 @@ const LiveTools = (() => {
     scoreboard: { title: '🏅 Live Scoreboard', render: renderScoreboard },
     timer: { title: '⏱️ Timer & Bell', render: renderTimer },
     stickers: { title: '📔 Sticker Book', render: renderStickers },
+    canva: { title: '🎨 Canva Slides', render: renderCanva },
   };
 
   function openTool(toolId) {
