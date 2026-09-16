@@ -4996,3 +4996,161 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 }
 .drawer-empty span { font-size: 2.2rem; }
 .drawer-empty p { margin: 0; font-size: 0.9rem; line-height: 1.6; }
+
+/* ==========================================================================
+   Boards centred, and sized from the SPACE they have
+   ==========================================================================
+   Two separate problems showed up on a wide, short window (a 1520x760 laptop
+   with the game frame at 1396x533):
+
+   1. The row-based boards had no maximum width, so they stretched edge to
+      edge. Hangman was the worst: a 180px gallows beside a 1160px column
+      holding a 460px keyboard, which left the whole right half of the frame
+      empty. Match-up and Word Match became 680px-wide rows holding a 46px
+      picture.
+
+   2. Every picture was sized from vh alone. On a short window that keeps them
+      small no matter how much width is going spare.
+
+   So: give each board a sensible cap and centre it, and size the artwork from
+   `clamp(floor, max(Nvh, Mvw), ceiling)`. max(), not min(): height stays the
+   main driver, and the width only TOPS IT UP when there is spare width. Using
+   min() was the first attempt and it backfired — on a 768x1024 tablet the vw
+   half won and shrank the match-up pictures from 62px to 38px. The board caps
+   above are what stop max() from overflowing.
+   ========================================================================== */
+
+/* --- 🎯 Hangman ------------------------------------------------------------
+   The gallows and the play column travel together in the middle of the frame
+   instead of being pinned to its left edge. */
+.hangman-layout {
+  grid-template-columns: minmax(150px, 240px) minmax(0, 680px);
+  justify-content: center;
+  align-content: center;
+  gap: clamp(16px, 2.5vw, 44px);
+  width: 100%;
+}
+.gallows-svg { max-width: clamp(110px, max(22vh, 13vw), 240px); }
+.hangman-word-visual { max-width: clamp(96px, max(22vh, 13vw), 250px); font-size: clamp(2.4rem, 9vh, 5.5rem); }
+.hangman-category { font-size: clamp(0.72rem, 1.7vh, 0.95rem); }
+.hangman-word { font-size: clamp(1.5rem, max(3vh, 2vw), 2.8rem); }
+.keyboard {
+  max-width: min(100%, 640px);
+  margin-inline: auto;
+  gap: clamp(5px, 1.2vh, 9px);
+}
+.key-btn { font-size: clamp(0.95rem, max(1.6vh, 1vw), 1.3rem); padding: clamp(8px, 1.7vh, 14px) 0; }
+
+/* --- 🔗 Match-up -----------------------------------------------------------
+   Two columns of cards, not two columns of stretched bars. */
+/* width:100% alongside the cap — these boards are flex items inside
+   .game-mount, and `margin-inline:auto` on a flex item makes it shrink to its
+   content instead of filling up to the cap. That collapsed the match-up board
+   from 1372px to 316px. */
+.matchup-board {
+  width: 100%;
+  max-width: min(100%, 900px);
+  margin-inline: auto;
+  gap: clamp(12px, 2vw, 28px);
+}
+.matchup-item {
+  max-height: clamp(54px, max(8vh, 5vw), 96px);
+  font-size: clamp(0.95rem, max(1.9vh, 1.1vw), 1.3rem);
+  padding: 8px clamp(12px, 1.4vw, 20px);
+}
+.matchup-item .word-visual {
+  width: clamp(34px, max(6.5vh, 4vw), 72px);
+  height: clamp(34px, max(6.5vh, 4vw), 72px);
+  font-size: clamp(1.5rem, max(3.6vh, 2.2vw), 2.8rem);
+}
+
+/* --- 🧩 Word Match (Arcade) ------------------------------------------------ */
+.wordmatch-board {
+  width: 100%;
+  max-width: min(100%, 900px);
+  margin-inline: auto;
+}
+.wordmatch-item { font-size: clamp(0.95rem, max(1.9vh, 1.1vw), 1.3rem); }
+.wordmatch-item .word-visual {
+  width: clamp(34px, max(6vh, 3.8vw), 68px);
+  height: clamp(34px, max(6vh, 3.8vw), 68px);
+  font-size: clamp(1.5rem, max(3.4vh, 2.1vw), 2.6rem);
+}
+
+/* --- 🎯 Quick Quiz + 🔊 Listen & Repeat (Arcade) ---------------------------
+   The question card and its answers stop spanning the whole frame. */
+#arcadeStage .quiz-question,
+#arcadeStage .quiz-options,
+#arcadeStage .listen-stage,
+#arcadeStage .listen-options,
+#arcadeStage .quiz-timerbar,
+#arcadeStage .quiz-progress-row {
+  width: 100%;
+  max-width: min(100%, 820px);
+  margin-inline: auto;
+}
+#arcadeStage .quiz-options,
+#arcadeStage .listen-options { justify-content: center; }
+#arcadeStage .quiz-visual {
+  width: clamp(96px, max(17vh, 11vw), 220px);
+  height: clamp(96px, max(17vh, 11vw), 220px);
+  font-size: clamp(2.8rem, max(8.5vh, 5.5vw), 7rem);
+}
+#arcadeStage .quiz-prompt { font-size: clamp(1rem, max(2vh, 1.2vw), 1.45rem); }
+.listen-speaker-btn {
+  width: clamp(84px, max(13vh, 9vw), 170px);
+  height: clamp(84px, max(13vh, 9vw), 170px);
+  font-size: clamp(2rem, max(5vh, 3.4vw), 4rem);
+}
+
+/* --- 🏆 Practice Arena + 📖 Reading quiz ----------------------------------- */
+.quiz-visual {
+  width: clamp(88px, max(14vh, 9.5vw), 200px);
+  height: clamp(88px, max(14vh, 9.5vw), 200px);
+  font-size: clamp(2.6rem, max(7vh, 4.6vw), 6rem);
+}
+
+/* --- 🧠 Memory -------------------------------------------------------------
+   The board is height-bound by its 4/3 aspect, which is right — it keeps the
+   cards square. What it needed was the leftover width put to use: cap how
+   wide it may grow so it stays centred rather than drifting. */
+.memory-grid { max-width: min(100%, 1100px); }
+.memory-face.front .word-visual { font-size: clamp(2.2rem, max(5vh, 3.5vw), 5rem); }
+
+/* --- 🗂️ Flashcards --------------------------------------------------------- */
+.flashcard {
+  width: clamp(200px, max(30vh, 20vw), 420px);
+  height: clamp(200px, max(30vh, 20vw), 420px);
+}
+
+/* --- 🧩 Unscramble + 🎯 Sort It -------------------------------------------- */
+.us-board { width: 100%; max-width: min(100%, 860px); margin-inline: auto; }
+.sort-board { width: 100%; max-width: min(100%, 940px); margin-inline: auto; }
+.sort-card { font-size: clamp(1.05rem, max(2.4vh, 1.6vw), 1.8rem); }
+.us-tile { font-size: clamp(0.95rem, max(1.8vh, 1.1vw), 1.25rem); }
+
+/* --------------------------------------------------------------------------
+   Phones: the vw half of every min() above is what governs at 375px, and it
+   would shrink the artwork below what a child can see. Width is the scarce
+   dimension here, so go back to plain floors.
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .hangman-layout { grid-template-columns: 1fr; justify-content: stretch; }
+  .gallows-svg { max-width: 130px; }
+  .hangman-word-visual { max-width: 84px; font-size: 3rem; }
+  .hangman-word { font-size: 1.5rem; }
+  .keyboard { max-width: 100%; }
+  .key-btn { font-size: 0.85rem; padding: 8px 0; }
+
+  .matchup-item { max-height: 56px; font-size: 0.95rem; }
+  .matchup-item .word-visual { width: 40px; height: 40px; font-size: 1.6rem; }
+  .wordmatch-item .word-visual { width: 38px; height: 38px; font-size: 1.5rem; }
+
+  #arcadeStage .quiz-visual { width: 110px; height: 110px; font-size: 3.4rem; }
+  #arcadeStage .quiz-prompt { font-size: 1rem; }
+  .listen-speaker-btn { width: 92px; height: 92px; font-size: 2.4rem; }
+  .quiz-visual { width: 96px; height: 96px; font-size: 3rem; }
+  .memory-face.front .word-visual { font-size: 2.4rem; }
+  .sort-card { font-size: 1.05rem; }
+  .us-tile { font-size: 0.94rem; }
+}
