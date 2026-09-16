@@ -87,6 +87,33 @@ function refreshLiveClassCockpit() {
   const root = document.getElementById('liveClassCockpit');
   if (!root) return;
   const student = getActiveStudent();
+
+  if (!student) {
+    root.innerHTML = `
+      <div class="cockpit-empty">
+        <span class="cockpit-empty-icon">👋</span>
+        <h3>Quem tem aula agora?</h3>
+        <p>Escolha o aluno no topo da página para abrir a rotina, os slides,
+           o Zoom e o registro da aula dele.</p>
+        <button class="btn btn-primary" id="cockpitPickStudent" type="button">👤 Escolher aluno</button>
+      </div>
+    `;
+    const pick = document.getElementById('cockpitPickStudent');
+    if (pick) pick.addEventListener('click', () => {
+      // Open the same switcher in the header rather than building a second
+      // picker — one list of students, one place to change it.
+      const chip = document.getElementById('profileChipBtn');
+      if (!chip) return;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Deferred by a tick on purpose: app.js closes the dropdown on any
+      // document click outside the switcher, and THIS click is still bubbling
+      // its way there. Clicking the chip synchronously opens the dropdown and
+      // then the same event immediately closes it again.
+      setTimeout(() => chip.click(), 0);
+    });
+    return;
+  }
+
   const young = isYoungLearner(student);
 
   root.innerHTML = `
@@ -251,6 +278,18 @@ function paintSessionDrawer() {
   const student = getActiveStudent();
   const body = document.getElementById('sessionDrawerBody');
   if (!body) return;
+
+  if (!student) {
+    body.innerHTML = `
+      <div class="drawer-empty">
+        <span>👋</span>
+        <p>Escolha o aluno da aula no topo da página para registrar a presença,
+           o conteúdo e as anotações de hoje.</p>
+      </div>
+    `;
+    return;
+  }
+
   const acc = loadCurrentSessionAccumulator(student.id);
   const todayStr = new Date().toISOString().slice(0, 10);
 

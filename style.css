@@ -171,22 +171,35 @@ button { font-family: inherit; cursor: pointer; }
 
 .main-nav {
   display: flex;
+  align-items: center;
   gap: 4px;
   margin: 0 auto;
+  min-width: 0;
   background: var(--surface);
   padding: 6px;
   border-radius: 999px;
   border: 1px solid var(--border);
+  /* The pill row scrolls rather than growing taller: below ~1180px the
+     labels no longer fit, and letting them wrap is what turned "Live Class"
+     into a two-line pill twice the height of its neighbours. */
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.main-nav::-webkit-scrollbar { display: none; }
 .nav-link {
+  flex: 0 0 auto;
   padding: 9px 18px;
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.92rem;
+  line-height: 1.4;
+  /* On .nav-link, not only on .nav-link-btn: the <a> items were the ones
+     wrapping, so the buttons stayed one line and the links did not. */
+  white-space: nowrap;
   color: var(--ink-soft);
   transition: background 0.2s ease, color 0.2s ease;
 }
-.nav-link-btn { border: none; background: transparent; font-family: inherit; white-space: nowrap; }
+.nav-link-btn { border: none; background: transparent; font-family: inherit; }
 .nav-link:hover { background: var(--primary-soft); color: var(--primary-dark); }
 .nav-link.active { background: var(--primary); color: #fff; }
 
@@ -4951,3 +4964,35 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
   .cockpit-links-row { grid-template-columns: 1fr; }
   .cockpit-link-fields .game-btn { flex: 1; }
 }
+
+/* --------------------------------------------------------------------------
+   "Nobody selected yet" — the state the app opens in
+   -------------------------------------------------------------------------- */
+.cockpit-empty {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 44px 20px;
+  color: var(--ink-soft);
+}
+.cockpit-empty-icon { font-size: 2.6rem; line-height: 1; }
+.cockpit-empty h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  margin: 0;
+  color: var(--ink);
+}
+.cockpit-empty p { margin: 0; max-width: 46ch; font-size: 0.92rem; line-height: 1.6; }
+.cockpit-empty .btn { margin-top: 6px; }
+
+.drawer-empty {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 40px 12px;
+  color: var(--ink-soft);
+}
+.drawer-empty span { font-size: 2.2rem; }
+.drawer-empty p { margin: 0; font-size: 0.9rem; line-height: 1.6; }

@@ -212,6 +212,10 @@ function getActiveStudentId() {
   return IGStore.getRaw(ACTIVE_STUDENT_KEY);
 }
 
+function clearActiveStudent() {
+  IGStore.remove(ACTIVE_STUDENT_KEY);
+}
+
 function setActiveStudentId(id) {
   IGStore.setRaw(ACTIVE_STUDENT_KEY, id);
 }
@@ -316,9 +320,14 @@ function isYoungLearner(student) {
   return student.age <= 8;
 }
 
+// null when nobody is selected. It used to fall back to the first student,
+// which is what made "no one selected" impossible to express — every caller
+// has to handle the null now, and that is the point: the teacher picks who
+// today's lesson is with.
 function getActiveStudent() {
-  const students = loadStudents();
-  return students.find(s => s.id === getActiveStudentId()) || students[0];
+  const id = getActiveStudentId();
+  if (!id) return null;
+  return loadStudents().find(s => s.id === id) || null;
 }
 
 // ---------------------------------------------------------------------------
@@ -381,12 +390,25 @@ function renderProfileList() {
 }
 
 function applyActiveStudent(student) {
+  const greeting = document.getElementById('studentGreeting');
+
+  if (!student) {
+    document.documentElement.style.setProperty('--accent-color', 'var(--color-primary)');
+    document.getElementById('profileAvatar').textContent = '👤';
+    document.getElementById('profileName').textContent = 'Escolher aluno';
+    document.getElementById('profileLevel').textContent = 'Nenhum selecionado';
+    if (greeting) {
+      greeting.style.setProperty('--accent-color', 'var(--color-primary)');
+      greeting.innerHTML = '<span class="greeting-avatar">👋</span> Escolha o aluno da aula de hoje aqui em cima →';
+    }
+    return;
+  }
+
   document.documentElement.style.setProperty('--accent-color', student.color);
   document.getElementById('profileAvatar').textContent = student.avatar;
   document.getElementById('profileName').textContent = student.name;
   document.getElementById('profileLevel').textContent = student.levelLabel;
 
-  const greeting = document.getElementById('studentGreeting');
   if (greeting) {
     const meta = tierMeta(student.tier);
     greeting.style.setProperty('--accent-color', student.color);
@@ -405,10 +427,7 @@ function renderGreetingStars(studentId) {
 // Updates the header chip + greeting banner. Safe to call frequently (every
 // XP/star award does), since it only touches small text nodes.
 function refreshHeaderForActiveStudent() {
-  const students = loadStudents();
-  const activeId = getActiveStudentId();
-  const student = students.find(s => s.id === activeId) || students[0];
-  if (student) applyActiveStudent(student);
+  applyActiveStudent(getActiveStudent());
 }
 
 // Full re-renders (cockpit routine bar, session drawer form) — these must
@@ -433,12 +452,10 @@ function escapeHtmlLite(str) {
 }
 
 function initStudents() {
-  const students = loadStudents();
-  let activeId = getActiveStudentId();
-  if (!activeId || !students.find(s => s.id === activeId)) {
-    activeId = students[0].id;
-    setActiveStudentId(activeId);
-  }
+  // Every visit starts with nobody selected, on purpose: the teacher picks
+  // who today's lesson is with. Leaving yesterday's student active is how
+  // stars and class logs end up on the wrong child.
+  clearActiveStudent();
   renderProfileList();
   onActiveStudentChanged();
 }
@@ -466,7 +483,7 @@ function openStudentManager() {
     if (confirm('Reset the student list to the default 12 students? Custom students you added will be removed (progress stats are kept).')) {
       resetStudentsToDefault();
       const activeId = getActiveStudentId();
-      if (!loadStudents().find(s => s.id === activeId)) setActiveStudentId(DEFAULT_STUDENTS[0].id);
+      if (!loadStudents().find(s => s.id === activeId)) clearActiveStudent();
       paintStudentManagerGrid();
       renderProfileList();
       onActiveStudentChanged();
@@ -502,7 +519,7 @@ function paintStudentManagerGrid() {
       if (confirm(`Delete "${student.name}"? This can't be undone.`)) {
         const remaining = students.filter(s => s.id !== student.id);
         saveStudents(remaining);
-        if (getActiveStudentId() === student.id) setActiveStudentId(remaining[0].id);
+        if (getActiveStudentId() === student.id) clearActiveStudent();
         paintStudentManagerGrid();
         renderProfileList();
         onActiveStudentChanged();
@@ -588,7 +605,7 @@ function openStudentForm(existing, onDone) {
       if (!confirm(`Delete "${state.name}"? This can't be undone.`)) return;
       const remaining = students.filter(s => s.id !== state.id);
       saveStudents(remaining);
-      if (getActiveStudentId() === state.id) setActiveStudentId(remaining[0].id);
+      if (getActiveStudentId() === state.id) clearActiveStudent();
       renderProfileList();
       onActiveStudentChanged();
       returnTo();
