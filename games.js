@@ -3,13 +3,40 @@
    Self-contained module exposing GameEngine.mount(container, topic, type)
    ========================================================================== */
 
+// `needs` says what a game must have before it can be offered:
+//   'words'     — a vocabulary bank. Every topic and custom game has one.
+//   'sentences' — example sentences (lessonKit.js builds them from the
+//                 topic's reading text and its rule examples).
+//   'rules'     — a grammar rule set with two or more forms to sort between.
+// Custom games from the Game Maker only carry words, so the last two are kept
+// away from them — see WORD_GAME_TYPES / gamesForTopic below.
 const GAME_TYPES = [
-  { id: 'hangman', label: 'Hangman', icon: '🎯' },
-  { id: 'memory', label: 'Memory', icon: '🧠' },
-  { id: 'matchup', label: 'Match-up', icon: '🔗' },
-  { id: 'balloon', label: 'Balloon Pop', icon: '🎈' },
-  { id: 'wordsearch', label: 'Word Search', icon: '🔍' },
+  { id: 'hangman', label: 'Hangman', icon: '🎯', needs: 'words' },
+  { id: 'memory', label: 'Memory', icon: '🧠', needs: 'words' },
+  { id: 'matchup', label: 'Match-up', icon: '🔗', needs: 'words' },
+  { id: 'balloon', label: 'Balloon Pop', icon: '🎈', needs: 'words' },
+  { id: 'wordsearch', label: 'Word Search', icon: '🔍', needs: 'words' },
+  { id: 'unscramble', label: 'Unscramble', icon: '🧩', needs: 'sentences' },
+  { id: 'sortit', label: 'Sort It', icon: '🎯', needs: 'rules' },
 ];
+
+// The subset a bare word list can run — what the Game Maker offers.
+const WORD_GAME_TYPES = GAME_TYPES.filter(g => g.needs === 'words');
+
+// Which games THIS topic can actually offer. A vocabulary topic has no
+// grammar rules to sort, so Sort It is simply not shown for it rather than
+// being shown and then apologising.
+function gamesForTopic(topic) {
+  return GAME_TYPES.filter(g => {
+    if (g.needs === 'sentences') {
+      return typeof lkSentences === 'function' && lkSentences(topic).length >= 3;
+    }
+    if (g.needs === 'rules') {
+      return typeof lkSort === 'function' && Boolean(lkSort(topic));
+    }
+    return (topic.words || []).length > 0;
+  });
+}
 
 const GameEngine = (() => {
 
@@ -807,6 +834,234 @@ const GameEngine = (() => {
   // return a teardown function; keep it so the next mount can run it.
   let activeCleanup = null;
 
+  // -------------------------------------------------------------------------
+  // 6) UNSCRAMBLE — put the words back in order
+  //    The one game that teaches WHERE a word goes rather than what it means,
+  //    which is the real difficulty of English word order for a Portuguese
+  //    speaker ("she is a teacher good" is the natural mistake to make).
+  // -------------------------------------------------------------------------
+  const UNSCRAMBLE_ROUND = 6;
+
+  function renderUnscramble(container, topic) {
+    const all = (typeof lkSentences === 'function' ? lkSentences(topic) : []);
+    if (all.length < 3) {
+      container.innerHTML = '<div class="game-end-banner lose">This topic has no example sentences yet.</div>';
+      return;
+    }
+
+    const sentences = pickN(all, Math.min(UNSCRAMBLE_ROUND, all.length));
+    let index = 0;
+    let solved = 0;
+    let placed = [];   // indexes into `tiles`, in the order the student tapped
+    let tiles = [];
+    let checked = null;
+
+    function setup() {
+      const words = sentences[index].split(/\s+/);
+      // A shuffle that happens to land on the right answer teaches nothing.
+      let order, guard = 0;
+      do { order = shuffle(words); guard++; }
+      while (words.length > 1 && order.join(' ') === words.join(' ') && guard < 20);
+      tiles = order.map(w => ({ word: w }));
+      placed = [];
+      checked = null;
+      paint();
+    }
+
+    function paint() {
+      const target = sentences[index];
+      const complete = placed.length === tiles.length;
+
+      container.innerHTML = `
+        <div class="game-toolbar">
+          <span class="game-status-pill">Sentence ${index + 1} / ${sentences.length} · ${solved} solved</span>
+          <div class="game-btn-row">
+            <button class="game-btn secondary" data-action="clear">↺ Clear</button>
+            <button class="game-btn secondary" data-action="hear">🔊 Hear it</button>
+          </div>
+        </div>
+
+        <div class="us-board">
+          <p class="us-instruction">Tap the words in the right order.</p>
+
+          <div class="us-answer ${checked === true ? 'right' : checked === false ? 'wrong' : ''}" id="usAnswer">
+            ${placed.length === 0
+              ? '<span class="us-placeholder">Your sentence appears here</span>'
+              : placed.map((t, pos) => `<button class="us-tile placed" data-unplace="${pos}">${igEscapeHtml(tiles[t].word)}</button>`).join('')}
+          </div>
+
+          <div class="us-bank">
+            ${tiles.map((t, i) => `
+              <button class="us-tile ${placed.includes(i) ? 'spent' : ''}" data-place="${i}" ${placed.includes(i) ? 'disabled' : ''}>${igEscapeHtml(t.word)}</button>
+            `).join('')}
+          </div>
+
+          ${checked === false ? `<p class="us-hint">Not yet — it should read: <strong>${igEscapeHtml(target)}</strong></p>` : ''}
+          ${checked === true ? '<p class="us-hint good">Perfect! 🎉</p>' : ''}
+
+          <div class="game-btn-row us-actions">
+            ${checked === true
+              ? `<button class="btn btn-primary" data-action="next">${index + 1 === sentences.length ? 'Finish →' : 'Next sentence →'}</button>`
+              : `<button class="btn btn-primary" data-action="check" ${complete ? '' : 'disabled'}>Check my answer</button>`}
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('[data-place]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (checked === true) return;
+          placed.push(Number(btn.dataset.place));
+          checked = null;
+          paint();
+        });
+      });
+      container.querySelectorAll('[data-unplace]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (checked === true) return;
+          placed.splice(Number(btn.dataset.unplace), 1);
+          checked = null;
+          paint();
+        });
+      });
+
+      const act = (name, fn) => {
+        const el = container.querySelector(`[data-action="${name}"]`);
+        if (el) el.addEventListener('click', fn);
+      };
+      act('clear', () => { placed = []; checked = null; paint(); });
+      act('hear', () => { if (typeof lmSpeak === 'function') lmSpeak(target, 0.85); });
+      act('check', () => {
+        // Capitals and punctuation are not what this game is testing.
+        const norm = (str) => str.toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ').trim();
+        checked = norm(placed.map(i => tiles[i].word).join(' ')) === norm(target);
+        if (checked) {
+          solved++;
+          playCorrect();
+          confettiFromElement(container.querySelector('#usAnswer'));
+          if (typeof awardProgress === 'function') awardProgress(10, 0);
+          if (typeof lmSpeak === 'function') lmSpeak(target, 0.85);
+        } else {
+          playWrong();
+        }
+        paint();
+      });
+      act('next', () => {
+        index++;
+        if (index < sentences.length) { setup(); return; }
+        finish();
+      });
+    }
+
+    function finish() {
+      const perfect = solved === sentences.length;
+      if (perfect) { playWin(); if (typeof awardProgress === 'function') awardProgress(0, 1); }
+      container.innerHTML = `
+        <div class="game-end-banner ${perfect ? 'win' : ''}">
+          ${perfect ? '🎉 Every sentence in the right order!' : `You built ${solved} of ${sentences.length}.`}
+          <p>Word order is the hardest part — play it again to lock it in.</p>
+          <div class="game-btn-row" style="justify-content:center;margin-top:12px">
+            <button class="btn btn-primary" data-action="again">🔄 Play again</button>
+          </div>
+        </div>
+      `;
+      container.querySelector('[data-action="again"]').addEventListener('click', () => {
+        renderUnscramble(container, topic);
+      });
+    }
+
+    setup();
+  }
+
+  // -------------------------------------------------------------------------
+  // 7) SORT IT — which form does each sentence take?
+  //    Built straight from the topic's rule cards, so for Verb To Be the
+  //    buckets are am / is / are and every example sorts itself under the
+  //    pronoun that governs it.
+  // -------------------------------------------------------------------------
+  const SORT_ROUND = 10;
+
+  function renderSortIt(container, topic) {
+    const board = (typeof lkSort === 'function' ? lkSort(topic) : null);
+    if (!board) {
+      container.innerHTML = '<div class="game-end-banner lose">This topic has no grammar rules to sort yet.</div>';
+      return;
+    }
+
+    const queue = pickN(board.items, Math.min(SORT_ROUND, board.items.length));
+    let index = 0, right = 0, streak = 0, lastWrong = null;
+    const sorted = {};
+    board.buckets.forEach(b => { sorted[b] = []; });
+
+    function paint() {
+      const item = queue[index];
+      container.innerHTML = `
+        <div class="game-toolbar">
+          <span class="game-status-pill">${index} / ${queue.length} · ${right} right${streak > 1 ? ' · 🔥 ' + streak : ''}</span>
+          <div class="game-btn-row">
+            <button class="game-btn secondary" data-action="restart">🔄 Play Again</button>
+          </div>
+        </div>
+
+        <div class="sort-board">
+          <p class="sort-prompt">${igEscapeHtml(board.prompt)}</p>
+          <div class="sort-card ${lastWrong ? 'shake' : ''}">${igEscapeHtml(item.text)}</div>
+          ${lastWrong ? `<p class="sort-hint">That one takes <strong>${igEscapeHtml(lastWrong)}</strong>.</p>` : ''}
+
+          <div class="sort-buckets">
+            ${board.buckets.map(b => `
+              <div class="sort-bucket">
+                <button class="sort-bucket-btn" data-bucket="${igEscapeHtml(b)}">${igEscapeHtml(b)}</button>
+                <ul class="sort-bucket-list">
+                  ${sorted[b].map(t => '<li>' + igEscapeHtml(t) + '</li>').join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('[data-bucket]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.dataset.bucket === item.bucket) {
+            right++; streak++; lastWrong = null;
+            sorted[item.bucket].push(item.text.replace('____', item.bucket));
+            playCorrect();
+            const r = btn.getBoundingClientRect();
+            confettiBurst(r.left + r.width / 2, r.top);
+            if (typeof awardProgress === 'function') awardProgress(5, 0);
+            index++;
+            if (index >= queue.length) { finish(); return; }
+          } else {
+            streak = 0;
+            lastWrong = item.bucket;
+            playWrong();
+          }
+          paint();
+        });
+      });
+
+      const restart = container.querySelector('[data-action="restart"]');
+      if (restart) restart.addEventListener('click', () => renderSortIt(container, topic));
+    }
+
+    function finish() {
+      const perfect = right === queue.length;
+      if (perfect) { playWin(); if (typeof awardProgress === 'function') awardProgress(0, 2); }
+      container.innerHTML = `
+        <div class="game-end-banner win">
+          ${perfect ? '🏆 Every single one in the right place!' : right + ' of ' + queue.length + ' sorted.'}
+          <p>${igEscapeHtml(board.buckets.join(' · '))}</p>
+          <div class="game-btn-row" style="justify-content:center;margin-top:12px">
+            <button class="btn btn-primary" data-action="again">🔄 Play again</button>
+          </div>
+        </div>
+      `;
+      container.querySelector('[data-action="again"]').addEventListener('click', () => renderSortIt(container, topic));
+    }
+
+    paint();
+  }
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -830,6 +1085,8 @@ const GameEngine = (() => {
       case 'matchup': activeCleanup = renderMatchup(container, topic); break;
       case 'balloon': activeCleanup = renderBalloon(container, topic); break;
       case 'wordsearch': activeCleanup = renderWordSearch(container, topic); break;
+      case 'unscramble': activeCleanup = renderUnscramble(container, topic); break;
+      case 'sortit': activeCleanup = renderSortIt(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }

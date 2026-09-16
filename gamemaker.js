@@ -42,7 +42,7 @@ function blankWord() {
 }
 
 function gameTypeMeta(typeId) {
-  return GAME_TYPES.find(g => g.id === typeId) || GAME_TYPES[0];
+  return WORD_GAME_TYPES.find(g => g.id === typeId) || WORD_GAME_TYPES[0];
 }
 
 // ---------------------------------------------------------------------------
@@ -110,7 +110,7 @@ function openGameForm(listContainer, existing) {
   const state = {
     id: existing ? existing.id : 'g' + Date.now().toString(36),
     title: existing ? existing.title : '',
-    type: existing ? existing.type : GAME_TYPES[0].id,
+    type: existing ? existing.type : WORD_GAME_TYPES[0].id,
     words: existing ? existing.words.map(w => ({ ...w })) : [blankWord(), blankWord(), blankWord()],
   };
 
@@ -124,7 +124,7 @@ function openGameForm(listContainer, existing) {
       <div class="gm-form-field">
         <label for="gmType">Game type</label>
         <select id="gmType">
-          ${GAME_TYPES.map(g => `<option value="${g.id}" ${g.id === state.type ? 'selected' : ''}>${g.icon} ${g.label}</option>`).join('')}
+          ${WORD_GAME_TYPES.map(g => `<option value="${g.id}" ${g.id === state.type ? 'selected' : ''}>${g.icon} ${g.label}</option>`).join('')}
         </select>
       </div>
       <div class="gm-form-field">
@@ -262,7 +262,7 @@ function testCustomGame(game) {
         </div>
       </div>
       <div class="game-picker" id="gmPlayPicker">
-        ${GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === game.type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
+        ${WORD_GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === game.type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
       </div>
       <div class="game-mount" id="gameMount"></div>
     </div>

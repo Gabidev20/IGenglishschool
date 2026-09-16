@@ -373,8 +373,24 @@ function ceOpenTopicForm(levelId, existing, forceNew) {
       </div>
 
       <div class="gm-form-field">
-        <label for="ceGrammarTip">💡 Grammar tip (optional — shown at the top of Reading Time)</label>
+        <label for="ceVideo">📺 Explainer video (paste any YouTube link — shown on the Watch tab)</label>
+        <input type="text" id="ceVideo" placeholder="https://www.youtube.com/watch?v=…"
+               value="${igEscapeHtml(draft.video && draft.video.youtubeId ? 'https://www.youtube.com/watch?v=' + draft.video.youtubeId : '')}" />
+        <p class="ce-hint">Leave it empty and the Watch tab shows the grammar tip and key phrases, plus a
+          link to search YouTube for this topic.</p>
+      </div>
+
+      <div class="gm-form-field">
+        <label for="ceGrammarTip">💡 Grammar tip (optional — shown on Watch and at the top of Reading Time)</label>
         <textarea id="ceGrammarTip" rows="2">${igEscapeHtml(draft.grammarTip || '')}</textarea>
+      </div>
+
+      <div class="gm-form-field">
+        <label for="ceSentences">🧩 Unscramble sentences (one per line, 3–9 words each)</label>
+        <textarea id="ceSentences" rows="4"
+          placeholder="I am a student&#10;She is my teacher">${igEscapeHtml((draft.practiceSentences || []).join('\n'))}</textarea>
+        <p class="ce-hint">These are the sentences students rebuild word by word. The reading text below
+          is used too, so you can leave this empty.</p>
       </div>
 
       <div class="gm-form-field">
@@ -555,6 +571,30 @@ function ceSaveTopic(levelId, draft, originalId, isNew) {
   draft.grammarTip = document.getElementById('ceGrammarTip').value.trim();
   const readingText = document.getElementById('ceReadingText').value.trim();
 
+  // A teacher will paste the whole watch URL, a youtu.be link or the share
+  // link with tracking on the end — lkYoutubeId reduces all of them to the id.
+  const videoRaw = document.getElementById('ceVideo').value.trim();
+  if (videoRaw) {
+    const id = (typeof lkYoutubeId === 'function') ? lkYoutubeId(videoRaw) : '';
+    if (!id) return fail('That does not look like a YouTube link. Copy the address from the browser bar, e.g. https://www.youtube.com/watch?v=5kjCcBsBzUs');
+    // Keep the shipped title/channel when the id has not changed.
+    const kept = (draft.video && draft.video.youtubeId === id) ? draft.video : null;
+    draft.video = kept || { youtubeId: id, title: draft.title };
+  } else {
+    delete draft.video;
+  }
+
+  // 3-9 words: below that there is nothing to unscramble, above it the tiles
+  // stop fitting on a phone.
+  const sentences = document.getElementById('ceSentences').value
+    .split(/\n+/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean);
+  const badLength = sentences.find(x => {
+    const n = x.split(' ').length;
+    return n < 3 || n > 9;
+  });
+  if (badLength) return fail(`Unscramble sentences need 3 to 9 words. This one has ${badLength.split(' ').length}: "${badLength}"`);
+  if (sentences.length) draft.practiceSentences = sentences; else delete draft.practiceSentences;
+
   if (!draft.title) return fail('Please give the topic a title.');
 
   const words = draft.words
@@ -681,7 +721,8 @@ async function ceFindPhotos(draft) {
 // PLAY TESTER — try the edited topic in any of the 5 game engines
 // ---------------------------------------------------------------------------
 function ceOpenPlayTester(level, topic) {
-  let type = GAME_TYPES[0].id;
+  const testable = gamesForTopic(topic);
+  let type = testable[0].id;
 
   openModal(`
     <div class="modal-content-pad">
@@ -695,7 +736,7 @@ function ceOpenPlayTester(level, topic) {
         </div>
       </div>
       <div class="game-picker" id="cePlayPicker">
-        ${GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
+        ${testable.map(g => `<button class="game-pick-btn ${g.id === type ? 'active' : ''}" data-game="${g.id}" type="button">${g.icon} ${g.label}</button>`).join('')}
       </div>
       <div class="game-mount" id="gameMount"></div>
       <div class="game-btn-row" style="margin-top:12px">

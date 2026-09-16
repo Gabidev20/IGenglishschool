@@ -267,6 +267,10 @@ function openModal(html, wide) {
   modalBody.scrollTop = 0;
   modalOverlay.hidden = false;
   modalEl.classList.toggle('modal--game', Boolean(wide));
+  // Mirrored onto the overlay so the phone stylesheet can drop the backdrop
+  // gutter for game modals only, without needing :has() — which this project
+  // has already been bitten by once.
+  modalOverlay.classList.toggle('has-game-modal', Boolean(wide));
   applyModalFullscreen();
   document.body.style.overflow = 'hidden';
 }
@@ -279,7 +283,7 @@ function closeModal() {
   modalOverlay.hidden = true;
   modalBody.innerHTML = '';
   modalEl.classList.remove('modal--game', 'modal--fullscreen');
-  modalOverlay.classList.remove('is-fullscreen');
+  modalOverlay.classList.remove('is-fullscreen', 'has-game-modal');
   document.body.style.overflow = '';
 }
 
@@ -343,9 +347,14 @@ function openTopicModal(levelId, topicId) {
   });
 }
 
+// The order is the student's route through a topic, not a menu: watch the
+// explanation, play with it, then test yourself. Lesson Plan is the teacher's
+// tab and stays at the end.
 function getModalTabs(level) {
   const tabs = [
+    { id: 'watch', label: 'Watch', icon: '📺' },
     { id: 'game', label: 'Game', icon: '🎮' },
+    { id: 'quiz', label: 'Quiz', icon: '📝' },
     { id: 'reading', label: 'Reading', icon: '📖' },
     { id: 'practice', label: 'Practice', icon: '🏆' },
   ];
@@ -358,6 +367,8 @@ function getModalTabs(level) {
 function renderModalPane(kind, level, topic) {
   const mountEl = document.getElementById('modalPaneContent');
 
+  if (kind === 'watch') { renderWatchStation(mountEl, level, topic); return; }
+  if (kind === 'quiz') { renderTopicQuiz(mountEl, level, topic); return; }
   if (kind === 'lesson') { mountEl.innerHTML = renderLessonPlanHTML(level, topic); return; }
   if (kind === 'reading') { renderReadingModule(mountEl, level, topic); return; }
   if (kind === 'practice') { renderPracticeArena(mountEl, level, topic); return; }
@@ -365,9 +376,15 @@ function renderModalPane(kind, level, topic) {
   if (kind === 'flashcards') { renderFlashcards(mountEl, level, topic); return; }
 
   // kind === 'game'
+  // Unscramble needs example sentences and Sort It needs grammar rules, so
+  // the picker is built from what this topic can actually run. If the last
+  // game played isn't one of them, fall back to the first that is.
+  const available = gamesForTopic(topic);
+  if (!available.some(g => g.id === activeGameType)) activeGameType = available[0].id;
+
   mountEl.innerHTML = `
     <div class="game-picker">
-      ${GAME_TYPES.map(g => `<button class="game-pick-btn ${g.id === activeGameType ? 'active' : ''}" data-game="${g.id}">${g.icon} ${g.label}</button>`).join('')}
+      ${available.map(g => `<button class="game-pick-btn ${g.id === activeGameType ? 'active' : ''}" data-game="${g.id}">${g.icon} ${g.label}</button>`).join('')}
     </div>
     <div class="game-mount" id="gameMount"></div>
   `;

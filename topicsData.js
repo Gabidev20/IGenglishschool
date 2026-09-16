@@ -44,6 +44,47 @@
                                 // Reading Time tab (learning.js's
                                 // grammarTipHTML) — a short, plain-English
                                 // explanation of the topic's language point.
+       video?: {               // the explainer shown on the 📺 Watch tab
+         youtubeId: string,    // the 11-char id ONLY, not the whole URL
+         title: string,
+         channel?: string,
+       }
+
+       rules?: [               // the rule cards on 📺 Watch, and the source
+         {                     // of the 🎯 Sort It board and of the best
+           label: string,      // generated quiz questions
+           form: string,       // e.g. 'am' — see the note below
+           hint?: string,      // one line of plain English
+           examples: string[], // full sentences
+         },
+       ]
+         // `form` is used two ways. When it is a word that literally appears
+         // in its own examples ('am', 'was', 'who', 'should'), lessonKit can
+         // blank it out, which is what builds Sort It and the gap-fill quiz
+         // questions. When it only NAMES a pattern ('-ed', 'the most',
+         // 'perfect continuous'), the card still reads well on Watch but
+         // produces no game items — give that topic an explicit `sort`.
+
+       sort?: {                // 🎯 Sort It, when the rules cannot build it
+         prompt: string,       // (vocabulary topics always need this)
+         buckets: string[],
+         items: [{ text: string, bucket: string }],
+       }
+
+       practiceSentences?: string[]
+         // extra sentences for 🧩 Unscramble. The reading text and the rule
+         // examples already feed it; these top it up. 3-9 words each — a
+         // student rebuilds them by tapping, and 12 tiles is unplayable.
+
+       quiz?: [                // leads the generated 📝 Quiz; the generator
+         {                     // tops it up to 10 either way
+           prompt: string,
+           options: string[],
+           correct: string,    // must exactly match one of `options`
+           explain?: string,   // shown after answering
+         },
+       ]
+
        readingTime?: {         // authored Reading Time content. When present,
                                 // learning.js's buildReadingContent() uses
                                 // this verbatim instead of auto-generating
@@ -122,9 +163,14 @@
       learning.js (a one-line map used to phrase Reading Time sentences and
       quiz questions correctly) — it already falls back gracefully if you
       skip this step, but the generated sentences read better with it.
-   5. That's it — the topic automatically gets its card, its Game/Reading/
-      Practice/Flashcards tabs (and Phonics too, if the level's tier isn't
-      'teens'), and a generated Lesson Plan.
+   5. That's it — the topic automatically gets its card and every tab:
+      Watch, Game, Quiz, Reading, Practice, Flashcards (and Phonics too, if
+      the level's tier isn't 'teens') plus a generated Lesson Plan.
+      lessonKit.js fills in whatever you leave out: the 10-question Quiz is
+      generated from the words and the reading text, and Unscramble takes its
+      sentences from the same place. Only `video`, `rules` and `sort` have no
+      automatic fallback — without them the Watch tab simply shows the
+      grammar tip and key phrases, and Sort It is not offered.
    ========================================================================== */
 
 // Unused: the curriculum's photos come from Wikimedia Commons (free to use,
@@ -334,7 +380,79 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg",
+        "sort": {
+          "prompt": "Does the word start with a vowel sound (a, e, i, o, u) or a consonant?",
+          "buckets": [
+            "vowel",
+            "consonant"
+          ],
+          "items": [
+            {
+              "text": "apple",
+              "bucket": "vowel"
+            },
+            {
+              "text": "egg",
+              "bucket": "vowel"
+            },
+            {
+              "text": "ice cream",
+              "bucket": "vowel"
+            },
+            {
+              "text": "orange",
+              "bucket": "vowel"
+            },
+            {
+              "text": "umbrella",
+              "bucket": "vowel"
+            },
+            {
+              "text": "ball",
+              "bucket": "consonant"
+            },
+            {
+              "text": "cat",
+              "bucket": "consonant"
+            },
+            {
+              "text": "dog",
+              "bucket": "consonant"
+            },
+            {
+              "text": "fish",
+              "bucket": "consonant"
+            },
+            {
+              "text": "hat",
+              "bucket": "consonant"
+            },
+            {
+              "text": "sun",
+              "bucket": "consonant"
+            },
+            {
+              "text": "tree",
+              "bucket": "consonant"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The cat is on the hat",
+          "I see a big red ball",
+          "The dog has a bone",
+          "A fish lives in water",
+          "The sun is very hot",
+          "I eat an apple every day",
+          "The tree is green and tall",
+          "My hat is on my head"
+        ],
+        "video": {
+          "youtubeId": "tKsIi1MH4lw",
+          "title": "ABC Phonics Song with Sounds for Children - Alphabet Song with Two Words for Each Letter",
+          "channel": "Rock 'N Learn"
+        }
       },
       {
         "id": "greetings",
@@ -511,6 +629,70 @@ const LEVELS = [
               "correct": "Goodbye"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Do you say this when you ARRIVE or when you LEAVE?",
+          "buckets": [
+            "hello",
+            "goodbye"
+          ],
+          "items": [
+            {
+              "text": "Hi!",
+              "bucket": "hello"
+            },
+            {
+              "text": "Good morning!",
+              "bucket": "hello"
+            },
+            {
+              "text": "Good afternoon!",
+              "bucket": "hello"
+            },
+            {
+              "text": "Nice to meet you!",
+              "bucket": "hello"
+            },
+            {
+              "text": "How are you?",
+              "bucket": "hello"
+            },
+            {
+              "text": "Bye!",
+              "bucket": "goodbye"
+            },
+            {
+              "text": "See you later!",
+              "bucket": "goodbye"
+            },
+            {
+              "text": "Good night!",
+              "bucket": "goodbye"
+            },
+            {
+              "text": "See you tomorrow!",
+              "bucket": "goodbye"
+            },
+            {
+              "text": "Take care!",
+              "bucket": "goodbye"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Hello my name is Ana",
+          "Good morning teacher",
+          "How are you today",
+          "I am fine thank you",
+          "Nice to meet you",
+          "See you tomorrow",
+          "What is your name",
+          "My name is Tom"
+        ],
+        "video": {
+          "youtubeId": "tVlcKp3bWH8",
+          "title": "Hello! | Kids Greeting Song and Feelings Song | Super Simple Songs",
+          "channel": "Super Simple Songs - Kids Songs"
         }
       },
       {
@@ -664,6 +846,70 @@ const LEVELS = [
               "correct": "Three"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is this number from 1 to 10, or from 11 to 20?",
+          "buckets": [
+            "1-10",
+            "11-20"
+          ],
+          "items": [
+            {
+              "text": "three",
+              "bucket": "1-10"
+            },
+            {
+              "text": "five",
+              "bucket": "1-10"
+            },
+            {
+              "text": "seven",
+              "bucket": "1-10"
+            },
+            {
+              "text": "nine",
+              "bucket": "1-10"
+            },
+            {
+              "text": "two",
+              "bucket": "1-10"
+            },
+            {
+              "text": "eleven",
+              "bucket": "11-20"
+            },
+            {
+              "text": "thirteen",
+              "bucket": "11-20"
+            },
+            {
+              "text": "fifteen",
+              "bucket": "11-20"
+            },
+            {
+              "text": "eighteen",
+              "bucket": "11-20"
+            },
+            {
+              "text": "twenty",
+              "bucket": "11-20"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I have two hands",
+          "I am five years old",
+          "There are three cats",
+          "Count from one to ten",
+          "I can see four birds",
+          "She has six pencils",
+          "We need seven chairs",
+          "I want one apple please"
+        ],
+        "video": {
+          "youtubeId": "DR-cfDsHCGA",
+          "title": "Counting 1-10 Song | Number Songs for Children | The Singing Walrus",
+          "channel": "The Singing Walrus - English Songs For Kids"
         }
       },
       {
@@ -841,6 +1087,77 @@ const LEVELS = [
               "correct": "Circle"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is it a COLOR or a SHAPE?",
+          "buckets": [
+            "color",
+            "shape"
+          ],
+          "items": [
+            {
+              "text": "red",
+              "bucket": "color"
+            },
+            {
+              "text": "blue",
+              "bucket": "color"
+            },
+            {
+              "text": "green",
+              "bucket": "color"
+            },
+            {
+              "text": "yellow",
+              "bucket": "color"
+            },
+            {
+              "text": "black",
+              "bucket": "color"
+            },
+            {
+              "text": "white",
+              "bucket": "color"
+            },
+            {
+              "text": "circle",
+              "bucket": "shape"
+            },
+            {
+              "text": "square",
+              "bucket": "shape"
+            },
+            {
+              "text": "triangle",
+              "bucket": "shape"
+            },
+            {
+              "text": "star",
+              "bucket": "shape"
+            },
+            {
+              "text": "heart",
+              "bucket": "shape"
+            },
+            {
+              "text": "rectangle",
+              "bucket": "shape"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The ball is red",
+          "I like the blue circle",
+          "My favourite color is green",
+          "The sun is a yellow circle",
+          "That star is very big",
+          "I draw a purple heart",
+          "The square is orange"
+        ],
+        "video": {
+          "youtubeId": "AM-Kj6mILC0",
+          "title": "Shapes & Colors Song | Learn Shapes & Colors | Fun Kids English",
+          "channel": "Fun Kids English"
         }
       },
       {
@@ -1006,6 +1323,78 @@ const LEVELS = [
               "correct": "Brother"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is it a PERSON in the family or a FEELING?",
+          "buckets": [
+            "family",
+            "feeling"
+          ],
+          "items": [
+            {
+              "text": "mother",
+              "bucket": "family"
+            },
+            {
+              "text": "father",
+              "bucket": "family"
+            },
+            {
+              "text": "sister",
+              "bucket": "family"
+            },
+            {
+              "text": "brother",
+              "bucket": "family"
+            },
+            {
+              "text": "grandma",
+              "bucket": "family"
+            },
+            {
+              "text": "baby",
+              "bucket": "family"
+            },
+            {
+              "text": "happy",
+              "bucket": "feeling"
+            },
+            {
+              "text": "sad",
+              "bucket": "feeling"
+            },
+            {
+              "text": "angry",
+              "bucket": "feeling"
+            },
+            {
+              "text": "tired",
+              "bucket": "feeling"
+            },
+            {
+              "text": "scared",
+              "bucket": "feeling"
+            },
+            {
+              "text": "excited",
+              "bucket": "feeling"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "This is my mother",
+          "I love my family",
+          "My brother is happy today",
+          "I have one sister",
+          "My father is very tall",
+          "The baby is sleeping",
+          "I am sad today",
+          "My grandma makes good food"
+        ],
+        "video": {
+          "youtubeId": "d_WQEw13TCo",
+          "title": "Family Members Song",
+          "channel": "English Tree"
         }
       },
       {
@@ -1194,7 +1583,79 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg",
+        "sort": {
+          "prompt": "Is it a PET you keep at home, or a WILD animal?",
+          "buckets": [
+            "pet",
+            "wild"
+          ],
+          "items": [
+            {
+              "text": "dog",
+              "bucket": "pet"
+            },
+            {
+              "text": "cat",
+              "bucket": "pet"
+            },
+            {
+              "text": "rabbit",
+              "bucket": "pet"
+            },
+            {
+              "text": "fish",
+              "bucket": "pet"
+            },
+            {
+              "text": "bird",
+              "bucket": "pet"
+            },
+            {
+              "text": "hamster",
+              "bucket": "pet"
+            },
+            {
+              "text": "lion",
+              "bucket": "wild"
+            },
+            {
+              "text": "elephant",
+              "bucket": "wild"
+            },
+            {
+              "text": "tiger",
+              "bucket": "wild"
+            },
+            {
+              "text": "monkey",
+              "bucket": "wild"
+            },
+            {
+              "text": "bear",
+              "bucket": "wild"
+            },
+            {
+              "text": "giraffe",
+              "bucket": "wild"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The dog is my pet",
+          "I have a small cat",
+          "Lions live in Africa",
+          "The bird can fly",
+          "Elephants are very big",
+          "My rabbit eats carrots",
+          "The fish swims in the water",
+          "Monkeys climb trees"
+        ],
+        "video": {
+          "youtubeId": "OwRmivbNgQk",
+          "title": "Let's Go To The Zoo | Animal Song for Kids | Super Simple Songs",
+          "channel": "Super Simple Songs - Kids Songs"
+        }
       },
       {
         "id": "fruitsfood",
@@ -1382,7 +1843,80 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg",
+        "sort": {
+          "prompt": "Is it a FRUIT, a VEGETABLE or a DRINK?",
+          "buckets": [
+            "fruit",
+            "vegetable",
+            "drink"
+          ],
+          "items": [
+            {
+              "text": "apple",
+              "bucket": "fruit"
+            },
+            {
+              "text": "banana",
+              "bucket": "fruit"
+            },
+            {
+              "text": "orange",
+              "bucket": "fruit"
+            },
+            {
+              "text": "grapes",
+              "bucket": "fruit"
+            },
+            {
+              "text": "strawberry",
+              "bucket": "fruit"
+            },
+            {
+              "text": "carrot",
+              "bucket": "vegetable"
+            },
+            {
+              "text": "tomato",
+              "bucket": "vegetable"
+            },
+            {
+              "text": "potato",
+              "bucket": "vegetable"
+            },
+            {
+              "text": "lettuce",
+              "bucket": "vegetable"
+            },
+            {
+              "text": "water",
+              "bucket": "drink"
+            },
+            {
+              "text": "milk",
+              "bucket": "drink"
+            },
+            {
+              "text": "juice",
+              "bucket": "drink"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I like apples and bananas",
+          "The orange is sweet",
+          "I drink milk every morning",
+          "She eats bread for breakfast",
+          "Do you like carrots",
+          "I want some water please",
+          "The cake is delicious",
+          "We eat rice for lunch"
+        ],
+        "video": {
+          "youtubeId": "utwgf_G91Eo",
+          "title": "Fruits & Vegetables (v1) [Kids Vocab] 🍎 Fun Fruit & Veggie Words for Kids",
+          "channel": "English Singsing"
+        }
       }
     ]
   },
@@ -1558,6 +2092,69 @@ const LEVELS = [
               "correct": "April"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is it a DAY of the week or a MONTH of the year?",
+          "buckets": [
+            "day",
+            "month"
+          ],
+          "items": [
+            {
+              "text": "Monday",
+              "bucket": "day"
+            },
+            {
+              "text": "Wednesday",
+              "bucket": "day"
+            },
+            {
+              "text": "Friday",
+              "bucket": "day"
+            },
+            {
+              "text": "Saturday",
+              "bucket": "day"
+            },
+            {
+              "text": "Sunday",
+              "bucket": "day"
+            },
+            {
+              "text": "January",
+              "bucket": "month"
+            },
+            {
+              "text": "March",
+              "bucket": "month"
+            },
+            {
+              "text": "July",
+              "bucket": "month"
+            },
+            {
+              "text": "September",
+              "bucket": "month"
+            },
+            {
+              "text": "December",
+              "bucket": "month"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Today is Monday",
+          "My birthday is in June",
+          "We go to school on Friday",
+          "I play football on Saturday",
+          "December is the last month",
+          "See you on Wednesday",
+          "There are seven days in a week"
+        ],
+        "video": {
+          "youtubeId": "36n93jvjkDs",
+          "title": "Days of The Week Song For Kids",
+          "channel": "Dream English Kids"
         }
       },
       {
@@ -1743,7 +2340,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/500px-Katsura_Imperial_Villa_in_Spring.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/500px-Katsura_Imperial_Villa_in_Spring.jpg",
+        "sort": {
+          "prompt": "Is it a ROOM in the house, or FURNITURE you put inside it?",
+          "buckets": [
+            "room",
+            "furniture"
+          ],
+          "items": [
+            {
+              "text": "kitchen",
+              "bucket": "room"
+            },
+            {
+              "text": "bedroom",
+              "bucket": "room"
+            },
+            {
+              "text": "bathroom",
+              "bucket": "room"
+            },
+            {
+              "text": "living room",
+              "bucket": "room"
+            },
+            {
+              "text": "garage",
+              "bucket": "room"
+            },
+            {
+              "text": "table",
+              "bucket": "furniture"
+            },
+            {
+              "text": "sofa",
+              "bucket": "furniture"
+            },
+            {
+              "text": "bed",
+              "bucket": "furniture"
+            },
+            {
+              "text": "wardrobe",
+              "bucket": "furniture"
+            },
+            {
+              "text": "chair",
+              "bucket": "furniture"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The kitchen is next to the living room",
+          "I sleep in my bedroom",
+          "There is a table in the kitchen",
+          "My house has three bedrooms",
+          "The bathroom is upstairs",
+          "We watch TV in the living room",
+          "The garden is behind the house"
+        ],
+        "video": {
+          "youtubeId": "07s34vmrq_M",
+          "title": "My Home for Kids | Rooms and Furniture Vocabulary in English",
+          "channel": "Myclass Yourclass"
+        }
       },
       {
         "id": "clothesweather",
@@ -1936,7 +2596,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/0/01/Charvet_shirt.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/0/01/Charvet_shirt.jpg",
+        "sort": {
+          "prompt": "Do you wear it when it is HOT or when it is COLD?",
+          "buckets": [
+            "hot",
+            "cold"
+          ],
+          "items": [
+            {
+              "text": "T-shirt",
+              "bucket": "hot"
+            },
+            {
+              "text": "shorts",
+              "bucket": "hot"
+            },
+            {
+              "text": "sandals",
+              "bucket": "hot"
+            },
+            {
+              "text": "sunglasses",
+              "bucket": "hot"
+            },
+            {
+              "text": "swimsuit",
+              "bucket": "hot"
+            },
+            {
+              "text": "coat",
+              "bucket": "cold"
+            },
+            {
+              "text": "scarf",
+              "bucket": "cold"
+            },
+            {
+              "text": "gloves",
+              "bucket": "cold"
+            },
+            {
+              "text": "boots",
+              "bucket": "cold"
+            },
+            {
+              "text": "sweater",
+              "bucket": "cold"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "It is sunny today",
+          "I wear a coat in winter",
+          "She is wearing a red dress",
+          "It is raining outside",
+          "Put on your shoes please",
+          "The weather is very cold",
+          "I need my umbrella today"
+        ],
+        "video": {
+          "youtubeId": "n35adRLXj_Y",
+          "title": "Clothes Vocabulary Chant for Children | Fun Kids English",
+          "channel": "Fun Kids English"
+        }
       },
       {
         "id": "pronouns",
@@ -2047,6 +2770,92 @@ const LEVELS = [
               "correct": "the dog"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "One person speaking",
+            "form": "I",
+            "hint": "I is always a capital letter in English, anywhere in the sentence.",
+            "examples": [
+              "I live in Brazil.",
+              "Every morning I drink coffee.",
+              "I have two brothers."
+            ]
+          },
+          {
+            "label": "The person you talk to",
+            "form": "you",
+            "hint": "You works for one person AND for a group — English has no separate word.",
+            "examples": [
+              "You are my friend.",
+              "Where do you live?",
+              "You speak English very well."
+            ]
+          },
+          {
+            "label": "One man / boy",
+            "form": "he",
+            "hint": "He replaces a male name: Tom -> he.",
+            "examples": [
+              "He is my brother.",
+              "He plays football on Sunday.",
+              "He works in a hospital."
+            ]
+          },
+          {
+            "label": "One woman / girl",
+            "form": "she",
+            "hint": "She replaces a female name: Ana -> she.",
+            "examples": [
+              "She is my teacher.",
+              "She has a new bike.",
+              "She lives near the school."
+            ]
+          },
+          {
+            "label": "A thing or an animal",
+            "form": "it",
+            "hint": "It is for things, animals and the weather.",
+            "examples": [
+              "It is a big house.",
+              "It rains a lot in January.",
+              "It is my favourite book."
+            ]
+          },
+          {
+            "label": "Me and other people",
+            "form": "we",
+            "hint": "We = I + somebody else.",
+            "examples": [
+              "We are in the same class.",
+              "We play together every day.",
+              "We live in Sao Paulo."
+            ]
+          },
+          {
+            "label": "Other people or things",
+            "form": "they",
+            "hint": "They works for people AND for things — no gender, no singular.",
+            "examples": [
+              "They are my cousins.",
+              "They go to school by bus.",
+              "They are very good students."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I am a student",
+          "She is my best friend",
+          "They live in a big house",
+          "We are in the same class",
+          "He plays football every day",
+          "It is a beautiful day",
+          "You are very kind"
+        ],
+        "video": {
+          "youtubeId": "Ke7j1jFLxbc",
+          "title": "I, you, we, they, he, she, it |  Subject Pronouns for kids| English Grammar",
+          "channel": "Interesting English"
         }
       },
       {
@@ -2164,6 +2973,76 @@ const LEVELS = [
               "correct": "It was sunny"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I",
+            "form": "am",
+            "hint": "Only I takes am. Short form: I'm.",
+            "examples": [
+              "I am a student.",
+              "I am ten years old.",
+              "I am happy today.",
+              "I am from Brazil."
+            ]
+          },
+          {
+            "label": "He / She / It",
+            "form": "is",
+            "hint": "One person or one thing takes is. Short form: he's, she's, it's.",
+            "examples": [
+              "He is my brother.",
+              "She is a teacher.",
+              "It is a sunny day.",
+              "My dog is very small."
+            ]
+          },
+          {
+            "label": "You / We / They",
+            "form": "are",
+            "hint": "Everything else takes are — including you, even for one person. Short form: you're, we're, they're.",
+            "examples": [
+              "You are my friend.",
+              "We are in the same class.",
+              "They are at home.",
+              "My parents are teachers."
+            ]
+          },
+          {
+            "label": "I / He / She / It — in the past",
+            "form": "was",
+            "hint": "The past of am and is.",
+            "examples": [
+              "I was tired yesterday.",
+              "She was at school.",
+              "It was very cold."
+            ]
+          },
+          {
+            "label": "You / We / They — in the past",
+            "form": "were",
+            "hint": "The past of are.",
+            "examples": [
+              "You were right.",
+              "We were very happy.",
+              "They were at the park."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I am a student",
+          "She is my teacher",
+          "They are my friends",
+          "He is not at home",
+          "Are you from Brazil",
+          "We are very happy today",
+          "It is a big blue house",
+          "Is she your sister"
+        ],
+        "video": {
+          "youtubeId": "5kjCcBsBzUs",
+          "title": "Basic English Grammar | Be verbs AM IS ARE",
+          "channel": "Acquire English"
         }
       },
       {
@@ -2305,6 +3184,62 @@ const LEVELS = [
               "correct": "He watches TV and reads"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I / You / We / They",
+            "form": "play",
+            "hint": "The verb stays exactly as it is in the dictionary.",
+            "examples": [
+              "I play football.",
+              "They play every afternoon.",
+              "We play in the garden."
+            ]
+          },
+          {
+            "label": "He / She / It",
+            "form": "plays",
+            "hint": "Third person singular adds -s. This is the rule Brazilian students forget most.",
+            "examples": [
+              "He plays football.",
+              "She plays the piano.",
+              "My brother plays very well."
+            ]
+          },
+          {
+            "label": "Negative — I / You / We / They",
+            "form": "don't",
+            "hint": "don't + the verb with NO -s.",
+            "examples": [
+              "I don't like coffee.",
+              "They don't live here.",
+              "We don't work on Sunday."
+            ]
+          },
+          {
+            "label": "Negative — He / She / It",
+            "form": "doesn't",
+            "hint": "doesn't already carries the -s, so the verb loses it: she doesn't play (never doesn't plays).",
+            "examples": [
+              "She doesn't like coffee.",
+              "He doesn't live here.",
+              "It doesn't work."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I go to school every day",
+          "She likes chocolate very much",
+          "We play football on Saturday",
+          "He works in a big office",
+          "They do not like cold weather",
+          "My mother cooks dinner every night",
+          "Do you speak English"
+        ],
+        "video": {
+          "youtubeId": "sH2rk3q4omM",
+          "title": "Present Simple Tense in English | Learn English Grammar | English Present Tense Lesson",
+          "channel": "Woodward English"
         }
       },
       {
@@ -2446,6 +3381,119 @@ const LEVELS = [
               "correct": "The dad"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Regular verbs",
+            "form": "-ed",
+            "hint": "Most verbs just add -ed, and it is the same for every person.",
+            "examples": [
+              "I played football yesterday.",
+              "She watched a film.",
+              "They walked to school."
+            ]
+          },
+          {
+            "label": "Irregular verbs",
+            "form": "new word",
+            "hint": "These change completely and have to be learned one by one: go-went, eat-ate, see-saw.",
+            "examples": [
+              "I went to the park.",
+              "We ate pizza.",
+              "He saw a new film."
+            ]
+          },
+          {
+            "label": "Negative",
+            "form": "didn't",
+            "hint": "didn't + the BASE verb. The past is already inside didn't: I didn't go (never didn't went).",
+            "examples": [
+              "I didn't go to school.",
+              "She didn't like the film.",
+              "They didn't play yesterday."
+            ]
+          },
+          {
+            "label": "Question",
+            "form": "Did",
+            "hint": "Did + person + base verb.",
+            "examples": [
+              "Did you go to the party?",
+              "Did she call you?",
+              "Did they win the game?"
+            ]
+          }
+        ],
+        "sort": {
+          "prompt": "Does this verb just add -ed in the past, or does it change completely?",
+          "buckets": [
+            "-ed",
+            "irregular"
+          ],
+          "items": [
+            {
+              "text": "play → play____",
+              "bucket": "-ed"
+            },
+            {
+              "text": "watch → watch____",
+              "bucket": "-ed"
+            },
+            {
+              "text": "walk → walk____",
+              "bucket": "-ed"
+            },
+            {
+              "text": "work → work____",
+              "bucket": "-ed"
+            },
+            {
+              "text": "want → want____",
+              "bucket": "-ed"
+            },
+            {
+              "text": "help → help____",
+              "bucket": "-ed"
+            },
+            {
+              "text": "go → went",
+              "bucket": "irregular"
+            },
+            {
+              "text": "eat → ate",
+              "bucket": "irregular"
+            },
+            {
+              "text": "see → saw",
+              "bucket": "irregular"
+            },
+            {
+              "text": "buy → bought",
+              "bucket": "irregular"
+            },
+            {
+              "text": "make → made",
+              "bucket": "irregular"
+            },
+            {
+              "text": "drink → drank",
+              "bucket": "irregular"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I played football yesterday",
+          "She went to the park",
+          "We watched a film last night",
+          "They did not come to school",
+          "Did you see my bag",
+          "He ate pizza for dinner",
+          "My father worked late yesterday"
+        ],
+        "video": {
+          "youtubeId": "LkyCYeDdvgI",
+          "title": "Past Simple Tense in English - Regular and Irregular Verbs Grammar lesson",
+          "channel": "Woodward English"
         }
       },
       {
@@ -2587,6 +3635,52 @@ const LEVELS = [
               "correct": "Ride a bike"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Ability — yes",
+            "form": "can",
+            "hint": "can + base verb, the same for everybody. Never 'he cans'.",
+            "examples": [
+              "I can swim.",
+              "She can speak three languages.",
+              "They can run very fast."
+            ]
+          },
+          {
+            "label": "Ability — no",
+            "form": "can't",
+            "hint": "can't = cannot. Still followed by the base verb.",
+            "examples": [
+              "I can't swim.",
+              "He can't come today.",
+              "We can't hear you."
+            ]
+          },
+          {
+            "label": "Question",
+            "form": "Can",
+            "hint": "Put can first: Can you...? No do/does needed.",
+            "examples": [
+              "Can you help me?",
+              "Can she drive?",
+              "Can I open the window?"
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I can swim very well",
+          "She can play the guitar",
+          "He cannot ride a bike",
+          "Can you help me please",
+          "We can speak two languages",
+          "They cannot come today",
+          "Can I open the window"
+        ],
+        "video": {
+          "youtubeId": "4HZsOaCea5M",
+          "title": "Can/Can't | modal verbs | english grammar for kids",
+          "channel": "WebED | Web Education per Insegnanti digitali"
         }
       },
       {
@@ -2704,6 +3798,69 @@ const LEVELS = [
               "correct": "one hundred"
             }
           ]
+        },
+        "sort": {
+          "prompt": "How do you write this number in English?",
+          "buckets": [
+            "-teen",
+            "-ty"
+          ],
+          "items": [
+            {
+              "text": "13 = thir____",
+              "bucket": "-teen"
+            },
+            {
+              "text": "15 = fif____",
+              "bucket": "-teen"
+            },
+            {
+              "text": "17 = seven____",
+              "bucket": "-teen"
+            },
+            {
+              "text": "19 = nine____",
+              "bucket": "-teen"
+            },
+            {
+              "text": "14 = four____",
+              "bucket": "-teen"
+            },
+            {
+              "text": "30 = thir____",
+              "bucket": "-ty"
+            },
+            {
+              "text": "50 = fif____",
+              "bucket": "-ty"
+            },
+            {
+              "text": "70 = seven____",
+              "bucket": "-ty"
+            },
+            {
+              "text": "90 = nine____",
+              "bucket": "-ty"
+            },
+            {
+              "text": "40 = for____",
+              "bucket": "-ty"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I am eleven years old",
+          "There are thirty days in April",
+          "My house number is fifty",
+          "She has twenty books",
+          "Count to one hundred",
+          "We need fifteen chairs",
+          "He is sixty years old"
+        ],
+        "video": {
+          "youtubeId": "e0dJWfQHF8Y",
+          "title": "The Big Numbers Song",
+          "channel": "KidsTV123"
         }
       },
       {
@@ -2821,6 +3978,120 @@ const LEVELS = [
               "correct": "second"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Most numbers",
+            "form": "-th",
+            "hint": "Add -th to the number: four -> fourth, seven -> seventh.",
+            "examples": [
+              "It is the fourth of May.",
+              "She was seventh in the race.",
+              "My birthday is the tenth."
+            ]
+          },
+          {
+            "label": "1, 21, 31",
+            "form": "-st",
+            "hint": "one -> first, twenty-one -> twenty-first.",
+            "examples": [
+              "It is the first of January.",
+              "He came twenty-first.",
+              "The thirty-first is the last day."
+            ]
+          },
+          {
+            "label": "2, 22",
+            "form": "-nd",
+            "hint": "two -> second, twenty-two -> twenty-second.",
+            "examples": [
+              "It is the second of June.",
+              "She lives on the twenty-second floor.",
+              "This is my second class."
+            ]
+          },
+          {
+            "label": "3, 23",
+            "form": "-rd",
+            "hint": "three -> third, twenty-three -> twenty-third.",
+            "examples": [
+              "It is the third of March.",
+              "He finished third.",
+              "The twenty-third is a Sunday."
+            ]
+          }
+        ],
+        "sort": {
+          "prompt": "Which ending does this ordinal number take?",
+          "buckets": [
+            "-st",
+            "-nd",
+            "-rd",
+            "-th"
+          ],
+          "items": [
+            {
+              "text": "1 → fir____",
+              "bucket": "-st"
+            },
+            {
+              "text": "21 → twenty-fir____",
+              "bucket": "-st"
+            },
+            {
+              "text": "31 → thirty-fir____",
+              "bucket": "-st"
+            },
+            {
+              "text": "2 → seco____",
+              "bucket": "-nd"
+            },
+            {
+              "text": "22 → twenty-seco____",
+              "bucket": "-nd"
+            },
+            {
+              "text": "3 → thi____",
+              "bucket": "-rd"
+            },
+            {
+              "text": "23 → twenty-thi____",
+              "bucket": "-rd"
+            },
+            {
+              "text": "4 → four____",
+              "bucket": "-th"
+            },
+            {
+              "text": "5 → fif____",
+              "bucket": "-th"
+            },
+            {
+              "text": "10 → ten____",
+              "bucket": "-th"
+            },
+            {
+              "text": "11 → eleven____",
+              "bucket": "-th"
+            },
+            {
+              "text": "20 → twentie____",
+              "bucket": "-th"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Today is the first of May",
+          "She came second in the race",
+          "My birthday is the third of June",
+          "This is my fifth class",
+          "He lives on the tenth floor",
+          "It is the twenty first of April"
+        ],
+        "video": {
+          "youtubeId": "w7eErDTUwF4",
+          "title": "Learn Ordinal Numbers in English | Fun Kids English",
+          "channel": "Fun Kids English"
         }
       },
       {
@@ -2962,6 +4233,72 @@ const LEVELS = [
               "correct": "him"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I becomes",
+            "form": "me",
+            "hint": "Subject pronouns come before the verb, object pronouns come after it.",
+            "examples": [
+              "She called me yesterday.",
+              "Give the book to me.",
+              "He helped me a lot."
+            ]
+          },
+          {
+            "label": "He becomes",
+            "form": "him",
+            "hint": "Used after the verb or after a preposition.",
+            "examples": [
+              "I saw him at school.",
+              "Tell him the truth.",
+              "This present is for him."
+            ]
+          },
+          {
+            "label": "She becomes",
+            "form": "her",
+            "hint": "Her is both the object pronoun and the possessive — context tells you which.",
+            "examples": [
+              "I met her last week.",
+              "Please help her.",
+              "I gave her my phone number."
+            ]
+          },
+          {
+            "label": "We becomes",
+            "form": "us",
+            "hint": "Us = me and the others, after the verb.",
+            "examples": [
+              "She invited us to the party.",
+              "Come with us.",
+              "The teacher told us to be quiet."
+            ]
+          },
+          {
+            "label": "They becomes",
+            "form": "them",
+            "hint": "Them works for people and for things.",
+            "examples": [
+              "I know them very well.",
+              "Please give them the keys.",
+              "I put them on the table."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "She called me yesterday",
+          "I saw him at school",
+          "Please give them the keys",
+          "He helped us a lot",
+          "I met her last week",
+          "Can you tell me the answer",
+          "The teacher gave us homework"
+        ],
+        "video": {
+          "youtubeId": "1vs7MQofKO8",
+          "title": "Object Pronouns in English - Me, You, Him, Her, It, Us, Them - Learn English Grammar",
+          "channel": "Woodward English"
         }
       },
       {
@@ -3079,6 +4416,62 @@ const LEVELS = [
               "correct": "Ana's"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Before a noun",
+            "form": "my",
+            "hint": "my / your / his / her / our / their always come before a noun: my book, her car.",
+            "examples": [
+              "This is my book.",
+              "My house is very small.",
+              "I love my family."
+            ]
+          },
+          {
+            "label": "Belonging to him",
+            "form": "his",
+            "hint": "his never changes, whatever comes after it: his bag, his shoes.",
+            "examples": [
+              "That is his bag.",
+              "His sister is a doctor.",
+              "I like his new shoes."
+            ]
+          },
+          {
+            "label": "Belonging to her",
+            "form": "her",
+            "hint": "her is used for a woman or a girl, for one thing or many.",
+            "examples": [
+              "Her name is Ana.",
+              "I met her parents.",
+              "Her car is blue."
+            ]
+          },
+          {
+            "label": "Belonging to a person (a name)",
+            "form": "'s",
+            "hint": "Add 's to the person: Ana's book, my brother's bike. Not 'the book of Ana'.",
+            "examples": [
+              "This is Ana's book.",
+              "My brother's bike is new.",
+              "That is the teacher's desk."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "This is my book",
+          "Her name is Ana",
+          "That is his bag",
+          "Our house is very big",
+          "This is my brothers bike",
+          "Their car is red",
+          "Is this your pencil"
+        ],
+        "video": {
+          "youtubeId": "rF070hPFbas",
+          "title": "Possessive Adjectives in English | My, Your, His, Her, Its, Our, Your, Their | Learn English Grammar",
+          "channel": "Woodward English"
         }
       },
       {
@@ -3196,6 +4589,82 @@ const LEVELS = [
               "correct": "between the bakery and the post office"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Inside something",
+            "form": "in",
+            "hint": "in = inside a closed space: in the box, in the room, in Brazil.",
+            "examples": [
+              "The cat is in the box.",
+              "She lives in Brazil.",
+              "My keys are in my bag."
+            ]
+          },
+          {
+            "label": "Touching a surface",
+            "form": "on",
+            "hint": "on = on top of, touching: on the table, on the wall, on the floor.",
+            "examples": [
+              "The book is on the table.",
+              "There is a picture on the wall.",
+              "The cat sits on the chair."
+            ]
+          },
+          {
+            "label": "Below something",
+            "form": "under",
+            "hint": "under = below, often covered by it.",
+            "examples": [
+              "The ball is under the bed.",
+              "My shoes are under the chair.",
+              "The dog sleeps under the table."
+            ]
+          },
+          {
+            "label": "In the middle of two things",
+            "form": "between",
+            "hint": "between = with one thing on each side.",
+            "examples": [
+              "The bank is between the shop and the school.",
+              "She sits between Ana and Tom.",
+              "The park is between two streets."
+            ]
+          },
+          {
+            "label": "Very close to",
+            "form": "next to",
+            "hint": "next to = at the side of, beside.",
+            "examples": [
+              "The chair is next to the window.",
+              "I live next to the school.",
+              "Sit next to me."
+            ]
+          },
+          {
+            "label": "At the back of",
+            "form": "behind",
+            "hint": "behind = at the back, the opposite of in front of.",
+            "examples": [
+              "The garden is behind the house.",
+              "He is behind the door.",
+              "The bus stop is behind the shop."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "The book is on the table",
+          "The cat is under the chair",
+          "My bag is in the car",
+          "The shop is next to the bank",
+          "The garden is behind the house",
+          "She sits between Ana and Tom",
+          "There is a picture on the wall"
+        ],
+        "video": {
+          "youtubeId": "GgZ2_DvEdr8",
+          "title": "5. Prepositions of Place | in, on, under, behind, between, etc | Basic English Grammar for Kids",
+          "channel": "LucyMax English"
         }
       },
       {
@@ -3337,6 +4806,52 @@ const LEVELS = [
               "correct": "under the table"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I",
+            "form": "am",
+            "hint": "am / is / are + verb-ing. The -ing part never changes.",
+            "examples": [
+              "I am reading a book.",
+              "I am watching TV.",
+              "I am doing my homework."
+            ]
+          },
+          {
+            "label": "He / She / It",
+            "form": "is",
+            "hint": "Same verb-ing, only the helper changes.",
+            "examples": [
+              "She is cooking dinner.",
+              "He is playing football.",
+              "It is raining now."
+            ]
+          },
+          {
+            "label": "You / We / They",
+            "form": "are",
+            "hint": "Never drop the helper: 'They playing' is the classic mistake.",
+            "examples": [
+              "They are studying English.",
+              "We are waiting for the bus.",
+              "You are talking too much."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I am reading a book",
+          "She is cooking dinner now",
+          "They are playing in the garden",
+          "He is not working today",
+          "What are you doing",
+          "We are waiting for the bus",
+          "It is raining outside"
+        ],
+        "video": {
+          "youtubeId": "61HbsT1DT5Y",
+          "title": "Present Continuous Tense for Kids | Easy English Grammar Cartoon Lesson | Am / Is / Are   Explained",
+          "channel": "EnglishSparkKids"
         }
       }
     ]
@@ -3525,7 +5040,71 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/500px-Airport_infrastructure.png"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/500px-Airport_infrastructure.png",
+        "sort": {
+          "prompt": "Does it travel on LAND, on WATER or in the AIR?",
+          "buckets": [
+            "land",
+            "water",
+            "air"
+          ],
+          "items": [
+            {
+              "text": "bus",
+              "bucket": "land"
+            },
+            {
+              "text": "train",
+              "bucket": "land"
+            },
+            {
+              "text": "taxi",
+              "bucket": "land"
+            },
+            {
+              "text": "bicycle",
+              "bucket": "land"
+            },
+            {
+              "text": "subway",
+              "bucket": "land"
+            },
+            {
+              "text": "ferry",
+              "bucket": "water"
+            },
+            {
+              "text": "boat",
+              "bucket": "water"
+            },
+            {
+              "text": "ship",
+              "bucket": "water"
+            },
+            {
+              "text": "plane",
+              "bucket": "air"
+            },
+            {
+              "text": "helicopter",
+              "bucket": "air"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I travel to work by bus",
+          "The plane leaves at six o'clock",
+          "We booked a hotel near the beach",
+          "Do you have your passport",
+          "The train station is very busy",
+          "She is going on holiday next week",
+          "How much is a ticket to London"
+        ],
+        "video": {
+          "youtubeId": "shGha68qLvY",
+          "title": "Airport Vocabulary | English for Travel 🇨🇦🇬🇧🇺🇲",
+          "channel": "Mad English TV"
+        }
       },
       {
         "id": "jobs",
@@ -3700,7 +5279,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg/500px-A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg/500px-A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg",
+        "sort": {
+          "prompt": "Does this job usually happen INDOORS or OUTDOORS?",
+          "buckets": [
+            "indoors",
+            "outdoors"
+          ],
+          "items": [
+            {
+              "text": "teacher",
+              "bucket": "indoors"
+            },
+            {
+              "text": "nurse",
+              "bucket": "indoors"
+            },
+            {
+              "text": "chef",
+              "bucket": "indoors"
+            },
+            {
+              "text": "accountant",
+              "bucket": "indoors"
+            },
+            {
+              "text": "receptionist",
+              "bucket": "indoors"
+            },
+            {
+              "text": "farmer",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "builder",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "gardener",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "firefighter",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "postal worker",
+              "bucket": "outdoors"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "My mother is a nurse",
+          "He works in a big hospital",
+          "She starts work at eight o'clock",
+          "What do you do for a living",
+          "The teacher explains the lesson",
+          "I want to be an engineer",
+          "He has a meeting this afternoon"
+        ],
+        "video": {
+          "youtubeId": "so2QHzbU_Eg",
+          "title": "Jobs and Occupations: English Vocabulary",
+          "channel": "AMES836"
+        }
       },
       {
         "id": "health",
@@ -3874,7 +5516,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg/500px-Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg/500px-Akhilleus_Patroklos_Antikensammlung_Berlin_F2278.jpg",
+        "sort": {
+          "prompt": "Is it a PART of the body or a PROBLEM you tell the doctor about?",
+          "buckets": [
+            "body part",
+            "symptom"
+          ],
+          "items": [
+            {
+              "text": "head",
+              "bucket": "body part"
+            },
+            {
+              "text": "stomach",
+              "bucket": "body part"
+            },
+            {
+              "text": "arm",
+              "bucket": "body part"
+            },
+            {
+              "text": "throat",
+              "bucket": "body part"
+            },
+            {
+              "text": "back",
+              "bucket": "body part"
+            },
+            {
+              "text": "headache",
+              "bucket": "symptom"
+            },
+            {
+              "text": "fever",
+              "bucket": "symptom"
+            },
+            {
+              "text": "cough",
+              "bucket": "symptom"
+            },
+            {
+              "text": "sore throat",
+              "bucket": "symptom"
+            },
+            {
+              "text": "stomach ache",
+              "bucket": "symptom"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I have a bad headache",
+          "She went to the doctor yesterday",
+          "You should drink more water",
+          "My throat hurts a lot",
+          "He has a high fever",
+          "I need to take this medicine",
+          "Exercise is good for your health"
+        ],
+        "video": {
+          "youtubeId": "Sk2hopcvOc8",
+          "title": "At the doctor's - English vocabulary lesson",
+          "channel": "Learn English with KT"
+        }
       },
       {
         "id": "hobbies",
@@ -4058,7 +5763,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
+        "sort": {
+          "prompt": "Do you usually do this INDOORS or OUTDOORS?",
+          "buckets": [
+            "indoors",
+            "outdoors"
+          ],
+          "items": [
+            {
+              "text": "reading",
+              "bucket": "indoors"
+            },
+            {
+              "text": "painting",
+              "bucket": "indoors"
+            },
+            {
+              "text": "playing video games",
+              "bucket": "indoors"
+            },
+            {
+              "text": "cooking",
+              "bucket": "indoors"
+            },
+            {
+              "text": "playing the guitar",
+              "bucket": "indoors"
+            },
+            {
+              "text": "hiking",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "surfing",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "cycling",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "camping",
+              "bucket": "outdoors"
+            },
+            {
+              "text": "fishing",
+              "bucket": "outdoors"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I love playing the guitar",
+          "She goes swimming twice a week",
+          "We watch films every Friday night",
+          "Reading is my favourite hobby",
+          "He collects old coins",
+          "Do you like playing video games",
+          "They go hiking in the mountains"
+        ],
+        "video": {
+          "youtubeId": "2p32l220EtU",
+          "title": "Free Time Activities and Hobbies in English | English Vocabulary",
+          "channel": "English with Al"
+        }
       },
       {
         "id": "environment",
@@ -4233,7 +6001,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Air_pollution3.jpg/500px-Air_pollution3.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Air_pollution3.jpg/500px-Air_pollution3.jpg",
+        "sort": {
+          "prompt": "Is it a PROBLEM for the planet or a SOLUTION?",
+          "buckets": [
+            "problem",
+            "solution"
+          ],
+          "items": [
+            {
+              "text": "pollution",
+              "bucket": "problem"
+            },
+            {
+              "text": "deforestation",
+              "bucket": "problem"
+            },
+            {
+              "text": "plastic waste",
+              "bucket": "problem"
+            },
+            {
+              "text": "global warming",
+              "bucket": "problem"
+            },
+            {
+              "text": "extinction",
+              "bucket": "problem"
+            },
+            {
+              "text": "recycling",
+              "bucket": "solution"
+            },
+            {
+              "text": "solar energy",
+              "bucket": "solution"
+            },
+            {
+              "text": "planting trees",
+              "bucket": "solution"
+            },
+            {
+              "text": "public transport",
+              "bucket": "solution"
+            },
+            {
+              "text": "saving water",
+              "bucket": "solution"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "We must protect the environment",
+          "Recycling helps our planet",
+          "Many animals are in danger",
+          "Pollution is a serious problem",
+          "They planted trees in the park",
+          "We should use less plastic",
+          "Clean energy is the future"
+        ],
+        "video": {
+          "youtubeId": "FMG76oWC3CI",
+          "title": "Environmental Vocabulary 🌍 Environment, Pollution, Recycling, Conservation",
+          "channel": "CodeLucky"
+        }
       },
       {
         "id": "personality",
@@ -4398,6 +6229,73 @@ const LEVELS = [
               "correct": "Confident"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is it a POSITIVE quality or a NEGATIVE one?",
+          "buckets": [
+            "positive",
+            "negative"
+          ],
+          "items": [
+            {
+              "text": "kind",
+              "bucket": "positive"
+            },
+            {
+              "text": "generous",
+              "bucket": "positive"
+            },
+            {
+              "text": "hard-working",
+              "bucket": "positive"
+            },
+            {
+              "text": "patient",
+              "bucket": "positive"
+            },
+            {
+              "text": "honest",
+              "bucket": "positive"
+            },
+            {
+              "text": "friendly",
+              "bucket": "positive"
+            },
+            {
+              "text": "lazy",
+              "bucket": "negative"
+            },
+            {
+              "text": "rude",
+              "bucket": "negative"
+            },
+            {
+              "text": "selfish",
+              "bucket": "negative"
+            },
+            {
+              "text": "arrogant",
+              "bucket": "negative"
+            },
+            {
+              "text": "impatient",
+              "bucket": "negative"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "My sister is very kind",
+          "He is a hard working student",
+          "She is always friendly to everyone",
+          "They are very patient people",
+          "I am feeling nervous today",
+          "My best friend is honest and funny",
+          "He gets angry very quickly"
+        ],
+        "video": {
+          "youtubeId": "a2OvvMsNmTM",
+          "title": "Expand Your Vocabulary | 15 Adjectives for Personality & Characteristics",
+          "channel": "English Like A Native"
         }
       },
       {
@@ -4515,6 +6413,52 @@ const LEVELS = [
               "correct": "They were playing football"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I / He / She / It",
+            "form": "was",
+            "hint": "was + verb-ing for an action already happening at that moment.",
+            "examples": [
+              "I was watching TV at eight.",
+              "She was cooking when I arrived.",
+              "It was raining all morning."
+            ]
+          },
+          {
+            "label": "You / We / They",
+            "form": "were",
+            "hint": "were + verb-ing — same idea, different helper.",
+            "examples": [
+              "They were playing football.",
+              "We were waiting for the bus.",
+              "You were talking very loudly."
+            ]
+          },
+          {
+            "label": "The interruption",
+            "form": "when",
+            "hint": "The long action takes past continuous, the short one that cuts in takes simple past.",
+            "examples": [
+              "I was reading when the phone rang.",
+              "She was driving when it started to rain.",
+              "They were eating when we arrived."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I was watching TV at eight",
+          "She was cooking when I arrived",
+          "They were playing in the garden",
+          "It was raining all morning",
+          "We were waiting for the bus",
+          "What were you doing yesterday",
+          "He was not listening to me"
+        ],
+        "video": {
+          "youtubeId": "D2uT7foH5mQ",
+          "title": "PAST CONTINUOUS/PAST PROGRESSIVE TENSE (was/were -ing)  English Grammar Lesson",
+          "channel": "Acquire English"
         }
       },
       {
@@ -4632,6 +6576,62 @@ const LEVELS = [
               "correct": "Flown on a plane"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I / You / We / They",
+            "form": "have",
+            "hint": "have + past participle. The moment is not important, only that it happened.",
+            "examples": [
+              "I have finished my homework.",
+              "They have seen that film.",
+              "We have lived here for ten years."
+            ]
+          },
+          {
+            "label": "He / She / It",
+            "form": "has",
+            "hint": "Third person singular takes has, never have.",
+            "examples": [
+              "She has finished her work.",
+              "He has been to London.",
+              "It has stopped raining."
+            ]
+          },
+          {
+            "label": "A period still open",
+            "form": "for",
+            "hint": "for + how long: for two years, for a week.",
+            "examples": [
+              "I have lived here for five years.",
+              "She has worked here for a month.",
+              "We have known each other for ages."
+            ]
+          },
+          {
+            "label": "A starting point",
+            "form": "since",
+            "hint": "since + when it started: since 2020, since Monday.",
+            "examples": [
+              "I have lived here since 2020.",
+              "She has been ill since Monday.",
+              "They have known him since school."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I have finished my homework",
+          "She has never been to London",
+          "They have lived here for ten years",
+          "Have you seen this film",
+          "He has just arrived home",
+          "We have known each other since school",
+          "I have already eaten lunch"
+        ],
+        "video": {
+          "youtubeId": "XGw2-p2WuJk",
+          "title": "The Present Perfect Tense | English Grammar Lesson",
+          "channel": "mmmEnglish"
         }
       },
       {
@@ -4749,6 +6749,52 @@ const LEVELS = [
               "correct": "To travel to the coast"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "A decision made right now",
+            "form": "will",
+            "hint": "will + base verb, for something you decide as you speak, or a prediction.",
+            "examples": [
+              "I will help you.",
+              "It will rain tomorrow.",
+              "She will be twenty next year."
+            ]
+          },
+          {
+            "label": "A plan you already have",
+            "form": "going to",
+            "hint": "am/is/are going to + base verb, for an intention decided before now.",
+            "examples": [
+              "I am going to study medicine.",
+              "They are going to buy a house.",
+              "We are going to travel in July."
+            ]
+          },
+          {
+            "label": "Evidence you can see",
+            "form": "going to",
+            "hint": "Also for a prediction with proof in front of you: look at those clouds.",
+            "examples": [
+              "Look at those clouds — it is going to rain.",
+              "He is going to fall!",
+              "The team is going to win."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I will help you tomorrow",
+          "She is going to study medicine",
+          "It will probably rain tonight",
+          "We are going to travel in July",
+          "They will arrive at six o'clock",
+          "I think he will win the game",
+          "Are you going to call her"
+        ],
+        "video": {
+          "youtubeId": "MqBZmtf3mno",
+          "title": "WILL vs. GOING TO: The Difference Between Will and Going to | Future Tense in English Grammar",
+          "channel": "Acquire English"
         }
       },
       {
@@ -4866,6 +6912,62 @@ const LEVELS = [
               "correct": "7 a.m."
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Advice",
+            "form": "should",
+            "hint": "should = it is a good idea. Not an obligation.",
+            "examples": [
+              "You should drink more water.",
+              "She should study harder.",
+              "You should see a doctor."
+            ]
+          },
+          {
+            "label": "Strong obligation or certainty",
+            "form": "must",
+            "hint": "must = the speaker says it is necessary, or is sure it is true.",
+            "examples": [
+              "You must wear a seatbelt.",
+              "Students must arrive on time.",
+              "He must be very tired."
+            ]
+          },
+          {
+            "label": "An outside rule",
+            "form": "have to",
+            "hint": "have to = somebody else decided: the law, the school, the job. With he/she/it it becomes has to.",
+            "examples": [
+              "I have to work on Saturday.",
+              "We have to wear a uniform.",
+              "You have to show your ticket."
+            ]
+          },
+          {
+            "label": "Not necessary",
+            "form": "don't have to",
+            "hint": "Careful: mustn't means forbidden, don't have to means optional.",
+            "examples": [
+              "You don't have to come.",
+              "We don't have to pay.",
+              "They don't have to wait."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "You should drink more water",
+          "I have to work on Saturday",
+          "Students must arrive on time",
+          "She should study a little harder",
+          "We do not have to pay",
+          "You must not smoke here",
+          "He has to take the bus"
+        ],
+        "video": {
+          "youtubeId": "ShhULh7mYyg",
+          "title": "Need to, Must, Have to, Should - Obligations in English",
+          "channel": "Jennifer Banks"
         }
       },
       {
@@ -4989,6 +7091,129 @@ const LEVELS = [
               "correct": "The roller coaster park"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Short adjectives",
+            "form": "-er",
+            "hint": "One or two syllables: tall -> taller, big -> bigger, happy -> happier.",
+            "examples": [
+              "My brother is taller than me.",
+              "This box is bigger than that one.",
+              "Today is hotter than yesterday."
+            ]
+          },
+          {
+            "label": "Long adjectives",
+            "form": "more",
+            "hint": "Three syllables or more: more expensive, more interesting. Never 'more taller'.",
+            "examples": [
+              "This car is more expensive than mine.",
+              "The book is more interesting than the film.",
+              "She is more patient than him."
+            ]
+          },
+          {
+            "label": "The best of all — short",
+            "form": "the -est",
+            "hint": "tall -> the tallest, big -> the biggest.",
+            "examples": [
+              "He is the tallest boy in the class.",
+              "This is the biggest room.",
+              "It was the happiest day of my life."
+            ]
+          },
+          {
+            "label": "The best of all — long",
+            "form": "the most",
+            "hint": "the most expensive, the most beautiful.",
+            "examples": [
+              "It is the most expensive restaurant in town.",
+              "She is the most intelligent student.",
+              "That was the most beautiful beach."
+            ]
+          },
+          {
+            "label": "Irregular",
+            "form": "better",
+            "hint": "good -> better -> the best; bad -> worse -> the worst.",
+            "examples": [
+              "This film is better than the last one.",
+              "My English is better now.",
+              "Her Spanish is better than mine."
+            ]
+          }
+        ],
+        "sort": {
+          "prompt": "Does this adjective take -er / -est, or more / most?",
+          "buckets": [
+            "-er / -est",
+            "more / most"
+          ],
+          "items": [
+            {
+              "text": "tall",
+              "bucket": "-er / -est"
+            },
+            {
+              "text": "big",
+              "bucket": "-er / -est"
+            },
+            {
+              "text": "happy",
+              "bucket": "-er / -est"
+            },
+            {
+              "text": "fast",
+              "bucket": "-er / -est"
+            },
+            {
+              "text": "young",
+              "bucket": "-er / -est"
+            },
+            {
+              "text": "cheap",
+              "bucket": "-er / -est"
+            },
+            {
+              "text": "expensive",
+              "bucket": "more / most"
+            },
+            {
+              "text": "beautiful",
+              "bucket": "more / most"
+            },
+            {
+              "text": "interesting",
+              "bucket": "more / most"
+            },
+            {
+              "text": "important",
+              "bucket": "more / most"
+            },
+            {
+              "text": "difficult",
+              "bucket": "more / most"
+            },
+            {
+              "text": "comfortable",
+              "bucket": "more / most"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "My brother is taller than me",
+          "This car is more expensive",
+          "She is the best student in class",
+          "Today is hotter than yesterday",
+          "It is the biggest city in Brazil",
+          "This film is better than that one",
+          "Who is the fastest runner"
+        ],
+        "video": {
+          "youtubeId": "jz8Fy5qQXu8",
+          "title": "Comparatives and Superlatives | Learn English | EasyTeaching",
+          "channel": "EasyTeaching"
         }
       },
       {
@@ -5154,6 +7379,73 @@ const LEVELS = [
               "correct": "quiet, shy and hard-working"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Does the word describe how somebody LOOKS or what they are LIKE?",
+          "buckets": [
+            "appearance",
+            "personality"
+          ],
+          "items": [
+            {
+              "text": "tall",
+              "bucket": "appearance"
+            },
+            {
+              "text": "blonde hair",
+              "bucket": "appearance"
+            },
+            {
+              "text": "green eyes",
+              "bucket": "appearance"
+            },
+            {
+              "text": "slim",
+              "bucket": "appearance"
+            },
+            {
+              "text": "curly hair",
+              "bucket": "appearance"
+            },
+            {
+              "text": "wears glasses",
+              "bucket": "appearance"
+            },
+            {
+              "text": "friendly",
+              "bucket": "personality"
+            },
+            {
+              "text": "shy",
+              "bucket": "personality"
+            },
+            {
+              "text": "confident",
+              "bucket": "personality"
+            },
+            {
+              "text": "funny",
+              "bucket": "personality"
+            },
+            {
+              "text": "generous",
+              "bucket": "personality"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "She has long brown hair",
+          "My brother is tall and slim",
+          "He wears glasses",
+          "She is very friendly and funny",
+          "They have blue eyes",
+          "My teacher is quite tall",
+          "He looks like his father"
+        ],
+        "video": {
+          "youtubeId": "Jq9juAScEdg",
+          "title": "Describing People's Appearance in English - Visual Vocabulary Lesson",
+          "channel": "Oxford Online English"
         }
       },
       {
@@ -5331,7 +7623,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/GrizzlyBearJeanBeaufort.jpg/500px-GrizzlyBearJeanBeaufort.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/GrizzlyBearJeanBeaufort.jpg/500px-GrizzlyBearJeanBeaufort.jpg",
+        "sort": {
+          "prompt": "Does the word describe how the animal LOOKS or what it DOES?",
+          "buckets": [
+            "looks",
+            "does"
+          ],
+          "items": [
+            {
+              "text": "furry",
+              "bucket": "looks"
+            },
+            {
+              "text": "striped",
+              "bucket": "looks"
+            },
+            {
+              "text": "enormous",
+              "bucket": "looks"
+            },
+            {
+              "text": "has a long neck",
+              "bucket": "looks"
+            },
+            {
+              "text": "has sharp teeth",
+              "bucket": "looks"
+            },
+            {
+              "text": "hunts at night",
+              "bucket": "does"
+            },
+            {
+              "text": "climbs trees",
+              "bucket": "does"
+            },
+            {
+              "text": "migrates in winter",
+              "bucket": "does"
+            },
+            {
+              "text": "hibernates",
+              "bucket": "does"
+            },
+            {
+              "text": "swims very fast",
+              "bucket": "does"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The elephant is very large",
+          "A cheetah can run very fast",
+          "Penguins live in cold places",
+          "The giraffe has a long neck",
+          "Snakes do not have legs",
+          "This bird has beautiful feathers",
+          "Dolphins are extremely intelligent"
+        ],
+        "video": {
+          "youtubeId": "CA6Mofzh7jo",
+          "title": "Wild animals for kids - Vocabulary for kids",
+          "channel": "Smile and Learn - English"
+        }
       },
       {
         "id": "describingplaces",
@@ -5507,7 +7862,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Beach_at_Fort_Lauderdale.jpg/500px-Beach_at_Fort_Lauderdale.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Beach_at_Fort_Lauderdale.jpg/500px-Beach_at_Fort_Lauderdale.jpg",
+        "sort": {
+          "prompt": "Does this word make the place sound NICE or UNPLEASANT?",
+          "buckets": [
+            "nice",
+            "unpleasant"
+          ],
+          "items": [
+            {
+              "text": "peaceful",
+              "bucket": "nice"
+            },
+            {
+              "text": "spacious",
+              "bucket": "nice"
+            },
+            {
+              "text": "lively",
+              "bucket": "nice"
+            },
+            {
+              "text": "charming",
+              "bucket": "nice"
+            },
+            {
+              "text": "spotless",
+              "bucket": "nice"
+            },
+            {
+              "text": "crowded",
+              "bucket": "unpleasant"
+            },
+            {
+              "text": "noisy",
+              "bucket": "unpleasant"
+            },
+            {
+              "text": "dirty",
+              "bucket": "unpleasant"
+            },
+            {
+              "text": "cramped",
+              "bucket": "unpleasant"
+            },
+            {
+              "text": "run-down",
+              "bucket": "unpleasant"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The city is very noisy",
+          "This beach is quiet and clean",
+          "There are many shops downtown",
+          "The village is small and peaceful",
+          "It is a crowded busy street",
+          "The mountains are beautiful in winter",
+          "My town has a large park"
+        ],
+        "video": {
+          "youtubeId": "illyGhiL2p8",
+          "title": "Adjectives To Describe Places",
+          "channel": "English Like A Native"
+        }
       },
       {
         "id": "futurecontinuous",
@@ -5636,6 +8054,51 @@ const LEVELS = [
               "correct": "she will be taking an exam"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Every person",
+            "form": "will be",
+            "hint": "will be + verb-ing, the same for I, you, he, she, we and they.",
+            "examples": [
+              "I will be working at nine.",
+              "She will be travelling next week.",
+              "They will be waiting for us."
+            ]
+          },
+          {
+            "label": "A moment in the future",
+            "form": "at",
+            "hint": "Use it for an action already in progress at a future time: at 8pm, this time tomorrow.",
+            "examples": [
+              "At eight o'clock I will be having dinner.",
+              "At this time tomorrow we will be flying to Paris.",
+              "She will be sleeping at midnight."
+            ]
+          },
+          {
+            "label": "Negative",
+            "form": "won't be",
+            "hint": "won't be + verb-ing.",
+            "examples": [
+              "I won't be working tomorrow.",
+              "They won't be coming to the party.",
+              "He won't be staying long."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I will be working at nine",
+          "She will be travelling next week",
+          "They will be waiting for us",
+          "We will not be coming tomorrow",
+          "What will you be doing tonight",
+          "He will be sleeping at midnight"
+        ],
+        "video": {
+          "youtubeId": "H5UD03yKfVI",
+          "title": "Learn English Tenses: FUTURE CONTINUOUS",
+          "channel": "Learn English with Rebecca · engVid"
         }
       }
     ]
@@ -5817,7 +8280,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg/500px-Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg/500px-Wikipedia_homepage_on_a_large_Android_phone%2C_2015-04-16.jpg",
+        "sort": {
+          "prompt": "Is it a DEVICE you hold, or something you DO online?",
+          "buckets": [
+            "device",
+            "action"
+          ],
+          "items": [
+            {
+              "text": "smartphone",
+              "bucket": "device"
+            },
+            {
+              "text": "laptop",
+              "bucket": "device"
+            },
+            {
+              "text": "tablet",
+              "bucket": "device"
+            },
+            {
+              "text": "headphones",
+              "bucket": "device"
+            },
+            {
+              "text": "smartwatch",
+              "bucket": "device"
+            },
+            {
+              "text": "download",
+              "bucket": "action"
+            },
+            {
+              "text": "upload",
+              "bucket": "action"
+            },
+            {
+              "text": "stream",
+              "bucket": "action"
+            },
+            {
+              "text": "log in",
+              "bucket": "action"
+            },
+            {
+              "text": "back up your files",
+              "bucket": "action"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I use my phone every day",
+          "Social media changed how we communicate",
+          "She downloaded a new app yesterday",
+          "The internet connection is very slow",
+          "Artificial intelligence is growing fast",
+          "Remember to back up your files",
+          "He works remotely from home"
+        ],
+        "video": {
+          "youtubeId": "adZ-LYWx95Q",
+          "title": "Essential Technology Vocabulary in English: Advanced Vocabulary Lesson",
+          "channel": "Speak English With Vanessa"
+        }
       },
       {
         "id": "shoppingmoney",
@@ -5986,7 +8512,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg/500px-Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg/500px-Vereinigte_Ostindische_Compagnie_bond_-_Middelburg_-_Amsterdam_-_1622.jpg",
+        "sort": {
+          "prompt": "Does the word mean you SPEND money or you SAVE money?",
+          "buckets": [
+            "spend",
+            "save"
+          ],
+          "items": [
+            {
+              "text": "expensive",
+              "bucket": "spend"
+            },
+            {
+              "text": "pay full price",
+              "bucket": "spend"
+            },
+            {
+              "text": "a luxury item",
+              "bucket": "spend"
+            },
+            {
+              "text": "overspend",
+              "bucket": "spend"
+            },
+            {
+              "text": "a discount",
+              "bucket": "save"
+            },
+            {
+              "text": "a bargain",
+              "bucket": "save"
+            },
+            {
+              "text": "on sale",
+              "bucket": "save"
+            },
+            {
+              "text": "cheap",
+              "bucket": "save"
+            },
+            {
+              "text": "a refund",
+              "bucket": "save"
+            },
+            {
+              "text": "a budget",
+              "bucket": "save"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "How much does this cost",
+          "I would like to pay by card",
+          "These shoes are on sale",
+          "Can I get a refund please",
+          "The prices are quite expensive here",
+          "She is saving money for a trip",
+          "Do you accept cash"
+        ],
+        "video": {
+          "youtubeId": "5otanR_Jg2M",
+          "title": "Going Shopping in English - Spoken English for Travel",
+          "channel": "Oxford Online English"
+        }
       },
       {
         "id": "sustainability",
@@ -6160,7 +8749,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/RecyclingSymbolGreen.png/500px-RecyclingSymbolGreen.png"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/RecyclingSymbolGreen.png/500px-RecyclingSymbolGreen.png",
+        "sort": {
+          "prompt": "Is it part of the PROBLEM or part of the SOLUTION?",
+          "buckets": [
+            "problem",
+            "solution"
+          ],
+          "items": [
+            {
+              "text": "carbon emissions",
+              "bucket": "problem"
+            },
+            {
+              "text": "single-use plastic",
+              "bucket": "problem"
+            },
+            {
+              "text": "deforestation",
+              "bucket": "problem"
+            },
+            {
+              "text": "overfishing",
+              "bucket": "problem"
+            },
+            {
+              "text": "food waste",
+              "bucket": "problem"
+            },
+            {
+              "text": "wind power",
+              "bucket": "solution"
+            },
+            {
+              "text": "recycling",
+              "bucket": "solution"
+            },
+            {
+              "text": "reforestation",
+              "bucket": "solution"
+            },
+            {
+              "text": "electric cars",
+              "bucket": "solution"
+            },
+            {
+              "text": "composting",
+              "bucket": "solution"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Climate change affects everyone",
+          "We need renewable energy sources",
+          "Many species are becoming extinct",
+          "Recycling reduces waste significantly",
+          "Governments must act quickly",
+          "Small changes can make a difference",
+          "Clean water is a human right"
+        ],
+        "video": {
+          "youtubeId": "G4H1N_yXBiA",
+          "title": "Causes and Effects of Climate Change | National Geographic",
+          "channel": "National Geographic"
+        }
       },
       {
         "id": "entertainment",
@@ -6333,7 +8985,70 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg/500px-D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg/500px-D%C3%BClmen%2C_D%C3%BClmener_Sommer%2C_Open-Air-Konzert%2C_%22Bounce%22_--_2018_--_0051.jpg",
+        "sort": {
+          "prompt": "Does the word belong to MUSIC or to CINEMA?",
+          "buckets": [
+            "music",
+            "cinema"
+          ],
+          "items": [
+            {
+              "text": "album",
+              "bucket": "music"
+            },
+            {
+              "text": "lyrics",
+              "bucket": "music"
+            },
+            {
+              "text": "band",
+              "bucket": "music"
+            },
+            {
+              "text": "concert",
+              "bucket": "music"
+            },
+            {
+              "text": "chorus",
+              "bucket": "music"
+            },
+            {
+              "text": "plot",
+              "bucket": "cinema"
+            },
+            {
+              "text": "director",
+              "bucket": "cinema"
+            },
+            {
+              "text": "soundtrack",
+              "bucket": "cinema"
+            },
+            {
+              "text": "subtitles",
+              "bucket": "cinema"
+            },
+            {
+              "text": "screenplay",
+              "bucket": "cinema"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The film was absolutely brilliant",
+          "I prefer watching series to films",
+          "She plays in a rock band",
+          "The concert starts at eight",
+          "That actor won an award",
+          "This song is my favourite",
+          "The plot was very confusing"
+        ],
+        "video": {
+          "youtubeId": "3sBMFHT5k-w",
+          "title": "English Lesson: English Entertainment Vocabulary (Part 1)",
+          "channel": "DMD"
+        }
       },
       {
         "id": "presentperfectcontinuous",
@@ -6462,6 +9177,61 @@ const LEVELS = [
               "correct": "I have been studying for my English exam since this morning"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "I / You / We / They",
+            "form": "have been",
+            "hint": "have been + verb-ing: the action started in the past and is still going on.",
+            "examples": [
+              "I have been studying for three hours.",
+              "They have been waiting since noon.",
+              "We have been living here for years."
+            ]
+          },
+          {
+            "label": "He / She / It",
+            "form": "has been",
+            "hint": "Only the helper changes; been + -ing stays the same.",
+            "examples": [
+              "She has been working all day.",
+              "He has been learning Spanish.",
+              "It has been raining since morning."
+            ]
+          },
+          {
+            "label": "How long it has lasted",
+            "form": "for",
+            "hint": "for + a length of time: for two hours, for three weeks.",
+            "examples": [
+              "I have been reading for two hours.",
+              "She has been teaching for ten years.",
+              "They have been playing for ages."
+            ]
+          },
+          {
+            "label": "When it started",
+            "form": "since",
+            "hint": "since + the starting point: since Monday, since 2019.",
+            "examples": [
+              "I have been working since eight.",
+              "He has been ill since Tuesday.",
+              "We have been friends since 2015."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I have been studying for three hours",
+          "She has been working all day",
+          "They have been waiting since noon",
+          "It has been raining since morning",
+          "How long have you been learning English",
+          "We have been living here for years"
+        ],
+        "video": {
+          "youtubeId": "Ttr7DowBUBk",
+          "title": "Learn English Tenses: The Present Perfect Continuous (The Present Perfect Progressive)",
+          "channel": "Learn English with Bob the Canadian"
         }
       },
       {
@@ -6591,6 +9361,51 @@ const LEVELS = [
               "correct": "If I had more money, I would travel around Asia next summer"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "First conditional — real and possible",
+            "form": "will",
+            "hint": "If + present simple, ... will + base verb. Never 'if it will rain'.",
+            "examples": [
+              "If it rains, I will stay home.",
+              "If you study, you will pass.",
+              "If she calls, I will answer."
+            ]
+          },
+          {
+            "label": "Second conditional — imaginary",
+            "form": "would",
+            "hint": "If + past simple, ... would + base verb. The past form does not mean the past here.",
+            "examples": [
+              "If I had money, I would travel.",
+              "If she knew, she would tell us.",
+              "If they lived closer, we would meet more."
+            ]
+          },
+          {
+            "label": "The verb to be, second conditional",
+            "form": "were",
+            "hint": "Formal English uses were for every person: if I were you.",
+            "examples": [
+              "If I were you, I would apologise.",
+              "If he were here, he would help.",
+              "If it were cheaper, I would buy it."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "If it rains I will stay home",
+          "If I had money I would travel",
+          "If you study you will pass",
+          "If I were you I would apologise",
+          "She would help if she could",
+          "What would you do in my place"
+        ],
+        "video": {
+          "youtubeId": "_OyOqrXyTYg",
+          "title": "If Clauses - First & Second Conditionals English Grammar lesson",
+          "channel": "Teacher's Notes"
         }
       },
       {
@@ -6732,6 +9547,71 @@ const LEVELS = [
               "correct": "The Great Wall of China was built over many centuries"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Present, one thing",
+            "form": "is",
+            "hint": "is + past participle. The thing receives the action instead of doing it.",
+            "examples": [
+              "The room is cleaned every day.",
+              "English is spoken here.",
+              "This bread is made by hand."
+            ]
+          },
+          {
+            "label": "Present, more than one",
+            "form": "are",
+            "hint": "are + past participle.",
+            "examples": [
+              "These cars are made in Brazil.",
+              "The rooms are cleaned daily.",
+              "Letters are delivered at noon."
+            ]
+          },
+          {
+            "label": "Past, one thing",
+            "form": "was",
+            "hint": "was + past participle.",
+            "examples": [
+              "The letter was sent yesterday.",
+              "The house was built in 1920.",
+              "My bike was stolen last week."
+            ]
+          },
+          {
+            "label": "Past, more than one",
+            "form": "were",
+            "hint": "were + past participle.",
+            "examples": [
+              "The windows were broken.",
+              "The books were printed in China.",
+              "The players were chosen yesterday."
+            ]
+          },
+          {
+            "label": "Who did it",
+            "form": "by",
+            "hint": "Only add by + the agent when it actually matters who did it.",
+            "examples": [
+              "The book was written by Machado de Assis.",
+              "The song was recorded by a famous band.",
+              "The painting was made by a student."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "The room is cleaned every day",
+          "These cars are made in Brazil",
+          "The letter was sent yesterday",
+          "English is spoken in many countries",
+          "The house was built in 1920",
+          "My bike was stolen last week"
+        ],
+        "video": {
+          "youtubeId": "CmqOXaSUpFo",
+          "title": "How to Use the Passive Voice in English - English Grammar Lesson",
+          "channel": "Oxford Online English"
         }
       },
       {
@@ -6897,6 +9777,79 @@ const LEVELS = [
               "correct": "To stop trying"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Which particle completes the phrasal verb?",
+          "buckets": [
+            "up",
+            "on",
+            "out",
+            "off"
+          ],
+          "items": [
+            {
+              "text": "I get ____ at seven every morning.",
+              "bucket": "up"
+            },
+            {
+              "text": "Please give ____ smoking.",
+              "bucket": "up"
+            },
+            {
+              "text": "Could you look ____ that word?",
+              "bucket": "up"
+            },
+            {
+              "text": "Turn ____ the light, it is dark.",
+              "bucket": "on"
+            },
+            {
+              "text": "Come ____, we are late!",
+              "bucket": "on"
+            },
+            {
+              "text": "Carry ____ with your work.",
+              "bucket": "on"
+            },
+            {
+              "text": "Let's go ____ for dinner.",
+              "bucket": "out"
+            },
+            {
+              "text": "Watch ____! There is a car.",
+              "bucket": "out"
+            },
+            {
+              "text": "I need to find ____ the truth.",
+              "bucket": "out"
+            },
+            {
+              "text": "The plane takes ____ at six.",
+              "bucket": "off"
+            },
+            {
+              "text": "Turn ____ the TV before bed.",
+              "bucket": "off"
+            },
+            {
+              "text": "They called ____ the meeting.",
+              "bucket": "off"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I get up at seven every morning",
+          "Please turn off the lights",
+          "She is looking after her sister",
+          "We ran out of milk",
+          "He gave up smoking last year",
+          "Can you look up this word",
+          "The plane takes off at six"
+        ],
+        "video": {
+          "youtubeId": "z72J-dwHN18",
+          "title": "Most Common English Phrasal Verbs in Under 10 Minutes! 👍 (Learn Fast and Fun!)",
+          "channel": "Smashing English! Free and Fun English Lessons!"
         }
       },
       {
@@ -7026,6 +9979,71 @@ const LEVELS = [
               "correct": "whose"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "People",
+            "form": "who",
+            "hint": "who replaces a person: the man who called, the girl who won.",
+            "examples": [
+              "The man who called is my uncle.",
+              "She is the teacher who helped me.",
+              "I know a girl who speaks five languages."
+            ]
+          },
+          {
+            "label": "Things and animals",
+            "form": "which",
+            "hint": "which replaces a thing or an animal.",
+            "examples": [
+              "The book which I bought is excellent.",
+              "This is the car which broke down.",
+              "The dog which barks lives next door."
+            ]
+          },
+          {
+            "label": "Either one, informal",
+            "form": "that",
+            "hint": "that works for people and things in defining clauses, and is the most common in speech.",
+            "examples": [
+              "The film that we saw was long.",
+              "This is the house that Jack built.",
+              "The woman that lives here is a doctor."
+            ]
+          },
+          {
+            "label": "Places",
+            "form": "where",
+            "hint": "where replaces a place: the city where I was born.",
+            "examples": [
+              "This is the city where I was born.",
+              "The shop where she works is closed.",
+              "I remember the park where we played."
+            ]
+          },
+          {
+            "label": "Possession",
+            "form": "whose",
+            "hint": "whose shows belonging: the boy whose bike was stolen.",
+            "examples": [
+              "That is the boy whose bike was stolen.",
+              "I met a woman whose son studies here.",
+              "The family whose house burned moved away."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "The man who called is my uncle",
+          "This is the city where I was born",
+          "The book which I bought is excellent",
+          "She is the teacher who helped me",
+          "That is the boy whose bike was stolen",
+          "The film that we saw was long"
+        ],
+        "video": {
+          "youtubeId": "mRrpWenF2bQ",
+          "title": "Relative Clauses: Who / Which / Where / That",
+          "channel": "Teachers Mark and Matt"
         }
       },
       {
@@ -7131,6 +10149,120 @@ const LEVELS = [
               "correct": "Future Perfect"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Simple — a fact or a habit",
+            "form": "simple",
+            "hint": "I work / I worked / I will work. No helper, just the verb.",
+            "examples": [
+              "I work every day.",
+              "She worked here last year.",
+              "They will work tomorrow."
+            ]
+          },
+          {
+            "label": "Continuous — in progress",
+            "form": "continuous",
+            "hint": "be + verb-ing: I am working / I was working / I will be working.",
+            "examples": [
+              "I am working right now.",
+              "She was working when I called.",
+              "We will be working all night."
+            ]
+          },
+          {
+            "label": "Perfect — finished, and it matters now",
+            "form": "perfect",
+            "hint": "have + past participle: I have worked / I had worked / I will have worked.",
+            "examples": [
+              "I have worked here for years.",
+              "She had worked there before.",
+              "They will have worked ten hours."
+            ]
+          },
+          {
+            "label": "Perfect continuous — how long it has been going on",
+            "form": "perfect continuous",
+            "hint": "have been + verb-ing: I have been working / I had been working.",
+            "examples": [
+              "I have been working since eight.",
+              "He had been working all day.",
+              "We will have been working for hours."
+            ]
+          }
+        ],
+        "sort": {
+          "prompt": "Which aspect is this sentence in?",
+          "buckets": [
+            "simple",
+            "continuous",
+            "perfect",
+            "perfect continuous"
+          ],
+          "items": [
+            {
+              "text": "I work every day.",
+              "bucket": "simple"
+            },
+            {
+              "text": "She worked here last year.",
+              "bucket": "simple"
+            },
+            {
+              "text": "They will work tomorrow.",
+              "bucket": "simple"
+            },
+            {
+              "text": "I am working right now.",
+              "bucket": "continuous"
+            },
+            {
+              "text": "She was working when I called.",
+              "bucket": "continuous"
+            },
+            {
+              "text": "We will be working all night.",
+              "bucket": "continuous"
+            },
+            {
+              "text": "I have worked here for years.",
+              "bucket": "perfect"
+            },
+            {
+              "text": "She had worked there before.",
+              "bucket": "perfect"
+            },
+            {
+              "text": "They will have worked ten hours.",
+              "bucket": "perfect"
+            },
+            {
+              "text": "I have been working since eight.",
+              "bucket": "perfect continuous"
+            },
+            {
+              "text": "He had been working all day.",
+              "bucket": "perfect continuous"
+            },
+            {
+              "text": "We will have been working for hours.",
+              "bucket": "perfect continuous"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I work every day",
+          "I am working right now",
+          "I have worked here for years",
+          "I was working when you called",
+          "She had already left the office",
+          "They will be working tomorrow"
+        ],
+        "video": {
+          "youtubeId": "cGb4qwKV-to",
+          "title": "ALL 12 Verb Tenses in English… EXPLAINED! 🔥",
+          "channel": "English with Greg"
         }
       }
     ]
@@ -7307,6 +10439,68 @@ const LEVELS = [
               "correct": "Transparent jurisdiction and public debate"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is it a RIGHT you have, or a DUTY you owe?",
+          "buckets": [
+            "right",
+            "duty"
+          ],
+          "items": [
+            {
+              "text": "freedom of speech",
+              "bucket": "right"
+            },
+            {
+              "text": "access to education",
+              "bucket": "right"
+            },
+            {
+              "text": "a fair trial",
+              "bucket": "right"
+            },
+            {
+              "text": "freedom of religion",
+              "bucket": "right"
+            },
+            {
+              "text": "the right to vote",
+              "bucket": "right"
+            },
+            {
+              "text": "paying taxes",
+              "bucket": "duty"
+            },
+            {
+              "text": "obeying the law",
+              "bucket": "duty"
+            },
+            {
+              "text": "jury service",
+              "bucket": "duty"
+            },
+            {
+              "text": "respecting others",
+              "bucket": "duty"
+            },
+            {
+              "text": "military service",
+              "bucket": "duty"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Citizens have both rights and duties",
+          "The government passed a new law",
+          "Equality is essential in any democracy",
+          "Many people protested peacefully",
+          "Freedom of speech must be protected",
+          "The election takes place in October"
+        ],
+        "video": {
+          "youtubeId": "yCge2_xfujQ",
+          "title": "BOX SET: 6 Minute English - 'Politics' English mega-class! 30 minutes of new vocabulary!",
+          "channel": "BBC Learning English"
         }
       },
       {
@@ -7472,6 +10666,68 @@ const LEVELS = [
               "correct": "A real competitive advantage"
             }
           ]
+        },
+        "sort": {
+          "prompt": "For a company, is this money coming IN or going OUT?",
+          "buckets": [
+            "income",
+            "expense"
+          ],
+          "items": [
+            {
+              "text": "revenue",
+              "bucket": "income"
+            },
+            {
+              "text": "profit",
+              "bucket": "income"
+            },
+            {
+              "text": "sales",
+              "bucket": "income"
+            },
+            {
+              "text": "investment received",
+              "bucket": "income"
+            },
+            {
+              "text": "interest earned",
+              "bucket": "income"
+            },
+            {
+              "text": "wages",
+              "bucket": "expense"
+            },
+            {
+              "text": "rent",
+              "bucket": "expense"
+            },
+            {
+              "text": "taxes",
+              "bucket": "expense"
+            },
+            {
+              "text": "raw materials",
+              "bucket": "expense"
+            },
+            {
+              "text": "advertising costs",
+              "bucket": "expense"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Inflation affects everyone in the country",
+          "The company reported record profits",
+          "Unemployment fell last quarter",
+          "Global trade is extremely complex",
+          "Investors are worried about the market",
+          "Small businesses drive the economy"
+        ],
+        "video": {
+          "youtubeId": "vmU1OzFdems",
+          "title": "English Vocabulary: How to talk about the economy",
+          "channel": "Adam’s English Lessons · engVid"
         }
       },
       {
@@ -7643,7 +10899,69 @@ const LEVELS = [
             }
           ]
         },
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/100inchHooker.jpg/500px-100inchHooker.jpg"
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/100inchHooker.jpg/500px-100inchHooker.jpg",
+        "sort": {
+          "prompt": "Does this belong to SPACE or to the LABORATORY?",
+          "buckets": [
+            "space",
+            "laboratory"
+          ],
+          "items": [
+            {
+              "text": "galaxy",
+              "bucket": "space"
+            },
+            {
+              "text": "orbit",
+              "bucket": "space"
+            },
+            {
+              "text": "telescope",
+              "bucket": "space"
+            },
+            {
+              "text": "black hole",
+              "bucket": "space"
+            },
+            {
+              "text": "asteroid",
+              "bucket": "space"
+            },
+            {
+              "text": "hypothesis",
+              "bucket": "laboratory"
+            },
+            {
+              "text": "experiment",
+              "bucket": "laboratory"
+            },
+            {
+              "text": "microscope",
+              "bucket": "laboratory"
+            },
+            {
+              "text": "sample",
+              "bucket": "laboratory"
+            },
+            {
+              "text": "data analysis",
+              "bucket": "laboratory"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "Scientists discovered a new planet",
+          "The experiment produced surprising results",
+          "Light travels incredibly fast",
+          "Research takes many years",
+          "The universe is constantly expanding",
+          "This theory changed modern physics"
+        ],
+        "video": {
+          "youtubeId": "UGhUo97iCwE",
+          "title": "Explore the Universe: Space Vocabulary in English | Solar System, Planets, Galaxies & More",
+          "channel": "LearningEnglishPRO"
+        }
       },
       {
         "id": "artculture",
@@ -7808,6 +11126,68 @@ const LEVELS = [
               "correct": "The loss of cultural heritage"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Is the word about VISUAL art or about WRITING?",
+          "buckets": [
+            "visual art",
+            "writing"
+          ],
+          "items": [
+            {
+              "text": "canvas",
+              "bucket": "visual art"
+            },
+            {
+              "text": "sculpture",
+              "bucket": "visual art"
+            },
+            {
+              "text": "brushstroke",
+              "bucket": "visual art"
+            },
+            {
+              "text": "exhibition",
+              "bucket": "visual art"
+            },
+            {
+              "text": "portrait",
+              "bucket": "visual art"
+            },
+            {
+              "text": "novel",
+              "bucket": "writing"
+            },
+            {
+              "text": "metaphor",
+              "bucket": "writing"
+            },
+            {
+              "text": "chapter",
+              "bucket": "writing"
+            },
+            {
+              "text": "narrator",
+              "bucket": "writing"
+            },
+            {
+              "text": "poetry",
+              "bucket": "writing"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "The novel explores difficult themes",
+          "That painting hangs in the museum",
+          "Her poetry is deeply moving",
+          "The exhibition opens next month",
+          "Literature reflects its own society",
+          "He composed the music himself"
+        ],
+        "video": {
+          "youtubeId": "2FrA6kHzVQ4",
+          "title": "BOX SET: 6 Minute English - 'Art & Culture' English mega-class! Thirty minutes of new vocabulary!",
+          "channel": "BBC Learning English"
         }
       },
       {
@@ -7973,6 +11353,68 @@ const LEVELS = [
               "correct": "The decision now belongs to Maria"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Does the idiom mean something GOOD or something BAD?",
+          "buckets": [
+            "good",
+            "bad"
+          ],
+          "items": [
+            {
+              "text": "on cloud nine",
+              "bucket": "good"
+            },
+            {
+              "text": "a piece of cake",
+              "bucket": "good"
+            },
+            {
+              "text": "hit the nail on the head",
+              "bucket": "good"
+            },
+            {
+              "text": "the best of both worlds",
+              "bucket": "good"
+            },
+            {
+              "text": "once in a blue moon",
+              "bucket": "good"
+            },
+            {
+              "text": "under the weather",
+              "bucket": "bad"
+            },
+            {
+              "text": "cost an arm and a leg",
+              "bucket": "bad"
+            },
+            {
+              "text": "in hot water",
+              "bucket": "bad"
+            },
+            {
+              "text": "barking up the wrong tree",
+              "bucket": "bad"
+            },
+            {
+              "text": "at the end of my rope",
+              "bucket": "bad"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "It is raining cats and dogs",
+          "That costs an arm and a leg",
+          "Let us call it a day",
+          "She let the cat out of the bag",
+          "Do not judge a book by its cover",
+          "He is under the weather today"
+        ],
+        "video": {
+          "youtubeId": "T2IeJwURA74",
+          "title": "Popular English Idioms & Expressions (with examples)",
+          "channel": "linguamarina"
         }
       },
       {
@@ -8090,6 +11532,51 @@ const LEVELS = [
               "correct": "She had been waiting for almost an hour."
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "The earlier of two past actions",
+            "form": "had",
+            "hint": "had + past participle, the same for every person. It marks what happened FIRST.",
+            "examples": [
+              "The train had left when we arrived.",
+              "She had finished before the bell rang.",
+              "They had eaten already."
+            ]
+          },
+          {
+            "label": "How long it had lasted",
+            "form": "had been",
+            "hint": "had been + verb-ing, for a duration up to a point in the past.",
+            "examples": [
+              "I had been waiting for an hour.",
+              "She had been working there since 2010.",
+              "They had been talking all night."
+            ]
+          },
+          {
+            "label": "Negative",
+            "form": "hadn't",
+            "hint": "hadn't + past participle.",
+            "examples": [
+              "I hadn't seen her for years.",
+              "He hadn't finished his work.",
+              "We hadn't met before."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "The train had left when we arrived",
+          "I had been waiting for an hour",
+          "She had never seen the ocean",
+          "They had already eaten dinner",
+          "He had not finished his work",
+          "We had known each other for years"
+        ],
+        "video": {
+          "youtubeId": "3Dniu44rU7o",
+          "title": "The Past Perfect Tense (I had gone) - English Grammar lesson",
+          "channel": "Learn English | Let's Talk - Free English Lessons"
         }
       },
       {
@@ -8207,6 +11694,51 @@ const LEVELS = [
               "correct": "will have been living"
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Finished by a future moment",
+            "form": "will have",
+            "hint": "will have + past participle: done before a deadline in the future.",
+            "examples": [
+              "By June I will have finished the course.",
+              "She will have left by then.",
+              "They will have built the bridge by 2030."
+            ]
+          },
+          {
+            "label": "How long it will have lasted",
+            "form": "will have been",
+            "hint": "will have been + verb-ing.",
+            "examples": [
+              "By May I will have been working here for ten years.",
+              "She will have been studying for six hours.",
+              "They will have been travelling all day."
+            ]
+          },
+          {
+            "label": "The deadline",
+            "form": "by",
+            "hint": "by + the future point: by Friday, by next year, by the time you arrive.",
+            "examples": [
+              "By Friday I will have sent the report.",
+              "By next year we will have moved.",
+              "By the time you arrive, I will have left."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "By June I will have finished the course",
+          "She will have left by then",
+          "They will have built the bridge",
+          "I will have been working here for years",
+          "By Friday we will have moved",
+          "He will have arrived before noon"
+        ],
+        "video": {
+          "youtubeId": "JBmsega_fgE",
+          "title": "Learn English Tenses: FUTURE PERFECT",
+          "channel": "Learn English with Rebecca · engVid"
         }
       },
       {
@@ -8336,6 +11868,50 @@ const LEVELS = [
               "correct": "If we hadn't both taken risks, we wouldn't be exactly where we are now."
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Past cause, present result",
+            "form": "would",
+            "hint": "If + had + past participle, ... would + base verb. 'If I had studied, I would be a doctor now.'",
+            "examples": [
+              "If I had studied medicine, I would be a doctor now.",
+              "If she had saved money, she would be rich today.",
+              "If they had left earlier, they would be here."
+            ]
+          },
+          {
+            "label": "Present cause, past result",
+            "form": "would have",
+            "hint": "If + past simple, ... would have + past participle. 'If I were braver, I would have said something.'",
+            "examples": [
+              "If I were braver, I would have said something.",
+              "If he weren't so shy, he would have asked her.",
+              "If she spoke French, she would have got the job."
+            ]
+          },
+          {
+            "label": "The unreal past",
+            "form": "had",
+            "hint": "had + past participle in the if-clause always means it did NOT happen.",
+            "examples": [
+              "If I had known, I would have told you.",
+              "If they had asked, we would have helped.",
+              "If she had come, it would have been fun."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "If I had studied I would be a doctor",
+          "If she had saved money she would be rich",
+          "If I were braver I would have spoken",
+          "If they had left earlier they would be here",
+          "If I had known I would have told you"
+        ],
+        "video": {
+          "youtubeId": "xB5oEk-PmZg",
+          "title": "How to Use Mixed Conditionals | Advanced English Grammar",
+          "channel": "Interactive English"
         }
       },
       {
@@ -8453,6 +12029,60 @@ const LEVELS = [
               "correct": "The manager admitted that the project had been delayed."
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Present becomes past",
+            "form": "said",
+            "hint": "'I am tired' -> He said he was tired. Every tense steps one back.",
+            "examples": [
+              "He said he was tired.",
+              "She said she lived in Rio.",
+              "They said they were busy."
+            ]
+          },
+          {
+            "label": "With the listener named",
+            "form": "told",
+            "hint": "told needs a person straight after it: told me, told her. said does not.",
+            "examples": [
+              "He told me he was tired.",
+              "She told us she would come.",
+              "They told him the truth."
+            ]
+          },
+          {
+            "label": "Reported questions",
+            "form": "asked",
+            "hint": "No question mark, normal word order: She asked where I lived.",
+            "examples": [
+              "She asked where I lived.",
+              "He asked if I was ready.",
+              "They asked what time it was."
+            ]
+          },
+          {
+            "label": "Will becomes",
+            "form": "would",
+            "hint": "will -> would, can -> could, must -> had to.",
+            "examples": [
+              "She said she would call me.",
+              "He said he would help.",
+              "They said they would arrive late."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "He said he was very tired",
+          "She told me she would come",
+          "They asked where I lived",
+          "He asked if I was ready",
+          "She said she had finished the work"
+        ],
+        "video": {
+          "youtubeId": "cgHZvDzi78U",
+          "title": "Learn English Grammar: INDIRECT SPEECH (REPORTED SPEECH)",
+          "channel": "English with Emma · engVid"
         }
       },
       {
@@ -8570,6 +12200,61 @@ const LEVELS = [
               "correct": "It is often said that necessity is the mother of invention."
             }
           ]
+        },
+        "rules": [
+          {
+            "label": "Present perfect passive",
+            "form": "has been",
+            "hint": "has been + past participle for one thing; have been for more than one.",
+            "examples": [
+              "The report has been finished.",
+              "The email has been sent.",
+              "The problem has been solved."
+            ]
+          },
+          {
+            "label": "Future passive",
+            "form": "will be",
+            "hint": "will be + past participle.",
+            "examples": [
+              "The results will be announced tomorrow.",
+              "The bridge will be opened in May.",
+              "You will be contacted soon."
+            ]
+          },
+          {
+            "label": "Continuous passive",
+            "form": "being",
+            "hint": "is/was being + past participle, for an action in progress.",
+            "examples": [
+              "The house is being painted.",
+              "The road was being repaired.",
+              "The issue is being discussed."
+            ]
+          },
+          {
+            "label": "Impersonal — a general belief",
+            "form": "It is said",
+            "hint": "It is said / believed / thought that... — used when nobody in particular is the source.",
+            "examples": [
+              "It is said that the castle is haunted.",
+              "It is said that he left the country.",
+              "It is said that prices will rise."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "The report has been finished",
+          "The results will be announced tomorrow",
+          "The house is being painted",
+          "It is said that he left",
+          "The road was being repaired",
+          "You will be contacted soon"
+        ],
+        "video": {
+          "youtubeId": "N7uvEllP5Jg",
+          "title": "PASSIVE VOICE - English Grammar step-by-step",
+          "channel": "Arnel's Everyday English"
         }
       },
       {
@@ -8735,6 +12420,61 @@ const LEVELS = [
               "correct": "To bring something up to date after falling behind"
             }
           ]
+        },
+        "sort": {
+          "prompt": "Which particle completes the phrasal verb?",
+          "buckets": [
+            "up with",
+            "down on",
+            "out of",
+            "in on"
+          ],
+          "items": [
+            {
+              "text": "I cannot put ____ this noise any longer.",
+              "bucket": "up with"
+            },
+            {
+              "text": "She came ____ a brilliant idea.",
+              "bucket": "up with"
+            },
+            {
+              "text": "He never looks ____ anybody.",
+              "bucket": "down on"
+            },
+            {
+              "text": "The company is cracking ____ absences.",
+              "bucket": "down on"
+            },
+            {
+              "text": "They talked me ____ resigning.",
+              "bucket": "out of"
+            },
+            {
+              "text": "We ran ____ time completely.",
+              "bucket": "out of"
+            },
+            {
+              "text": "Let me fill you ____ the details.",
+              "bucket": "in on"
+            },
+            {
+              "text": "She was let ____ the secret.",
+              "bucket": "in on"
+            }
+          ]
+        },
+        "practiceSentences": [
+          "I cannot put up with this noise",
+          "She came up with a brilliant idea",
+          "We ran out of time completely",
+          "He looks down on other people",
+          "They talked me out of resigning"
+        ],
+        "video": {
+          "youtubeId": "83Nd5pWz92Y",
+          "title": "Master 131 Advanced English Phrasal Verbs",
+          "channel": "English With Kayla (Kayla)"
         }
       }
     ]

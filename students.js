@@ -151,23 +151,38 @@ function checkStickerUnlocks(studentId, progress) {
   return progress;
 }
 
+// "Today's Class" shows what the child earned in THIS lesson, so every star
+// has to be logged there — not just the ones a game handed out. setStars and
+// addStars are the only two places a star total ever changes, so logging the
+// real difference here covers the games, the Live Scoreboard's +/- buttons
+// and its exact-total box alike.
+function recordStarDelta(studentId, delta) {
+  if (!delta) return;
+  if (typeof recordSessionProgress === 'function') recordSessionProgress(studentId, 0, delta);
+}
+
 // Set the star count outright. The +/- buttons nudge; the Scoreboard's
 // number box uses this so a teacher can fix a total in one go.
 // Stickers already earned are deliberately NOT taken back when the number
 // goes down — a child who unlocked one should not watch it disappear.
 function setStars(studentId, value) {
   const p = loadProgress(studentId);
+  const before = p.stars;
   p.stars = Math.max(0, Math.round(Number(value) || 0));
   checkStickerUnlocks(studentId, p);
   saveProgress(studentId, p);
+  recordStarDelta(studentId, p.stars - before);
   return p;
 }
 
 function addStars(studentId, delta) {
   const p = loadProgress(studentId);
+  const before = p.stars;
   p.stars = Math.max(0, p.stars + delta);
   checkStickerUnlocks(studentId, p);
   saveProgress(studentId, p);
+  // The clamp at 0 means the effective change can be smaller than the requested delta.
+  recordStarDelta(studentId, p.stars - before);
   return p;
 }
 
@@ -185,9 +200,11 @@ function awardProgress(xp, stars) {
   const id = getActiveStudentId();
   if (!id) return;
   if (xp) addXP(id, xp);
-  if (stars) addStars(id, stars);
+  if (stars) addStars(id, stars);   // addStars logs the stars to the session itself
   refreshHeaderForActiveStudent();
-  if (typeof recordSessionProgress === 'function') recordSessionProgress(id, xp || 0, stars || 0);
+  // Only the XP is left to log — double-counting the stars here is exactly
+  // the bug that made the Scoreboard's stars invisible in "Today's Class".
+  if (typeof recordSessionProgress === 'function') recordSessionProgress(id, xp || 0, 0);
 }
 
 // Age-based split used by the Live Lesson cockpit's routine bar: ages 3-8

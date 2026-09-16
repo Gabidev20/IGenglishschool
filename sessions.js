@@ -36,9 +36,10 @@ function resetCurrentSessionAccumulator(studentId) {
   IGStore.remove(currentSessionKey(studentId));
 }
 
-// Called by students.js's awardProgress() every time a game or practice
-// activity scores the active student, so "Today's Class" always reflects
-// what actually happened in the session, without any manual bookkeeping.
+// Called by students.js whenever a student's score moves — a game win, a
+// practice round, or the Live Scoreboard's +/- buttons and exact-total box.
+// "Today's Class" therefore always reflects what actually happened in the
+// lesson, without any manual bookkeeping.
 function recordSessionProgress(studentId, xp, stars) {
   const acc = loadCurrentSessionAccumulator(studentId);
   acc.xp += xp;
@@ -288,7 +289,11 @@ function saveClassSession(student) {
 function refreshSessionDrawerScoreIfOpen() {
   const drawer = document.getElementById('sessionDrawer');
   if (!drawer || !drawer.classList.contains('open')) return;
+  // The drawer always shows the active student, so that is whose running
+  // total it reads — stars given to someone else in the Scoreboard land in
+  // that child's own session and show up when the drawer switches to them.
   const student = getActiveStudent();
+  if (!student) return;
   const acc = loadCurrentSessionAccumulator(student.id);
   const scoreEl = drawer.querySelector('.session-score-summary strong');
   if (scoreEl) scoreEl.textContent = `${acc.xp} XP · ${acc.stars} stars`;
