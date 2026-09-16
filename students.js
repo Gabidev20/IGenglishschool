@@ -625,27 +625,118 @@ function escapeAttrLite(str) {
 // ---------------------------------------------------------------------------
 // STICKER BOOK
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// STICKER BOOK — one big sticker at a time
+// ---------------------------------------------------------------------------
+// A grid of small tiles asks a child to hunt for their sticker. A carousel
+// hands them one, as large as the panel allows, and the arrows make "what
+// comes next?" the whole point — which is the reward doing its job.
+//
+// Two halves, deliberately: renderStickerBookHTML() returns markup (so it can
+// be dropped into any panel that builds its HTML as a string), and
+// wireStickerBook() attaches the behaviour afterwards.
+// ---------------------------------------------------------------------------
 function renderStickerBookHTML(studentId) {
   const progress = loadProgress(studentId);
   const stickers = getStickers(studentId);
+
+  if (stickers.length === 0) {
+    return `<p class="sticker-progress-note">Este álbum está vazio — use <strong>✏️ Edit stickers</strong> para criar a primeira figurinha.</p>`;
+  }
+
+  const unlockedCount = stickers.filter(s => progress.stickers.includes(s.id)).length;
+
   return `
-    <div class="sticker-grid">
-      ${stickers.map(s => {
-        const unlocked = progress.stickers.includes(s.id);
-        // A pasted photo wins over the emoji; igNormalizeWord means an emoji
-        // typed into the photo box still shows as an emoji rather than a
-        // broken image.
-        const art = unlocked
-          ? igWordVisualHTML({ en: s.name, emoji: s.emoji, image: s.image || '' }, 'sticker-visual')
-          : '<span class="sticker-emoji">🔒</span>';
-        return `
-          <div class="sticker-slot ${unlocked ? 'unlocked' : 'locked'}" title="${escapeAttrLite(unlocked ? s.name : `Unlocks at ${s.threshold} stars`)}">
-            ${art}
-            <span class="sticker-name">${unlocked ? escapeHtmlLite(s.name) : `${s.threshold} ⭐`}</span>
-          </div>
-        `;
-      }).join('')}
+    <div class="sticker-carousel" data-student="${escapeAttrLite(studentId)}" tabindex="0"
+         aria-roledescription="carrossel" aria-label="Álbum de figurinhas">
+      <div class="sticker-stage">
+        <button class="sticker-nav" data-step="-1" type="button" aria-label="Figurinha anterior">‹</button>
+        <div class="sticker-viewport" id="stickerViewport"></div>
+        <button class="sticker-nav" data-step="1" type="button" aria-label="Próxima figurinha">›</button>
+      </div>
+      <div class="sticker-dots" id="stickerDots" role="tablist"></div>
+      <p class="sticker-progress-note">
+        <strong>${unlockedCount} de ${stickers.length}</strong> conquistadas ·
+        ${progress.stars} ⭐ no total
+      </p>
     </div>
-    <p class="sticker-progress-note">${progress.stars} stars collected — keep playing to unlock more!</p>
   `;
+}
+
+function wireStickerBook(root, studentId) {
+  const carousel = root.querySelector('.sticker-carousel');
+  if (!carousel) return;
+
+  const progress = loadProgress(studentId);
+  const stickers = getStickers(studentId);
+  const viewport = carousel.querySelector('#stickerViewport');
+  const dots = carousel.querySelector('#stickerDots');
+
+  // Open on the newest sticker the child has actually earned — that is the one
+  // they want to see — and on the first locked one when they have none yet, so
+  // the panel always opens on something worth looking at.
+  const lastUnlocked = stickers.map(s => progress.stickers.includes(s.id)).lastIndexOf(true);
+  let index = lastUnlocked >= 0 ? lastUnlocked : 0;
+
+  function paint() {
+    const s = stickers[index];
+    const unlocked = progress.stickers.includes(s.id);
+    const missing = Math.max(0, (s.threshold || 0) - progress.stars);
+
+    const art = unlocked
+      ? igWordVisualHTML({ en: s.name, emoji: s.emoji, image: s.image || '' }, 'sticker-art')
+      : '<span class="sticker-art sticker-art--locked">🔒</span>';
+
+    viewport.innerHTML = `
+      <div class="sticker-card ${unlocked ? 'unlocked' : 'locked'}">
+        ${art}
+        <p class="sticker-card-name">${unlocked ? escapeHtmlLite(s.name) : '???'}</p>
+        <p class="sticker-card-meta">
+          ${unlocked
+            ? '🎉 Conquistada!'
+            : (missing > 0
+                ? `Faltam <strong>${missing}</strong> ⭐`
+                : `Abra com <strong>${s.threshold}</strong> ⭐`)}
+        </p>
+      </div>
+    `;
+
+    dots.innerHTML = stickers.map((st, i) => `
+      <button class="sticker-dot ${i === index ? 'active' : ''} ${progress.stickers.includes(st.id) ? 'won' : ''}"
+              type="button" role="tab" aria-selected="${i === index}"
+              data-go="${i}" aria-label="Figurinha ${i + 1} de ${stickers.length}"></button>
+    `).join('');
+
+    dots.querySelectorAll('[data-go]').forEach(b => {
+      b.addEventListener('click', () => { index = Number(b.dataset.go); paint(); });
+    });
+  }
+
+  // Wrapping, not stopping at the ends: a child pressing the same arrow keeps
+  // getting stickers instead of hitting a dead button they have to reason about.
+  function step(by) {
+    index = (index + by + stickers.length) % stickers.length;
+    paint();
+  }
+
+  carousel.querySelectorAll('[data-step]').forEach(btn => {
+    btn.addEventListener('click', () => step(Number(btn.dataset.step)));
+  });
+
+  carousel.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
+  });
+
+  // Swipe, for the tablet the lesson actually happens on.
+  let touchX = null;
+  carousel.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+  carousel.addEventListener('touchend', (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  paint();
 }

@@ -1798,27 +1798,6 @@ main > section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
    Sticker Book
    ========================================================================== */
 
-.sticker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.sticker-slot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 14px 8px;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--border);
-  text-align: center;
-}
-.sticker-slot.unlocked { background: var(--a0-soft); border-color: var(--a0); animation: matchPulse 0.6s ease; }
-.sticker-slot.locked { background: var(--bg); opacity: 0.6; }
-.sticker-emoji { font-size: 1.8rem; }
-.sticker-name { font-size: 0.68rem; font-weight: 700; color: var(--ink-soft); }
-.sticker-progress-note { font-size: 0.85rem; text-align: center; color: var(--ink-faint); }
 
 /* ==========================================================================
    Reading Time
@@ -3526,14 +3505,6 @@ body.ig-gated { overflow: hidden; }
   font-size: 1.7rem;
   border-radius: 12px;
 }
-.sticker-slot .sticker-visual {
-  width: 52px;
-  height: 52px;
-  font-size: 2rem;
-  margin: 0 auto 4px;
-  background: transparent;
-}
-.sticker-slot.locked .sticker-visual { opacity: 0.4; }
 
 /* --- scoreboard: exact total --- */
 .scoreboard-set-row {
@@ -4582,22 +4553,6 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 .modal-head-thumb--icon { font-size: 1.75rem; }
 .modal-head-sub { font-size: 0.86rem; }
 
-/* --- 📔 Sticker Book: the reward should look like a reward --- */
-.sticker-grid {
-  grid-template-columns: repeat(auto-fill, minmax(clamp(110px, 13vh, 150px), 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.sticker-slot { gap: 10px; padding: 20px 10px; border-radius: var(--radius-lg); }
-.sticker-emoji { font-size: clamp(2.6rem, 6.5vh, 4rem); }
-.sticker-name { font-size: 0.86rem; }
-.sticker-slot .sticker-visual {
-  width: clamp(72px, 9vh, 104px);
-  height: clamp(72px, 9vh, 104px);
-  font-size: clamp(2.6rem, 6.5vh, 4rem);
-  margin: 0 auto 2px;
-}
-.sticker-progress-note { font-size: 0.95rem; }
 
 /* Whose book this is — shown above the grid. */
 .sticker-scope {
@@ -4700,9 +4655,6 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
    landscape cannot fit the board at all.
    -------------------------------------------------------------------------- */
 @media (max-height: 560px) {
-  .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; }
-  .sticker-slot { padding: 12px 6px; }
-  .sticker-slot .sticker-visual { width: 56px; height: 56px; font-size: 2rem; }
   .modal-content-pad .modal-head h3 { font-size: 1.1rem; }
   .modal-head-thumb { width: 40px; height: 40px; }
 }
@@ -4714,9 +4666,6 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
   .modal-head-thumb { width: 44px; height: 44px; }
   .modal-head-thumb .emoji-fallback { font-size: 1.5rem; }
 
-  .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 12px; }
-  .sticker-slot .sticker-visual { width: 66px; height: 66px; font-size: 2.6rem; }
-  .sticker-emoji { font-size: 2.6rem; }
 
   .matchup-item .word-visual { width: 40px; height: 40px; font-size: 1.6rem; }
   .hangman-word-visual { max-width: 84px; font-size: 3rem; }
@@ -4737,29 +4686,6 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
    teacher pointed at instead of floating in it — while a short window still
    gets the smaller floor rather than a board that overflows. */
 
-/* Wide columns on purpose: eight stickers then wrap to TWO rows instead of
-   one thin strip across the top, and two rows of clamp(…25vh…) is what fills
-   the panel. Sizing the tiles from vh rather than from a fixed pixel value is
-   what makes the album grow with the window instead of leaving a hole in it. */
-.sticker-grid {
-  grid-template-columns: repeat(auto-fit, minmax(clamp(190px, 24vh, 260px), 1fr));
-  gap: clamp(12px, 1.8vh, 22px);
-  margin-bottom: clamp(12px, 2vh, 22px);
-}
-.sticker-slot {
-  gap: clamp(6px, 1.2vh, 14px);
-  padding: clamp(16px, 2.6vh, 30px) 12px;
-  justify-content: center;
-  min-height: clamp(150px, 25vh, 270px);
-}
-.sticker-slot .sticker-visual {
-  width: clamp(100px, 15vh, 180px);
-  height: clamp(100px, 15vh, 180px);
-  font-size: clamp(3.6rem, 11vh, 7rem);
-}
-.sticker-emoji { font-size: clamp(3.6rem, 11vh, 7rem); }
-.sticker-name { font-size: clamp(0.82rem, 1.7vh, 1.1rem); }
-.sticker-progress-note { font-size: clamp(0.9rem, 1.9vh, 1.1rem); }
 
 /* --------------------------------------------------------------------------
    🎨 Canva Slides
@@ -4818,13 +4744,6 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 .canva-input { width: 100%; min-width: 0; }
 
 @media (max-width: 640px) {
-  /* Width is the limit on a phone, not height — vh would make a tile taller
-     than the column it sits in. */
-  .sticker-grid { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 12px; }
-  .sticker-slot { min-height: 0; padding: 14px 8px; }
-  .sticker-slot .sticker-visual { width: 72px; height: 72px; font-size: 2.8rem; }
-  .sticker-emoji { font-size: 2.8rem; }
-
   .canva-grid { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
   .canva-row {
     grid-template-columns: 44px minmax(0, 1fr);
@@ -5153,4 +5072,163 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
   .memory-face.front .word-visual { font-size: 2.4rem; }
   .sort-card { font-size: 1.05rem; }
   .us-tile { font-size: 0.94rem; }
+}
+
+/* ==========================================================================
+   Sticker Book — the carousel
+   ==========================================================================
+   One sticker, as big as the panel allows, in the middle, with an arrow on
+   each side. The grid rules above still exist for nothing else — they were
+   replaced, not layered over — so everything here is self-contained. */
+
+.sticker-carousel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 2.2vh, 24px);
+  width: 100%;
+  outline: none;
+}
+/* Only when reached by keyboard, so a mouse click never leaves a ring behind. */
+.sticker-carousel:focus-visible .sticker-card { box-shadow: 0 0 0 4px var(--primary-soft), var(--shadow-lg); }
+
+.sticker-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2.5vw, 34px);
+  width: 100%;
+}
+
+.sticker-nav {
+  flex: 0 0 auto;
+  width: clamp(48px, max(8vh, 5vw), 82px);
+  height: clamp(48px, max(8vh, 5vw), 82px);
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: clamp(1.8rem, max(4.5vh, 3vw), 3.4rem);
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.sticker-nav:hover { border-color: var(--primary); color: var(--primary-dark); transform: scale(1.06); }
+.sticker-nav:active { transform: scale(0.96); }
+
+/* flex:1 1 auto, not 0 1 auto: the viewport has to CLAIM the space between the
+   two arrows, otherwise it shrink-wraps the card and the card's own width:100%
+   resolves against itself — which left a 184px card in a 243px gap on a
+   phone. */
+.sticker-viewport {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+
+.sticker-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.6vh, 18px);
+  width: clamp(220px, max(46vh, 30vw), 460px);
+  padding: clamp(18px, 3vh, 38px) clamp(16px, 2.5vw, 34px);
+  border-radius: var(--radius-xl);
+  border: 3px solid var(--border);
+  background: var(--bg);
+  text-align: center;
+  animation: stickerIn 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.sticker-card.unlocked {
+  background: var(--a0-soft);
+  border-color: var(--a0);
+  box-shadow: var(--shadow-md);
+}
+@keyframes stickerIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* The artwork itself — the whole point of the screen. */
+.sticker-art {
+  width: clamp(130px, max(32vh, 21vw), 320px);
+  height: clamp(130px, max(32vh, 21vw), 320px);
+  font-size: clamp(5rem, max(24vh, 16vw), 14rem);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  line-height: 1;
+}
+.sticker-art img { width: 100%; height: 100%; object-fit: contain; }
+.sticker-art .emoji-fallback { line-height: 1; }
+.sticker-art--locked { opacity: 0.45; }
+
+.sticker-card-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, max(3.2vh, 2.1vw), 2.2rem);
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.sticker-card.locked .sticker-card-name { color: var(--ink-faint); letter-spacing: 0.1em; }
+
+.sticker-card-meta {
+  margin: 0;
+  font-size: clamp(0.88rem, max(2vh, 1.3vw), 1.25rem);
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.sticker-card.unlocked .sticker-card-meta { color: var(--a0); }
+
+/* --- the dots --- */
+.sticker-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+.sticker-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  padding: 0;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+.sticker-dot.won { background: var(--a0); border-color: var(--a0); }
+.sticker-dot.active { transform: scale(1.45); border-color: var(--primary); }
+.sticker-dot.active:not(.won) { background: var(--primary-soft); }
+.sticker-dot:hover { transform: scale(1.35); }
+
+.sticker-progress-note {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(0.9rem, 1.9vh, 1.1rem);
+  color: var(--ink-faint);
+}
+.sticker-progress-note strong { color: var(--a0); }
+
+@media (max-width: 640px) {
+  .sticker-stage { gap: 8px; }
+  .sticker-nav { width: 46px; height: 46px; font-size: 1.7rem; }
+  .sticker-card { width: min(100%, 300px); padding: 18px 14px; border-radius: var(--radius-lg); }
+  .sticker-art { width: 150px; height: 150px; font-size: 5.6rem; }
+  .sticker-card-name { font-size: 1.25rem; }
+  .sticker-card-meta { font-size: 0.9rem; }
+  .sticker-dot { width: 13px; height: 13px; }
+}
+
+/* A sideways phone has no height for a 32vh sticker plus its chrome. */
+@media (max-height: 500px) {
+  .sticker-card { padding: 12px; gap: 6px; }
+  .sticker-art { width: clamp(90px, 34vh, 150px); height: clamp(90px, 34vh, 150px); font-size: clamp(3rem, 22vh, 5rem); }
+  .sticker-nav { width: 44px; height: 44px; font-size: 1.6rem; }
+  .sticker-card-name { font-size: 1.05rem; }
 }

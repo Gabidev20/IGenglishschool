@@ -436,6 +436,9 @@ const LiveTools = (() => {
           <button class="game-btn secondary" id="editStickersBtn">✏️ Edit stickers</button>
         </div>
       `;
+      // The book is markup + behaviour: the string went in above, the
+      // arrows, dots, keyboard and swipe get attached here.
+      wireStickerBook(container, studentId);
       container.querySelector('#stStudent').addEventListener('change', (e) => { studentId = e.target.value; paint(); });
       container.querySelector('#editStickersBtn').addEventListener('click', () => editStickers(container, paint, studentId));
     }
