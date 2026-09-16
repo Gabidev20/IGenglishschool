@@ -65,9 +65,26 @@ const DEFAULT_STICKERS = [
 // ---------------------------------------------------------------------------
 const STICKERS_KEY = 'sticker_book';
 
-function loadStickerOverrides() {
-  const raw = IGStore.getJSON(STICKERS_KEY, null);
-  if (!raw || typeof raw !== 'object') return { patches: {}, added: [], deleted: [] };
+// ---------------------------------------------------------------------------
+// The sticker book is PER STUDENT. Arthur collects his cars, Jasmine collects
+// her flowers — the whole point is that the reward looks like something that
+// child actually cares about.
+//
+// Two layers, and a sticker only has to be written where it differs:
+//
+//   shared     — the book every student starts from. Edit it once and every
+//                child who has no book of their own follows along.
+//   byStudent  — one child's own book. Present only for children the teacher
+//                has actually personalised.
+//
+// A student's list is DEFAULT_STICKERS with `shared` applied, then their own
+// overrides on top. So renaming a sticker for everyone still works even after
+// one child has been given a custom emoji for it.
+// ---------------------------------------------------------------------------
+function blankStickerOverrides() { return { patches: {}, added: [], deleted: [] }; }
+
+function normalizeStickerOverrides(raw) {
+  if (!raw || typeof raw !== 'object') return blankStickerOverrides();
   return {
     patches: raw.patches && typeof raw.patches === 'object' ? raw.patches : {},
     added: Array.isArray(raw.added) ? raw.added : [],
@@ -75,26 +92,95 @@ function loadStickerOverrides() {
   };
 }
 
-function saveStickerOverrides(ov) { IGStore.setJSON(STICKERS_KEY, ov); }
+function loadStickerBook() {
+  const raw = IGStore.getJSON(STICKERS_KEY, null);
+  if (!raw || typeof raw !== 'object') return { shared: blankStickerOverrides(), byStudent: {} };
 
-// The live sticker list. Use this everywhere instead of DEFAULT_STICKERS.
-function getStickers() {
-  const ov = loadStickerOverrides();
-  const deleted = new Set(ov.deleted);
-  const list = DEFAULT_STICKERS
+  // Books saved before the per-student split were a bare { patches, added,
+  // deleted } — that is exactly what `shared` means now, so old books keep
+  // working without the teacher noticing anything changed.
+  if (!raw.shared && !raw.byStudent) {
+    return { shared: normalizeStickerOverrides(raw), byStudent: {} };
+  }
+
+  const byStudent = {};
+  Object.entries(raw.byStudent || {}).forEach(([sid, ov]) => { byStudent[sid] = normalizeStickerOverrides(ov); });
+  return { shared: normalizeStickerOverrides(raw.shared), byStudent };
+}
+
+function saveStickerBook(book) { IGStore.setJSON(STICKERS_KEY, book); }
+
+// Does this student have a book of their own, or are they following the
+// shared one? Drives the "personalised" badge in the editor.
+function stickerBookIsPersonal(studentId) {
+  const ov = loadStickerBook().byStudent[studentId];
+  if (!ov) return false;
+  return Object.keys(ov.patches).length > 0 || ov.added.length > 0 || ov.deleted.length > 0;
+}
+
+// Read the overrides that apply to one student, in layer order.
+function stickerLayersFor(studentId) {
+  const book = loadStickerBook();
+  return studentId && book.byStudent[studentId]
+    ? [book.shared, book.byStudent[studentId]]
+    : [book.shared];
+}
+
+// THE live sticker list for a student. Use this everywhere instead of
+// DEFAULT_STICKERS. Called with no id it returns the shared book, which is
+// what a brand-new student sees.
+function getStickers(studentId) {
+  const layers = stickerLayersFor(studentId);
+
+  const deleted = new Set();
+  const patches = {};
+  const added = [];
+  layers.forEach(ov => {
+    ov.deleted.forEach(id => deleted.add(id));
+    Object.entries(ov.patches).forEach(([id, p]) => { patches[id] = { ...patches[id], ...p }; });
+    ov.added.forEach(s => {
+      const at = added.findIndex(x => x.id === s.id);
+      if (at >= 0) added[at] = { ...added[at], ...s }; else added.push({ ...s });
+    });
+  });
+
+  const apply = (s) => (patches[s.id] ? { ...s, ...patches[s.id] } : s);
+  return DEFAULT_STICKERS
     .filter(s => !deleted.has(s.id))
-    .map(s => (ov.patches[s.id] ? { ...s, ...ov.patches[s.id] } : s))
-    .concat(ov.added.filter(s => !deleted.has(s.id)).map(s => (ov.patches[s.id] ? { ...s, ...ov.patches[s.id] } : s)));
-  return list.sort((a, b) => (a.threshold || 0) - (b.threshold || 0));
+    .map(apply)
+    .concat(added.filter(s => !deleted.has(s.id)).map(apply))
+    .sort((a, b) => (a.threshold || 0) - (b.threshold || 0));
 }
 
-function stickerIsCustom(id) {
-  const ov = loadStickerOverrides();
-  if (ov.added.some(s => s.id === id)) return 'new';
-  return ov.patches[id] ? 'edited' : 'original';
+// 'new' | 'edited' | 'original' — what the editor shows next to a row.
+function stickerIsCustom(id, studentId) {
+  const layers = stickerLayersFor(studentId);
+  if (layers.some(ov => ov.added.some(s => s.id === id))) return 'new';
+  return layers.some(ov => ov.patches[id]) ? 'edited' : 'original';
 }
 
-function resetStickers() { IGStore.remove(STICKERS_KEY); }
+// Reset one student back to the shared book; with no id, reset everything
+// back to what the app ships.
+function resetStickers(studentId) {
+  if (!studentId) { IGStore.remove(STICKERS_KEY); return; }
+  const book = loadStickerBook();
+  delete book.byStudent[studentId];
+  saveStickerBook(book);
+}
+
+// Write a layer. `studentId` null/'' means the shared book.
+function saveStickerOverrides(ov, studentId) {
+  const book = loadStickerBook();
+  if (studentId) book.byStudent[studentId] = normalizeStickerOverrides(ov);
+  else book.shared = normalizeStickerOverrides(ov);
+  saveStickerBook(book);
+}
+
+// Kept for callers that still want the flat shape of one layer.
+function loadStickerOverrides(studentId) {
+  const book = loadStickerBook();
+  return studentId ? (book.byStudent[studentId] || blankStickerOverrides()) : book.shared;
+}
 
 // ---------------------------------------------------------------------------
 // PERSISTENCE
@@ -144,7 +230,7 @@ function saveProgress(studentId, progress) {
 
 function checkStickerUnlocks(studentId, progress) {
   let unlockedSomething = false;
-  getStickers().forEach(s => {
+  getStickers(studentId).forEach(s => {
     if (progress.stars >= s.threshold && !progress.stickers.includes(s.id)) {
       progress.stickers.push(s.id);
       unlockedSomething = true;
@@ -524,7 +610,7 @@ function escapeAttrLite(str) {
 // ---------------------------------------------------------------------------
 function renderStickerBookHTML(studentId) {
   const progress = loadProgress(studentId);
-  const stickers = getStickers();
+  const stickers = getStickers(studentId);
   return `
     <div class="sticker-grid">
       ${stickers.map(s => {

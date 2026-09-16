@@ -4548,3 +4548,169 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
      squashing the day squares into unreadable dots. */
   .att-table { min-width: 560px; }
 }
+
+/* ==========================================================================
+   Bigger visuals
+   ==========================================================================
+   The game frame was made near-fullscreen a while back, but the artwork
+   inside it kept the sizes it had when the modal was small — so a class
+   looking at a shared screen, or a child on a tablet at arm's length, had to
+   lean in to tell a picture apart. Everything below grows the IMAGE without
+   growing the chrome around it.
+
+   Sizes use clamp(…vh…) rather than fixed pixels so a board still fits a
+   laptop in half-screen: the floor is the old size, the ceiling is what a
+   projector can use. */
+
+/* --- the panel title the teacher pointed at --- */
+.modal-content-pad .modal-head h3 { font-size: 1.45rem; }
+.modal-head-thumb { width: 54px; height: 54px; border-radius: 14px; }
+.modal-head-thumb .emoji-fallback { font-size: 1.85rem; }
+.modal-head-thumb--icon { font-size: 1.75rem; }
+.modal-head-sub { font-size: 0.86rem; }
+
+/* --- 📔 Sticker Book: the reward should look like a reward --- */
+.sticker-grid {
+  grid-template-columns: repeat(auto-fill, minmax(clamp(110px, 13vh, 150px), 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.sticker-slot { gap: 10px; padding: 20px 10px; border-radius: var(--radius-lg); }
+.sticker-emoji { font-size: clamp(2.6rem, 6.5vh, 4rem); }
+.sticker-name { font-size: 0.86rem; }
+.sticker-slot .sticker-visual {
+  width: clamp(72px, 9vh, 104px);
+  height: clamp(72px, 9vh, 104px);
+  font-size: clamp(2.6rem, 6.5vh, 4rem);
+  margin: 0 auto 2px;
+}
+.sticker-progress-note { font-size: 0.95rem; }
+
+/* Whose book this is — shown above the grid. */
+.sticker-scope {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--a2);
+  background: var(--a2-soft);
+  padding: 7px 14px;
+  border-radius: 999px;
+}
+.sticker-scope--shared { color: var(--ink-faint); background: var(--bg); }
+
+.sticker-scope-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.sticker-scope-btn {
+  flex: 1 1 200px;
+  padding: 11px 16px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+.sticker-scope-btn:hover { border-color: var(--primary); color: var(--ink); }
+.sticker-scope-btn.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+
+/* The editor's own preview, one per row — big enough to judge a pasted image. */
+.sticker-visual { width: 60px; height: 60px; font-size: 2.1rem; border-radius: 14px; }
+.lt-sticker-head,
+.lt-sticker-row { grid-template-columns: 68px minmax(0, 1.3fr) 84px minmax(0, 1.8fr) 88px 34px; }
+
+/* --- 🧠 Memory: the picture is the whole game --- */
+.memory-face.front .word-visual { height: 74%; font-size: clamp(2.2rem, 7vh, 4.4rem); }
+.memory-face.front .memory-word-label { font-size: clamp(0.95rem, 2.4vh, 1.5rem); }
+.memory-face.back { font-size: clamp(2rem, 6vh, 3.6rem); }
+
+/* --- 🔗 Match-up --- */
+.matchup-item .word-visual {
+  width: clamp(34px, 6.5vh, 62px);
+  height: clamp(34px, 6.5vh, 62px);
+  font-size: clamp(1.5rem, 4vh, 2.6rem);
+}
+.matchup-item { font-size: clamp(0.95rem, 2.2vh, 1.25rem); max-height: clamp(54px, 9vh, 86px); }
+
+/* --- 🎯 Hangman: the picture clue and the letters --- */
+/* The base rule already shapes this as width:100% + aspect-ratio:1 and caps
+   it with max-width — so raise the CAP. Setting width/height here instead
+   fought the cap and produced a 90x140 box that cropped the photo. */
+.hangman-word-visual {
+  max-width: clamp(64px, 14vh, 150px);
+  font-size: clamp(2.2rem, 8vh, 5rem);
+}
+.hangman-word { font-size: clamp(1.4rem, 3.6vh, 2.4rem); }
+.key-btn { font-size: clamp(0.9rem, 2vh, 1.15rem); }
+
+/* --- 🎈 Balloon Pop --- */
+.balloon-target { font-size: clamp(1.05rem, 2.6vh, 1.7rem); }
+
+/* --- 🗂️ Flashcards --- */
+.flashcard-word-overlay { font-size: clamp(1.5rem, 4vh, 2.6rem); }
+.flashcard-translation { font-size: clamp(1rem, 2.6vh, 1.5rem); }
+
+/* --- 🏆 Practice Arena & the Reading quiz --- */
+.quiz-visual {
+  width: clamp(88px, 14vh, 150px);
+  height: clamp(88px, 14vh, 150px);
+  font-size: clamp(2.6rem, 8vh, 5rem);
+  margin-bottom: 14px;
+}
+
+/* --- 🧩 Word Match / Quick Quiz / Listen (the Arcade) --- */
+.wordmatch-item .word-visual {
+  width: clamp(34px, 6vh, 58px);
+  height: clamp(34px, 6vh, 58px);
+  font-size: clamp(1.5rem, 4vh, 2.4rem);
+}
+.wordmatch-item { font-size: clamp(0.95rem, 2.2vh, 1.25rem); }
+#arcadeStage .quiz-visual {
+  width: clamp(96px, 17vh, 190px);
+  height: clamp(96px, 17vh, 190px);
+  font-size: clamp(2.8rem, 9vh, 6rem);
+}
+.listen-speaker-btn { width: clamp(84px, 13vh, 130px); height: clamp(84px, 13vh, 130px); font-size: clamp(2rem, 5vh, 3.2rem); }
+
+/* --- 📺 Watch: the key-phrase chips --- */
+.phrase-visual { width: 44px; height: 44px; font-size: 1.6rem; }
+.phrase-en { font-size: 0.95rem; }
+.phrase-pt { font-size: 0.85rem; }
+
+/* --------------------------------------------------------------------------
+   Short screens — give the floors back, or a 375px-tall laptop window in
+   landscape cannot fit the board at all.
+   -------------------------------------------------------------------------- */
+@media (max-height: 560px) {
+  .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; }
+  .sticker-slot { padding: 12px 6px; }
+  .sticker-slot .sticker-visual { width: 56px; height: 56px; font-size: 2rem; }
+  .modal-content-pad .modal-head h3 { font-size: 1.1rem; }
+  .modal-head-thumb { width: 40px; height: 40px; }
+}
+
+/* On a phone the width is the limit, not the height — vh units would make the
+   art taller than the column it sits in. */
+@media (max-width: 640px) {
+  .modal-content-pad .modal-head h3 { font-size: 1.2rem; }
+  .modal-head-thumb { width: 44px; height: 44px; }
+  .modal-head-thumb .emoji-fallback { font-size: 1.5rem; }
+
+  .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 12px; }
+  .sticker-slot .sticker-visual { width: 66px; height: 66px; font-size: 2.6rem; }
+  .sticker-emoji { font-size: 2.6rem; }
+
+  .matchup-item .word-visual { width: 40px; height: 40px; font-size: 1.6rem; }
+  .hangman-word-visual { max-width: 84px; font-size: 3rem; }
+  .quiz-visual { width: 96px; height: 96px; font-size: 3rem; }
+  #arcadeStage .quiz-visual { width: 110px; height: 110px; font-size: 3.4rem; }
+  .listen-speaker-btn { width: 92px; height: 92px; font-size: 2.4rem; }
+  .wordmatch-item .word-visual { width: 38px; height: 38px; font-size: 1.5rem; }
+
+  .lt-sticker-row { grid-template-columns: 68px 1fr 84px 34px; }
+}

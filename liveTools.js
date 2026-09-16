@@ -347,13 +347,16 @@ const LiveTools = (() => {
             ${students.map(st => `<option value="${igEscapeHtml(st.id)}" ${st.id === studentId ? 'selected' : ''}>${igEscapeHtml(st.name)}</option>`).join('')}
           </select>
         </div>
+        ${stickerBookIsPersonal(studentId)
+          ? '<p class="sticker-scope">🎨 Álbum personalizado deste aluno</p>'
+          : '<p class="sticker-scope sticker-scope--shared">Álbum padrão — igual para todos os alunos</p>'}
         ${renderStickerBookHTML(studentId)}
         <div class="game-btn-row" style="justify-content:center;margin-top:14px">
           <button class="game-btn secondary" id="editStickersBtn">✏️ Edit stickers</button>
         </div>
       `;
       container.querySelector('#stStudent').addEventListener('change', (e) => { studentId = e.target.value; paint(); });
-      container.querySelector('#editStickersBtn').addEventListener('click', () => editStickers(container, paint));
+      container.querySelector('#editStickersBtn').addEventListener('click', () => editStickers(container, paint, studentId));
     }
     paint();
   }
@@ -426,19 +429,39 @@ const LiveTools = (() => {
     paint();
   }
 
-  function editStickers(container, done) {
-    const ov = loadStickerOverrides();
-    let list = getStickers().map(st => ({ ...st }));
+  // `studentId` is who the teacher was looking at. The editor can write that
+  // one child's book or the shared one, and the toggle at the top says which —
+  // personalising Arthur's cars must never silently change Jasmine's book.
+  function editStickers(container, done, studentId) {
+    const students = loadStudents();
+    const student = students.find(st => st.id === studentId);
+    let scope = studentId ? 'student' : 'shared';
+    let list = getStickers(scope === 'student' ? studentId : null).map(st => ({ ...st }));
+
+    function targetId() { return scope === 'student' ? studentId : null; }
 
     function paint() {
       container.innerHTML = `
-        <p class="lt-editor-intro">Change the emoji, paste a photo link, rename a sticker or move the star
-          threshold. Leave the photo empty to use the emoji.</p>
+        ${student ? `
+          <div class="sticker-scope-picker">
+            <button class="sticker-scope-btn ${scope === 'student' ? 'on' : ''}" type="button" data-scope="student">
+              🎨 Só para ${igEscapeHtml(student.name)}
+            </button>
+            <button class="sticker-scope-btn ${scope === 'shared' ? 'on' : ''}" type="button" data-scope="shared">
+              👥 Para todos os alunos
+            </button>
+          </div>
+        ` : ''}
+        <p class="lt-editor-intro">${scope === 'student'
+          ? `Monte o álbum de <strong>${igEscapeHtml(student.name)}</strong> com os personagens que ele gosta —
+             troque o emoji, cole o link de uma imagem, renomeie a figurinha ou mude quantas estrelas ela custa.`
+          : 'Este é o álbum padrão, usado por todos os alunos que ainda não têm um próprio.'}
+          Deixe a foto em branco para usar o emoji.</p>
         <div class="lt-sticker-head"><span></span><span>Name</span><span>Emoji</span><span>Photo URL</span><span>Stars</span><span></span></div>
         <div class="lt-rows" id="stickerRows"></div>
         <div class="game-btn-row" style="margin-top:10px">
           <button class="game-btn secondary" id="stickerAdd" type="button">+ Add sticker</button>
-          <button class="game-btn secondary" id="stickerRestore" type="button">↺ Restore the original stickers</button>
+          <button class="game-btn secondary" id="stickerRestore" type="button">${scope === 'student' ? '↺ Voltar ao álbum padrão' : '↺ Restaurar as figurinhas originais'}</button>
         </div>
         <p class="gm-form-error" id="stickerErr" hidden></p>
         <div class="game-btn-row" style="margin-top:16px">
@@ -482,9 +505,23 @@ const LiveTools = (() => {
         list.push({ id: 'st' + Math.random().toString(36).slice(2, 9), name: 'New sticker', emoji: '🌟', image: '', threshold: highest + 20 });
         paint();
       });
+      container.querySelectorAll('[data-scope]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.dataset.scope === scope) return;
+          scope = btn.dataset.scope;
+          // Reload from the layer now being edited, so switching does not
+          // carry one book's rows into the other.
+          list = getStickers(targetId()).map(st => ({ ...st }));
+          paint();
+        });
+      });
+
       container.querySelector('#stickerRestore').addEventListener('click', () => {
-        if (!confirm('Restore the original stickers? Your changes will be lost.')) return;
-        resetStickers();
+        const msg = scope === 'student'
+          ? `Voltar ${student ? student.name : 'este aluno'} para o álbum padrão? As figurinhas personalizadas dele serão perdidas.`
+          : 'Restaurar as figurinhas originais? Todas as suas mudanças serão perdidas.';
+        if (!confirm(msg)) return;
+        resetStickers(targetId());
         if (done) done();
       });
       container.querySelector('#stickerCancel').addEventListener('click', () => { if (done) done(); });
@@ -502,17 +539,21 @@ const LiveTools = (() => {
           });
         if (clean.length === 0) return showError('Keep at least one sticker.');
 
-        const defaultIds = new Set(DEFAULT_STICKERS.map(d => d.id));
+        // What this layer records is the difference from the layer UNDERNEATH
+        // it: for a student that is the shared book, for the shared book it is
+        // what the app ships. Diffing against DEFAULT_STICKERS either way would
+        // make a student's book silently re-add stickers the teacher had
+        // already removed for everyone.
+        const base = scope === 'student' ? getStickers(null) : DEFAULT_STICKERS;
+        const baseIds = new Set(base.map(d => d.id));
         const next = { patches: {}, added: [], deleted: [] };
         clean.forEach(st => {
-          if (defaultIds.has(st.id)) next.patches[st.id] = st;
+          if (baseIds.has(st.id)) next.patches[st.id] = st;
           else next.added.push(st);
         });
-        // A shipped sticker the teacher removed has to be remembered as
-        // deleted, or the merge would hand it straight back.
-        DEFAULT_STICKERS.forEach(d => { if (!clean.some(st => st.id === d.id)) next.deleted.push(d.id); });
+        base.forEach(d => { if (!clean.some(st => st.id === d.id)) next.deleted.push(d.id); });
 
-        saveStickerOverrides(next);
+        saveStickerOverrides(next, targetId());
         if (done) done();
       });
 

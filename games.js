@@ -526,13 +526,31 @@ const GameEngine = (() => {
     // "If I won the lottery, I would buy a house") — far longer than the
     // balloon's default 74x88 size. Scale the balloon up and the font down
     // for longer text instead of letting it overflow illegibly.
+    // Balloons are positioned absolutely, so their size is JS, not CSS. They
+    // scale with the stage: on a projector or a big tablet the same balloon is
+    // half again as large, while a small stage keeps the original numbers as
+    // its floor.
+    function balloonScale() {
+      const stage = container.querySelector('#balloonStage');
+      const h = stage ? stage.getBoundingClientRect().height : 0;
+      if (!h) return 1;
+      return Math.max(1, Math.min(1.75, h / 320));
+    }
+
     function balloonSizeFor(text) {
       const len = text.length;
-      if (len <= 12) return { width: 74, height: 88, font: 0.72 };
+      const k = balloonScale();
+      const base = len <= 12
+        ? { width: 74, height: 88, font: 0.72 }
+        : {
+            width: Math.min(190, 74 + (len - 12) * 3.2),
+            height: Math.min(120, 88 + (len - 12) * 0.6),
+            font: Math.max(0.5, 0.72 - (len - 12) * 0.006),
+          };
       return {
-        width: Math.round(Math.min(190, 74 + (len - 12) * 3.2)),
-        height: Math.round(Math.min(120, 88 + (len - 12) * 0.6)),
-        font: Math.max(0.5, Number((0.72 - (len - 12) * 0.006).toFixed(2))),
+        width: Math.round(base.width * k),
+        height: Math.round(base.height * k),
+        font: Number((base.font * k).toFixed(2)),
       };
     }
 
