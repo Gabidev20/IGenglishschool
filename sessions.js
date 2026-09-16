@@ -201,7 +201,8 @@ function renderCockpitLinks(student) {
           return `
             <div class="cockpit-link">
               ${url
-                ? `<button class="btn btn-link-${k}" data-open="${k}" type="button">${meta.icon} ${escapeHtmlLite(meta.label)}</button>`
+                ? `<a class="btn btn-link-${k}" data-open="${k}" href="${escapeAttrLite(url)}"
+                       target="_blank" rel="noopener noreferrer">${meta.icon} ${escapeHtmlLite(meta.label)}</a>`
                 : `<button class="btn btn-ghost" data-add="${k}" type="button">${meta.icon} Adicionar ${escapeHtmlLite(meta.label)}</button>`}
               ${url ? `<button class="cockpit-link-edit-btn" data-edit="${k}" type="button"
                                aria-label="Trocar o link ${escapeAttrLite(meta.label)}" title="Trocar o link">✏️</button>` : ''}
@@ -231,8 +232,11 @@ function renderCockpitLinks(student) {
       root.querySelector('#cockpitLinkCancel').addEventListener('click', () => { editingKind = null; paint(); });
       input.focus();
     } else {
-      root.querySelectorAll('[data-open]').forEach(btn => {
-        btn.addEventListener('click', () => openClassLink(classLinkFor(btn.dataset.open, student.id)));
+      root.querySelectorAll('[data-open]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Cancel the anchor only when window.open already opened the tab.
+          if (openClassLink(classLinkFor(link.dataset.open, student.id))) e.preventDefault();
+        });
       });
       root.querySelectorAll('[data-add], [data-edit]').forEach(btn => {
         btn.addEventListener('click', () => { editingKind = btn.dataset.add || btn.dataset.edit; paint(); });

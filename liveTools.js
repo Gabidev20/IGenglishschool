@@ -54,20 +54,33 @@ function isValidLinkUrl(value) {
   } catch (e) { return false; }
 }
 
-// Open a link, and actually open it.
+// Open a link in a NEW TAB, and never take this one away from the teacher.
 //
-// A bare `<a target="_blank">` is the obvious way and it is what this started
-// as — but a blocked popup, an in-app browser or a webview swallows that click
-// silently: no error, no new tab, nothing happens. That was the bug. So try a
-// real window.open, and when it comes back null (exactly what a blocked popup
-// returns) fall back to navigating this tab. Leaving the school site is worse
-// than a new tab, but far better than a button that does nothing.
+// Two independent mechanisms, tried in order, because either one on its own
+// can be silently swallowed:
+//
+//   1. window.open() from inside the click handler. Allowed because it runs
+//      in a user gesture; returns null when the browser blocks it anyway.
+//   2. the anchor's own target="_blank" — a different path through the
+//      browser, often still permitted when window.open is not.
+//
+// So every one of these links IS a real <a href target="_blank">, and this
+// function reports whether it already handled the click. The caller cancels
+// the anchor's default only when the answer is yes; otherwise it lets the
+// anchor do its native thing.
+//
+// What it deliberately does NOT do any more is fall back to location.href.
+// That did open the deck, but by navigating away from the school site — the
+// teacher is mid-lesson and loses the page she was on.
 function openClassLink(url) {
   const clean = String(url || '').trim();
   if (!clean || !isValidLinkUrl(clean)) return false;
   let win = null;
   try { win = window.open(clean, '_blank', 'noopener,noreferrer'); } catch (e) { win = null; }
-  if (!win) window.location.href = clean;
+  if (!win) return false;                 // blocked — let the anchor try
+  // noopener is already in the feature string; this covers older browsers
+  // that ignore it, so the opened page can never reach back into this one.
+  try { win.opener = null; } catch (e) { /* cross-origin, already safe */ }
   return true;
 }
 
@@ -727,8 +740,9 @@ const LiveTools = (() => {
         // silently refuses to honour target="_blank".
         container.querySelectorAll('[data-open]').forEach(link => {
           link.addEventListener('click', (e) => {
-            e.preventDefault();
-            openClassLink(classLinkFor(link.dataset.kind, link.dataset.open));
+            // Only swallow the click if window.open actually gave us a tab;
+            // otherwise the anchor's own target="_blank" gets its turn.
+            if (openClassLink(classLinkFor(link.dataset.kind, link.dataset.open))) e.preventDefault();
           });
         });
       }
