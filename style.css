@@ -4824,41 +4824,50 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 }
 
 /* --------------------------------------------------------------------------
-   🎨 Canva Slides on the Live Class Cockpit
+   🎨 Canva Slides + 🎥 Zoom on the Live Class Cockpit
    -------------------------------------------------------------------------- */
-.cockpit-canva { margin-top: 12px; }
+.cockpit-links { margin-top: 12px; }
 
-.cockpit-canva-row { display: flex; align-items: center; gap: 8px; }
-.cockpit-canva-row .btn { flex: 1; justify-content: center; }
-
-/* Canva's own colour, so the button reads as "that other app" rather than as
-   one more of the school's own actions. */
-.btn-canva {
-  background: linear-gradient(135deg, #00c4cc, #7d2ae8);
-  color: #fff;
+.cockpit-links-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
-.btn-canva:hover { filter: brightness(1.06); }
+.cockpit-link { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cockpit-link .btn {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+  text-align: center;
+  padding-inline: 14px;
+}
 
-.cockpit-canva-edit-btn {
-  width: 44px;
-  height: 44px;
+/* Each service in its own colours, so at a glance they read as "those other
+   apps" rather than as two more of the school's own actions. */
+.btn-link-canva { background: linear-gradient(135deg, #00c4cc, #7d2ae8); color: #fff; }
+.btn-link-zoom { background: linear-gradient(135deg, #2d8cff, #0b5cff); color: #fff; }
+.btn-link-canva:hover, .btn-link-zoom:hover { filter: brightness(1.07); }
+
+.cockpit-link-edit-btn {
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
   border-radius: 50%;
   border: 2px solid var(--border);
   background: var(--surface);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
-.cockpit-canva-edit-btn:hover { border-color: var(--primary); }
+.cockpit-link-edit-btn:hover { border-color: var(--primary); }
 
-.cockpit-canva-edit > label {
+.cockpit-link-edit > label {
   display: block;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--ink-soft);
   margin-bottom: 6px;
 }
-.cockpit-canva-fields { display: flex; gap: 8px; flex-wrap: wrap; }
-.cockpit-canva-fields input {
+.cockpit-link-fields { display: flex; gap: 8px; flex-wrap: wrap; }
+.cockpit-link-fields input {
   flex: 1 1 200px;
   min-width: 0;
   padding: 11px 14px;
@@ -4867,9 +4876,78 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
   font-family: inherit;
   font-size: 0.92rem;
 }
-.cockpit-canva-fields input:focus { outline: none; border-color: var(--primary); }
-.cockpit-canva-hint { margin: 8px 0 0; font-size: 0.76rem; color: var(--ink-faint); }
+.cockpit-link-fields input:focus { outline: none; border-color: var(--primary); }
+.cockpit-link-hint { margin: 8px 0 0; font-size: 0.76rem; color: var(--ink-faint); }
+
+/* --------------------------------------------------------------------------
+   🔗 Links da Aula — the per-student table
+   -------------------------------------------------------------------------- */
+.links-card-actions { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.links-open {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.links-open--canva { background: linear-gradient(135deg, #00c4cc, #7d2ae8); }
+.links-open--zoom { background: linear-gradient(135deg, #2d8cff, #0b5cff); }
+.links-open:hover { filter: brightness(1.07); }
+.links-missing {
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.links-head,
+.links-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 0.8fr) minmax(0, 1.6fr) minmax(0, 1.6fr);
+  gap: 10px;
+  align-items: center;
+}
+.links-head {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  padding: 0 2px 8px;
+}
+.links-rows { display: flex; flex-direction: column; gap: 10px; }
+.links-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+}
+.links-who { display: flex; flex-direction: column; min-width: 0; }
+.links-who strong { font-size: 0.9rem; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.links-who span { font-size: 0.74rem; color: var(--ink-faint); }
+.links-input { width: 100%; min-width: 0; }
+
+@media (max-width: 760px) {
+  .links-head { display: none; }
+  .links-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas: "avatar who" "canva canva" "zoom zoom";
+    row-gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+  }
+  .links-row .links-avatar { grid-area: avatar; }
+  .links-row .links-who { grid-area: who; }
+  .links-row [data-kind="canva"] { grid-area: canva; }
+  .links-row [data-kind="zoom"] { grid-area: zoom; }
+}
 
 @media (max-width: 640px) {
-  .cockpit-canva-fields .game-btn { flex: 1; }
+  /* Two service buttons side by side stop being tappable well before this. */
+  .cockpit-links-row { grid-template-columns: 1fr; }
+  .cockpit-link-fields .game-btn { flex: 1; }
 }

@@ -4,51 +4,67 @@
    ========================================================================== */
 
 /* ==========================================================================
-   CANVA SLIDES — one deck per student
+   CLASS LINKS — the two fixed links each student has
    --------------------------------------------------------------------------
-   Deliberately OUTSIDE the LiveTools closure: the Live Class Cockpit
-   (sessions.js) shows the same link for the active student, and both need to
-   read and write the same place. Stored in its own IGStore key, so it syncs
-   to Supabase with everything else.
-   ========================================================================== */
-const CANVA_KEY = 'canva_slides';
+     🎨 canva  — that student's slide deck
+     🎥 zoom   — the room their lessons always happen in (a Personal Meeting
+                 Room link, or a recurring meeting; both are permanent, which
+                 is exactly why a pasted link is enough and no Zoom account
+                 connection is needed)
 
-function canvaLinks() {
-  const raw = IGStore.getJSON(CANVA_KEY, null);
+   Deliberately OUTSIDE the LiveTools closure: the Live Class Cockpit
+   (sessions.js) shows the same links for the active student, and both have to
+   read and write the same place. One IGStore key per kind, so they sync to
+   Supabase with everything else.
+   ========================================================================== */
+const CLASS_LINK_KINDS = {
+  canva: { key: 'canva_slides', icon: '\u{1F3A8}', label: 'Canva Slides',
+           placeholder: 'https://www.canva.com/design/…',
+           hint: 'No Canva: <strong>Compartilhar → Copiar link</strong>.' },
+  zoom: { key: 'zoom_links', icon: '\u{1F3A5}', label: 'Zoom',
+          placeholder: 'https://us05web.zoom.us/j/…',
+          hint: 'No Zoom: <strong>Reuniões → Sala Pessoal → Copiar convite</strong>, ou o link de uma reunião recorrente.' },
+};
+
+function classLinkMap(kind) {
+  const meta = CLASS_LINK_KINDS[kind];
+  if (!meta) return {};
+  const raw = IGStore.getJSON(meta.key, null);
   return (raw && typeof raw === 'object') ? raw : {};
 }
-function canvaLinkFor(studentId) { return String(canvaLinks()[studentId] || '').trim(); }
-function saveCanvaLink(studentId, url) {
-  const all = canvaLinks();
+function classLinkFor(kind, studentId) { return String(classLinkMap(kind)[studentId] || '').trim(); }
+function saveClassLink(kind, studentId, url) {
+  const meta = CLASS_LINK_KINDS[kind];
+  if (!meta) return;
+  const all = classLinkMap(kind);
   const clean = String(url || '').trim();
   if (clean) all[studentId] = clean; else delete all[studentId];
-  IGStore.setJSON(CANVA_KEY, all);
+  IGStore.setJSON(meta.key, all);
 }
 
 // Only http(s) gets through. A pasted `javascript:` URL would run in the page
 // the moment it was clicked, and this field ends up in a shared Supabase row —
 // so the check is a real one, not politeness.
-function canvaIsValidUrl(value) {
+function isValidLinkUrl(value) {
   const v = String(value || '').trim();
-  if (!v) return true;                          // empty just means "no deck yet"
+  if (!v) return true;                          // empty just means "not set yet"
   try {
     const u = new URL(v);
     return u.protocol === 'http:' || u.protocol === 'https:';
   } catch (e) { return false; }
 }
 
-// Open a deck, and actually open it.
+// Open a link, and actually open it.
 //
-// A bare `<a target="_blank">` is the obvious way to do this and it is what
-// this started as — but a blocked popup, an in-app browser or a webview
-// swallows that click silently: no error, no new tab, nothing happens. So try
-// a real window.open, and when it comes back null (which is exactly what a
-// blocked popup returns) fall back to navigating this tab. Leaving the school
-// site is a worse outcome than a new tab, but it is a far better outcome than
-// a button that does nothing.
-function openCanvaLink(url) {
+// A bare `<a target="_blank">` is the obvious way and it is what this started
+// as — but a blocked popup, an in-app browser or a webview swallows that click
+// silently: no error, no new tab, nothing happens. That was the bug. So try a
+// real window.open, and when it comes back null (exactly what a blocked popup
+// returns) fall back to navigating this tab. Leaving the school site is worse
+// than a new tab, but far better than a button that does nothing.
+function openClassLink(url) {
   const clean = String(url || '').trim();
-  if (!clean || !canvaIsValidUrl(clean)) return false;
+  if (!clean || !isValidLinkUrl(clean)) return false;
   let win = null;
   try { win = window.open(clean, '_blank', 'noopener,noreferrer'); } catch (e) { win = null; }
   if (!win) window.location.href = clean;
@@ -619,82 +635,100 @@ const LiveTools = (() => {
   }
 
   // The store lives at the top of this file, outside the closure — the Live
-  // Class Cockpit shows the same link and has to reach it too.
-  function renderCanva(container) {
+  // Class Cockpit shows the same links and has to reach them too.
+  function renderClassLinks(container) {
     let editing = false;
 
     function paint() {
       const students = loadStudents();
-      const withLink = students.filter(s => canvaLinkFor(s.id)).length;
+      const kinds = Object.keys(CLASS_LINK_KINDS);
+      const counts = kinds.map(k => ({
+        k, meta: CLASS_LINK_KINDS[k],
+        n: students.filter(s => classLinkFor(k, s.id)).length,
+      }));
 
       container.innerHTML = editing ? `
-        <p class="lt-editor-intro">Cole o link de compartilhamento do Canva de cada aluno.
-          No Canva: <strong>Compartilhar → Copiar link</strong>. Deixe em branco para remover.</p>
-        <div class="canva-rows">
+        <p class="lt-editor-intro">Cole os links fixos de cada aluno. Deixe em branco para remover.<br/>
+          ${kinds.map(k => `${CLASS_LINK_KINDS[k].icon} <strong>${igEscapeHtml(CLASS_LINK_KINDS[k].label)}</strong> — ${CLASS_LINK_KINDS[k].hint}`).join('<br/>')}</p>
+        <div class="links-head">
+          <span></span><span>Aluno</span>
+          ${kinds.map(k => `<span>${CLASS_LINK_KINDS[k].icon} ${igEscapeHtml(CLASS_LINK_KINDS[k].label)}</span>`).join('')}
+        </div>
+        <div class="links-rows">
           ${students.map(s => `
-            <div class="canva-row" data-student="${igEscapeHtml(s.id)}">
-              <span class="canva-avatar" style="background:${igEscapeHtml(s.color || '#8e6d86')}22">${igEscapeHtml(s.avatar || '🙂')}</span>
-              <div class="canva-who">
+            <div class="links-row" data-student="${igEscapeHtml(s.id)}">
+              <span class="links-avatar" style="background:${igEscapeHtml(s.color || '#8e6d86')}22">${igEscapeHtml(s.avatar || '🙂')}</span>
+              <div class="links-who">
                 <strong>${igEscapeHtml(s.name)}</strong>
                 <span>${igEscapeHtml(s.levelLabel || '')}</span>
               </div>
-              <input class="gm-input canva-input" type="url" inputmode="url"
-                     placeholder="https://www.canva.com/design/…"
-                     value="${igEscapeHtml(canvaLinkFor(s.id))}" />
+              ${kinds.map(k => `
+                <input class="gm-input links-input" type="url" inputmode="url" data-kind="${k}"
+                       aria-label="${igEscapeHtml(CLASS_LINK_KINDS[k].label)} — ${igEscapeHtml(s.name)}"
+                       placeholder="${igEscapeHtml(CLASS_LINK_KINDS[k].placeholder)}"
+                       value="${igEscapeHtml(classLinkFor(k, s.id))}" />
+              `).join('')}
             </div>
           `).join('')}
         </div>
-        <p class="gm-form-error" id="canvaErr" hidden></p>
+        <p class="gm-form-error" id="linksErr" hidden></p>
         <div class="game-btn-row" style="margin-top:16px">
-          <button class="btn btn-primary" id="canvaSave" type="button">💾 Salvar</button>
-          <button class="game-btn secondary" id="canvaCancel" type="button">Cancelar</button>
+          <button class="btn btn-primary" id="linksSave" type="button">💾 Salvar</button>
+          <button class="game-btn secondary" id="linksCancel" type="button">Cancelar</button>
         </div>
       ` : `
-        <p class="lt-count-note">${withLink} de ${students.length} alunos com slides</p>
+        <p class="lt-count-note">${counts.map(c => `${c.meta.icon} ${c.n} de ${students.length}`).join(' · ')}</p>
         <div class="canva-grid">
-          ${students.map(s => {
-            const url = canvaLinkFor(s.id);
-            return `
-              <div class="canva-card ${url ? '' : 'is-empty'}" style="--who:${igEscapeHtml(s.color || '#8e6d86')}">
-                <span class="canva-card-avatar">${igEscapeHtml(s.avatar || '🙂')}</span>
-                <span class="canva-card-name">${igEscapeHtml(s.name)}</span>
-                ${url
-                  ? `<a class="canva-open" href="${igEscapeHtml(url)}" target="_blank" rel="noopener noreferrer" data-open="${igEscapeHtml(s.id)}">🎨 Abrir slides</a>`
-                  : `<span class="canva-missing">sem link</span>`}
+          ${students.map(s => `
+            <div class="canva-card" style="--who:${igEscapeHtml(s.color || '#8e6d86')}">
+              <span class="canva-card-avatar">${igEscapeHtml(s.avatar || '🙂')}</span>
+              <span class="canva-card-name">${igEscapeHtml(s.name)}</span>
+              <div class="links-card-actions">
+                ${kinds.map(k => {
+                  const url = classLinkFor(k, s.id);
+                  return url
+                    ? `<a class="links-open links-open--${k}" href="${igEscapeHtml(url)}" target="_blank" rel="noopener noreferrer"
+                          data-open="${igEscapeHtml(s.id)}" data-kind="${k}">${CLASS_LINK_KINDS[k].icon} ${igEscapeHtml(CLASS_LINK_KINDS[k].label)}</a>`
+                    : `<span class="links-missing">${CLASS_LINK_KINDS[k].icon} sem link</span>`;
+                }).join('')}
               </div>
-            `;
-          }).join('')}
+            </div>
+          `).join('')}
         </div>
         <div class="game-btn-row" style="justify-content:center;margin-top:16px">
-          <button class="game-btn secondary" id="canvaEdit" type="button">✏️ Editar links</button>
+          <button class="game-btn secondary" id="linksEdit" type="button">✏️ Editar links</button>
         </div>
       `;
 
       if (editing) {
-        container.querySelector('#canvaCancel').addEventListener('click', () => { editing = false; paint(); });
-        container.querySelector('#canvaSave').addEventListener('click', () => {
-          const rows = [...container.querySelectorAll('.canva-row')];
-          const bad = rows.find(r => !canvaIsValidUrl(r.querySelector('.canva-input').value));
-          const err = container.querySelector('#canvaErr');
+        container.querySelector('#linksCancel').addEventListener('click', () => { editing = false; paint(); });
+        container.querySelector('#linksSave').addEventListener('click', () => {
+          const inputs = [...container.querySelectorAll('.links-input')];
+          const bad = inputs.find(i => !isValidLinkUrl(i.value));
+          const err = container.querySelector('#linksErr');
           if (bad) {
             err.textContent = 'Esse link não parece um endereço válido. Ele precisa começar com https://';
             err.hidden = false;
-            bad.querySelector('.canva-input').focus();
+            bad.focus();
             return;
           }
-          rows.forEach(r => saveCanvaLink(r.dataset.student, r.querySelector('.canva-input').value));
+          container.querySelectorAll('.links-row').forEach(row => {
+            row.querySelectorAll('.links-input').forEach(input => {
+              saveClassLink(input.dataset.kind, row.dataset.student, input.value);
+            });
+          });
           editing = false;
           paint();
         });
       } else {
-        container.querySelector('#canvaEdit').addEventListener('click', () => { editing = true; paint(); });
+        container.querySelector('#linksEdit').addEventListener('click', () => { editing = true; paint(); });
         // The href stays for middle-click and "copy link address"; this
         // handler is what makes a normal click reliable when the browser
         // silently refuses to honour target="_blank".
         container.querySelectorAll('[data-open]').forEach(link => {
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            openCanvaLink(canvaLinkFor(link.dataset.open));
+            openClassLink(classLinkFor(link.dataset.kind, link.dataset.open));
           });
         });
       }
@@ -711,7 +745,7 @@ const LiveTools = (() => {
     scoreboard: { title: '🏅 Live Scoreboard', render: renderScoreboard },
     timer: { title: '⏱️ Timer & Bell', render: renderTimer },
     stickers: { title: '📔 Sticker Book', render: renderStickers },
-    canva: { title: '🎨 Canva Slides', render: renderCanva },
+    links: { title: '🔗 Links da Aula', render: renderClassLinks },
   };
 
   function openTool(toolId) {
