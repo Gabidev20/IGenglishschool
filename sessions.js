@@ -118,6 +118,8 @@ function refreshLiveClassCockpit() {
       <button class="btn btn-primary" id="openSessionDrawerBtn">📋 Today's Class</button>
       <button class="btn btn-ghost" id="openReportsBtn">📊 Reports &amp; Progress</button>
     </div>
+
+    <div class="cockpit-canva" id="cockpitCanva"></div>
   `;
 
   if (young) {
@@ -132,7 +134,77 @@ function refreshLiveClassCockpit() {
 
   document.getElementById('openSessionDrawerBtn').addEventListener('click', openSessionDrawer);
   document.getElementById('openReportsBtn').addEventListener('click', openReportsModal);
+  renderCockpitCanva(student);
 }
+
+// ---------------------------------------------------------------------------
+// CANVA SLIDES on the cockpit — the deck for the student on screen right now,
+// one click away, with the link pasted in place. The full per-student list
+// still lives in the 🧰 Live Class Tools panel.
+// ---------------------------------------------------------------------------
+function renderCockpitCanva(student) {
+  const root = document.getElementById('cockpitCanva');
+  if (!root || !student) return;
+  let editing = false;
+
+  function paint() {
+    const url = canvaLinkFor(student.id);
+
+    root.innerHTML = editing ? `
+      <div class="cockpit-canva-edit">
+        <label for="cockpitCanvaInput">🎨 Link dos slides do Canva — ${escapeHtmlLite(student.name)}</label>
+        <div class="cockpit-canva-fields">
+          <input type="url" id="cockpitCanvaInput" inputmode="url"
+                 placeholder="https://www.canva.com/design/…" value="${escapeAttrLite(url)}" />
+          <button class="game-btn" id="cockpitCanvaSave" type="button">💾 Salvar</button>
+          <button class="game-btn secondary" id="cockpitCanvaCancel" type="button">Cancelar</button>
+        </div>
+        <p class="cockpit-canva-hint">No Canva: <strong>Compartilhar → Copiar link</strong>.
+          Deixe em branco para remover.</p>
+        <p class="gm-form-error" id="cockpitCanvaErr" hidden></p>
+      </div>
+    ` : `
+      <div class="cockpit-canva-row">
+        ${url
+          ? `<button class="btn btn-canva" id="cockpitCanvaOpen" type="button">🎨 Canva Slides</button>`
+          : `<button class="btn btn-ghost" id="cockpitCanvaAdd" type="button">🎨 Adicionar slides do Canva</button>`}
+        ${url ? `<button class="cockpit-canva-edit-btn" id="cockpitCanvaEdit" type="button"
+                         aria-label="Trocar o link dos slides" title="Trocar o link">✏️</button>` : ''}
+      </div>
+    `;
+
+    if (editing) {
+      const input = root.querySelector('#cockpitCanvaInput');
+      const save = () => {
+        const value = input.value.trim();
+        const err = root.querySelector('#cockpitCanvaErr');
+        if (!canvaIsValidUrl(value)) {
+          err.textContent = 'Esse link não parece um endereço válido. Ele precisa começar com https://';
+          err.hidden = false;
+          input.focus();
+          return;
+        }
+        saveCanvaLink(student.id, value);
+        editing = false;
+        paint();
+      };
+      root.querySelector('#cockpitCanvaSave').addEventListener('click', save);
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') save(); });
+      root.querySelector('#cockpitCanvaCancel').addEventListener('click', () => { editing = false; paint(); });
+      input.focus();
+    } else {
+      const open = root.querySelector('#cockpitCanvaOpen');
+      if (open) open.addEventListener('click', () => openCanvaLink(url));
+      const add = root.querySelector('#cockpitCanvaAdd');
+      if (add) add.addEventListener('click', () => { editing = true; paint(); });
+      const edit = root.querySelector('#cockpitCanvaEdit');
+      if (edit) edit.addEventListener('click', () => { editing = true; paint(); });
+    }
+  }
+
+  paint();
+}
+
 
 function openRoutineSongModal(songId) {
   const song = ROUTINE_SONGS[songId];

@@ -3,6 +3,58 @@
    Wheel of Fortune · Live Scoreboard · Visual Timer & Bell · Sticker Book
    ========================================================================== */
 
+/* ==========================================================================
+   CANVA SLIDES — one deck per student
+   --------------------------------------------------------------------------
+   Deliberately OUTSIDE the LiveTools closure: the Live Class Cockpit
+   (sessions.js) shows the same link for the active student, and both need to
+   read and write the same place. Stored in its own IGStore key, so it syncs
+   to Supabase with everything else.
+   ========================================================================== */
+const CANVA_KEY = 'canva_slides';
+
+function canvaLinks() {
+  const raw = IGStore.getJSON(CANVA_KEY, null);
+  return (raw && typeof raw === 'object') ? raw : {};
+}
+function canvaLinkFor(studentId) { return String(canvaLinks()[studentId] || '').trim(); }
+function saveCanvaLink(studentId, url) {
+  const all = canvaLinks();
+  const clean = String(url || '').trim();
+  if (clean) all[studentId] = clean; else delete all[studentId];
+  IGStore.setJSON(CANVA_KEY, all);
+}
+
+// Only http(s) gets through. A pasted `javascript:` URL would run in the page
+// the moment it was clicked, and this field ends up in a shared Supabase row —
+// so the check is a real one, not politeness.
+function canvaIsValidUrl(value) {
+  const v = String(value || '').trim();
+  if (!v) return true;                          // empty just means "no deck yet"
+  try {
+    const u = new URL(v);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch (e) { return false; }
+}
+
+// Open a deck, and actually open it.
+//
+// A bare `<a target="_blank">` is the obvious way to do this and it is what
+// this started as — but a blocked popup, an in-app browser or a webview
+// swallows that click silently: no error, no new tab, nothing happens. So try
+// a real window.open, and when it comes back null (which is exactly what a
+// blocked popup returns) fall back to navigating this tab. Leaving the school
+// site is a worse outcome than a new tab, but it is a far better outcome than
+// a button that does nothing.
+function openCanvaLink(url) {
+  const clean = String(url || '').trim();
+  if (!clean || !canvaIsValidUrl(clean)) return false;
+  let win = null;
+  try { win = window.open(clean, '_blank', 'noopener,noreferrer'); } catch (e) { win = null; }
+  if (!win) window.location.href = clean;
+  return true;
+}
+
 const LiveTools = (() => {
   // Shipped starting point. The live list is whatever the teacher saved —
   // see wheelChallenges() — so these are only the defaults.
@@ -566,38 +618,8 @@ const LiveTools = (() => {
     paint();
   }
 
-  // -------------------------------------------------------------------------
-  // CANVA SLIDES — one deck per student, opened in a new tab
-  //   The teacher builds a deck per student in Canva and pastes the link here;
-  //   during the lesson it is one click away instead of a hunt through tabs.
-  //   Links live in their own IGStore key, so they sync like everything else.
-  // -------------------------------------------------------------------------
-  const CANVA_KEY = 'canva_slides';
-
-  function canvaLinks() {
-    const raw = IGStore.getJSON(CANVA_KEY, null);
-    return (raw && typeof raw === 'object') ? raw : {};
-  }
-  function canvaLinkFor(studentId) { return String(canvaLinks()[studentId] || '').trim(); }
-  function saveCanvaLink(studentId, url) {
-    const all = canvaLinks();
-    const clean = String(url || '').trim();
-    if (clean) all[studentId] = clean; else delete all[studentId];
-    IGStore.setJSON(CANVA_KEY, all);
-  }
-
-  // Only http(s) is allowed through. A pasted `javascript:` URL would run in
-  // the page the moment it was clicked, and this field ends up in a shared
-  // Supabase row — so the check is a real one, not politeness.
-  function canvaIsValidUrl(value) {
-    const v = String(value || '').trim();
-    if (!v) return true;                       // empty just means "no deck yet"
-    try {
-      const u = new URL(v);
-      return u.protocol === 'http:' || u.protocol === 'https:';
-    } catch (e) { return false; }
-  }
-
+  // The store lives at the top of this file, outside the closure — the Live
+  // Class Cockpit shows the same link and has to reach it too.
   function renderCanva(container) {
     let editing = false;
 
@@ -637,7 +659,7 @@ const LiveTools = (() => {
                 <span class="canva-card-avatar">${igEscapeHtml(s.avatar || '🙂')}</span>
                 <span class="canva-card-name">${igEscapeHtml(s.name)}</span>
                 ${url
-                  ? `<a class="canva-open" href="${igEscapeHtml(url)}" target="_blank" rel="noopener noreferrer">🎨 Abrir slides</a>`
+                  ? `<a class="canva-open" href="${igEscapeHtml(url)}" target="_blank" rel="noopener noreferrer" data-open="${igEscapeHtml(s.id)}">🎨 Abrir slides</a>`
                   : `<span class="canva-missing">sem link</span>`}
               </div>
             `;
@@ -666,6 +688,15 @@ const LiveTools = (() => {
         });
       } else {
         container.querySelector('#canvaEdit').addEventListener('click', () => { editing = true; paint(); });
+        // The href stays for middle-click and "copy link address"; this
+        // handler is what makes a normal click reliable when the browser
+        // silently refuses to honour target="_blank".
+        container.querySelectorAll('[data-open]').forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            openCanvaLink(canvaLinkFor(link.dataset.open));
+          });
+        });
       }
     }
 

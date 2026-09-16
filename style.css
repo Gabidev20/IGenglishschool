@@ -4822,3 +4822,54 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
   .canva-who { grid-area: who; }
   .canva-input { grid-area: input; }
 }
+
+/* --------------------------------------------------------------------------
+   🎨 Canva Slides on the Live Class Cockpit
+   -------------------------------------------------------------------------- */
+.cockpit-canva { margin-top: 12px; }
+
+.cockpit-canva-row { display: flex; align-items: center; gap: 8px; }
+.cockpit-canva-row .btn { flex: 1; justify-content: center; }
+
+/* Canva's own colour, so the button reads as "that other app" rather than as
+   one more of the school's own actions. */
+.btn-canva {
+  background: linear-gradient(135deg, #00c4cc, #7d2ae8);
+  color: #fff;
+}
+.btn-canva:hover { filter: brightness(1.06); }
+
+.cockpit-canva-edit-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-size: 0.95rem;
+}
+.cockpit-canva-edit-btn:hover { border-color: var(--primary); }
+
+.cockpit-canva-edit > label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.cockpit-canva-fields { display: flex; gap: 8px; flex-wrap: wrap; }
+.cockpit-canva-fields input {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  font-family: inherit;
+  font-size: 0.92rem;
+}
+.cockpit-canva-fields input:focus { outline: none; border-color: var(--primary); }
+.cockpit-canva-hint { margin: 8px 0 0; font-size: 0.76rem; color: var(--ink-faint); }
+
+@media (max-width: 640px) {
+  .cockpit-canva-fields .game-btn { flex: 1; }
+}
