@@ -91,7 +91,7 @@ mainNav.addEventListener('click', (e) => {
 // ---------------------------------------------------------------------------
 const siteHeader = document.getElementById('siteHeader');
 const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-const observedSections = ['live-class', 'levels', 'games', 'songs', 'game-maker']
+const observedSections = ['live-class', 'levels', 'games', 'songs', 'game-maker', 'exam-maker']
   .map(id => document.getElementById(id))
   .filter(Boolean);
 
@@ -280,6 +280,7 @@ function closeModal() {
   if (typeof stopLearningModules === 'function') stopLearningModules();
   if (typeof LiveTools !== 'undefined') LiveTools.stopAll();
   if (typeof ArcadeGames !== 'undefined') ArcadeGames.stopAll();
+  if (typeof ExamGames !== 'undefined') ExamGames.stopAll();
   modalOverlay.hidden = true;
   modalBody.innerHTML = '';
   modalEl.classList.remove('modal--game', 'modal--fullscreen');

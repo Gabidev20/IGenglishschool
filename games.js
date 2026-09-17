@@ -8,7 +8,9 @@
 //   'sentences' — example sentences (lessonKit.js builds them from the
 //                 topic's reading text and its rule examples).
 //   'rules'     — a grammar rule set with two or more forms to sort between.
-// Custom games from the Game Maker only carry words, so the last two are kept
+//   'clothes'   — a wardrobe topic: Dress Up dresses a doll, so it only makes
+//                 sense where the words are actual garments.
+// Custom games from the Game Maker only carry words, so the last three are kept
 // away from them — see WORD_GAME_TYPES / gamesForTopic below.
 const GAME_TYPES = [
   { id: 'hangman', label: 'Hangman', icon: '🎯', needs: 'words' },
@@ -18,7 +20,25 @@ const GAME_TYPES = [
   { id: 'wordsearch', label: 'Word Search', icon: '🔍', needs: 'words' },
   { id: 'unscramble', label: 'Unscramble', icon: '🧩', needs: 'sentences' },
   { id: 'sortit', label: 'Sort It', icon: '🎯', needs: 'rules' },
+  { id: 'dressup', label: 'Dress Up', icon: '🧥', needs: 'clothes' },
 ];
+
+// Words that mark a topic as a wardrobe topic. Three hits is enough: a single
+// "shoes" in a sports topic shouldn't summon a dressing-up doll.
+const CLOTHES_HINTS = [
+  'shirt', 't-shirt', 'tshirt', 'blouse', 'dress', 'skirt', 'trousers', 'pants',
+  'jeans', 'shorts', 'coat', 'jacket', 'sweater', 'jumper', 'hoodie', 'scarf',
+  'hat', 'cap', 'gloves', 'socks', 'shoes', 'sneakers', 'trainers', 'boots',
+  'sandals', 'uniform', 'pyjamas', 'pajamas', 'raincoat', 'sunglasses',
+];
+
+function isClothesTopic(topic) {
+  const label = `${topic.id || ''} ${topic.title || ''}`.toLowerCase();
+  if (label.includes('cloth')) return true;
+  const hits = (topic.words || [])
+    .filter(w => CLOTHES_HINTS.includes(String(w.en || '').trim().toLowerCase()));
+  return hits.length >= 3;
+}
 
 // The subset a bare word list can run — what the Game Maker offers.
 const WORD_GAME_TYPES = GAME_TYPES.filter(g => g.needs === 'words');
@@ -33,6 +53,9 @@ function gamesForTopic(topic) {
     }
     if (g.needs === 'rules') {
       return typeof lkSort === 'function' && Boolean(lkSort(topic));
+    }
+    if (g.needs === 'clothes') {
+      return isClothesTopic(topic);
     }
     return (topic.words || []).length > 0;
   });
@@ -1080,6 +1103,551 @@ const GameEngine = (() => {
     paint();
   }
 
+  // -------------------------------------------------------------------------
+  // 8) DRESS UP — drag-and-drop wardrobe (clothes topics only)
+  // -------------------------------------------------------------------------
+  // The doll and every garment are drawn as SVG on one shared 300x500 grid, so
+  // a coat path always lands on the same shoulders the shirt path uses. Each
+  // garment owns a slot; wearing something fills its slot and evicts whatever
+  // conflicts with it (a dress clears the shirt and the skirt, and vice versa).
+
+  const DRESS_COLORS = [
+    { name: 'red', hex: '#e2574c' },
+    { name: 'orange', hex: '#ef8f45' },
+    { name: 'yellow', hex: '#f2c94c' },
+    { name: 'green', hex: '#5aa469' },
+    { name: 'blue', hex: '#4a8fd4' },
+    { name: 'purple', hex: '#8e6d86' },
+    { name: 'pink', hex: '#f08fb0' },
+    { name: 'brown', hex: '#8a5a3b' },
+    { name: 'black', hex: '#3a3a40' },
+    { name: 'white', hex: '#f2f2ef' },
+  ];
+  const DRESS_SKINS = ['#f7d7bd', '#edbb94', '#d09a6e', '#a9714a', '#7a4b2e'];
+  const DRESS_HAIRS = ['#3a2a24', '#6b4327', '#b07a3c', '#e0bc6d', '#c9435c'];
+
+  // Mix `hex` toward white (amt > 0) or black (amt < 0).
+  function dressShade(hex, amt) {
+    const n = parseInt(hex.slice(1), 16);
+    const target = amt < 0 ? 0 : 255;
+    const p = Math.abs(amt);
+    const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+      .map(v => Math.round((target - v) * p + v));
+    return '#' + ch.map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+  function dressColorName(hex) {
+    const found = DRESS_COLORS.find(c => c.hex.toLowerCase() === String(hex).toLowerCase());
+    return found ? found.name : '';
+  }
+
+  function dressFoot(x, c, sneaker) {
+    const d = dressShade(c, -0.3);
+    return `
+      <path d="M${x - 19},404 h27 q9,0 12,11 l3,11 q2,10 -8,10 h-34 q-8,0 -8,-10 z"
+            fill="${c}" stroke="${d}" stroke-width="3" stroke-linejoin="round"/>
+      ${sneaker
+        ? `<path d="M${x - 26},431 h51" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+           <path d="M${x - 12},408 q15,7 21,19" stroke="${dressShade(c, 0.5)}" stroke-width="5" fill="none" stroke-linecap="round"/>`
+        : `<path d="M${x - 15},412 h28" stroke="${dressShade(c, 0.35)}" stroke-width="4" stroke-linecap="round"/>`}
+    `;
+  }
+
+  // Every garment: (colour, 'boy'|'girl') -> SVG markup on the shared grid.
+  const DRESS_DRAW = {
+    shirt: (c) => `
+      <path d="M112,156 L136,146 Q150,163 164,146 L188,156 L212,200 L190,214 L182,188 L186,264 Q150,275 114,264 L118,188 L110,214 L88,200 Z"
+            fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M136,146 Q150,163 164,146" fill="none" stroke="${dressShade(c, -0.26)}" stroke-width="3"/>`,
+
+    coat: (c) => `
+      <path d="M110,154 L134,145 L150,170 L166,145 L190,154 Q208,160 210,182 L216,278 L192,287 L186,254 L190,313 Q150,325 110,313 L114,254 L108,287 L84,278 L90,182 Q92,160 110,154 Z"
+            fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M150,170 L150,319" stroke="${dressShade(c, -0.28)}" stroke-width="3"/>
+      <path d="M134,145 L150,170 L120,180 Z" fill="${dressShade(c, -0.14)}"/>
+      <path d="M166,145 L150,170 L180,180 Z" fill="${dressShade(c, -0.14)}"/>
+      <circle cx="150" cy="212" r="5" fill="${dressShade(c, 0.4)}"/>
+      <circle cx="150" cy="248" r="5" fill="${dressShade(c, 0.4)}"/>`,
+
+    dress: (c) => `
+      <path d="M112,156 L136,146 Q150,163 164,146 L188,156 L210,198 L190,211 L182,188 L188,266 L218,366 Q150,392 82,366 L112,266 L118,188 L110,211 L90,198 Z"
+            fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M112,266 Q150,278 188,266" fill="none" stroke="${dressShade(c, -0.26)}" stroke-width="3"/>
+      <circle cx="150" cy="300" r="6" fill="${dressShade(c, 0.4)}"/>`,
+
+    pants: (c) => `
+      <path d="M108,256 L192,256 L196,306 L192,428 L158,428 L150,336 L142,428 L108,428 L104,306 Z"
+            fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="106" y="252" width="88" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
+
+    shorts: (c) => `
+      <path d="M108,256 L192,256 L198,344 L158,344 L150,306 L142,344 L102,344 Z"
+            fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="106" y="252" width="88" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
+
+    skirt: (c) => `
+      <path d="M112,256 L188,256 L214,352 Q150,376 86,352 Z"
+            fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="108" y="250" width="84" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
+
+    shoes: (c) => dressFoot(126, c, false) + dressFoot(174, c, false),
+    sneakers: (c) => dressFoot(126, c, true) + dressFoot(174, c, true),
+
+    hat: (c, g) => g === 'girl'
+      ? `<ellipse cx="150" cy="66" rx="84" ry="20" fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3"/>
+         <path d="M114,66 Q112,22 150,22 Q188,22 186,66 Z" fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3" stroke-linejoin="round"/>
+         <rect x="112" y="52" width="76" height="14" rx="7" fill="${dressShade(c, -0.3)}"/>
+         <circle cx="188" cy="59" r="9" fill="${dressShade(c, -0.3)}"/>`
+      : `<path d="M102,72 Q102,24 150,24 Q198,24 198,72 Z" fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3" stroke-linejoin="round"/>
+         <path d="M196,54 Q248,60 250,74 Q248,86 196,80 Z" fill="${dressShade(c, -0.18)}" stroke="${dressShade(c, -0.32)}" stroke-width="3" stroke-linejoin="round"/>
+         <circle cx="150" cy="25" r="7" fill="${dressShade(c, -0.3)}"/>`,
+
+    headband: (c) => `
+      <path d="M106,74 Q150,32 194,74" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round"/>
+      <path d="M186,52 q22,-16 24,2 q-14,6 -24,-2 Z" fill="${dressShade(c, 0.15)}" stroke="${dressShade(c, -0.25)}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M186,52 q26,4 18,20 q-16,-4 -18,-20 Z" fill="${dressShade(c, 0.15)}" stroke="${dressShade(c, -0.25)}" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="189" cy="58" r="6" fill="${dressShade(c, -0.25)}"/>`,
+
+    bag: (c, g) => g === 'girl'
+      ? `<path d="M126,158 Q98,224 74,258" fill="none" stroke="${dressShade(c, -0.3)}" stroke-width="9" stroke-linecap="round"/>
+         <rect x="40" y="252" width="68" height="52" rx="15" fill="${c}" stroke="${dressShade(c, -0.3)}" stroke-width="3"/>
+         <rect x="40" y="252" width="68" height="20" rx="10" fill="${dressShade(c, -0.18)}"/>
+         <circle cx="74" cy="278" r="6" fill="${dressShade(c, 0.45)}"/>`
+      : `<path d="M126,156 L142,266" fill="none" stroke="${dressShade(c, -0.3)}" stroke-width="9" stroke-linecap="round"/>
+         <path d="M174,156 L158,266" fill="none" stroke="${dressShade(c, -0.3)}" stroke-width="9" stroke-linecap="round"/>
+         <rect x="200" y="184" width="62" height="82" rx="18" fill="${c}" stroke="${dressShade(c, -0.3)}" stroke-width="3"/>
+         <rect x="200" y="184" width="62" height="28" rx="14" fill="${dressShade(c, -0.18)}"/>
+         <rect x="222" y="224" width="18" height="12" rx="5" fill="${dressShade(c, 0.45)}"/>`,
+  };
+
+  // slot      — only one garment at a time lives here
+  // conflicts — slots emptied when this one is filled
+  // plural    — "black shoes", never "a black shoes"
+  const DRESS_ITEMS = [
+    { id: 'shirt', en: 'shirt', pt: 'camisa', slot: 'top', conflicts: ['full'], who: 'both', cat: 'tops', color: '#4a8fd4', crop: '80 138 140 140' },
+    { id: 'coat', en: 'coat', pt: 'casaco', slot: 'outer', conflicts: [], who: 'both', cat: 'tops', color: '#8a5a3b', crop: '78 136 144 192' },
+    { id: 'dress', en: 'dress', pt: 'vestido', slot: 'full', conflicts: ['top', 'bottom'], who: 'girl', cat: 'tops', color: '#f08fb0', crop: '76 138 148 260' },
+    { id: 'shorts', en: 'shorts', pt: 'shorts', slot: 'bottom', conflicts: ['full'], who: 'both', cat: 'bottoms', color: '#5aa469', plural: true, crop: '96 246 108 106' },
+    { id: 'pants', en: 'pants', pt: 'calça', slot: 'bottom', conflicts: ['full'], who: 'both', cat: 'bottoms', color: '#3a3a40', plural: true, crop: '96 246 108 190' },
+    { id: 'skirt', en: 'skirt', pt: 'saia', slot: 'bottom', conflicts: ['full'], who: 'girl', cat: 'bottoms', color: '#8e6d86', crop: '82 244 136 136' },
+    { id: 'shoes', en: 'shoes', pt: 'sapatos', slot: 'feet', conflicts: [], who: 'both', cat: 'shoes', color: '#3a3a40', plural: true, crop: '94 396 112 52' },
+    { id: 'sneakers', en: 'sneakers', pt: 'tênis', slot: 'feet', conflicts: [], who: 'both', cat: 'shoes', color: '#e2574c', plural: true, crop: '94 396 112 52' },
+    { id: 'hat', en: 'hat', pt: 'chapéu', slot: 'head', conflicts: [], who: 'both', cat: 'extras', color: '#e2574c', crop: '60 16 190 76' },
+    { id: 'headband', en: 'headband', pt: 'tiara', slot: 'hair', conflicts: [], who: 'girl', cat: 'extras', color: '#f2c94c', crop: '96 28 122 58' },
+    { id: 'bag', en: 'bag', pt: 'bolsa', slot: 'bag', conflicts: [], who: 'both', cat: 'extras', color: '#ef8f45', crop: '30 150 244 164' },
+  ];
+
+  // Back to front. The doll paints first, then these on top of it.
+  const DRESS_LAYERS = ['bottom', 'full', 'top', 'feet', 'outer', 'bag', 'hair', 'head'];
+  const DRESS_CATS = [
+    { id: 'all', label: 'All', icon: '✨' },
+    { id: 'tops', label: 'Tops', icon: '👕' },
+    { id: 'bottoms', label: 'Bottoms', icon: '👖' },
+    { id: 'shoes', label: 'Shoes', icon: '👟' },
+    { id: 'extras', label: 'Extras', icon: '🎒' },
+  ];
+
+  function dressBody(g, skin, hair) {
+    const line = '#2e2b2e';
+    return `
+      ${g === 'girl'
+        ? `<path d="M100,84 Q96,18 150,18 Q204,18 200,84 L210,244 Q197,256 186,244 L192,104 Q150,72 108,104 L114,244 Q103,256 90,244 Z" fill="${hair}"/>`
+        : ''}
+      <rect x="136" y="122" width="28" height="38" rx="12" fill="${dressShade(skin, -0.14)}"/>
+      <path d="M106,168 Q108,152 128,147 L172,147 Q192,152 194,168 L190,272 Q150,284 110,272 Z" fill="${skin}"/>
+      <rect x="84" y="158" width="23" height="124" rx="11" fill="${skin}"/>
+      <rect x="193" y="158" width="23" height="124" rx="11" fill="${skin}"/>
+      <circle cx="95" cy="288" r="12" fill="${skin}"/>
+      <circle cx="205" cy="288" r="12" fill="${skin}"/>
+      <rect x="114" y="256" width="32" height="176" rx="15" fill="${skin}"/>
+      <rect x="154" y="256" width="32" height="176" rx="15" fill="${skin}"/>
+      <ellipse cx="126" cy="430" rx="22" ry="13" fill="${dressShade(skin, -0.1)}"/>
+      <ellipse cx="174" cy="430" rx="22" ry="13" fill="${dressShade(skin, -0.1)}"/>
+      <!-- A plain base layer, so an undressed doll is a doll in a vest, not a
+           naked one. Every garment paints over it. -->
+      <path d="M118,158 L136,150 L164,150 L182,158 L185,264 Q150,275 115,264 Z" fill="#f4f4f1" stroke="#dcdcd4" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M112,256 L188,256 L184,296 Q150,312 116,296 Z" fill="#f4f4f1" stroke="#dcdcd4" stroke-width="2.5" stroke-linejoin="round"/>
+      <ellipse cx="105" cy="94" rx="9" ry="13" fill="${dressShade(skin, -0.08)}"/>
+      <ellipse cx="195" cy="94" rx="9" ry="13" fill="${dressShade(skin, -0.08)}"/>
+      <ellipse cx="150" cy="86" rx="46" ry="50" fill="${skin}"/>
+      <ellipse cx="132" cy="90" rx="5.5" ry="6.5" fill="${line}"/>
+      <ellipse cx="168" cy="90" rx="5.5" ry="6.5" fill="${line}"/>
+      <circle cx="134" cy="87" r="2" fill="#ffffff"/>
+      <circle cx="170" cy="87" r="2" fill="#ffffff"/>
+      <ellipse cx="118" cy="106" rx="8" ry="5" fill="#f0a3a8" opacity="0.55"/>
+      <ellipse cx="182" cy="106" rx="8" ry="5" fill="#f0a3a8" opacity="0.55"/>
+      <path d="M137,110 Q150,123 163,110" fill="none" stroke="${line}" stroke-width="3.5" stroke-linecap="round"/>
+      ${g === 'girl'
+        ? `<path d="M104,88 Q100,28 150,28 Q200,28 196,88 Q189,58 166,52 Q148,74 121,66 Q109,66 104,88 Z" fill="${hair}"/>`
+        : `<path d="M105,86 Q104,30 150,30 Q196,30 195,86 Q184,56 150,56 Q118,56 105,86 Z" fill="${hair}"/>`}
+    `;
+  }
+
+  function renderDressUp(container, topic) {
+    let gender = null;
+    let worn = {};                 // slot -> { id, color }
+    let activeColor = null;        // null = each garment keeps its own colour
+    let skin = DRESS_SKINS[0];
+    let hair = DRESS_HAIRS[0];
+    let filter = 'all';
+    let challenge = true;
+    let mission = null;
+    let outfits = 0;
+    let celebrating = false;
+    let dragEnd = null;            // tears down an in-flight drag on unmount
+
+    const itemById = id => DRESS_ITEMS.find(i => i.id === id);
+    const available = () => DRESS_ITEMS.filter(i => i.who === 'both' || i.who === gender);
+    const colorFor = item => activeColor || item.color;
+
+    function say(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    function previewSVG(item, color) {
+      return `<svg class="dressup-thumb" viewBox="${item.crop}" xmlns="http://www.w3.org/2000/svg">${DRESS_DRAW[item.id](color, gender || 'girl')}</svg>`;
+    }
+
+    // ---- style challenge ---------------------------------------------------
+    function newMission() {
+      const pool = available();
+      const useDress = Math.random() < 0.35 && pool.some(i => i.slot === 'full');
+      const slots = shuffle([...new Set(pool.map(i => i.slot))]
+        .filter(s => (useDress ? s !== 'top' && s !== 'bottom' : s !== 'full')));
+      mission = slots.slice(0, 3).map(s => {
+        const it = pickN(pool.filter(i => i.slot === s), 1)[0];
+        const col = pickN(DRESS_COLORS, 1)[0];
+        return { id: it.id, slot: s, en: it.en, color: col.hex, colorName: col.name };
+      });
+    }
+
+    const missionDone = m => {
+      const w = worn[m.slot];
+      return Boolean(w) && w.id === m.id && w.color.toLowerCase() === m.color.toLowerCase();
+    };
+
+    function checkMission() {
+      if (!challenge || !mission || celebrating) return;
+      if (!mission.every(missionDone)) return;
+      celebrating = true;
+      outfits++;
+      playWin();
+      const stage = container.querySelector('.dressup-stage');
+      if (stage) confettiFromElement(stage);
+      if (typeof awardProgress === 'function') awardProgress(12, 1);
+      paint();
+      say('Perfect outfit!');
+      setTimeout(() => {
+        celebrating = false;
+        newMission();
+        paint();
+      }, 1900);
+    }
+
+    // ---- wearing -----------------------------------------------------------
+    function wear(item) {
+      worn[item.slot] = { id: item.id, color: colorFor(item) };
+      item.conflicts.forEach(s => { delete worn[s]; });
+      playCorrect();
+      say(item.en);
+      paint();
+      checkMission();
+    }
+
+    function takeOff(slot) {
+      if (!worn[slot]) return;
+      delete worn[slot];
+      playWrong();
+      paint();
+    }
+
+    function outfitSentence() {
+      const order = ['head', 'hair', 'outer', 'top', 'full', 'bottom', 'feet', 'bag'];
+      const parts = order.filter(s => worn[s]).map(s => {
+        const it = itemById(worn[s].id);
+        const cn = dressColorName(worn[s].color);
+        const noun = cn ? `${cn} ${it.en}` : it.en;
+        if (it.plural) return noun;
+        return `${/^[aeiou]/i.test(cn || it.en) ? 'an' : 'a'} ${noun}`;
+      });
+      const who = gender === 'girl' ? 'She' : 'He';
+      if (!parts.length) return `${who} isn't wearing anything yet!`;
+      const list = parts.length === 1
+        ? parts[0]
+        : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+      return `${who}'s wearing ${list}.`;
+    }
+
+    // ---- drag & drop (pointer events: one path for mouse, pen and touch) ----
+    function beginDrag(ev, item, fromDoll) {
+      ev.preventDefault();
+      const stage = container.querySelector('.dressup-stage');
+      if (!stage) return;
+      const ghost = document.createElement('div');
+      ghost.className = 'dressup-ghost';
+      ghost.innerHTML = previewSVG(item, fromDoll ? worn[item.slot].color : colorFor(item));
+      document.body.appendChild(ghost);
+
+      const startX = ev.clientX;
+      const startY = ev.clientY;
+      let moved = false;
+
+      const place = (x, y) => { ghost.style.transform = `translate(${x - 54}px, ${y - 54}px)`; };
+      place(startX, startY);
+
+      const isOver = (x, y) => {
+        const r = stage.getBoundingClientRect();
+        return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      };
+
+      const onMove = e => {
+        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+        place(e.clientX, e.clientY);
+        const over = isOver(e.clientX, e.clientY);
+        stage.classList.toggle('is-target', over && !fromDoll);
+        stage.classList.toggle('is-removing', moved && fromDoll && !over);
+      };
+
+      const finish = e => {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', finish);
+        window.removeEventListener('pointercancel', finish);
+        dragEnd = null;
+        ghost.remove();
+        stage.classList.remove('is-target', 'is-removing');
+        if (!e) return;                              // unmounted mid-drag
+        const over = isOver(e.clientX, e.clientY);
+        if (fromDoll) {
+          if (!over || !moved) takeOff(item.slot);   // dragged off, or tapped
+        } else if (over || !moved) {
+          wear(item);                                // dropped on doll, or tapped
+        }
+      };
+
+      dragEnd = () => finish(null);
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', finish);
+      window.addEventListener('pointercancel', finish);
+    }
+
+    // ---- painting ----------------------------------------------------------
+    function chooserHTML() {
+      const card = (g, emoji, label, pt) => `
+        <button class="dressup-choose-card" data-gender="${g}">
+          <span class="dressup-choose-doll">
+            <svg viewBox="0 10 300 445" xmlns="http://www.w3.org/2000/svg">
+              ${dressBody(g, DRESS_SKINS[0], g === 'girl' ? DRESS_HAIRS[1] : DRESS_HAIRS[0])}
+              ${g === 'girl'
+                ? DRESS_DRAW.dress('#f08fb0', g)
+                : DRESS_DRAW.shorts('#3a3a40', g) + DRESS_DRAW.shirt('#4a8fd4', g)}
+              ${DRESS_DRAW.sneakers('#f2f2ef', g)}
+            </svg>
+          </span>
+          <span class="dressup-choose-name">${emoji} ${label}</span>
+          <span class="dressup-choose-pt">${pt}</span>
+        </button>`;
+      return `
+        <div class="dressup-chooser">
+          <h3>Who are we dressing today?</h3>
+          <p>Pick a character — then drag the clothes onto them.</p>
+          <div class="dressup-choose-row">
+            ${card('boy', '👦', 'The boy', 'o boneco')}
+            ${card('girl', '👧', 'The girl', 'a boneca')}
+          </div>
+        </div>`;
+    }
+
+    function gameHTML() {
+      const items = available().filter(i => filter === 'all' || i.cat === filter);
+      const wornCount = Object.keys(worn).length;
+
+      const missionHTML = !challenge || !mission ? '' : `
+        <div class="dressup-mission${celebrating ? ' done' : ''}">
+          <span class="dressup-mission-title">🎯 Style Challenge</span>
+          <ul class="dressup-mission-list">
+            ${mission.map(m => `
+              <li class="${missionDone(m) ? 'ok' : ''}">
+                <i style="background:${m.color}"></i>${igEscapeHtml(m.colorName)} ${igEscapeHtml(m.en)}
+              </li>`).join('')}
+          </ul>
+        </div>`;
+
+      return `
+        <div class="game-toolbar">
+          <div class="dressup-switch">
+            <button class="dressup-gender${gender === 'boy' ? ' active' : ''}" data-gender="boy">👦 Boy</button>
+            <button class="dressup-gender${gender === 'girl' ? ' active' : ''}" data-gender="girl">👧 Girl</button>
+          </div>
+          <span class="game-status-pill">👗 ${wornCount} on · 🏆 ${outfits} outfit${outfits === 1 ? '' : 's'}</span>
+          <div class="game-btn-row">
+            <button class="game-btn secondary" data-action="mode">${challenge ? '🎨 Free play' : '🎯 Challenge'}</button>
+            <button class="game-btn secondary" data-action="surprise">🎲 Surprise</button>
+            <button class="game-btn secondary" data-action="undress">🧺 Take it all off</button>
+          </div>
+        </div>
+
+        <div class="dressup-layout">
+          <div class="dressup-stage-wrap">
+            ${missionHTML}
+            <div class="dressup-stage">
+              <svg class="dressup-doll" viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+                <ellipse class="dressup-shadow" cx="150" cy="452" rx="92" ry="16"/>
+                ${dressBody(gender, skin, hair)}
+                ${DRESS_LAYERS.filter(s => worn[s]).map(s => `
+                  <g class="dressup-worn" data-worn="${s}">${DRESS_DRAW[worn[s].id](worn[s].color, gender)}</g>`).join('')}
+              </svg>
+              <span class="dressup-drop-hint">Drop the clothes here 👗</span>
+              ${celebrating ? '<div class="dressup-cheer">🎉 Perfect outfit!</div>' : ''}
+            </div>
+            <div class="dressup-looks">
+              <span class="dressup-looks-label">Skin</span>
+              ${DRESS_SKINS.map(s => `<button class="dressup-dot${s === skin ? ' active' : ''}" data-skin="${s}" style="background:${s}" aria-label="skin tone"></button>`).join('')}
+              <span class="dressup-looks-label">Hair</span>
+              ${DRESS_HAIRS.map(h => `<button class="dressup-dot${h === hair ? ' active' : ''}" data-hair="${h}" style="background:${h}" aria-label="hair colour"></button>`).join('')}
+            </div>
+          </div>
+
+          <div class="dressup-wardrobe">
+            <div class="dressup-tabs">
+              ${DRESS_CATS.map(c => `<button class="dressup-tab${filter === c.id ? ' active' : ''}" data-cat="${c.id}">${c.icon} ${c.label}</button>`).join('')}
+            </div>
+            <div class="dressup-palette">
+              <button class="dressup-swatch rainbow${activeColor === null ? ' active' : ''}" data-color="" title="Each piece keeps its own colour">🎨</button>
+              ${DRESS_COLORS.map(c => `<button class="dressup-swatch${activeColor === c.hex ? ' active' : ''}" data-color="${c.hex}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}
+            </div>
+            <div class="dressup-rack">
+              ${items.map(i => {
+                const on = worn[i.slot] && worn[i.slot].id === i.id;
+                return `
+                  <button class="dressup-card${on ? ' worn' : ''}" data-item="${i.id}">
+                    ${previewSVG(i, on ? worn[i.slot].color : colorFor(i))}
+                    <span class="dressup-card-en">${igEscapeHtml(i.en)}</span>
+                    <span class="dressup-card-pt">${igEscapeHtml(i.pt)}</span>
+                    ${on ? '<span class="dressup-card-on">✓</span>' : ''}
+                  </button>`;
+              }).join('')}
+            </div>
+            <p class="dressup-tip">Drag a piece onto the doll — or just tap it. Tap what ${gender === 'girl' ? 'she' : 'he'}'s wearing to take it off.</p>
+          </div>
+        </div>
+
+        <div class="dressup-say">
+          <p>${igEscapeHtml(outfitSentence())}</p>
+          <button class="game-btn" data-action="say">🔊 Say it</button>
+        </div>`;
+    }
+
+    function paint() {
+      const rack = container.querySelector('.dressup-rack');
+      const scroll = rack ? rack.scrollTop : 0;
+      container.innerHTML = gender ? gameHTML() : chooserHTML();
+      bind();
+      const newRack = container.querySelector('.dressup-rack');
+      if (newRack) newRack.scrollTop = scroll;
+    }
+
+    function bind() {
+      container.querySelectorAll('[data-gender]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const next = btn.dataset.gender;
+          if (next === gender) return;
+          gender = next;
+          hair = gender === 'girl' ? DRESS_HAIRS[1] : DRESS_HAIRS[0];
+          // Girl-only pieces can't stay on the boy.
+          Object.keys(worn).forEach(s => {
+            const it = itemById(worn[s].id);
+            if (it.who !== 'both' && it.who !== gender) delete worn[s];
+          });
+          newMission();
+          paint();
+        });
+      });
+
+      container.querySelectorAll('[data-cat]').forEach(btn => {
+        btn.addEventListener('click', () => { filter = btn.dataset.cat; paint(); });
+      });
+
+      container.querySelectorAll('[data-color]').forEach(btn => {
+        btn.addEventListener('click', () => { activeColor = btn.dataset.color || null; paint(); });
+      });
+
+      container.querySelectorAll('[data-skin]').forEach(btn => {
+        btn.addEventListener('click', () => { skin = btn.dataset.skin; paint(); });
+      });
+      container.querySelectorAll('[data-hair]').forEach(btn => {
+        btn.addEventListener('click', () => { hair = btn.dataset.hair; paint(); });
+      });
+
+      // A wardrobe card: drag it to the doll, or simply tap it.
+      container.querySelectorAll('.dressup-card').forEach(card => {
+        card.addEventListener('pointerdown', ev => {
+          if (ev.button != null && ev.button !== 0) return;
+          beginDrag(ev, itemById(card.dataset.item), false);
+        });
+      });
+
+      // Something already on: drag it away, or tap it, to take it off.
+      container.querySelectorAll('[data-worn]').forEach(layer => {
+        layer.addEventListener('pointerdown', ev => {
+          if (ev.button != null && ev.button !== 0) return;
+          const slot = layer.dataset.worn;
+          if (!worn[slot]) return;
+          beginDrag(ev, itemById(worn[slot].id), true);
+        });
+      });
+
+      const act = name => container.querySelector(`[data-action="${name}"]`);
+
+      const undress = act('undress');
+      if (undress) undress.addEventListener('click', () => { worn = {}; playWrong(); paint(); });
+
+      const mode = act('mode');
+      if (mode) mode.addEventListener('click', () => {
+        challenge = !challenge;
+        if (challenge) newMission();
+        paint();
+      });
+
+      const surprise = act('surprise');
+      if (surprise) surprise.addEventListener('click', () => {
+        worn = {};
+        const pool = available();
+        const useDress = gender === 'girl' && Math.random() < 0.4;
+        const slots = useDress ? ['full', 'feet', 'head'] : ['top', 'bottom', 'feet'];
+        if (Math.random() < 0.5) slots.push(gender === 'girl' ? 'hair' : 'outer');
+        if (Math.random() < 0.5) slots.push('bag');
+        slots.forEach(s => {
+          const opts = pool.filter(i => i.slot === s);
+          if (!opts.length) return;
+          const it = pickN(opts, 1)[0];
+          worn[s] = { id: it.id, color: pickN(DRESS_COLORS, 1)[0].hex };
+        });
+        playCorrect();
+        paint();
+        checkMission();
+      });
+
+      const sayBtn = act('say');
+      if (sayBtn) sayBtn.addEventListener('click', () => say(outfitSentence()));
+    }
+
+    newMission();
+    paint();
+
+    return () => {
+      if (dragEnd) dragEnd();
+      document.querySelectorAll('.dressup-ghost').forEach(el => el.remove());
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -1105,6 +1673,7 @@ const GameEngine = (() => {
       case 'wordsearch': activeCleanup = renderWordSearch(container, topic); break;
       case 'unscramble': activeCleanup = renderUnscramble(container, topic); break;
       case 'sortit': activeCleanup = renderSortIt(container, topic); break;
+      case 'dressup': activeCleanup = renderDressUp(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }
