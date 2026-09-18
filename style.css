@@ -5768,7 +5768,8 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 .exam-tag.hint { background: var(--bg); color: var(--ink-faint); }
 
 .exam-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.exam-actions .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.exam-actions .btn:disabled,
+.ex-actions .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
 
 /* ---- the generated paper ----------------------------------------------- */
 .exam-result { display: flex; flex-direction: column; gap: 14px; }
