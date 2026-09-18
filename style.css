@@ -990,6 +990,8 @@ main > section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 .game-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
 .game-btn.secondary { background: var(--bg); color: var(--ink-soft); border: 2px solid var(--border); }
 .game-btn.secondary:hover { color: var(--ink); border-color: var(--primary); }
+.game-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+.game-btn:disabled:hover { background: var(--primary); transform: none; }
 
 .game-end-banner {
   text-align: center;
@@ -2155,16 +2157,28 @@ main > section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 .live-tool-btn:hover { background: var(--primary-soft); color: var(--primary-dark); }
 
 /* --- Wheel of Fortune --- */
-.wheel-stage { position: relative; width: 280px; margin: 0 auto; }
+/* The stage is as wide as the modal allows and the canvas measures itself
+   against it, so the wheel grows with the screen instead of staying 280px on
+   a projector. */
+.wheel-stage {
+  position: relative;
+  width: 100%;
+  max-width: min(620px, 92vw);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
 .wheel-pointer {
   position: absolute;
-  top: -6px; left: 50%;
+  top: -10px; left: 50%;
   transform: translateX(-50%);
-  font-size: 1.6rem;
+  font-size: clamp(1.4rem, 3.4vw, 2.2rem);
+  line-height: 1;
   color: var(--primary-dark);
+  text-shadow: 0 2px 4px rgba(46, 43, 46, 0.25);
   z-index: 2;
 }
-#wheelCanvas { border-radius: 50%; box-shadow: var(--shadow-lg); }
+#wheelCanvas { border-radius: 50%; box-shadow: var(--shadow-lg); display: block; }
 
 /* --- Scoreboard --- */
 .scoreboard-student {
@@ -2194,7 +2208,8 @@ main > section { padding: 90px 28px; max-width: 1240px; margin: 0 auto; }
 
 @media (max-width: 640px) {
   .live-toolbar { right: 16px; bottom: 16px; }
-  .wheel-stage, #wheelCanvas { width: 240px; height: 240px; }
+  /* The canvas sets its own pixel size; the stage only has to stop growing. */
+  .wheel-stage { max-width: 94vw; }
 }
 
 /* ==========================================================================

@@ -117,11 +117,13 @@ const LiveTools = (() => {
 
   let activeTimers = [];
   let wheelAnimId = null;
+  let wheelResizeHandler = null;
   function track(id) { activeTimers.push(id); return id; }
   function clearTimers() { activeTimers.forEach(id => { clearInterval(id); clearTimeout(id); }); activeTimers = []; }
   function stopAll() {
     clearTimers();
     if (wheelAnimId) { cancelAnimationFrame(wheelAnimId); wheelAnimId = null; }
+    if (wheelResizeHandler) { window.removeEventListener('resize', wheelResizeHandler); wheelResizeHandler = null; }
   }
 
   // Small local audio helper (bell + confetti), consistent with the other modules.
@@ -164,18 +166,98 @@ const LiveTools = (() => {
   // -------------------------------------------------------------------------
   // WHEEL OF FORTUNE
   // -------------------------------------------------------------------------
+  // The wheel is sized to the space it is given (a phone, a laptop, a class
+  // projector) and every label is fitted to its own wedge: a slice is a
+  // triangle, so the room for text runs out as it approaches the middle. The
+  // old version drew each label at a fixed size from the rim inwards, which is
+  // why long challenges ran past the centre and across each other.
+
+  const WHEEL_HUB_RATIO = 0.17;   // the plain disc in the middle
+  const WHEEL_RIM = 0.045;        // gap between the rim and the text
+
+  // Greedy word wrap by measured width. A single word longer than the line is
+  // kept whole — the caller drops a font size and tries again.
+  function wheelWrap(ctx2d, text, maxWidth) {
+    const words = String(text).trim().split(/\s+/);
+    const lines = [];
+    let line = '';
+    words.forEach(word => {
+      const next = line ? `${line} ${word}` : word;
+      if (line && ctx2d.measureText(next).width > maxWidth) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = next;
+      }
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  // Largest font at which the whole label fits inside the wedge. The block of
+  // lines is centred on the slice's mid-line, so its height has to fit the
+  // width of the wedge at the point where the text reaches furthest in.
+  function wheelFitLabel(ctx2d, text, rOuter, rHub, halfAngle, maxFont) {
+    const maxLineWidth = rOuter - rHub;
+    for (let fs = maxFont; fs >= 7; fs--) {
+      ctx2d.font = `bold ${fs}px Inter, sans-serif`;
+      const lines = wheelWrap(ctx2d, text, maxLineWidth);
+      const lineH = fs * 1.16;
+      const widest = Math.max(...lines.map(l => ctx2d.measureText(l).width));
+      if (widest > maxLineWidth) continue;
+      const innerEdge = Math.max(rOuter - widest, rHub);
+      const room = 2 * innerEdge * Math.sin(halfAngle) - 4;
+      if (lines.length * lineH <= room) return { fs, lines, lineH };
+    }
+    // Nothing fits: smallest type, and as many lines as the wedge holds.
+    ctx2d.font = 'bold 7px Inter, sans-serif';
+    const lines = wheelWrap(ctx2d, text, maxLineWidth);
+    const lineH = 7 * 1.16;
+    const room = 2 * rHub * Math.sin(halfAngle) - 4;
+    const keep = Math.max(1, Math.floor(room / lineH));
+    if (lines.length > keep) {
+      lines.length = keep;
+      lines[keep - 1] = lines[keep - 1].replace(/\s*\S*$/, '') + '…';
+    }
+    return { fs: 7, lines, lineH };
+  }
+
+  // CSS pixels for the wheel, from the room the stage has and the height of
+  // the window — never smaller than usable, never bigger than the modal.
+  function wheelSize(canvas) {
+    const stage = canvas.parentElement;
+    const available = (stage && stage.clientWidth) || 280;
+    return Math.round(Math.max(200, Math.min(available, window.innerHeight * 0.58, 620)));
+  }
+
+  function sizeWheelCanvas(canvas) {
+    const css = wheelSize(canvas);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.style.width = `${css}px`;
+    canvas.style.height = `${css}px`;
+    canvas.width = Math.round(css * dpr);
+    canvas.height = Math.round(css * dpr);
+    canvas.dataset.size = String(css);
+    canvas.dataset.dpr = String(dpr);
+    return css;
+  }
+
   function drawWheel(canvas, rotation) {
     const ctx2d = canvas.getContext('2d');
     const challenges = wheelChallenges();
-    const size = canvas.width;
+    const size = Number(canvas.dataset.size) || canvas.width;
+    const dpr = Number(canvas.dataset.dpr) || 1;
     const radius = size / 2;
     const n = challenges.length;
     const slice = (Math.PI * 2) / n;
-    // Fewer slices can afford bigger type; a full wheel needs smaller.
-    const fontPx = Math.max(8, Math.min(14, Math.round(130 / n) + 4));
-    const lineH = fontPx + 1;
-    const maxChars = Math.max(10, Math.round(22 - n * 0.4));
+    const halfAngle = slice / 2;
+    const rOuter = radius * (1 - WHEEL_RIM) - 4;
+    const rHub = radius * WHEEL_HUB_RATIO;
+    // Fewer slices can afford bigger type; a full wheel needs smaller — and
+    // both scale with the wheel itself.
+    const maxFont = Math.round(Math.max(9, Math.min(radius * 0.13, 320 / n)));
 
+    ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx2d.clearRect(0, 0, size, size);
     ctx2d.save();
     ctx2d.translate(radius, radius);
@@ -190,21 +272,27 @@ const LiveTools = (() => {
       ctx2d.fill();
 
       ctx2d.save();
-      ctx2d.rotate(i * slice + slice / 2);
+      ctx2d.rotate(i * slice + halfAngle);
       ctx2d.textAlign = 'right';
+      ctx2d.textBaseline = 'middle';
       ctx2d.fillStyle = '#fff';
-      ctx2d.font = 'bold ' + fontPx + 'px Inter, sans-serif';
-      const words = String(challenges[i]).split(' ');
-      let line = '';
-      const lines = [];
-      words.forEach(w => {
-        if ((line + w).length > maxChars) { lines.push(line); line = w + ' '; }
-        else line += w + ' ';
+      const fit = wheelFitLabel(ctx2d, challenges[i], rOuter, rHub, halfAngle, maxFont);
+      ctx2d.font = `bold ${fit.fs}px Inter, sans-serif`;
+      fit.lines.forEach((l, li) => {
+        ctx2d.fillText(l, rOuter, (li - (fit.lines.length - 1) / 2) * fit.lineH);
       });
-      lines.push(line);
-      lines.forEach((l, li) => ctx2d.fillText(l.trim(), radius - 14, (li - (lines.length - 1) / 2) * lineH));
       ctx2d.restore();
     }
+
+    // The hub covers the point where every slice meets, so no label ever has
+    // to share that space with another.
+    ctx2d.beginPath();
+    ctx2d.arc(0, 0, rHub, 0, Math.PI * 2);
+    ctx2d.fillStyle = '#ffffff';
+    ctx2d.fill();
+    ctx2d.lineWidth = Math.max(2, radius * 0.012);
+    ctx2d.strokeStyle = 'rgba(46, 43, 46, 0.12)';
+    ctx2d.stroke();
     ctx2d.restore();
   }
 
@@ -213,7 +301,7 @@ const LiveTools = (() => {
       <p class="lt-count-note">${wheelChallenges().length} challenges${wheelIsCustom() ? ' · your own list' : ''}</p>
       <div class="wheel-stage">
         <div class="wheel-pointer">▼</div>
-        <canvas id="wheelCanvas" width="280" height="280"></canvas>
+        <canvas id="wheelCanvas"></canvas>
       </div>
       <div class="game-btn-row" style="justify-content:center;margin-top:18px">
         <button class="game-btn" id="spinWheelBtn">🎡 Spin!</button>
@@ -225,11 +313,28 @@ const LiveTools = (() => {
     document.getElementById('editWheelBtn').addEventListener('click', () => editWheel(container));
     const canvas = document.getElementById('wheelCanvas');
     let rotation = 0;
+    sizeWheelCanvas(canvas);
     drawWheel(canvas, rotation);
 
-    document.getElementById('spinWheelBtn').addEventListener('click', () => {
+    // Rotating a phone or dragging the window changes how much room the wheel
+    // has, so it is re-measured and redrawn rather than left stretched.
+    const onResize = () => {
+      if (!canvas.isConnected) { window.removeEventListener('resize', onResize); return; }
+      sizeWheelCanvas(canvas);
+      drawWheel(canvas, rotation);
+    };
+    window.addEventListener('resize', onResize);
+    wheelResizeHandler = onResize;
+
+    const spinBtn = document.getElementById('spinWheelBtn');
+    spinBtn.addEventListener('click', () => {
+      // A second click mid-spin used to start another animation over the top of
+      // the first: two loops then fought over the same wheel and banner, and
+      // the result announced belonged to whichever finished last.
+      if (wheelAnimId) return;
       const banner = document.getElementById('wheelResult');
       banner.hidden = true;
+      spinBtn.disabled = true;
       const spins = 5 + Math.random() * 3;
       const finalRotation = rotation + spins * Math.PI * 2;
       const duration = 3200;
@@ -237,7 +342,7 @@ const LiveTools = (() => {
       const from = rotation;
 
       function animate(now) {
-        if (!canvas.isConnected) { wheelAnimId = null; return; }
+        if (!canvas.isConnected) { wheelAnimId = null; return; }   // tool closed mid-spin
         const t = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 3);
         rotation = from + (finalRotation - from) * eased;
@@ -246,6 +351,7 @@ const LiveTools = (() => {
           wheelAnimId = requestAnimationFrame(animate);
         } else {
           wheelAnimId = null;
+          spinBtn.disabled = false;
           const challenges = wheelChallenges();
           const n = challenges.length;
           const slice = (Math.PI * 2) / n;
