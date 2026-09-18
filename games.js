@@ -1141,100 +1141,201 @@ const GameEngine = (() => {
     return found ? found.name : '';
   }
 
+  // The body every garment has to fit, written down once so a sleeve and the
+  // arm it covers cannot drift apart:
+  //   head    ellipse (150, 86) r 46 × 50   → x 104..196, y 36..136
+  //   torso   shoulders y 147, sides 106..194, waist 110..190 at y 272
+  //   arms    x 84..107 and 193..216, y 158..282; hands centred at y 288
+  //   legs    x 114..146 and 154..186, y 256..432
+  //   feet    ellipses (126, 430) and (174, 430), r 22 × 13 → down to y 443
+  // A garment that stops inside one of those numbers leaves bare skin showing,
+  // which is what the first version did at the shoulders, the toes and the
+  // top of the head.
+
   function dressFoot(x, c, sneaker) {
     const d = dressShade(c, -0.3);
+    const sole = sneaker ? '#ffffff' : dressShade(c, -0.45);
     return `
-      <path d="M${x - 19},404 h27 q9,0 12,11 l3,11 q2,10 -8,10 h-34 q-8,0 -8,-10 z"
+      <path d="M${x - 24},412 Q${x - 24},404 ${x - 15},404 L${x - 2},404
+               Q${x + 6},416 ${x + 15},424 Q${x + 24},431 ${x + 22},440
+               Q${x + 21},447 ${x + 10},447 L${x - 15},447 Q${x - 24},447 ${x - 24},439 Z"
             fill="${c}" stroke="${d}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M${x - 24},438 Q${x - 24},447 ${x - 15},447 L${x + 10},447 Q${x + 21},447 ${x + 22},440 Z"
+            fill="${sole}" stroke="${d}" stroke-width="2.5" stroke-linejoin="round"/>
       ${sneaker
-        ? `<path d="M${x - 26},431 h51" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
-           <path d="M${x - 12},408 q15,7 21,19" stroke="${dressShade(c, 0.5)}" stroke-width="5" fill="none" stroke-linecap="round"/>`
-        : `<path d="M${x - 15},412 h28" stroke="${dressShade(c, 0.35)}" stroke-width="4" stroke-linecap="round"/>`}
+        ? `<path d="M${x - 10},409 q13,9 18,20" stroke="${dressShade(c, 0.5)}" stroke-width="5" fill="none" stroke-linecap="round"/>`
+        : `<path d="M${x - 16},414 h26" stroke="${dressShade(c, 0.3)}" stroke-width="4" stroke-linecap="round"/>`}
     `;
   }
 
   // Every garment: (colour, 'boy'|'girl') -> SVG markup on the shared grid.
   const DRESS_DRAW = {
+    // Shoulder seams run out to x 82 / 218 — past the outer edge of the arms —
+    // so the sleeve sits on the shoulder instead of beside it.
     shirt: (c) => `
-      <path d="M112,156 L136,146 Q150,163 164,146 L188,156 L212,200 L190,214 L182,188 L186,264 Q150,275 114,264 L118,188 L110,214 L88,200 Z"
+      <path d="M132,139 C106,141 90,148 82,170 L78,210 Q77,216 84,217 L104,217 Q108,217 107,209
+               L106,190 L106,268 Q150,280 194,268 L194,190 L193,209 Q192,217 196,217 L216,217
+               Q223,216 222,210 L218,170 C210,148 194,141 168,139 Q150,158 132,139 Z"
             fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M136,146 Q150,163 164,146" fill="none" stroke="${dressShade(c, -0.26)}" stroke-width="3"/>`,
+      <path d="M132,139 Q150,158 168,139" fill="none" stroke="${dressShade(c, -0.26)}" stroke-width="3"/>`,
 
+    // Long sleeves end at the wrist (hands are centred on y 288).
     coat: (c) => `
-      <path d="M110,154 L134,145 L150,170 L166,145 L190,154 Q208,160 210,182 L216,278 L192,287 L186,254 L190,313 Q150,325 110,313 L114,254 L108,287 L84,278 L90,182 Q92,160 110,154 Z"
+      <path d="M130,137 C104,140 86,148 78,172 L72,266 Q71,277 80,278 L106,278 Q112,278 111,270
+               L110,196 L110,312 Q150,326 190,312 L190,196 L189,270 Q188,278 194,278 L220,278
+               Q229,277 228,266 L222,172 C214,148 196,140 170,137 L150,166 Z"
             fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M150,170 L150,319" stroke="${dressShade(c, -0.28)}" stroke-width="3"/>
-      <path d="M134,145 L150,170 L120,180 Z" fill="${dressShade(c, -0.14)}"/>
-      <path d="M166,145 L150,170 L180,180 Z" fill="${dressShade(c, -0.14)}"/>
-      <circle cx="150" cy="212" r="5" fill="${dressShade(c, 0.4)}"/>
-      <circle cx="150" cy="248" r="5" fill="${dressShade(c, 0.4)}"/>`,
+      <path d="M150,166 L150,320" stroke="${dressShade(c, -0.28)}" stroke-width="3"/>
+      <path d="M130,137 L150,166 L116,180 Z" fill="${dressShade(c, -0.14)}"/>
+      <path d="M170,137 L150,166 L184,180 Z" fill="${dressShade(c, -0.14)}"/>
+      <circle cx="150" cy="208" r="5" fill="${dressShade(c, 0.4)}"/>
+      <circle cx="150" cy="246" r="5" fill="${dressShade(c, 0.4)}"/>`,
 
     dress: (c) => `
-      <path d="M112,156 L136,146 Q150,163 164,146 L188,156 L210,198 L190,211 L182,188 L188,266 L218,366 Q150,392 82,366 L112,266 L118,188 L110,211 L90,198 Z"
+      <path d="M132,139 C106,141 90,148 82,170 L78,210 Q77,216 84,217 L104,217 Q108,217 107,209
+               L106,190 L108,262 L78,362 Q150,388 222,362 L192,262 L194,190 L193,209
+               Q192,217 196,217 L216,217 Q223,216 222,210 L218,170 C210,148 194,141 168,139
+               Q150,158 132,139 Z"
             fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M112,266 Q150,278 188,266" fill="none" stroke="${dressShade(c, -0.26)}" stroke-width="3"/>
-      <circle cx="150" cy="300" r="6" fill="${dressShade(c, 0.4)}"/>`,
+      <path d="M107,262 Q150,274 193,262" fill="none" stroke="${dressShade(c, -0.26)}" stroke-width="3"/>
+      <circle cx="150" cy="296" r="6" fill="${dressShade(c, 0.4)}"/>`,
 
+    // Waist at y 248 covers the hips (the torso is 110..190 down there); the
+    // inseam sits at 148/152 so no strip of leg shows on the inside.
     pants: (c) => `
-      <path d="M108,256 L192,256 L196,306 L192,428 L158,428 L150,336 L142,428 L108,428 L104,306 Z"
+      <path d="M106,248 L194,248 L196,300 L192,428 L152,428 L150,330 L148,428 L108,428 L104,300 Z"
             fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
-      <rect x="106" y="252" width="88" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
+      <rect x="104" y="244" width="92" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
 
     shorts: (c) => `
-      <path d="M108,256 L192,256 L198,344 L158,344 L150,306 L142,344 L102,344 Z"
+      <path d="M106,248 L194,248 L194,344 L152,344 L150,310 L148,344 L106,344 Z"
             fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
-      <rect x="106" y="252" width="88" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
+      <rect x="104" y="244" width="92" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
 
     skirt: (c) => `
-      <path d="M112,256 L188,256 L214,352 Q150,376 86,352 Z"
+      <path d="M108,250 L192,250 L216,350 Q150,376 84,350 Z"
             fill="${c}" stroke="${dressShade(c, -0.26)}" stroke-width="3" stroke-linejoin="round"/>
-      <rect x="108" y="250" width="84" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
+      <rect x="104" y="244" width="92" height="16" rx="8" fill="${dressShade(c, -0.2)}"/>`,
 
     shoes: (c) => dressFoot(126, c, false) + dressFoot(174, c, false),
     sneakers: (c) => dressFoot(126, c, true) + dressFoot(174, c, true),
 
+    // The crown is an arc of an ellipse 4px bigger than the head, so it clears
+    // the top of the head (y 36) instead of slicing through it.
+    // The crown is an arc of an ellipse big enough to clear the hair as well as
+    // the head — a dome that only cleared the skull left a dark rim of hair
+    // outlining the cap.
     hat: (c, g) => g === 'girl'
-      ? `<ellipse cx="150" cy="66" rx="84" ry="20" fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3"/>
-         <path d="M114,66 Q112,22 150,22 Q188,22 186,66 Z" fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3" stroke-linejoin="round"/>
-         <rect x="112" y="52" width="76" height="14" rx="7" fill="${dressShade(c, -0.3)}"/>
-         <circle cx="188" cy="59" r="9" fill="${dressShade(c, -0.3)}"/>`
-      : `<path d="M102,72 Q102,24 150,24 Q198,24 198,72 Z" fill="${c}" stroke="${dressShade(c, -0.28)}" stroke-width="3" stroke-linejoin="round"/>
-         <path d="M196,54 Q248,60 250,74 Q248,86 196,80 Z" fill="${dressShade(c, -0.18)}" stroke="${dressShade(c, -0.32)}" stroke-width="3" stroke-linejoin="round"/>
-         <circle cx="150" cy="25" r="7" fill="${dressShade(c, -0.3)}"/>`,
+      ? `<ellipse cx="150" cy="74" rx="86" ry="19" fill="${dressShade(c, -0.1)}" stroke="${dressShade(c, -0.3)}" stroke-width="3"/>
+         <path d="M106,70 A46,58 0 0 1 194,70 Z" fill="${c}" stroke="${dressShade(c, -0.3)}" stroke-width="3" stroke-linejoin="round"/>
+         <path d="M106,70 Q150,84 194,70 L194,60 Q150,74 106,60 Z" fill="${dressShade(c, -0.32)}"/>
+         <circle cx="188" cy="64" r="9" fill="${dressShade(c, -0.32)}"/>`
+      : `<path d="M190,68 Q246,64 254,79 Q248,94 190,88 Z" fill="${dressShade(c, -0.2)}" stroke="${dressShade(c, -0.34)}" stroke-width="3" stroke-linejoin="round"/>
+         <path d="M97,74 A54,58 0 0 1 203,74 Z" fill="${c}" stroke="${dressShade(c, -0.3)}" stroke-width="3" stroke-linejoin="round"/>
+         <path d="M97,74 Q150,90 203,74 L203,64 Q150,80 97,64 Z" fill="${dressShade(c, -0.18)}"/>
+         <circle cx="150" cy="29" r="7" fill="${dressShade(c, -0.3)}"/>`,
 
     headband: (c) => `
-      <path d="M106,74 Q150,32 194,74" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round"/>
-      <path d="M186,52 q22,-16 24,2 q-14,6 -24,-2 Z" fill="${dressShade(c, 0.15)}" stroke="${dressShade(c, -0.25)}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M186,52 q26,4 18,20 q-16,-4 -18,-20 Z" fill="${dressShade(c, 0.15)}" stroke="${dressShade(c, -0.25)}" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="189" cy="58" r="6" fill="${dressShade(c, -0.25)}"/>`,
+      <path d="M105,78 Q150,34 195,78" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round"/>
+      <path d="M186,54 q23,-17 25,2 q-15,7 -25,-2 Z" fill="${dressShade(c, 0.15)}" stroke="${dressShade(c, -0.25)}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M186,54 q27,4 19,21 q-17,-4 -19,-21 Z" fill="${dressShade(c, 0.15)}" stroke="${dressShade(c, -0.25)}" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="189" cy="60" r="6" fill="${dressShade(c, -0.25)}"/>`,
 
-    bag: (c, g) => g === 'girl'
-      ? `<path d="M126,158 Q98,224 74,258" fill="none" stroke="${dressShade(c, -0.3)}" stroke-width="9" stroke-linecap="round"/>
-         <rect x="40" y="252" width="68" height="52" rx="15" fill="${c}" stroke="${dressShade(c, -0.3)}" stroke-width="3"/>
-         <rect x="40" y="252" width="68" height="20" rx="10" fill="${dressShade(c, -0.18)}"/>
-         <circle cx="74" cy="278" r="6" fill="${dressShade(c, 0.45)}"/>`
-      : `<path d="M126,156 L142,266" fill="none" stroke="${dressShade(c, -0.3)}" stroke-width="9" stroke-linecap="round"/>
-         <path d="M174,156 L158,266" fill="none" stroke="${dressShade(c, -0.3)}" stroke-width="9" stroke-linecap="round"/>
-         <rect x="200" y="184" width="62" height="82" rx="18" fill="${c}" stroke="${dressShade(c, -0.3)}" stroke-width="3"/>
-         <rect x="200" y="184" width="62" height="28" rx="14" fill="${dressShade(c, -0.18)}"/>
-         <rect x="222" y="224" width="18" height="12" rx="5" fill="${dressShade(c, 0.45)}"/>`,
+    // One strap over the shoulder and the bag on the opposite hip, where it
+    // rests against the body — the old backpack floated beside the arm.
+    bag: (c, g) => {
+      const d = dressShade(c, -0.3);
+      // Hip height, below y 300: any higher and the bag covers the hand, which
+      // sits at (95 / 205, 288).
+      return g === 'girl'
+        ? `<path d="M178,150 Q138,232 100,304" fill="none" stroke="${d}" stroke-width="10" stroke-linecap="round"/>
+           <rect x="56" y="300" width="64" height="54" rx="16" fill="${c}" stroke="${d}" stroke-width="3"/>
+           <path d="M56,318 L56,316 Q56,300 72,300 L104,300 Q120,300 120,316 L120,318 Z" fill="${dressShade(c, -0.16)}"/>
+           <circle cx="88" cy="326" r="6" fill="${dressShade(c, 0.45)}"/>`
+        : `<path d="M122,150 Q162,232 200,304" fill="none" stroke="${d}" stroke-width="10" stroke-linecap="round"/>
+           <rect x="180" y="300" width="64" height="56" rx="12" fill="${c}" stroke="${d}" stroke-width="3"/>
+           <rect x="180" y="300" width="64" height="20" rx="10" fill="${dressShade(c, -0.16)}"/>
+           <rect x="203" y="326" width="18" height="12" rx="5" fill="${dressShade(c, 0.45)}"/>`;
+    },
   };
+
+  // ---- hairstyles ---------------------------------------------------------
+  // `back` paints behind the body (long hair falls behind the shoulders),
+  // `front` paints over the head. Both are free choices for either doll.
+  const DRESS_HAIR_STYLES = [
+    {
+      id: 'short', label: 'Short',
+      front: h => `<path d="M105,88 Q104,30 150,30 Q196,30 195,88 Q184,56 150,56 Q118,56 105,88 Z" fill="${h}"/>`,
+    },
+    {
+      id: 'spiky', label: 'Spiky',
+      front: h => `<path d="M104,90 L110,50 L121,66 L129,38 L140,60 L150,32 L160,60 L171,38 L179,66 L190,50 L196,90
+                            Q186,58 150,56 Q114,58 104,90 Z" fill="${h}"/>`,
+    },
+    {
+      id: 'curly', label: 'Curly',
+      front: h => `
+        <circle cx="112" cy="58" r="19" fill="${h}"/>
+        <circle cx="131" cy="38" r="21" fill="${h}"/>
+        <circle cx="150" cy="31" r="21" fill="${h}"/>
+        <circle cx="169" cy="38" r="21" fill="${h}"/>
+        <circle cx="188" cy="58" r="19" fill="${h}"/>
+        <path d="M104,92 Q102,42 150,42 Q198,42 196,92 Q186,62 150,60 Q114,62 104,92 Z" fill="${h}"/>`,
+    },
+    {
+      id: 'long', label: 'Long',
+      back: h => `<path d="M100,84 Q96,26 150,26 Q204,26 200,84 L210,246 Q197,258 186,246 L192,104
+                           Q150,72 108,104 L114,246 Q103,258 90,246 Z" fill="${h}"/>`,
+      front: h => `<path d="M104,90 Q100,30 150,30 Q200,30 196,90 Q189,58 166,52 Q148,74 121,66 Q109,66 104,90 Z" fill="${h}"/>`,
+    },
+    {
+      id: 'bob', label: 'Bob',
+      back: h => `<path d="M100,84 Q98,26 150,26 Q202,26 200,84 L203,156 Q188,172 175,156 L184,104
+                           Q150,74 116,104 L125,156 Q112,172 97,156 Z" fill="${h}"/>`,
+      front: h => `<path d="M104,90 Q100,30 150,30 Q200,30 196,90 Q189,58 166,52 Q148,74 121,66 Q109,66 104,90 Z" fill="${h}"/>`,
+    },
+    {
+      id: 'ponytail', label: 'Ponytail',
+      back: h => `<path d="M184,64 Q232,84 236,136 Q239,180 214,204 Q200,192 210,168 Q226,132 202,100 Q192,82 184,74 Z" fill="${h}"/>`,
+      front: h => `<path d="M104,88 Q102,28 150,28 Q198,28 196,88 Q186,54 150,54 Q116,54 104,88 Z" fill="${h}"/>
+                   <circle cx="190" cy="74" r="8" fill="${dressShade(h, -0.3)}"/>`,
+    },
+    {
+      id: 'pigtails', label: 'Pigtails',
+      back: h => `
+        <path d="M112,70 Q74,88 70,132 Q68,168 88,180 Q100,166 92,142 Q86,112 108,88 Z" fill="${h}"/>
+        <path d="M188,70 Q226,88 230,132 Q232,168 212,180 Q200,166 208,142 Q214,112 192,88 Z" fill="${h}"/>`,
+      front: h => `<path d="M104,88 Q102,28 150,28 Q198,28 196,88 Q186,54 150,54 Q116,54 104,88 Z" fill="${h}"/>
+                   <circle cx="110" cy="76" r="8" fill="${dressShade(h, -0.3)}"/>
+                   <circle cx="190" cy="76" r="8" fill="${dressShade(h, -0.3)}"/>`,
+    },
+    {
+      id: 'bun', label: 'Bun',
+      front: h => `
+        <circle cx="150" cy="26" r="22" fill="${h}"/>
+        <path d="M105,88 Q104,34 150,34 Q196,34 195,88 Q184,58 150,58 Q118,58 105,88 Z" fill="${h}"/>
+        <rect x="134" y="44" width="32" height="10" rx="5" fill="${dressShade(h, -0.3)}"/>`,
+    },
+  ];
+
+  const DRESS_HAIR_DEFAULT = { boy: 'short', girl: 'long' };
+  const dressHairStyle = id => DRESS_HAIR_STYLES.find(s => s.id === id) || DRESS_HAIR_STYLES[0];
 
   // slot      — only one garment at a time lives here
   // conflicts — slots emptied when this one is filled
   // plural    — "black shoes", never "a black shoes"
   const DRESS_ITEMS = [
-    { id: 'shirt', en: 'shirt', pt: 'camisa', slot: 'top', conflicts: ['full'], who: 'both', cat: 'tops', color: '#4a8fd4', crop: '80 138 140 140' },
-    { id: 'coat', en: 'coat', pt: 'casaco', slot: 'outer', conflicts: [], who: 'both', cat: 'tops', color: '#8a5a3b', crop: '78 136 144 192' },
-    { id: 'dress', en: 'dress', pt: 'vestido', slot: 'full', conflicts: ['top', 'bottom'], who: 'girl', cat: 'tops', color: '#f08fb0', crop: '76 138 148 260' },
-    { id: 'shorts', en: 'shorts', pt: 'shorts', slot: 'bottom', conflicts: ['full'], who: 'both', cat: 'bottoms', color: '#5aa469', plural: true, crop: '96 246 108 106' },
-    { id: 'pants', en: 'pants', pt: 'calça', slot: 'bottom', conflicts: ['full'], who: 'both', cat: 'bottoms', color: '#3a3a40', plural: true, crop: '96 246 108 190' },
-    { id: 'skirt', en: 'skirt', pt: 'saia', slot: 'bottom', conflicts: ['full'], who: 'girl', cat: 'bottoms', color: '#8e6d86', crop: '82 244 136 136' },
-    { id: 'shoes', en: 'shoes', pt: 'sapatos', slot: 'feet', conflicts: [], who: 'both', cat: 'shoes', color: '#3a3a40', plural: true, crop: '94 396 112 52' },
-    { id: 'sneakers', en: 'sneakers', pt: 'tênis', slot: 'feet', conflicts: [], who: 'both', cat: 'shoes', color: '#e2574c', plural: true, crop: '94 396 112 52' },
-    { id: 'hat', en: 'hat', pt: 'chapéu', slot: 'head', conflicts: [], who: 'both', cat: 'extras', color: '#e2574c', crop: '60 16 190 76' },
-    { id: 'headband', en: 'headband', pt: 'tiara', slot: 'hair', conflicts: [], who: 'girl', cat: 'extras', color: '#f2c94c', crop: '96 28 122 58' },
-    { id: 'bag', en: 'bag', pt: 'bolsa', slot: 'bag', conflicts: [], who: 'both', cat: 'extras', color: '#ef8f45', crop: '30 150 244 164' },
+    { id: 'shirt', en: 'shirt', pt: 'camisa', slot: 'top', conflicts: ['full'], who: 'both', cat: 'tops', color: '#4a8fd4', crop: '72 130 156 150' },
+    { id: 'coat', en: 'coat', pt: 'casaco', slot: 'outer', conflicts: [], who: 'both', cat: 'tops', color: '#8a5a3b', crop: '66 128 168 200' },
+    { id: 'dress', en: 'dress', pt: 'vestido', slot: 'full', conflicts: ['top', 'bottom'], who: 'girl', cat: 'tops', color: '#f08fb0', crop: '70 128 160 275' },
+    { id: 'shorts', en: 'shorts', pt: 'shorts', slot: 'bottom', conflicts: ['full'], who: 'both', cat: 'bottoms', color: '#5aa469', plural: true, crop: '98 238 104 116' },
+    { id: 'pants', en: 'pants', pt: 'calça', slot: 'bottom', conflicts: ['full'], who: 'both', cat: 'bottoms', color: '#3a3a40', plural: true, crop: '98 238 104 200' },
+    { id: 'skirt', en: 'skirt', pt: 'saia', slot: 'bottom', conflicts: ['full'], who: 'girl', cat: 'bottoms', color: '#8e6d86', crop: '78 236 144 148' },
+    { id: 'shoes', en: 'shoes', pt: 'sapatos', slot: 'feet', conflicts: [], who: 'both', cat: 'shoes', color: '#3a3a40', plural: true, crop: '96 396 108 58' },
+    { id: 'sneakers', en: 'sneakers', pt: 'tênis', slot: 'feet', conflicts: [], who: 'both', cat: 'shoes', color: '#e2574c', plural: true, crop: '96 396 108 58' },
+    { id: 'hat', en: 'hat', pt: 'chapéu', slot: 'head', conflicts: [], who: 'both', cat: 'extras', color: '#e2574c', crop: '62 18 188 78' },
+    { id: 'headband', en: 'headband', pt: 'tiara', slot: 'hair', conflicts: [], who: 'girl', cat: 'extras', color: '#f2c94c', crop: '96 30 122 60' },
+    { id: 'bag', en: 'bag', pt: 'bolsa', slot: 'bag', conflicts: [], who: 'both', cat: 'extras', color: '#ef8f45', crop: '46 140 210 226' },
   ];
 
   // Back to front. The doll paints first, then these on top of it.
@@ -1247,12 +1348,13 @@ const GameEngine = (() => {
     { id: 'extras', label: 'Extras', icon: '🎒' },
   ];
 
-  function dressBody(g, skin, hair) {
+  // The hairstyle is a free choice, not a property of the doll: `style` picks
+  // one of DRESS_HAIR_STYLES, whose back half paints behind the shoulders.
+  function dressBody(g, skin, hair, style) {
     const line = '#2e2b2e';
+    const look = dressHairStyle(style);
     return `
-      ${g === 'girl'
-        ? `<path d="M100,84 Q96,18 150,18 Q204,18 200,84 L210,244 Q197,256 186,244 L192,104 Q150,72 108,104 L114,244 Q103,256 90,244 Z" fill="${hair}"/>`
-        : ''}
+      ${look.back ? look.back(hair) : ''}
       <rect x="136" y="122" width="28" height="38" rx="12" fill="${dressShade(skin, -0.14)}"/>
       <path d="M106,168 Q108,152 128,147 L172,147 Q192,152 194,168 L190,272 Q150,284 110,272 Z" fill="${skin}"/>
       <rect x="84" y="158" width="23" height="124" rx="11" fill="${skin}"/>
@@ -1277,10 +1379,23 @@ const GameEngine = (() => {
       <ellipse cx="118" cy="106" rx="8" ry="5" fill="#f0a3a8" opacity="0.55"/>
       <ellipse cx="182" cy="106" rx="8" ry="5" fill="#f0a3a8" opacity="0.55"/>
       <path d="M137,110 Q150,123 163,110" fill="none" stroke="${line}" stroke-width="3.5" stroke-linecap="round"/>
-      ${g === 'girl'
-        ? `<path d="M104,88 Q100,28 150,28 Q200,28 196,88 Q189,58 166,52 Q148,74 121,66 Q109,66 104,88 Z" fill="${hair}"/>`
-        : `<path d="M105,86 Q104,30 150,30 Q196,30 195,86 Q184,56 150,56 Q118,56 105,86 Z" fill="${hair}"/>`}
+      ${look.front(hair)}
     `;
+  }
+
+  // The little head used by the hairstyle buttons.
+  function dressHairPreview(style, skin, hair) {
+    const look = dressHairStyle(style);
+    return `<svg class="dressup-hair-thumb" viewBox="60 12 180 130" xmlns="http://www.w3.org/2000/svg">
+      ${look.back ? look.back(hair) : ''}
+      <ellipse cx="105" cy="94" rx="9" ry="13" fill="${dressShade(skin, -0.08)}"/>
+      <ellipse cx="195" cy="94" rx="9" ry="13" fill="${dressShade(skin, -0.08)}"/>
+      <ellipse cx="150" cy="86" rx="46" ry="50" fill="${skin}"/>
+      <ellipse cx="132" cy="90" rx="5" ry="6" fill="#2e2b2e"/>
+      <ellipse cx="168" cy="90" rx="5" ry="6" fill="#2e2b2e"/>
+      <path d="M137,110 Q150,121 163,110" fill="none" stroke="#2e2b2e" stroke-width="3.5" stroke-linecap="round"/>
+      ${look.front(hair)}
+    </svg>`;
   }
 
   function renderDressUp(container, topic) {
@@ -1289,6 +1404,7 @@ const GameEngine = (() => {
     let activeColor = null;        // null = each garment keeps its own colour
     let skin = DRESS_SKINS[0];
     let hair = DRESS_HAIRS[0];
+    let hairStyle = DRESS_HAIR_DEFAULT.boy;
     let filter = 'all';
     let challenge = true;
     let mission = null;
@@ -1443,7 +1559,7 @@ const GameEngine = (() => {
         <button class="dressup-choose-card" data-gender="${g}">
           <span class="dressup-choose-doll">
             <svg viewBox="0 10 300 445" xmlns="http://www.w3.org/2000/svg">
-              ${dressBody(g, DRESS_SKINS[0], g === 'girl' ? DRESS_HAIRS[1] : DRESS_HAIRS[0])}
+              ${dressBody(g, DRESS_SKINS[0], g === 'girl' ? DRESS_HAIRS[1] : DRESS_HAIRS[0], DRESS_HAIR_DEFAULT[g])}
               ${g === 'girl'
                 ? DRESS_DRAW.dress('#f08fb0', g)
                 : DRESS_DRAW.shorts('#3a3a40', g) + DRESS_DRAW.shirt('#4a8fd4', g)}
@@ -1499,7 +1615,7 @@ const GameEngine = (() => {
             <div class="dressup-stage">
               <svg class="dressup-doll" viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
                 <ellipse class="dressup-shadow" cx="150" cy="452" rx="92" ry="16"/>
-                ${dressBody(gender, skin, hair)}
+                ${dressBody(gender, skin, hair, hairStyle)}
                 ${DRESS_LAYERS.filter(s => worn[s]).map(s => `
                   <g class="dressup-worn" data-worn="${s}">${DRESS_DRAW[worn[s].id](worn[s].color, gender)}</g>`).join('')}
               </svg>
@@ -1511,6 +1627,16 @@ const GameEngine = (() => {
               ${DRESS_SKINS.map(s => `<button class="dressup-dot${s === skin ? ' active' : ''}" data-skin="${s}" style="background:${s}" aria-label="skin tone"></button>`).join('')}
               <span class="dressup-looks-label">Hair</span>
               ${DRESS_HAIRS.map(h => `<button class="dressup-dot${h === hair ? ' active' : ''}" data-hair="${h}" style="background:${h}" aria-label="hair colour"></button>`).join('')}
+            </div>
+            <div class="dressup-hairstyles">
+              <span class="dressup-looks-label">Style</span>
+              <div class="dressup-hair-row">
+                ${DRESS_HAIR_STYLES.map(st => `
+                  <button class="dressup-hair-btn${st.id === hairStyle ? ' active' : ''}" data-hairstyle="${st.id}" title="${st.label}">
+                    ${dressHairPreview(st.id, skin, hair)}
+                    <span>${st.label}</span>
+                  </button>`).join('')}
+              </div>
             </div>
           </div>
 
@@ -1558,8 +1684,12 @@ const GameEngine = (() => {
         btn.addEventListener('click', () => {
           const next = btn.dataset.gender;
           if (next === gender) return;
+          const first = !gender;
           gender = next;
-          hair = gender === 'girl' ? DRESS_HAIRS[1] : DRESS_HAIRS[0];
+          if (first) {
+            hair = gender === 'girl' ? DRESS_HAIRS[1] : DRESS_HAIRS[0];
+            hairStyle = DRESS_HAIR_DEFAULT[gender];
+          }
           // Girl-only pieces can't stay on the boy.
           Object.keys(worn).forEach(s => {
             const it = itemById(worn[s].id);
@@ -1583,6 +1713,9 @@ const GameEngine = (() => {
       });
       container.querySelectorAll('[data-hair]').forEach(btn => {
         btn.addEventListener('click', () => { hair = btn.dataset.hair; paint(); });
+      });
+      container.querySelectorAll('[data-hairstyle]').forEach(btn => {
+        btn.addEventListener('click', () => { hairStyle = btn.dataset.hairstyle; paint(); });
       });
 
       // A wardrobe card: drag it to the doll, or simply tap it.
