@@ -6009,24 +6009,43 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 .exg-cell.picked { border-color: var(--primary); background: var(--primary-soft); }
 .exg-cell.done { border-color: var(--color-secondary-deep); background: var(--a0-soft); opacity: 0.65; cursor: default; }
 
-/* Memory */
-.exg-mem { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; max-width: 760px; margin: 0 auto; width: 100%; }
+/* Memory — the board picks its column count from the width it is given, and
+   the card text scales with how much of it there is, so the same twelve cards
+   work on a phone and on a projector. */
+.exg-mem {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(5px, 1.2vw, 10px);
+  align-content: start;
+  max-width: 840px;
+  margin: 0 auto;
+  width: 100%;
+}
 .exg-card {
-  min-height: 74px;
+  min-height: clamp(52px, 8.5vh, 92px);
   display: grid;
   place-items: center;
-  padding: 8px;
+  padding: 6px 7px;
   border-radius: var(--radius-md);
   border: 2px solid var(--border);
   background: var(--primary-soft);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: clamp(0.66rem, 1.9vw, 0.86rem);
+  line-height: 1.2;
   color: var(--primary-dark);
-  transition: all 0.15s ease;
+  overflow: hidden;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
-.exg-card span { display: block; text-align: center; line-height: 1.25; }
+.exg-card:hover:not(.done) { transform: translateY(-2px); border-color: var(--primary); }
+.exg-card span { display: block; text-align: center; overflow-wrap: anywhere; hyphens: auto; }
+.exg-card.down { font-size: clamp(1rem, 3.4vw, 1.4rem); }
+.exg-card.mid { font-size: clamp(0.6rem, 1.7vw, 0.78rem); }
+.exg-card.long { font-size: clamp(0.54rem, 1.5vw, 0.7rem); }
 .exg-card.open { background: var(--surface); color: var(--ink); border-color: var(--primary); }
 .exg-card.done { background: var(--a0-soft); border-color: var(--color-secondary-deep); color: var(--color-secondary-deep); }
+
+@media (max-width: 900px) { .exg-mem { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .exg-mem { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* Sentence Builder */
 .exg-answer {
@@ -6081,7 +6100,6 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
   .exam-paper-wrap { max-height: none; padding: 0; border: none; background: transparent; }
   .exam-paper { padding: 18px 16px; }
   .exg-match { grid-template-columns: 1fr; }
-  .exg-mem { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ---- on paper ---------------------------------------------------------- */

@@ -645,19 +645,45 @@ EXAM_TOPICS.push(
     id: 'presentcontinuous',
     label: 'Present continuous',
     pt: 'Presente contínuo',
-    aliases: ['present continuous', 'presente continuo', 'presente contínuo', 'ing', 'gerundio',
-      'gerúndio', 'right now', 'present progressive'],
+    aliases: ['present continuous', 'presente continuo', 'presente contínuo', 'ing', 'ing form',
+      'gerundio', 'gerúndio', 'right now', 'present progressive', 'presente progressivo',
+      'verbo ing', 'acontecendo agora'],
     gens: [
       () => {
-        const v = exPick([['run', 'running'], ['swim', 'swimming'], ['write', 'writing'], ['play', 'playing'], ['make', 'making']]);
-        return exGap(`Look! The boys ____ (${v[0]}) in the garden.`, `are ${v[1]}`,
-          { explain: 'be + verb-ing. Watch the spelling: ' + v[0] + ' → ' + v[1] + '.' });
+        const v = exPick(EX_ING);
+        const subj = exPick([['The boys', 'are'], ['My sister', 'is'], ['We', 'are'], ['Ana', 'is'], ['They', 'are']]);
+        return exGap(`Look! ${subj[0]} ____ (${v[0]}) ${v[3]}.`, `${subj[1]} ${v[1]}`,
+          { explain: `be + verb-ing: ${v[0]} → ${v[1]}.` });
       },
       () => exMC('Choose the correct sentence.', 'She is listening to music.',
         ['She listening to music.', 'She is listen to music.', 'She are listening to music.'],
         'am/is/are + verb-ing.'),
       () => exGap('What ____ you doing at the moment?', 'are', { explain: 'you → are.' }),
+      () => {
+        const v = exPick(EX_ING);
+        return exGap(`Write the -ing form: ${v[0]} → ____`, v[1], { explain: v[2] });
+      },
+      () => {
+        const v = exPick(EX_ING);
+        const wrongs = [`${v[0]}ing`, `${v[0]}ying`, `${v[0]}eing`].filter(w => w !== v[1]);
+        return exMC(`What is the -ing form of "${v[0]}"?`, v[1], exPickN(wrongs, 3), v[2]);
+      },
+      () => {
+        const v = exPick(EX_ING);
+        return exGap(`He ____ (not / ${v[0]}) ${v[3]} right now.`, `isn't ${v[1]}`,
+          { explain: `Negative: isn't/aren't + verb-ing.` });
+      },
+      () => {
+        const now = Math.random() < 0.5;
+        const line = now
+          ? exPick(['Look! The baby is sleeping.', 'They are playing in the garden right now.', 'I am doing my homework at the moment.'])
+          : exPick(['She watches TV every evening.', 'We live in Brazil.', 'My brother plays football on Saturdays.']);
+        return exSort(line, now ? 'Present continuous' : 'Present simple',
+          ['Present simple', 'Present continuous'],
+          now ? 'be + verb-ing, and it is happening now.' : 'A habit, not something happening now.');
+      },
     ],
+    pairs: () => exPickN(EX_ING, 8).map(v => ({ left: v[0], right: v[1] })),
   },
   {
     id: 'comparatives',
@@ -743,34 +769,218 @@ EXAM_TOPICS.push(
     ],
   },
   {
-    id: 'cancant',
-    label: 'Can / Can\'t (ability)',
-    pt: 'Can / Can\'t (habilidade)',
-    aliases: ['can', 'cant', "can't", 'ability', 'habilidade', 'can and cant', 'poder', 'conseguir'],
+    id: 'modals',
+    label: 'Modals: can, should & must',
+    pt: 'Modais: can, should e must',
+    aliases: ['modal', 'modals', 'modais', 'verbos modais', 'can', 'cant', "can't", 'should',
+      'shouldnt', "shouldn't", 'must', 'mustnt', "mustn't", 'can should must', 'ability',
+      'habilidade', 'advice', 'conselho', 'obligation', 'obrigacao', 'obrigação', 'regras',
+      'poder', 'dever'],
     gens: [
       () => exMC('Choose the correct sentence.', 'She can swim very well.',
         ['She cans swim very well.', 'She can swims very well.', 'She can to swim very well.'],
-        'can + base verb, with no -s and no "to".'),
+        'A modal takes the base verb: no -s, no "to".'),
       () => exGap('____ you play the guitar? — Yes, I can.', 'Can', { explain: 'Can + subject + base verb?' }),
       () => exGap("I'm sorry, I ____ (not / come) to your party.", "can't come",
         { explain: "can + not = can't, then the base verb." }),
+      () => {
+        const m = exPick(EX_MODAL_LINES);
+        const wrongs = exPickN(['can', 'should', 'must', "mustn't", "shouldn't"].filter(x => x !== m.modal), 3);
+        return exMC(`${m.text.replace('____', '____')} ${m.hint ? '(' + m.hint + ')' : ''}`.trim(),
+          m.modal, wrongs, m.why);
+      },
+      () => {
+        const m = exPick(EX_MODAL_LINES);
+        return exGap(m.text, m.modal, { hint: m.hint, explain: m.why });
+      },
+      () => {
+        const m = exPick(EX_MODAL_LINES);
+        return exSort(m.text.replace('____', m.modal), m.kind, ['Ability', 'Advice', 'Obligation'], m.why);
+      },
+      () => exMC('Choose the correct sentence.', 'You must wear a helmet.',
+        ['You must to wear a helmet.', 'You musts wear a helmet.', 'You must wearing a helmet.'],
+        'must + base verb — never "must to".'),
+      () => exGap("You look tired. You ____ (not / should) go to bed so late.", "shouldn't",
+        { explain: "should + not = shouldn't + base verb." }),
     ],
+    pairs: () => exPickN([
+      ['can', 'ability'], ['should', 'advice'], ['must', 'obligation'], ["can't", 'not possible'],
+      ["shouldn't", 'a bad idea'], ["mustn't", 'not allowed'], ['Can you…?', 'a request'],
+    ], 6).map(v => ({ left: v[0], right: v[1] })),
   },
   {
-    id: 'goingto',
-    label: 'Future: going to',
-    pt: 'Futuro com going to',
-    aliases: ['going to', 'be going to', 'future', 'futuro', 'plans', 'planos', 'will or going to'],
+    id: 'tenses',
+    label: 'Which tense is it?',
+    pt: 'Qual é o tempo verbal',
+    aliases: ['tense', 'tenses', 'verb tense', 'verb tenses', 'tempo verbal', 'tempos verbais',
+      'identificar o tempo verbal', 'identify the tense', 'which tense', 'qual tempo verbal',
+      'identificar tempos verbais', 'revisao de tempos verbais', 'revisão de tempos verbais',
+      'mixed tenses', 'tempos misturados'],
     gens: [
-      () => exGap('Next summer we ____ (travel) to Portugal.', 'are going to travel',
-        { explain: 'be + going to + base verb.' }),
+      () => {
+        const l = exPick(EX_TENSE_LINES);
+        const wrongs = exPickN(EX_TENSE_NAMES.filter(n => n !== l.tense), 3);
+        return exMC(`Which tense is this sentence? "${l.s}"`, l.tense, wrongs, l.why);
+      },
+      () => {
+        const l = exPick(EX_TENSE_LINES);
+        return exSort(l.s, l.when, ['Past', 'Present', 'Future'], `${l.tense} → ${l.when.toLowerCase()}.`);
+      },
+      () => {
+        const target = exPick(EX_TENSE_NAMES);
+        const right = exPick(EX_TENSE_LINES.filter(l => l.tense === target));
+        const wrongs = exPickN(EX_TENSE_LINES.filter(l => l.tense !== target), 3).map(l => l.s);
+        return exMC(`Which sentence is in the ${target.toLowerCase()}?`, right.s, wrongs, right.why);
+      },
+      () => {
+        const t = exPick(EX_TIME_WORDS);
+        const wrongs = exPickN(EX_TIME_WORDS.filter(x => x.tense !== t.tense), 3).map(x => x.word);
+        return exMC(`Which time expression goes with the ${t.tense.toLowerCase()}?`, t.word, wrongs,
+          `"${t.word}" tells us it is ${t.tense.toLowerCase()}.`);
+      },
+      () => {
+        const t = exPick(EX_TIME_WORDS);
+        return exSort(t.word, t.when, ['Past', 'Present', 'Future'], `"${t.word}" → ${t.when.toLowerCase()}.`);
+      },
+      () => {
+        const l = exPick(EX_TENSE_LINES.filter(x => x.tense === 'Present simple' || x.tense === 'Present continuous'));
+        return exSort(l.s, l.tense, ['Present simple', 'Present continuous'], l.why);
+      },
+    ],
+    pairs: () => exPickN(EX_TIME_WORDS, 7).map(t => ({ left: t.word, right: t.tense })),
+  },
+  {
+    id: 'future',
+    label: 'Future: going to & will',
+    pt: 'Futuro com going to e will',
+    aliases: ['going to', 'be going to', 'will', 'future', 'futuro', 'future forms', 'plans', 'planos',
+      'will or going to', 'will e going to', 'futuro com will', 'futuro com going to', 'wont',
+      "won't", 'predictions', 'previsoes', 'previsões'],
+    gens: [
+      () => {
+        const f = exPick(EX_FUTURE_PLANS);
+        return exGap(`${f.when} ${f.s} ____ (${f.v}) ${f.r}.`, `${f.be} going to ${f.v}`,
+          { explain: 'A plan you already made: be + going to + base verb.' });
+      },
       () => exMC('Choose the correct sentence.', 'He is going to buy a new phone.',
         ['He going to buy a new phone.', 'He is going to buys a new phone.', 'He is go to buy a new phone.'],
         'is/are + going to + base verb.'),
       () => exGap('What ____ you going to do at the weekend?', 'are', { explain: 'you → are going to.' }),
+      () => exMC('"I\'m thirsty!" — "Don\'t worry, I ____ you some water."', 'will get',
+        ['am going to get', 'will getting', 'get'],
+        'A decision made at the moment of speaking takes "will".'),
+      () => exMC('Look at those black clouds! It ____ rain.', 'is going to',
+        ['will rains', 'goes to', 'is going'],
+        'There is evidence in front of us, so we use "going to".'),
+      () => exGap('____ you help me with my homework? — Yes, I will.', 'Will',
+        { explain: 'Will + subject + base verb?' }),
+      () => {
+        const f = exPick(EX_FUTURE_PLANS);
+        return exGap(`They ____ (not / arrive) before dinner.`, "won't arrive",
+          { explain: "will + not = won't, then the base verb." });
+      },
+      () => exMC('Choose the correct sentence.', 'She will call you tomorrow.',
+        ['She will to call you tomorrow.', 'She wills call you tomorrow.', 'She will calls you tomorrow.'],
+        'will + base verb, with no "to" and no -s.'),
+      () => {
+        const willLine = Math.random() < 0.5;
+        const line = willLine
+          ? exPick(['I think it will be sunny tomorrow.', "Don't worry — I will help you.", 'She will be twelve next month.'])
+          : exPick(['We are going to travel to Chile in July.', 'She is going to study medicine.', 'I am going to call you after dinner.']);
+        return exSort(line, willLine ? 'will' : 'going to', ['going to', 'will'],
+          willLine ? 'It uses will + base verb.' : 'It uses be + going to + base verb.');
+      },
     ],
+    pairs: () => exPickN([
+      ['I will', "I'll"], ['she will', "she'll"], ['he will', "he'll"], ['we will', "we'll"],
+      ['they will', "they'll"], ['you will', "you'll"], ['will not', "won't"], ['it will', "it'll"],
+    ], 7).map(v => ({ left: v[0], right: v[1] })),
   },
 );
+
+// ---------------------------------------------------------------------------
+// PRESENT CONTINUOUS, FUTURE, MODALS AND TENSE-SPOTTING
+// ---------------------------------------------------------------------------
+// base, -ing form, and the spelling rule the -ing form is testing.
+// base, -ing form, the spelling rule, and something that verb can actually be
+// doing — a shared complement would give us "We are sleeping in the garden".
+const EX_ING = [
+  ['play', 'playing', 'Most verbs just add -ing.', 'in the garden'],
+  ['watch', 'watching', 'Most verbs just add -ing.', 'a film'],
+  ['read', 'reading', 'Most verbs just add -ing.', 'a book'],
+  ['eat', 'eating', 'Most verbs just add -ing.', 'lunch'],
+  ['sleep', 'sleeping', 'Most verbs just add -ing.', 'on the sofa'],
+  ['run', 'running', 'One vowel + one consonant → double the consonant.', 'in the park'],
+  ['swim', 'swimming', 'One vowel + one consonant → double the consonant.', 'in the pool'],
+  ['sit', 'sitting', 'One vowel + one consonant → double the consonant.', 'on the floor'],
+  ['write', 'writing', 'Verb ends in -e → drop the -e.', 'a letter'],
+  ['make', 'making', 'Verb ends in -e → drop the -e.', 'a cake'],
+  ['dance', 'dancing', 'Verb ends in -e → drop the -e.', 'in the living room'],
+  ['take', 'taking', 'Verb ends in -e → drop the -e.', 'photos'],
+  ['study', 'studying', 'Verbs in -y keep the y and add -ing.', 'for the test'],
+  ['cook', 'cooking', 'Most verbs just add -ing.', 'dinner'],
+  ['listen', 'listening', 'Most verbs just add -ing.', 'to music'],
+];
+
+const EX_FUTURE_PLANS = [
+  { when: 'Next summer', s: 'we', be: 'are', v: 'travel', r: 'to Portugal' },
+  { when: 'On Saturday', s: 'my cousins', be: 'are', v: 'visit', r: 'the museum' },
+  { when: 'Tonight', s: 'Ana', be: 'is', v: 'study', r: 'for the test' },
+  { when: 'Next year', s: 'I', be: 'am', v: 'learn', r: 'to play the guitar' },
+  { when: 'After school', s: 'they', be: 'are', v: 'play', r: 'volleyball' },
+  { when: 'Tomorrow', s: 'my father', be: 'is', v: 'paint', r: 'the kitchen' },
+];
+
+// Each line has one blank and one modal that fits it, plus what that modal is
+// doing there — which is the whole point of teaching can / should / must.
+const EX_MODAL_LINES = [
+  { text: 'She ____ play the piano very well.', modal: 'can', kind: 'Ability', why: '"Can" is for what somebody is able to do.' },
+  { text: 'I ____ speak three languages.', modal: 'can', kind: 'Ability', why: '"Can" is for what somebody is able to do.' },
+  { text: 'You look tired. You ____ go to bed early.', modal: 'should', kind: 'Advice', hint: 'advice', why: '"Should" gives advice.' },
+  { text: 'You ____ drink more water when it is hot.', modal: 'should', kind: 'Advice', hint: 'advice', why: '"Should" gives advice.' },
+  { text: 'Students ____ wear a uniform. It is a school rule.', modal: 'must', kind: 'Obligation', hint: 'a rule', why: '"Must" is for rules and obligations.' },
+  { text: 'Drivers ____ stop at a red light.', modal: 'must', kind: 'Obligation', hint: 'a rule', why: '"Must" is for rules and obligations.' },
+  { text: 'You ____ eat so much sugar — it is bad for you.', modal: "shouldn't", kind: 'Advice', hint: 'advice', why: '"Shouldn\'t" says something is a bad idea.' },
+  { text: 'You ____ use your phone during the test.', modal: "mustn't", kind: 'Obligation', hint: 'not allowed', why: '"Mustn\'t" means it is not allowed.' },
+];
+
+const EX_TENSE_NAMES = ['Present simple', 'Present continuous', 'Past simple', 'Future: going to', 'Future: will'];
+
+const EX_TENSE_LINES = [
+  { s: 'She watches TV every evening.', tense: 'Present simple', when: 'Present', why: 'A habit, with "every evening".' },
+  { s: 'We live in Brazil.', tense: 'Present simple', when: 'Present', why: 'Something that is always true.' },
+  { s: 'My brother plays football on Saturdays.', tense: 'Present simple', when: 'Present', why: 'A habit, with "on Saturdays".' },
+  { s: 'The shop opens at nine o\'clock.', tense: 'Present simple', when: 'Present', why: 'A timetable — present simple.' },
+  { s: 'Look! The baby is sleeping.', tense: 'Present continuous', when: 'Present', why: 'be + verb-ing, happening now.' },
+  { s: 'They are playing in the garden right now.', tense: 'Present continuous', when: 'Present', why: 'be + verb-ing, with "right now".' },
+  { s: 'I am doing my homework at the moment.', tense: 'Present continuous', when: 'Present', why: 'be + verb-ing, with "at the moment".' },
+  { s: 'She is wearing a red dress today.', tense: 'Present continuous', when: 'Present', why: 'be + verb-ing, happening today.' },
+  { s: 'We visited our grandparents last Sunday.', tense: 'Past simple', when: 'Past', why: 'Past verb + "last Sunday".' },
+  { s: 'He bought a new bike yesterday.', tense: 'Past simple', when: 'Past', why: 'Past verb + "yesterday".' },
+  { s: 'The film started at eight o\'clock.', tense: 'Past simple', when: 'Past', why: 'The -ed ending shows the past simple.' },
+  { s: "They didn't go to school on Monday.", tense: 'Past simple', when: 'Past', why: '"Didn\'t" + base verb is the past simple.' },
+  { s: 'We are going to travel to Chile in July.', tense: 'Future: going to', when: 'Future', why: 'be + going to = a plan.' },
+  { s: 'She is going to study medicine.', tense: 'Future: going to', when: 'Future', why: 'be + going to = a plan.' },
+  { s: 'Look at those clouds! It is going to rain.', tense: 'Future: going to', when: 'Future', why: 'We can see the evidence → going to.' },
+  { s: 'I am going to call you after dinner.', tense: 'Future: going to', when: 'Future', why: 'be + going to = a plan.' },
+  { s: 'I think it will be sunny tomorrow.', tense: 'Future: will', when: 'Future', why: '"Will" for what we think or predict.' },
+  { s: 'She will be twelve next month.', tense: 'Future: will', when: 'Future', why: 'will + base verb, with "next month".' },
+  { s: "Don't worry — I will help you.", tense: 'Future: will', when: 'Future', why: 'A decision made right now → will.' },
+  { s: 'They will arrive at six o\'clock.', tense: 'Future: will', when: 'Future', why: 'will + base verb.' },
+];
+
+const EX_TIME_WORDS = [
+  { word: 'yesterday', tense: 'Past simple', when: 'Past' },
+  { word: 'last week', tense: 'Past simple', when: 'Past' },
+  { word: 'two days ago', tense: 'Past simple', when: 'Past' },
+  { word: 'every day', tense: 'Present simple', when: 'Present' },
+  { word: 'usually', tense: 'Present simple', when: 'Present' },
+  { word: 'right now', tense: 'Present continuous', when: 'Present' },
+  { word: 'at the moment', tense: 'Present continuous', when: 'Present' },
+  { word: 'tomorrow', tense: 'Future: will', when: 'Future' },
+  { word: 'next month', tense: 'Future: will', when: 'Future' },
+  { word: 'next summer', tense: 'Future: going to', when: 'Future' },
+];
 
 // ---------------------------------------------------------------------------
 // MATCHING WHAT THE TEACHER TYPED TO A TOPIC
@@ -797,8 +1007,13 @@ function exBestTopic(line) {
       const a = exNormTerm(alias);
       if (!a) return;
       const weight = a.split(' ').length;
+      // A short single word has to match a whole word, or "cancel" would pull
+      // in the modals topic through "can".
+      const contains = weight === 1 && a.length <= 5
+        ? new RegExp(`(^|\\s)${a}($|\\s)`).test(q)
+        : q.includes(a);
       if (q === a) score += weight * 6;
-      else if (q.includes(a)) score += weight * 3;
+      else if (contains) score += weight * 3;
       else if (a.includes(q) && q.length >= 4) score += 2;
     });
     if (score > bestScore) { bestScore = score; best = topic; }
@@ -884,9 +1099,12 @@ function exPartition(items) {
   Object.keys(sortGroups).forEach(key => {
     if (sortGroups[key].length >= 2) return;
     sortGroups[key].forEach(item => {
+      const names = item.buckets;
       item.kind = 'mc';
-      item.options = exShuffle(item.buckets.slice());
-      item.prompt = `${item.buckets.join(' or ')}? — "${item.prompt}"`;
+      item.options = exShuffle(names.slice());
+      item.prompt = `${names.length > 2
+        ? `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}`
+        : names.join(' or ')}? — "${item.prompt}"`;
     });
     delete sortGroups[key];
   });
@@ -909,7 +1127,11 @@ function exPartition(items) {
   // Sorting items only belong in the same exercise when they share the two
   // groups: "Regular / Irregular" and "Question / Statement" are two tasks.
   Object.keys(sortGroups).forEach(key => {
-    push('sort', `sort:${key}`, sortGroups[key], `Write ${key.replace(' / ', ' or ')} next to each one.`);
+    const names = sortGroups[key][0].buckets;
+    const list = names.length > 2
+      ? `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}`
+      : names.join(' or ');
+    push('sort', `sort:${key}`, sortGroups[key], `Write ${list} next to each one.`);
   });
 
   parts.forEach((p, i) => { p.letter = String.fromCharCode(65 + i); });
@@ -926,6 +1148,17 @@ function exBuildExam(opts) {
   const quota = exDistribute(count, topics.length);
   let items = [];
   topics.forEach((topic, i) => { items = items.concat(exGenerate(topic, quota[i])); });
+
+  // Topics overlap: "My brother plays football on Saturdays" is a fair
+  // question for both Present continuous and Which tense is it, and the paper
+  // must not ask it twice. Each topic only dedupes against itself.
+  const seen = new Set();
+  items = items.filter(item => {
+    const key = `${exNorm(item.prompt)}|${exNorm(item.correct)}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
   // A topic can run out of unique questions before its quota is met (a short
   // generator list plus bad luck). Top up from the others rather than handing
@@ -1398,7 +1631,7 @@ function exPool(topics, kinds, n) {
   return out;
 }
 
-function exPairPool(topics, n) {
+function exPairPool(topics, n, maxLen) {
   let all = [];
   topics.forEach(t => {
     if (typeof t.pairs !== 'function') return;
@@ -1412,6 +1645,13 @@ function exPairPool(topics, n) {
     seen.add(key);
     out.push(p);
   });
+  // Memory asks for short pairs: a whole question on a face-down card is a
+  // reading test, not a memory game. Longer pairs still fill the board when
+  // there are not enough short ones.
+  if (maxLen) {
+    const fits = p => p.left.length <= maxLen && p.right.length <= maxLen;
+    return out.filter(fits).concat(out.filter(p => !fits(p))).slice(0, n);
+  }
   return out.slice(0, n);
 }
 
@@ -1617,7 +1857,7 @@ const ExamGames = (() => {
 
   // ---- 🧠 Memory ---------------------------------------------------------
   function memory(container, topics) {
-    const pairs = exPairPool(topics, 6);
+    const pairs = exPairPool(topics, 6, 24);
     if (pairs.length < 3) { container.innerHTML = '<p class="quiz-empty">Sem pares para este jogo.</p>'; return; }
     const cards = exShuffle(pairs.flatMap((p, i) => ([
       { id: i, text: p.left }, { id: i, text: p.right },
@@ -1633,7 +1873,9 @@ const ExamGames = (() => {
         <div class="exg-mem">
           ${cards.map((c, i) => {
             const shown = found.has(c.id) || open.indexOf(i) !== -1;
-            return `<button class="exg-card ${shown ? 'open' : ''} ${found.has(c.id) ? 'done' : ''}" data-card="${i}">
+            // The card cannot grow, so the type shrinks to whatever is on it.
+            const size = !shown ? 'down' : c.text.length > 26 ? 'long' : c.text.length > 14 ? 'mid' : '';
+            return `<button class="exg-card ${shown ? 'open' : ''} ${found.has(c.id) ? 'done' : ''} ${size}" data-card="${i}">
                       <span>${shown ? exEsc(c.text) : '?'}</span>
                     </button>`;
           }).join('')}
