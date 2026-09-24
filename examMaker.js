@@ -1142,7 +1142,10 @@ function exPartition(items) {
 
 function exBuildExam(opts) {
   const topics = opts.topics.filter(Boolean);
-  const count = Math.min(EXAM_MAX, Math.max(EXAM_MIN, Number(opts.count) || 12));
+  // The 10-question floor belongs to the printed paper, not to the generator:
+  // a homework exercise is allowed to be five questions long.
+  const floor = Number(opts.min) || EXAM_MIN;
+  const count = Math.min(EXAM_MAX, Math.max(floor, Number(opts.count) || 12));
   if (!topics.length) return null;
 
   const quota = exDistribute(count, topics.length);
@@ -1744,6 +1747,7 @@ const ExamGames = (() => {
         stopAll();
         const fb = container.querySelector('#exgFb');
         const next = container.querySelector('#exgNext');
+        if (typeof ldRecord === 'function') ldRecord(item, right, { source: 'game' });
         if (right) {
           correct++; streak++; best = Math.max(best, streak);
           exPlayGood();
@@ -1959,6 +1963,7 @@ const ExamGames = (() => {
         container.querySelector('[data-action="check"]').addEventListener('click', () => {
           const sentence = exJoinTokens(chosenIdx.map(i => item.tokens[i]));
           const right = exNorm(sentence) === exNorm(item.correct);
+          if (typeof ldRecord === 'function') ldRecord(item, right, { source: 'game' });
           const fb = container.querySelector('#exgFb');
           if (right) {
             correct++;
@@ -2014,6 +2019,7 @@ const ExamGames = (() => {
       container.querySelectorAll('[data-bucket]').forEach(btn => {
         btn.addEventListener('click', () => {
           const right = btn.dataset.bucket === item.correct;
+          if (typeof ldRecord === 'function') ldRecord(item, right, { source: 'game' });
           const fb = container.querySelector('#exgFb');
           if (right) {
             correct++;
@@ -2088,7 +2094,8 @@ function openExamGames(exam) { ExamGames.open(exam); }
 // Same questions, same order, same numbering as the printed test — so a
 // student who practised here recognises the sheet the teacher hands out.
 // ---------------------------------------------------------------------------
-function openExamRunner(exam) {
+function openExamRunner(exam, opts) {
+  const runOpts = opts || {};
   openModal(`
     <div class="modal-content-pad exam-runner">
       <h3 id="modalTitle">✍️ ${exEsc(exam.title)}</h3>
@@ -2161,6 +2168,11 @@ function openExamRunner(exam) {
 
     function resolve(right, given, el) {
       answers.push({ item, given, right });
+      // Every graded answer feeds the student's log and error bank — this is
+      // the single place the whole app learns what somebody got wrong.
+      if (typeof ldRecord === 'function') {
+        ldRecord(item, right, { studentId: runOpts.studentId, source: runOpts.source || 'exam' });
+      }
       if (right) { correct++; exPlayGood(); exConfetti(el || fb); }
       else exPlayBad();
 
@@ -2221,6 +2233,9 @@ function openExamRunner(exam) {
     const wrong = answers.filter(a => !a.right);
     if (typeof awardProgress === 'function') awardProgress(correct * 5, stars);
     exPlayWin();
+    if (typeof runOpts.onDone === 'function') {
+      runOpts.onDone({ correct, total: items.length, pct, stars, answers: answers.map(a => ({ n: a.item.n, prompt: a.item.prompt, given: a.given, right: a.right })) });
+    }
 
     mount.innerHTML = `
       <div class="ex-shell">

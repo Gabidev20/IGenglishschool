@@ -297,11 +297,27 @@ function paintSessionDrawer() {
   const acc = loadCurrentSessionAccumulator(student.id);
   const todayStr = new Date().toISOString().slice(0, 10);
 
+  // The picker inserts a label into the free-text field — it is a shortcut for
+  // typing, not the only way to fill it in. A class is often "Unit 4 + revisão
+  // do past simple", which no list of topics can hold.
+  const topicLabelOf = (level, topic) => `${level.code} · ${topic.title}`;
   const topicOptionsHTML = LEVELS.map(level => `
     <optgroup label="${level.code} · ${level.name}">
-      ${level.topics.map(t => `<option value="${level.id}:${t.id}">${t.title}</option>`).join('')}
+      ${level.topics.map(t => `<option value="${escapeHtmlLite(topicLabelOf(level, t))}">${escapeHtmlLite(t.title)}</option>`).join('')}
     </optgroup>
   `).join('');
+
+  // Everything the teacher can be offered: the curriculum, plus whatever she
+  // has typed for this student before (her own wording comes back).
+  const pastLabels = [...new Set(loadSessions(student.id)
+    .map(x => (x.topicLabel || '').trim())
+    .filter(Boolean))].reverse();
+  const allLabels = [...new Set(pastLabels.concat(
+    LEVELS.flatMap(level => level.topics.map(t => topicLabelOf(level, t)))))];
+  const datalistHTML = allLabels.map(l => `<option value="${escapeHtmlLite(l)}"></option>`).join('');
+  const recentHTML = pastLabels.slice(0, 3)
+    .map(l => `<button type="button" class="session-topic-chip" data-topic-chip="${escapeHtmlLite(l)}" title="${escapeHtmlLite(l)}">↺ ${escapeHtmlLite(l)}</button>`)
+    .join('');
 
   body.innerHTML = `
     <div class="session-student-line" style="--accent-color:${student.color}">
@@ -324,10 +340,16 @@ function paintSessionDrawer() {
 
     <div class="gm-form-field">
       <label for="sessionTopic">Content worked on</label>
-      <select id="sessionTopic">
-        <option value="">— Select a topic —</option>
-        ${topicOptionsHTML}
-      </select>
+      <input type="text" id="sessionTopic" list="sessionTopicList" autocomplete="off"
+             placeholder="Digite o conteúdo da aula…" />
+      <datalist id="sessionTopicList">${datalistHTML}</datalist>
+      <div class="session-topic-tools">
+        <select id="sessionTopicPicker" aria-label="Inserir um tópico do curso">
+          <option value="">➕ Inserir tópico do curso…</option>
+          ${topicOptionsHTML}
+        </select>
+      </div>
+      ${recentHTML ? `<div class="session-topic-recent">${recentHTML}</div>` : ''}
     </div>
 
     <div class="gm-form-field">
@@ -355,6 +377,28 @@ function paintSessionDrawer() {
     });
   });
 
+  // Picking a topic adds it to whatever is already written instead of
+  // replacing it, so two topics in one class are a matter of picking twice.
+  const topicInput = document.getElementById('sessionTopic');
+  const addTopic = (label) => {
+    const current = topicInput.value.trim();
+    const parts = current ? current.split(/\s*\+\s*/) : [];
+    if (parts.some(p => p.toLowerCase() === label.toLowerCase())) return;
+    parts.push(label);
+    topicInput.value = parts.join(' + ');
+    topicInput.focus();
+  };
+  const picker = document.getElementById('sessionTopicPicker');
+  if (picker) {
+    picker.addEventListener('change', () => {
+      if (picker.value) addTopic(picker.value);
+      picker.selectedIndex = 0;
+    });
+  }
+  body.querySelectorAll('[data-topic-chip]').forEach(btn => {
+    btn.addEventListener('click', () => addTopic(btn.dataset.topicChip));
+  });
+
   document.getElementById('saveSessionBtn').addEventListener('click', () => saveClassSession(student));
   renderSessionHistory(student.id);
 }
@@ -374,16 +418,10 @@ function renderSessionHistory(studentId) {
 
 function saveClassSession(student) {
   const date = document.getElementById('sessionDate').value || new Date().toISOString().slice(0, 10);
-  const topicValue = document.getElementById('sessionTopic').value;
   const notes = document.getElementById('sessionNotes').value.trim();
-
-  let topicLabel = '';
-  if (topicValue) {
-    const [levelId, topicId] = topicValue.split(':');
-    const level = LEVELS.find(l => l.id === levelId);
-    const topic = level ? level.topics.find(t => t.id === topicId) : null;
-    if (level && topic) topicLabel = `${level.code} · ${topic.title}`;
-  }
+  // Free text now: whatever is in the box is what was worked on, whether it
+  // came from the picker, from a past class, or straight off the keyboard.
+  const topicLabel = document.getElementById('sessionTopic').value.trim();
 
   const acc = loadCurrentSessionAccumulator(student.id);
   const sessions = loadSessions(student.id);

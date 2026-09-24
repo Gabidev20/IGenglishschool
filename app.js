@@ -91,7 +91,7 @@ mainNav.addEventListener('click', (e) => {
 // ---------------------------------------------------------------------------
 const siteHeader = document.getElementById('siteHeader');
 const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-const observedSections = ['live-class', 'levels', 'games', 'songs', 'game-maker', 'exam-maker']
+const observedSections = ['live-class', 'levels', 'games', 'songs', 'game-maker', 'exam-maker', 'homework']
   .map(id => document.getElementById(id))
   .filter(Boolean);
 
@@ -281,6 +281,7 @@ function closeModal() {
   if (typeof LiveTools !== 'undefined') LiveTools.stopAll();
   if (typeof ArcadeGames !== 'undefined') ArcadeGames.stopAll();
   if (typeof ExamGames !== 'undefined') ExamGames.stopAll();
+  if (typeof SkillsModules !== 'undefined') SkillsModules.stopAll();
   modalOverlay.hidden = true;
   modalBody.innerHTML = '';
   modalEl.classList.remove('modal--game', 'modal--fullscreen');
@@ -450,6 +451,17 @@ function renderLessonPlanHTML(level, topic) {
 // ---------------------------------------------------------------------------
 renderGameMaker(document.getElementById('gameMakerRoot'));
 LiveTools.initFab();
+
+// Homework, printables and the certificate — the student-facing half of the app.
+if (typeof renderHomework === 'function') renderHomework(document.getElementById('homeworkRoot'));
+['printablesBtn', 'certificateBtn'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (id === 'printablesBtn') openPrintables();
+    else openCertificate();
+  });
+});
 
 // The teacher dashboard sits above the hero and is the first thing drawn.
 if (typeof renderDashboard === 'function') renderDashboard();

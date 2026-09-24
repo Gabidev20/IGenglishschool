@@ -438,6 +438,8 @@ function onActiveStudentChanged() {
   refreshHeaderForActiveStudent();
   if (typeof refreshLiveClassCockpit === 'function') refreshLiveClassCockpit();
   if (typeof refreshSessionDrawerIfOpen === 'function') refreshSessionDrawerIfOpen();
+  // The homework panel shows one student at a time, so it follows the switcher.
+  if (typeof renderHomework === 'function') renderHomework(document.getElementById('homeworkRoot'));
 }
 
 function selectStudent(id) {
