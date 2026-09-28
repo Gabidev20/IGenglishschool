@@ -504,12 +504,16 @@ function paintStudentManagerGrid() {
         <span>${s.age} yrs · ${escapeHtmlLite(s.levelLabel)}</span>
       </div>
       <div class="student-card-actions">
+        <button class="gm-remove-row" data-share-student="${s.id}" aria-label="Link do aluno" title="Link do aluno">🔗</button>
         <button class="gm-remove-row" data-edit-student="${s.id}" aria-label="Edit">✏️</button>
         <button class="gm-remove-row" data-delete-student="${s.id}" aria-label="Delete">🗑️</button>
       </div>
     </div>
   `).join('');
 
+  grid.querySelectorAll('[data-share-student]').forEach(btn => {
+    btn.addEventListener('click', () => openShareLinkModal(btn.dataset.shareStudent));
+  });
   grid.querySelectorAll('[data-edit-student]').forEach(btn => {
     btn.addEventListener('click', () => openStudentForm(students.find(s => s.id === btn.dataset.editStudent), openStudentManager));
   });

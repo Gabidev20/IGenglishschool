@@ -218,3 +218,98 @@ drop schema igenglish cascade;
 ```
 
 Nos dois casos o Financeiro não sente nada.
+
+---
+---
+
+# Conta nova, segunda professora e link do aluno
+
+Esta parte cobre três coisas que costumam vir juntas: mudar para **outro
+projeto Supabase**, colocar **outra professora** para usar o site com os
+alunos dela, e mandar para **cada aluno/família** um endereço em que eles veem
+o progresso e treinam em casa.
+
+## 1. Apontar o site para o projeto novo
+
+No projeto novo do Supabase:
+
+1. **SQL Editor → New query** → cole o [`supabase-schema-public.sql`](supabase-schema-public.sql) → **Run**
+   (cria as 7 tabelas da professora, com RLS).
+2. **SQL Editor → New query** → cole o [`supabase-share.sql`](supabase-share.sql) → **Run**
+   (cria o link do aluno: mais 2 tabelas e as 2 funções de acesso).
+3. **Settings → API**, copie *Project URL* e a *Publishable/anon key*, e cole
+   as duas primeiras linhas de [`supabaseConfig.js`](supabaseConfig.js).
+
+> **Os dados não se mudam sozinhos de um projeto para outro.** Ao entrar no
+> projeto novo, a professora começa com o banco vazio — mas tudo que estiver
+> no navegador dela sobe na primeira sincronização. Se o computador usado for o
+> mesmo de sempre, na prática ela não perde nada. Se for outro computador,
+> abra antes o site no computador antigo, confirme que está tudo lá, e só
+> depois troque as chaves.
+
+## 2. Outra professora
+
+**Não precisa mexer em nada no código.** O banco já separa por professora
+(`teacher_id = auth.uid()` em todas as tabelas), então:
+
+1. Ela abre o site e clica em **Create account**.
+2. Escolhe e-mail e senha, confirma o e-mail se o projeto pedir.
+3. Pronto: ela entra num site vazio, cadastra os alunos dela, monta as aulas,
+   as provas e as lições. Uma professora **nunca** vê os alunos da outra —
+   isso é garantido pelo banco, não pela tela.
+
+O que é compartilhado entre vocês: **nada**. Nem alunos, nem relatórios, nem
+financeiro, nem jogos personalizados. Cada conta é um site inteiro só dela.
+
+> Se quiser impedir que qualquer pessoa crie conta, desligue o cadastro aberto
+> no painel: **Authentication → Providers → Email → "Enable sign ups"**. Aí as
+> contas são criadas por você em **Authentication → Users → Add user**.
+
+## 3. O link do aluno/família
+
+Para cada aluno a professora gera um endereço próprio:
+
+- **Alunos** (no topo da página) → botão **🔗** no card do aluno, ou
+- seção **Lição** → **🔗 Link do aluno**.
+
+O link fica assim:
+
+```
+https://seu-site/#aluno=cKZjhu0QK_Qp9xu3FM9ISGNV
+```
+
+Quem abre esse endereço **não vê o site da professora**: sem painel, sem
+financeiro, sem os outros alunos. Vê a tela do próprio aluno, com:
+
+| | |
+|---|---|
+| 📈 Meu progresso | estrelas, XP, ofensiva, semana, figurinhas, textos corrigidos |
+| 📚 Minha lição | as tarefas que a professora mandou |
+| 🎮 Jogos | os jogos dos tópicos do nível dele |
+| ⚡ Treinar | exercícios de gramática |
+| 🎧 Ditado · 🎤 Falar · ✍️ Escrever | as três habilidades |
+| 🔁 Meus erros | revisão espaçada do que ele errou |
+
+**O que ele faz em casa volta para a professora**: pontos, erros para revisar,
+resultado da lição e os textos de writing aparecem no site dela na próxima vez
+que abrir.
+
+### A segurança disso
+
+- O código é **longo e aleatório** — funciona como um link do Google Drive:
+  quem tem o endereço vê **aquele** aluno, e nada mais.
+- As tabelas continuam fechadas. A página do aluno não lê o banco direto: ela
+  só conversa por duas funções que exigem o código (`igenglish_share_read` e
+  `igenglish_share_write`). A de escrita **nunca apaga nada** e nunca alcança
+  outro aluno.
+- Dá para **revogar** um link a qualquer momento (botão 🚫 no mesmo lugar em
+  que ele foi gerado). O endereço antigo para de funcionar na hora.
+- Se o link for para um grupo de WhatsApp da turma por engano, revogue e gere
+  outro — é a mesma lógica de um link de arquivo compartilhado.
+
+### Sem Supabase configurado
+
+O link só abre **no mesmo navegador** da professora — serve de
+pré-visualização ("👁️ Ver como o aluno vê"). Para a família abrir do celular
+dela, o `supabaseConfig.js` precisa estar preenchido e o `supabase-share.sql`
+rodado.

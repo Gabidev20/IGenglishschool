@@ -81,6 +81,7 @@ function renderHomework(container) {
               <p>${mine.filter(h => !hwIsDone(h)).length} pendente(s) · ${mine.filter(hwIsDone).length} entregue(s)</p>
             </div>
             <button class="game-btn" id="hwMyProgress">📈 Meu progresso</button>
+            <button class="game-btn secondary" id="hwShareLink">🔗 Link do aluno</button>
           </div>
           ${mine.length ? `
             <div class="hw-card-grid">
@@ -112,6 +113,8 @@ function renderHomework(container) {
   if (deskBtn) deskBtn.addEventListener('click', () => openWritingDesk());
   const progBtn = container.querySelector('#hwMyProgress');
   if (progBtn) progBtn.addEventListener('click', () => openStudentProgress(activeId));
+  const linkBtn = container.querySelector('#hwShareLink');
+  if (linkBtn) linkBtn.addEventListener('click', () => openShareLinkModal(activeId));
 
   container.querySelectorAll('[data-hw-open]').forEach(btn => {
     btn.addEventListener('click', () => {

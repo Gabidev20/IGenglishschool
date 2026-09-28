@@ -250,6 +250,10 @@ const IGAuth = (() => {
   }
 
   async function init() {
+    // A student opening their own link is not signing in as anybody: the page
+    // is already showing their screen, and a login gate over it would be a
+    // dead end for a family with no account.
+    if (window.IG_SHARE_MODE) return;
     if (window.IG_SUPABASE && window.IG_SUPABASE.secretKeyPasted) {
       showSecretKeyWarning();
       return;                                    // refuse to run on a secret key

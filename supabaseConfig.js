@@ -28,8 +28,8 @@
    uma professora, tudo salvo neste navegador, sem login.
    ========================================================================== */
 
-const SUPABASE_URL = 'https://tyeohandmesleovcyidc.supabase.co';       // ex.: 'https://abcdefghijkl.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_W2yITaI98F168LrHebRtUQ_FH_SCJBG';  // ex.: 'sb_publishable_...'  ou  'eyJhbGciOi...'
+const SUPABASE_URL = 'https://jravavkjhixsssimuvqd.supabase.co';       // ex.: 'https://abcdefghijkl.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_BNQcmvYdqzZxHB204B8Vog_lG3xxI0j';  // ex.: 'sb_publishable_...'  ou  'eyJhbGciOi...'
 
 /* --------------------------------------------------------------------------
    ONDE AS TABELAS FICAM

@@ -180,6 +180,75 @@ const IGCloud = (() => {
     return client;
   }
 
+  // The student's link has no account behind it: it talks to the database
+  // only through the two functions in supabase-share.sql, which take the code
+  // as their key. A separate client keeps that traffic away from the
+  // teacher's session entirely.
+  let anon = null;
+  async function anonClient() {
+    if (anon) return anon;
+    await loadSDK();
+    anon = window.supabase.createClient(window.IG_SUPABASE.url, window.IG_SUPABASE.anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      db: { schema: 'public' },        // the share functions live in public
+    });
+    return anon;
+  }
+
+  // -------------------------------------------------------------------------
+  // STUDENT LINKS
+  // -------------------------------------------------------------------------
+  async function registerShareLink(code, student) {
+    if (!ready || !teacher) return;
+    const sb = await getClient();
+    await sb.from(tbl('student_links')).upsert({
+      code, teacher_id: teacher.id, student_id: student.id,
+      student_name: student.name, revoked: false,
+    }, { onConflict: 'code' });
+  }
+
+  async function revokeShareLink(code) {
+    if (!ready || !teacher) return;
+    const sb = await getClient();
+    await sb.from(tbl('student_links')).update({ revoked: true }).eq('code', code);
+  }
+
+  // What the students did at home, folded into the teacher's own copy. Their
+  // rows are only ever read here — the teacher's sync rewrites her own tables
+  // wholesale, and pushing over this would throw the work away.
+  async function pullStudentActivity() {
+    if (!ready || !teacher) return 0;
+    const sb = await getClient();
+    const { data, error } = await sb.from(tbl('student_activity'))
+      .select('*').eq('teacher_id', teacher.id).order('created_at');
+    if (error || !data || !data.length) return 0;
+
+    IGStore.silently(() => {
+      data.forEach(row => {
+        if (typeof ShareMode !== 'undefined' && ShareMode.applyActivityLocally) {
+          ShareMode.applyActivityLocally({ kind: row.kind, id: row.id, payload: row.payload }, row.student_id);
+        }
+      });
+    });
+
+    // Merged: drop them so the same work is not folded in twice.
+    await sb.from(tbl('student_activity')).delete()
+      .eq('teacher_id', teacher.id)
+      .in('id', data.map(r => r.id));
+
+    // The merged result belongs in the teacher's own rows now.
+    const touched = new Set();
+    data.forEach(r => {
+      touched.add('progress_' + r.student_id);
+      touched.add('log_' + r.student_id);
+      touched.add('bank_' + r.student_id);
+      touched.add('writing_' + r.student_id);
+      touched.add('homework');
+    });
+    touched.forEach(k => pending.add(k));
+    return data.length;
+  }
+
   // -------------------------------------------------------------------------
   // TABLE MAP — which logical storage key belongs to which table
   // -------------------------------------------------------------------------
@@ -510,6 +579,9 @@ const IGCloud = (() => {
     await resolveLayout();
     await ensureTeacherRow();
     const result = await pull();
+    // Then whatever the students did at home since the last time she opened
+    // the site. Harmless when the share tables are not installed yet.
+    try { await pullStudentActivity(); } catch (e) { /* share tables optional */ }
     // Re-render whatever the freshly pulled data affects.
     if (typeof ContentStore !== 'undefined') ContentStore.refresh();
     if (typeof initStudents === 'function') initStudents();
@@ -521,8 +593,8 @@ const IGCloud = (() => {
   }
 
   return {
-    enabled, getClient, signIn, signUp, signOut, resetPassword, currentSession,
-    start, flush,
+    enabled, getClient, anonClient, signIn, signUp, signOut, resetPassword, currentSession,
+    start, flush, registerShareLink, revokeShareLink, pullStudentActivity,
     get teacher() { return teacher; },
     get syncing() { return syncing; },
     get lastError() { return lastError; },
