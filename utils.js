@@ -217,17 +217,59 @@ function igWorkspaceHasContent(stats) {
     || stats.curriculum > 0 || stats.students > 0;
 }
 
+// How a key coming from the old workspace meets whatever the account already
+// has under the same name. Returns the value to store, or null to leave the
+// destination alone.
+//
+// "Skip anything already there" was not enough: the first cloud sync writes an
+// EMPTY custom_games list into a new account, and an empty list is not a
+// reason to throw away the games the teacher actually made. So lists are
+// merged by id, objects are merged key by key, and only scalars stand aside.
+function igMergeValue(srcRaw, dstRaw, key) {
+  if (srcRaw === null) return null;
+  if (dstRaw === null) return srcRaw;
+
+  let src, dst;
+  try { src = JSON.parse(srcRaw); } catch (e) { return null; }
+  try { dst = JSON.parse(dstRaw); } catch (e) { return srcRaw; }
+
+  if (Array.isArray(src) && Array.isArray(dst)) {
+    if (!src.length) return null;
+    if (!dst.length) return JSON.stringify(src);
+    const idOf = (o) => (o && (o.id || o.code)) || JSON.stringify(o);
+    const have = new Set(dst.map(idOf));
+    const merged = dst.concat(src.filter(o => !have.has(idOf(o))));
+    return merged.length === dst.length ? null : JSON.stringify(merged);
+  }
+
+  if (src && dst && typeof src === 'object' && typeof dst === 'object') {
+    // Stars and XP are earned, never un-earned: keep whichever side is ahead.
+    if (String(key).startsWith('progress_')) {
+      return JSON.stringify({
+        ...src, ...dst,
+        xp: Math.max(src.xp || 0, dst.xp || 0),
+        stars: Math.max(src.stars || 0, dst.stars || 0),
+        stickers: Array.from(new Set((src.stickers || []).concat(dst.stickers || []))),
+      });
+    }
+    return JSON.stringify({ ...src, ...dst });   // o que já está na conta manda
+  }
+
+  return null;
+}
+
 // Copy, never move: the source stays exactly as it was, so a bad import can
-// always be repeated or ignored. Keys already present in the destination are
-// left alone unless `overwrite` says otherwise.
+// always be repeated or ignored.
 function igCopyWorkspace(from, to, overwrite) {
   let copied = 0;
   igWorkspaceKeys(from).forEach(key => {
     const target = `${IG_STORE_NS}:${to}:${key}`;
     try {
-      if (!overwrite && localStorage.getItem(target) !== null) return;
-      const value = igWorkspaceGet(from, key);
-      if (value === null) return;
+      const srcRaw = igWorkspaceGet(from, key);
+      if (srcRaw === null) return;
+      const dstRaw = localStorage.getItem(target);
+      const value = overwrite ? srcRaw : igMergeValue(srcRaw, dstRaw, key);
+      if (value === null || value === dstRaw) return;   // nada mudou, nao conta
       localStorage.setItem(target, value);
       copied++;
     } catch (e) {}
