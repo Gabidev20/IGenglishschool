@@ -595,6 +595,7 @@ const IGCloud = (() => {
   return {
     enabled, getClient, anonClient, signIn, signUp, signOut, resetPassword, currentSession,
     start, flush, registerShareLink, revokeShareLink, pullStudentActivity,
+    pushAll: pushEverything,
     get teacher() { return teacher; },
     get syncing() { return syncing; },
     get lastError() { return lastError; },

@@ -199,6 +199,7 @@ const IGAuth = (() => {
       <div class="teacher-menu" id="teacherMenu" hidden>
         <p class="teacher-menu-email">${igEscapeHtml(t.email)}</p>
         <button class="teacher-menu-btn" id="teacherSyncNow" type="button">🔄 Sync now</button>
+        <button class="teacher-menu-btn" id="teacherRecover" type="button">📦 Trazer dados deste computador</button>
         <button class="teacher-menu-btn danger" id="teacherSignOut" type="button">🚪 Sign out</button>
       </div>
     `;
@@ -210,6 +211,11 @@ const IGAuth = (() => {
     });
     document.addEventListener('click', (e) => {
       if (!slot.contains(e.target)) menu.hidden = true;
+    });
+    const recoverBtn = slot.querySelector('#teacherRecover');
+    if (recoverBtn) recoverBtn.addEventListener('click', () => {
+      menu.hidden = true;
+      if (typeof openDataRecovery === 'function') openDataRecovery(false);
     });
     slot.querySelector('#teacherSyncNow').addEventListener('click', () => {
       menu.hidden = true;
@@ -279,6 +285,11 @@ const IGAuth = (() => {
     }
 
     if (igWorkspaceId() !== session.user.id) {
+      // Everything done before this account existed lives in the `local`
+      // workspace. Switching without bringing it along is what makes a
+      // teacher's first login look like it erased her class notes, so an
+      // empty account adopts that work instead of starting blank.
+      adoptLocalWorkIfUntaken(session.user.id);
       igSetWorkspace(session.user.id);
       window.location.reload();
       return;
@@ -292,6 +303,20 @@ const IGAuth = (() => {
       console.error('Initial sync failed', e);
       renderTeacherChip();
     }
+  }
+
+  // Only ever runs for an account with nothing in it yet, and only once per
+  // computer: the second teacher to sign in here starts clean, as she should.
+  function adoptLocalWorkIfUntaken(uid) {
+    try {
+      if (typeof igWorkspaceKeys !== 'function') return;
+      if (igWorkspaceKeys(uid).length > 0) return;
+      if (localStorage.getItem('hopscotch_local_adopted_by')) return;
+      const stats = igWorkspaceStats('local');
+      if (!igWorkspaceHasContent(stats)) return;
+      igCopyWorkspace('local', uid, false);
+      localStorage.setItem('hopscotch_local_adopted_by', uid);
+    } catch (e) { console.error('adopt local work', e); }
   }
 
   return { init, showGate, renderTeacherChip };

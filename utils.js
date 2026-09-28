@@ -147,6 +147,94 @@ function igStorageKey(logicalKey) {
   return `${IG_STORE_NS}:${igWorkspace}:${logicalKey}`;
 }
 
+// ---------------------------------------------------------------------------
+// LOOKING INTO OTHER WORKSPACES
+// ---------------------------------------------------------------------------
+// Signing in for the first time moves the app from the `local` workspace to
+// one named after the account — a fresh, empty one. Everything done before
+// that login is still in localStorage, just under the old name. These helpers
+// find it and copy it across, which is the difference between "my notes are
+// gone" and "my notes are one click away".
+function igListWorkspaces() {
+  const found = new Set();
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i) || '';
+      if (!k.startsWith(IG_STORE_NS + ':')) continue;
+      const parts = k.split(':');
+      if (parts.length >= 3) found.add(parts[1]);
+    }
+  } catch (e) {}
+  return Array.from(found);
+}
+
+function igWorkspaceKeys(ws) {
+  const prefix = `${IG_STORE_NS}:${ws}:`;
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) out.push(k.slice(prefix.length));
+    }
+  } catch (e) {}
+  return out;
+}
+
+function igWorkspaceGet(ws, key) {
+  try { return localStorage.getItem(`${IG_STORE_NS}:${ws}:${key}`); } catch (e) { return null; }
+}
+
+// A plain-language summary of what a workspace is holding, used to ask the
+// teacher whether she wants it before touching anything.
+function igWorkspaceStats(ws) {
+  const keys = igWorkspaceKeys(ws);
+  const json = (key, fallback) => {
+    const raw = igWorkspaceGet(ws, key);
+    if (raw === null) return fallback;
+    try { return JSON.parse(raw); } catch (e) { return fallback; }
+  };
+  const countIn = (prefix) => keys.filter(k => k.startsWith(prefix))
+    .reduce((n, k) => n + (Array.isArray(json(k, [])) ? json(k, []).length : 0), 0);
+
+  return {
+    workspace: ws,
+    keys: keys.length,
+    students: (json('students', []) || []).length,
+    sessions: countIn('sessions_'),
+    games: (json('custom_games', []) || []).length,
+    reports: countIn('reports_'),
+    homework: (json('homework', []) || []).length,
+    writing: countIn('writing_'),
+    exams: (json('exams', []) || []).length,
+    curriculum: igWorkspaceGet(ws, 'curriculum_v1') ? 1 : 0,
+  };
+}
+
+// Is there anything in here worth carrying over?
+function igWorkspaceHasContent(stats) {
+  return stats.sessions > 0 || stats.games > 0 || stats.reports > 0
+    || stats.homework > 0 || stats.writing > 0 || stats.exams > 0
+    || stats.curriculum > 0 || stats.students > 0;
+}
+
+// Copy, never move: the source stays exactly as it was, so a bad import can
+// always be repeated or ignored. Keys already present in the destination are
+// left alone unless `overwrite` says otherwise.
+function igCopyWorkspace(from, to, overwrite) {
+  let copied = 0;
+  igWorkspaceKeys(from).forEach(key => {
+    const target = `${IG_STORE_NS}:${to}:${key}`;
+    try {
+      if (!overwrite && localStorage.getItem(target) !== null) return;
+      const value = igWorkspaceGet(from, key);
+      if (value === null) return;
+      localStorage.setItem(target, value);
+      copied++;
+    } catch (e) {}
+  });
+  return copied;
+}
+
 const IGStore = (() => {
   const writeListeners = [];
 
