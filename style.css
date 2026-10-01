@@ -6865,3 +6865,56 @@ html.ig-student-mode body > .auth-gate { display: none !important; }
   .rec-banner { flex-wrap: wrap; bottom: 10px; }
   .rec-banner-actions { width: 100%; justify-content: space-between; }
 }
+.stu-err { display: inline-block; margin-top: 6px; padding: 4px 10px; border-radius: 6px; background: var(--bg); font-size: 0.78rem; color: var(--primary-dark); }
+
+/* ==========================================================================
+   Class Sheet — words / homework rows in the drawer + the image modal
+   ========================================================================== */
+.session-date-row { display: flex; gap: 10px; }
+.session-date-row .gm-form-field { flex: 1; }
+.session-date-row .session-classno-field { flex: 0 0 92px; }
+.gm-form-field input[type="number"] {
+  width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 2px solid var(--border); font-family: inherit; font-size: 0.95rem;
+  background: var(--surface); color: var(--ink);
+}
+.gm-form-field input[type="number"]:focus { outline: none; border-color: var(--primary); }
+
+.sheet-rows { display: flex; flex-direction: column; gap: 6px; }
+.sheet-row { display: flex; align-items: center; gap: 6px; }
+.sheet-row input[type="text"] {
+  flex: 1; min-width: 0; padding: 8px 10px; border-radius: var(--radius-sm);
+  border: 2px solid var(--border); font-family: inherit; font-size: 0.88rem;
+  background: var(--surface); color: var(--ink);
+}
+.sheet-row input[type="text"]:focus { outline: none; border-color: var(--primary); }
+.sheet-row .sheet-pron { color: var(--color-primary); }
+.sheet-row-no { flex: 0 0 22px; font-weight: 700; font-size: 0.85rem; color: var(--ink-soft); }
+.sheet-row-del {
+  flex: 0 0 28px; height: 28px; border-radius: 50%; border: none; background: transparent;
+  color: var(--ink-faint); font-size: 0.8rem; cursor: pointer;
+}
+.sheet-row-del:hover { background: var(--b1b2-soft); color: var(--b1b2); }
+.sheet-add-btn {
+  margin-top: 8px; border: 2px dashed var(--border); background: transparent; color: var(--ink-soft);
+  border-radius: var(--radius-sm); padding: 7px 12px; font-weight: 700; font-size: 0.82rem; cursor: pointer;
+}
+.sheet-add-btn:hover { border-color: var(--primary); color: var(--primary-dark); }
+.sheet-private-hint { font-weight: 500; color: var(--ink-faint); font-size: 0.78rem; }
+
+.session-history-item { align-items: center; }
+.session-history-topic { flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-history-sheet {
+  flex: 0 0 auto; border: 1px solid var(--border); background: var(--surface); border-radius: 8px;
+  padding: 2px 6px; cursor: pointer; font-size: 0.9rem;
+}
+.session-history-sheet:hover { border-color: var(--primary); background: var(--primary-soft); }
+
+.class-sheet-sub { color: var(--ink-soft); margin-bottom: 14px; }
+.class-sheet-preview {
+  background: var(--bg); border-radius: var(--radius-md); padding: 12px; margin-bottom: 14px;
+  max-height: 60vh; overflow-y: auto; text-align: center;
+}
+.class-sheet-preview img { display: block; margin: 0 auto; width: 100%; max-width: 640px; height: auto; box-shadow: var(--shadow-sm); background: #fff; }
+.class-sheet-actions { justify-content: center; }
+.class-sheet-msg { margin-top: 12px; text-align: center; font-weight: 600; color: var(--ink-soft); }

@@ -355,6 +355,7 @@ const IGCloud = (() => {
       id: row.id, date: row.date, present: row.present,
       topicLabel: row.topic_label || '', notes: row.notes || '',
       stats: row.stats || { xp: 0, stars: 0 },
+      sheet: (row.stats && row.stats.sheet) || null,
       createdAt: row.created_at ? new Date(row.created_at).getTime() : Date.now(),
     };
   }
@@ -409,7 +410,10 @@ const IGCloud = (() => {
       const rows = list.map(s => ({
         id: s.id, teacher_id: tid, student_id: sid, date: s.date,
         present: Boolean(s.present), topic_label: s.topicLabel || null,
-        notes: s.notes || null, stats: s.stats || {},
+        notes: s.notes || null,
+        // The class sheet rides inside the stats jsonb so the table needs no
+        // new column; rowToSession() unpacks it again.
+        stats: s.sheet ? Object.assign({}, s.stats || {}, { sheet: s.sheet }) : (s.stats || {}),
       }));
       if (rows.length) await sb.from(tbl('class_sessions')).upsert(rows, { onConflict: 'teacher_id,id' });
       return;

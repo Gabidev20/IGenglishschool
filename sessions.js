@@ -333,13 +333,19 @@ function paintSessionDrawer() {
       </div>
     </div>
 
-    <div class="gm-form-field">
-      <label for="sessionDate">Class date</label>
-      <input type="date" id="sessionDate" value="${todayStr}" />
+    <div class="session-date-row">
+      <div class="gm-form-field session-classno-field">
+        <label for="sessionClassNo">Class nº</label>
+        <input type="number" id="sessionClassNo" min="1" inputmode="numeric" value="${nextClassNumber(student.id)}" />
+      </div>
+      <div class="gm-form-field">
+        <label for="sessionDate">Class date</label>
+        <input type="date" id="sessionDate" value="${todayStr}" />
+      </div>
     </div>
 
     <div class="gm-form-field">
-      <label for="sessionTopic">Content worked on</label>
+      <label for="sessionTopic">In class · content worked on</label>
       <input type="text" id="sessionTopic" list="sessionTopicList" autocomplete="off"
              placeholder="Digite o conteúdo da aula…" />
       <datalist id="sessionTopicList">${datalistHTML}</datalist>
@@ -353,7 +359,19 @@ function paintSessionDrawer() {
     </div>
 
     <div class="gm-form-field">
-      <label for="sessionNotes">Teacher's notes</label>
+      <label>New words / expressions · Pronunciation</label>
+      <div class="sheet-rows" id="sessionWords"></div>
+      <button class="sheet-add-btn" id="sessionAddWord" type="button">➕ Adicionar palavra</button>
+    </div>
+
+    <div class="gm-form-field">
+      <label>Homework</label>
+      <div class="sheet-rows" id="sessionHomework"></div>
+      <button class="sheet-add-btn" id="sessionAddHomework" type="button">➕ Adicionar tarefa</button>
+    </div>
+
+    <div class="gm-form-field">
+      <label for="sessionNotes">Teacher's notes <span class="sheet-private-hint">(só para você — não vai na ficha)</span></label>
       <textarea id="sessionNotes" rows="4" placeholder="e.g. Great pronunciation of /p/ and /t/ sounds, practiced Simple Past regular verbs..."></textarea>
     </div>
 
@@ -363,6 +381,7 @@ function paintSessionDrawer() {
     </div>
 
     <button class="btn btn-primary" id="saveSessionBtn" style="width:100%">💾 Save Class Session</button>
+    <button class="btn btn-ghost" id="saveSessionSheetBtn" style="width:100%;margin-top:8px">🖼️ Salvar e gerar ficha p/ WhatsApp</button>
 
     <div class="session-history" id="sessionHistoryList"></div>
   `;
@@ -399,8 +418,86 @@ function paintSessionDrawer() {
     btn.addEventListener('click', () => addTopic(btn.dataset.topicChip));
   });
 
+  // Word and homework lists start with a few empty lines, like the paper
+  // sheet; Enter on the last line opens the next one.
+  const wordsEl = document.getElementById('sessionWords');
+  const hwEl = document.getElementById('sessionHomework');
+  for (let i = 0; i < 3; i++) addSheetWordRow(wordsEl);
+  for (let i = 0; i < 4; i++) addSheetHomeworkRow(hwEl);
+  document.getElementById('sessionAddWord').addEventListener('click', () => addSheetWordRow(wordsEl, true));
+  document.getElementById('sessionAddHomework').addEventListener('click', () => addSheetHomeworkRow(hwEl, true));
+
   document.getElementById('saveSessionBtn').addEventListener('click', () => saveClassSession(student));
+  document.getElementById('saveSessionSheetBtn').addEventListener('click', () => {
+    const saved = saveClassSession(student);
+    if (saved) { closeSessionDrawer(); openClassSheetModal(student, saved); }
+  });
   renderSessionHistory(student.id);
+}
+
+// The number that goes in "Class 16" — one more than the highest number
+// already used, or than the classes logged, whichever is larger. Always
+// editable, since a student who joined mid-course may not start at 1.
+function nextClassNumber(studentId) {
+  const list = loadSessions(studentId);
+  const highest = list.reduce((m, s) => Math.max(m, Number(s.sheet && s.sheet.classNumber) || 0), 0);
+  return Math.max(highest, list.length) + 1;
+}
+
+function addSheetWordRow(container, focus) {
+  const row = document.createElement('div');
+  row.className = 'sheet-row sheet-row--word';
+  row.innerHTML = `
+    <input type="text" class="sheet-word" placeholder="word / expression" autocomplete="off" />
+    <input type="text" class="sheet-pron" placeholder="pronunciation" autocomplete="off" />
+    <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
+  `;
+  wireSheetRow(row, container, () => addSheetWordRow(container, true));
+  container.appendChild(row);
+  if (focus) row.querySelector('input').focus();
+}
+
+function addSheetHomeworkRow(container, focus) {
+  const row = document.createElement('div');
+  row.className = 'sheet-row sheet-row--hw';
+  row.innerHTML = `
+    <span class="sheet-row-no"></span>
+    <input type="text" class="sheet-hw" placeholder="ex.: Workbook page 12" autocomplete="off" />
+    <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
+  `;
+  wireSheetRow(row, container, () => addSheetHomeworkRow(container, true));
+  container.appendChild(row);
+  renumberSheetRows(container);
+  if (focus) row.querySelector('input').focus();
+}
+
+function wireSheetRow(row, container, addNext) {
+  row.querySelector('.sheet-row-del').addEventListener('click', () => {
+    row.remove();
+    renumberSheetRows(container);
+  });
+  const inputs = row.querySelectorAll('input');
+  inputs[inputs.length - 1].addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (row === container.lastElementChild) addNext();
+    else row.nextElementSibling.querySelector('input').focus();
+  });
+}
+
+function renumberSheetRows(container) {
+  container.querySelectorAll('.sheet-row-no').forEach((el, i) => { el.textContent = `${i + 1}-`; });
+}
+
+function gatherSheetFields() {
+  const words = [...document.querySelectorAll('#sessionWords .sheet-row')]
+    .map(r => ({ word: r.querySelector('.sheet-word').value.trim(), pron: r.querySelector('.sheet-pron').value.trim() }))
+    .filter(w => w.word || w.pron);
+  const homework = [...document.querySelectorAll('#sessionHomework .sheet-hw')]
+    .map(i => i.value.trim())
+    .filter(Boolean);
+  const classNumber = parseInt(document.getElementById('sessionClassNo').value, 10) || null;
+  return { classNumber, words, homework };
 }
 
 function renderSessionHistory(studentId) {
@@ -410,10 +507,21 @@ function renderSessionHistory(studentId) {
   if (list.length === 0) { el.innerHTML = `<p class="session-history-empty">No classes logged yet.</p>`; return; }
   el.innerHTML = `<p class="session-history-label">Recent classes</p>` + list.map(s => `
     <div class="session-history-item">
-      <span>${s.present ? '✅' : '❌'} ${s.date}</span>
-      <span>${escapeHtmlLite(s.topicLabel || '—')}</span>
+      <span>${s.present ? '✅' : '❌'} ${s.sheet && s.sheet.classNumber ? `#${s.sheet.classNumber} · ` : ''}${s.date}</span>
+      <span class="session-history-topic">${escapeHtmlLite(s.topicLabel || '—')}</span>
+      <button type="button" class="session-history-sheet" data-sheet="${escapeAttrLite(s.id)}"
+              title="Ver ficha da aula / enviar pelo WhatsApp" aria-label="Ficha da aula de ${escapeAttrLite(s.date)}">🖼️</button>
     </div>
   `).join('');
+  el.querySelectorAll('[data-sheet]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const student = getActiveStudent();
+      const session = loadSessions(studentId).find(x => x.id === btn.dataset.sheet);
+      if (!student || !session) return;
+      closeSessionDrawer();
+      openClassSheetModal(student, session);
+    });
+  });
 }
 
 function saveClassSession(student) {
@@ -423,17 +531,21 @@ function saveClassSession(student) {
   // came from the picker, from a past class, or straight off the keyboard.
   const topicLabel = document.getElementById('sessionTopic').value.trim();
 
+  const sheet = gatherSheetFields();
+
   const acc = loadCurrentSessionAccumulator(student.id);
   const sessions = loadSessions(student.id);
-  sessions.push({
+  const record = {
     id: 'sess' + Date.now().toString(36),
     date,
     present: drawerAttendance === 'present',
     topicLabel,
     notes,
+    sheet,
     stats: { xp: acc.xp, stars: acc.stars },
     createdAt: Date.now(),
-  });
+  };
+  sessions.push(record);
   saveSessions(student.id, sessions);
   resetCurrentSessionAccumulator(student.id);
   drawerAttendance = 'present';
@@ -445,6 +557,7 @@ function saveClassSession(student) {
     btn.textContent = '✅ Saved!';
     setTimeout(() => { const b = document.getElementById('saveSessionBtn'); if (b) b.textContent = '💾 Save Class Session'; }, 1500);
   }
+  return record;
 }
 
 // Called after every awardProgress() so the score line updates live without

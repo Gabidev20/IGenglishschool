@@ -311,12 +311,22 @@ const ShareMode = (() => {
         hydrate(data);
       } catch (e) {
         console.error(e);
-        shell.innerHTML = `
-          <div class="stu-loading">
-            <span>🔒</span>
-            <p>Este link não está mais válido.</p>
-            <small>Peça um link novo para a professora.</small>
-          </div>`;
+        // Um link revogado e um erro do servidor são problemas diferentes, e
+        // dizer "link inválido" para os dois manda a família pedir um link
+        // novo quando o link estava certo o tempo todo.
+        const invalid = e && (e.message === 'link_invalid' || e.message === 'student_missing');
+        shell.innerHTML = invalid
+          ? `<div class="stu-loading">
+               <span>🔒</span>
+               <p>Este link não está mais válido.</p>
+               <small>Peça um link novo para a professora.</small>
+             </div>`
+          : `<div class="stu-loading">
+               <span>⚠️</span>
+               <p>Não consegui abrir agora.</p>
+               <small>Tente de novo em alguns minutos. Se continuar, mostre esta mensagem para a professora:<br>
+                 <code class="stu-err">${shareEsc((e && (e.message || e.hint)) || 'erro desconhecido')}</code></small>
+             </div>`;
         return;
       }
     } else {

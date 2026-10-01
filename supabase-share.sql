@@ -115,8 +115,9 @@ begin
   where p.teacher_id = v_link.teacher_id and p.student_id = v_link.student_id;
 
   -- A lição de casa, o histórico e os textos viajam dentro do jsonb livre que
-  -- o site já sincroniza. Recortamos aqui a fatia deste aluno.
-  select o.data into v_data
+  -- o site já sincroniza — a coluna chama-se `lesson_doc` (ver
+  -- supabase-schema-public.sql). Recortamos aqui a fatia deste aluno.
+  select o.lesson_doc into v_data
   from public.igenglish_curriculum_overrides o
   where o.teacher_id = v_link.teacher_id;
 
