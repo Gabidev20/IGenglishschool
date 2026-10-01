@@ -55,6 +55,17 @@ function renderGameMaker(container) {
     <div class="gamemaker-toolbar">
       <button class="btn btn-primary" id="newGameBtn">✨ Create New Game</button>
     </div>
+    <div class="gamemaker-ready">
+      <p class="gamemaker-ready-label">Jogos prontos</p>
+      <button class="gamemaker-ready-card" type="button" data-open-backpack>
+        <span class="gamemaker-ready-art">${backpackSVG('classic', '#3d7bd9', ['ruler', 'book', 'pencil', 'paintbrush', 'scissors'])}</span>
+        <span class="gamemaker-ready-text">
+          <b>🎒 Pack the Backpack</b>
+          <small>School objects — escolha a mochila e a cor, depois arraste o material escolar para dentro.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+    </div>
     <div class="gamemaker-grid">
       ${games.length === 0 ? `
         <div class="gamemaker-empty">
@@ -66,6 +77,7 @@ function renderGameMaker(container) {
   `;
 
   container.querySelector('#newGameBtn').addEventListener('click', () => openGameForm(container));
+  container.querySelectorAll('[data-open-backpack]').forEach(btn => btn.addEventListener('click', openBackpackGame));
   container.querySelectorAll('[data-test]').forEach(btn => {
     btn.addEventListener('click', () => testCustomGame(games.find(g => g.id === btn.dataset.test)));
   });

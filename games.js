@@ -21,6 +21,7 @@ const GAME_TYPES = [
   { id: 'unscramble', label: 'Unscramble', icon: '🧩', needs: 'sentences' },
   { id: 'sortit', label: 'Sort It', icon: '🎯', needs: 'rules' },
   { id: 'dressup', label: 'Dress Up', icon: '🧥', needs: 'clothes' },
+  { id: 'backpack', label: 'Backpack', icon: '🎒', needs: 'school' },
 ];
 
 // Words that mark a topic as a wardrobe topic. Three hits is enough: a single
@@ -56,6 +57,9 @@ function gamesForTopic(topic) {
     }
     if (g.needs === 'clothes') {
       return isClothesTopic(topic);
+    }
+    if (g.needs === 'school') {
+      return typeof isSchoolTopic === 'function' && isSchoolTopic(topic);
     }
     return (topic.words || []).length > 0;
   });
@@ -1781,6 +1785,311 @@ const GameEngine = (() => {
     };
   }
 
+  // -------------------------------------------------------------------------
+  // BACKPACK — choose a backpack and its colour, then pack the school
+  // objects. "School list" mode asks for five objects by name (pictures
+  // only, so the child has to know what a sharpener looks like); free play
+  // packs anything. Drawings live in schoolObjects.js.
+  // -------------------------------------------------------------------------
+  function renderBackpack(container, topic) {
+    // The topic decides which objects are offered, in the teacher's wording.
+    const seen = new Set();
+    const objects = [];
+    (topic.words || []).forEach(w => {
+      const obj = schoolObjectFor(w);
+      if (!obj || seen.has(obj.id)) return;
+      seen.add(obj.id);
+      objects.push({ ...obj, en: w.en || obj.en, pt: w.pt || obj.pt });
+    });
+    const objById = id => objects.find(o => o.id === id);
+
+    let step = 'choose';
+    let styleId = BACKPACK_STYLES[0].id;
+    let color = BACKPACK_COLORS[1];
+    let mode = 'list';
+    let list = [];
+    let packed = [];
+    let newest = null;
+    let shake = false;
+    let done = false;
+    let showNames = false;
+    let msg = '';
+    let lists = 0;
+    let dragEnd = null;
+
+    const style = () => BACKPACK_STYLES.find(s => s.id === styleId);
+    const backpackPhrase = () => `${/^[aeiou]/i.test(color.name) ? 'An' : 'A'} ${color.name} ${style().en}`;
+
+    function say(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    function newList() {
+      list = pickN(objects, Math.min(5, objects.length)).map(o => o.id);
+      packed = [];
+      done = false;
+      msg = '';
+    }
+
+    function celebrate(text) {
+      done = true;
+      playWin();
+      if (typeof awardProgress === 'function') awardProgress(12, 1);
+      msg = `🎉 ${text}`;
+      paint();
+      const stage = container.querySelector('.bp-stage');
+      if (stage) confettiFromElement(stage);
+      say(text);
+    }
+
+    function pack(obj) {
+      if (!obj || done) return;
+      if (packed.includes(obj.id)) { msg = `✓ ${obj.en} is already in the backpack.`; paint(); return; }
+      if (mode === 'list' && !list.includes(obj.id)) {
+        playWrong();
+        shake = true;
+        msg = `Oops! That's the ${obj.en.toLowerCase()} — it's not on your list.`;
+        say(`That's the ${obj.en}`);
+        paint();
+        return;
+      }
+      packed.push(obj.id);
+      newest = obj.id;
+      playCorrect();
+      say(obj.en);
+      msg = `✅ ${obj.en}${mode === 'free' || showNames ? ` — ${obj.pt}` : ''}`;
+      if (mode === 'list' && list.every(id => packed.includes(id))) {
+        lists++;
+        celebrate('Your backpack is ready for school!');
+        return;
+      }
+      if (mode === 'free' && packed.length === objects.length) {
+        celebrate('Wow! Everything is in the backpack!');
+        return;
+      }
+      paint();
+    }
+
+    function unpack(id) {
+      if (done && mode === 'list') return;
+      packed = packed.filter(x => x !== id);
+      done = false;
+      msg = '';
+      playWrong();
+      paint();
+    }
+
+    // ---- drag & drop (pointer events: mouse, pen and touch alike) ---------
+    function beginDrag(ev, obj) {
+      ev.preventDefault();
+      const stage = container.querySelector('.bp-stage');
+      if (!stage) return;
+      const ghost = document.createElement('div');
+      ghost.className = 'bp-ghost';
+      ghost.innerHTML = schoolObjectSVG(obj.id);
+      document.body.appendChild(ghost);
+
+      const startX = ev.clientX;
+      const startY = ev.clientY;
+      let moved = false;
+      const place = (x, y) => { ghost.style.transform = `translate(${x - 45}px, ${y - 45}px)`; };
+      place(startX, startY);
+      const isOver = (x, y) => {
+        const r = stage.getBoundingClientRect();
+        return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      };
+
+      const onMove = e => {
+        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+        place(e.clientX, e.clientY);
+        stage.classList.toggle('is-target', isOver(e.clientX, e.clientY));
+      };
+      const finish = e => {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', finish);
+        window.removeEventListener('pointercancel', finish);
+        dragEnd = null;
+        ghost.remove();
+        stage.classList.remove('is-target');
+        if (!e) return;                                   // unmounted mid-drag
+        if (isOver(e.clientX, e.clientY) || !moved) pack(obj);   // dropped, or tapped
+      };
+      dragEnd = () => finish(null);
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', finish);
+      window.addEventListener('pointercancel', finish);
+    }
+
+    // ---- painting ------------------------------------------------------------
+    function chooserHTML() {
+      return `
+        <div class="bp-choose">
+          <p class="bp-step">1 · Choose your backpack</p>
+          <div class="bp-style-row">
+            ${BACKPACK_STYLES.map(s => `
+              <button class="bp-style-card${s.id === styleId ? ' active' : ''}" data-style="${s.id}">
+                ${backpackSVG(s.id, color.hex, [])}
+                <b>${igEscapeHtml(s.label)}</b>
+                <small>${igEscapeHtml(s.pt)}</small>
+              </button>`).join('')}
+          </div>
+          <p class="bp-step">2 · Choose the colour</p>
+          <div class="bp-color-row">
+            ${BACKPACK_COLORS.map(c => `
+              <button class="bp-color${c.name === color.name ? ' active' : ''}" data-color="${c.name}" title="${c.pt}">
+                <i style="background:${c.hex}"></i><span>${c.name}</span>
+              </button>`).join('')}
+          </div>
+          <div class="bp-choose-foot">
+            <button class="bp-say-btn" data-action="say-bag">🔊 ${igEscapeHtml(backpackPhrase())}</button>
+            <button class="game-btn bp-go" data-action="go">🎒 Let's pack!</button>
+          </div>
+        </div>`;
+    }
+
+    function gameHTML() {
+      const inList = mode === 'list';
+      const labels = !inList || showNames;
+      const total = inList ? list.length : objects.length;
+      return `
+        <div class="game-toolbar">
+          <div class="bp-modes">
+            <button class="bp-mode${inList ? ' active' : ''}" data-mode="list">📝 School list</button>
+            <button class="bp-mode${!inList ? ' active' : ''}" data-mode="free">🎨 Free play</button>
+          </div>
+          <span class="game-status-pill">🎒 ${packed.length}/${total}${lists ? ` · 🏆 ${lists}` : ''}</span>
+          <div class="game-btn-row">
+            ${inList ? `<button class="game-btn secondary" data-action="names">${showNames ? '🙈 Esconder nomes' : '💡 Mostrar nomes'}</button>` : ''}
+            <button class="game-btn secondary" data-action="change">🎨 Trocar mochila</button>
+            <button class="game-btn secondary" data-action="empty">🧺 Esvaziar</button>
+          </div>
+        </div>
+
+        <div class="bp-layout">
+          <div class="bp-side">
+            ${inList ? `
+              <div class="bp-list${done ? ' done' : ''}">
+                <span class="bp-list-title">📝 My school list</span>
+                <ul>
+                  ${list.map(id => {
+                    const o = objById(id);
+                    return `<li class="${packed.includes(id) ? 'ok' : ''}">
+                      <button class="bp-list-say" data-say="${id}" aria-label="Listen: ${igEscapeHtml(o.en)}">🔊</button>
+                      <span>${igEscapeHtml(o.en)}</span>
+                    </li>`;
+                  }).join('')}
+                </ul>
+              </div>` : ''}
+            <div class="bp-stage${shake ? ' bp-shake' : ''}${done ? ' done' : ''}">
+              ${backpackSVG(styleId, color.hex, packed, newest)}
+              <span class="bp-drop-hint">Drop it here! 🎒</span>
+            </div>
+            <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+            ${done && inList ? `<button class="game-btn bp-next" data-action="next">📝 New list ▶</button>` : ''}
+            ${packed.length ? `
+              <div class="bp-inside">
+                <span class="bp-inside-label">In my backpack:</span>
+                ${packed.map(id => `<button class="bp-chip" data-out="${id}" title="Tirar da mochila">${schoolObjectSVG(id)}${igEscapeHtml(objById(id).en)}</button>`).join('')}
+              </div>` : ''}
+          </div>
+
+          <div class="bp-shelf-wrap">
+            <div class="bp-shelf">
+              ${objects.map(o => {
+                const isIn = packed.includes(o.id);
+                return `
+                  <button class="bp-card${isIn ? ' packed' : ''}${labels ? '' : ' no-label'}" data-obj="${o.id}" aria-label="${igEscapeHtml(o.en)}">
+                    ${schoolObjectSVG(o.id, 'bp-thumb')}
+                    ${labels ? `<span class="bp-card-en">${igEscapeHtml(o.en)}</span><span class="bp-card-pt">${igEscapeHtml(o.pt)}</span>` : ''}
+                    ${isIn ? '<span class="bp-card-on">✓</span>' : ''}
+                  </button>`;
+              }).join('')}
+            </div>
+            <p class="bp-tip">Drag an object into the backpack — or just tap it.</p>
+          </div>
+        </div>`;
+    }
+
+    function paint() {
+      container.innerHTML = step === 'choose' ? chooserHTML() : gameHTML();
+      newest = null;     // the drop-in animation plays once, not on every repaint
+      shake = false;
+      bind();
+    }
+
+    function bind() {
+      const act = name => container.querySelector(`[data-action="${name}"]`);
+
+      container.querySelectorAll('[data-style]').forEach(btn => btn.addEventListener('click', () => {
+        styleId = btn.dataset.style;
+        paint();
+        say(style().en);
+      }));
+      container.querySelectorAll('[data-color]').forEach(btn => btn.addEventListener('click', () => {
+        color = BACKPACK_COLORS.find(c => c.name === btn.dataset.color) || color;
+        paint();
+        say(color.name);
+      }));
+      const sayBag = act('say-bag');
+      if (sayBag) sayBag.addEventListener('click', () => say(backpackPhrase()));
+      const go = act('go');
+      if (go) go.addEventListener('click', () => {
+        step = 'pack';
+        if (mode === 'list' && !list.length) newList();
+        paint();
+        say(`${backpackPhrase()}! Let's pack!`);
+      });
+
+      container.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => {
+        if (btn.dataset.mode === mode) return;
+        mode = btn.dataset.mode;
+        if (mode === 'list') newList();
+        else { done = false; msg = ''; }
+        paint();
+      }));
+
+      container.querySelectorAll('.bp-card').forEach(card => {
+        card.addEventListener('pointerdown', ev => {
+          if (ev.button != null && ev.button !== 0) return;
+          const obj = objById(card.dataset.obj);
+          if (!obj || packed.includes(obj.id) || done) return;
+          beginDrag(ev, obj);
+        });
+      });
+      container.querySelectorAll('[data-out]').forEach(btn => btn.addEventListener('click', () => unpack(btn.dataset.out)));
+      container.querySelectorAll('[data-say]').forEach(btn => btn.addEventListener('click', () => say(objById(btn.dataset.say).en)));
+
+      const names = act('names');
+      if (names) names.addEventListener('click', () => { showNames = !showNames; paint(); });
+      const change = act('change');
+      if (change) change.addEventListener('click', () => { step = 'choose'; paint(); });
+      const empty = act('empty');
+      if (empty) empty.addEventListener('click', () => { packed = []; done = false; msg = ''; playWrong(); paint(); });
+      const next = act('next');
+      if (next) next.addEventListener('click', () => { newList(); paint(); });
+    }
+
+    if (objects.length === 0) {
+      container.innerHTML = `<div class="game-end-banner lose">This topic has no school objects to pack.</div>`;
+      return () => {};
+    }
+    paint();
+
+    return () => {
+      if (dragEnd) dragEnd();
+      document.querySelectorAll('.bp-ghost').forEach(el => el.remove());
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }
+
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -1807,6 +2116,7 @@ const GameEngine = (() => {
       case 'unscramble': activeCleanup = renderUnscramble(container, topic); break;
       case 'sortit': activeCleanup = renderSortIt(container, topic); break;
       case 'dressup': activeCleanup = renderDressUp(container, topic); break;
+      case 'backpack': activeCleanup = renderBackpack(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }
