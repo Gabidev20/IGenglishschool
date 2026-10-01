@@ -65,6 +65,14 @@ function renderGameMaker(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-house>
+        <span class="gamemaker-ready-art">${houseOverviewSVG({ bedroom: { bed: '#8e5fc2', rug: '#e5484d', curtains: '#f27aa5' }, kitchen: { fridge: '#a3a8ae', stove: '#a3a8ae' }, yard: { tree: '#8b5e3c' } }, false)}</span>
+        <span class="gamemaker-ready-text">
+          <b>🏠 Parts of the House</b>
+          <small>Bedroom, bathroom, kitchen, living room, dining room e yard — a criança escolhe o cômodo e arrasta os móveis e utensílios para dentro.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
     </div>
     <div class="gamemaker-grid">
       ${games.length === 0 ? `
@@ -78,6 +86,7 @@ function renderGameMaker(container) {
 
   container.querySelector('#newGameBtn').addEventListener('click', () => openGameForm(container));
   container.querySelectorAll('[data-open-backpack]').forEach(btn => btn.addEventListener('click', openBackpackGame));
+  container.querySelectorAll('[data-open-house]').forEach(btn => btn.addEventListener('click', openHouseGame));
   container.querySelectorAll('[data-test]').forEach(btn => {
     btn.addEventListener('click', () => testCustomGame(games.find(g => g.id === btn.dataset.test)));
   });

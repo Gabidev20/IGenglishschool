@@ -22,6 +22,7 @@ const GAME_TYPES = [
   { id: 'sortit', label: 'Sort It', icon: '🎯', needs: 'rules' },
   { id: 'dressup', label: 'Dress Up', icon: '🧥', needs: 'clothes' },
   { id: 'backpack', label: 'Backpack', icon: '🎒', needs: 'school' },
+  { id: 'house', label: 'House', icon: '🏠', needs: 'house' },
 ];
 
 // Words that mark a topic as a wardrobe topic. Three hits is enough: a single
@@ -60,6 +61,9 @@ function gamesForTopic(topic) {
     }
     if (g.needs === 'school') {
       return typeof isSchoolTopic === 'function' && isSchoolTopic(topic);
+    }
+    if (g.needs === 'house') {
+      return typeof isHouseTopic === 'function' && isHouseTopic(topic);
     }
     return (topic.words || []).length > 0;
   });
@@ -2090,6 +2094,335 @@ const GameEngine = (() => {
   }
 
 
+  // -------------------------------------------------------------------------
+  // HOUSE — the house in cross-section; pick a room, then put its furniture
+  // and utensils in. In the bedroom every object can be painted; the other
+  // rooms keep beige / brown / grey / black furniture. "Listen & find" says
+  // one object at a time and shows pictures only. Drawings: houseRooms.js.
+  // -------------------------------------------------------------------------
+  function renderHouse(container) {
+    const placedByRoom = {};          // roomId -> { itemId: colour }
+    let roomId = null;                // null = the house overview
+    let mode = 'free';
+    let target = null;
+    let activeColor = null;           // bedroom only; null = the object's own colour
+    let showPt = false;
+    let newest = null;
+    let shake = false;
+    let msg = '';
+    let dragEnd = null;
+
+    const room = () => houseRoomById(roomId);
+    const placed = () => (placedByRoom[roomId] = placedByRoom[roomId] || {});
+    const itemById = id => room().items.find(i => i.id === id);
+    const missing = () => room().items.filter(i => !placed()[i.id]);
+    const isDone = () => missing().length === 0;
+
+    function say(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    const colorFor = item => (room().paint && activeColor) || item.color;
+    const where = () => (roomId === 'yard' ? 'in the yard' : `in the ${room().en.toLowerCase()}`);
+    const sentence = item => `Put the ${item.en.toLowerCase()} ${where()}!`;
+
+    function nextTarget() {
+      const left = missing();
+      target = left.length ? pickN(left, 1)[0].id : null;
+      if (target) say(sentence(itemById(target)));
+    }
+
+    function roomComplete() {
+      playWin();
+      if (typeof awardProgress === 'function') awardProgress(12, 1);
+      msg = `🎉 The ${room().en.toLowerCase()} is ready!`;
+      target = null;
+      paint();
+      const stage = container.querySelector('.hs-stage');
+      if (stage) confettiFromElement(stage);
+      say(`Great job! The ${room().en.toLowerCase()} is ready!`);
+    }
+
+    function place(item) {
+      if (!item) return;
+      if (placed()[item.id]) {
+        // Already in the room: in the bedroom, dropping it again repaints it.
+        if (room().paint && activeColor && placed()[item.id] !== activeColor) {
+          placed()[item.id] = activeColor;
+          playCorrect();
+          say(`${houseColorName(activeColor)} ${item.en}`);
+          paint();
+        }
+        return;
+      }
+      if (mode === 'listen' && target && item.id !== target) {
+        playWrong();
+        shake = true;
+        msg = `Oops! That's the ${item.en.toLowerCase()}.`;
+        say(`That's the ${item.en}. ${sentence(itemById(target))}`);
+        paint();
+        return;
+      }
+      placed()[item.id] = colorFor(item);
+      newest = item.id;
+      playCorrect();
+      msg = `✅ ${item.en} — ${item.pt}`;
+      if (isDone()) { roomComplete(); return; }
+      if (mode === 'listen') {
+        paint();
+        setTimeout(() => { if (container.isConnected && roomId) { nextTarget(); paint(); } }, 900);
+        say(item.en);
+        return;
+      }
+      say(room().paint && activeColor ? `${houseColorName(activeColor)} ${item.en}` : item.en);
+      paint();
+    }
+
+    // Tapping something in the room: paint it (bedroom, with a colour
+    // picked), otherwise take it back out.
+    function tapPlaced(id) {
+      const item = itemById(id);
+      if (room().paint && activeColor && placed()[id] !== activeColor) {
+        placed()[id] = activeColor;
+        playCorrect();
+        say(`${houseColorName(activeColor)} ${item.en}`);
+      } else {
+        delete placed()[id];
+        playWrong();
+        msg = '';
+        if (mode === 'listen' && !target) nextTarget();
+      }
+      paint();
+    }
+
+    function houseColorName(hex) {
+      const c = HOUSE_COLORS.find(x => x.hex === hex);
+      return c ? c.name : '';
+    }
+
+    // ---- drag & drop (pointer events: mouse, pen and touch alike) ---------
+    function beginDrag(ev, item) {
+      ev.preventDefault();
+      const stage = container.querySelector('.hs-stage');
+      if (!stage) return;
+      const ghost = document.createElement('div');
+      ghost.className = 'hs-ghost';
+      ghost.innerHTML = houseItemSVG(item, placed()[item.id] || colorFor(item));
+      document.body.appendChild(ghost);
+      const startX = ev.clientX;
+      const startY = ev.clientY;
+      let moved = false;
+      const put = (x, y) => { ghost.style.transform = `translate(${x - 45}px, ${y - 45}px)`; };
+      put(startX, startY);
+      const isOver = (x, y) => {
+        const r = stage.getBoundingClientRect();
+        return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      };
+      const onMove = e => {
+        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+        put(e.clientX, e.clientY);
+        stage.classList.toggle('is-target', isOver(e.clientX, e.clientY));
+      };
+      const finish = e => {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', finish);
+        window.removeEventListener('pointercancel', finish);
+        dragEnd = null;
+        ghost.remove();
+        stage.classList.remove('is-target');
+        if (!e) return;
+        if (isOver(e.clientX, e.clientY) || !moved) place(item);
+      };
+      dragEnd = () => finish(null);
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', finish);
+      window.addEventListener('pointercancel', finish);
+    }
+
+    // ---- painting ------------------------------------------------------------
+    function overviewHTML() {
+      const done = HOUSE_ROOMS.filter(r => Object.keys(placedByRoom[r.id] || {}).length === r.items.length).length;
+      return `
+        <div class="hs-overview">
+          <div class="game-toolbar">
+            <span class="game-status-pill">🏠 ${done}/${HOUSE_ROOMS.length} rooms ready</span>
+            <div class="game-btn-row">
+              <button class="game-btn secondary" data-action="pt">${showPt ? '🔤 Ver em inglês' : '🔤 Ver em português'}</button>
+            </div>
+          </div>
+          <p class="hs-ask">Which room do you want to decorate? Tap a room! 👆</p>
+          ${houseOverviewSVG(placedByRoom, showPt)}
+          <div class="hs-room-list">
+            ${HOUSE_ROOMS.map(r => `<button class="hs-room-chip" data-room="${r.id}">🔊 ${igEscapeHtml(r.en)} <small>${igEscapeHtml(r.pt)}</small></button>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function roomHTML() {
+      const r = room();
+      const listen = mode === 'listen';
+      const t = target && itemById(target);
+      const count = Object.keys(placed()).length;
+      const idx = HOUSE_ROOMS.findIndex(x => x.id === roomId);
+      const next = HOUSE_ROOMS[(idx + 1) % HOUSE_ROOMS.length];
+      return `
+        <div class="game-toolbar">
+          <div class="game-btn-row">
+            <button class="game-btn secondary" data-action="house">🏠 House</button>
+          </div>
+          <div class="bp-modes">
+            <button class="bp-mode${!listen ? ' active' : ''}" data-mode="free">🎨 Free play</button>
+            <button class="bp-mode${listen ? ' active' : ''}" data-mode="listen">🎧 Listen &amp; find</button>
+          </div>
+          <span class="game-status-pill">${igEscapeHtml(r.en)} · ${count}/${r.items.length}</span>
+          <div class="game-btn-row">
+            <button class="game-btn secondary" data-action="empty">🧺 Esvaziar</button>
+            <button class="game-btn secondary" data-action="next">${igEscapeHtml(next.en)} ▶</button>
+          </div>
+        </div>
+
+        <div class="hs-title">
+          <button class="hs-title-say" data-action="say-room" aria-label="Listen">🔊</button>
+          <h4>${igEscapeHtml(r.en)}</h4><span>${igEscapeHtml(r.pt)}</span>
+        </div>
+
+        ${listen && t ? `
+          <div class="hs-target">
+            <button class="bp-list-say" data-action="say-target" aria-label="Listen again">🔊</button>
+            <span>Put the <b>${igEscapeHtml(t.en.toLowerCase())}</b> ${where()}!</span>
+          </div>` : ''}
+
+        <div class="hs-layout">
+          <div class="hs-stage${shake ? ' bp-shake' : ''}${isDone() ? ' done' : ''}">
+            <svg class="hs-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${houseSceneInner(r, placed(), newest)}</svg>
+            <span class="bp-drop-hint">Drop it here! 🏠</span>
+          </div>
+          <div class="hs-shelf-wrap">
+            ${r.paint ? `
+              <div class="hs-paint">
+                <span class="hs-paint-label">🎨 Choose a colour:</span>
+                <div class="hs-palette">
+                  <button class="dressup-swatch rainbow${activeColor === null ? ' active' : ''}" data-color="" title="Own colour">🎨</button>
+                  ${HOUSE_COLORS.map(c => `<button class="dressup-swatch${activeColor === c.hex ? ' active' : ''}" data-color="${c.hex}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}
+                </div>
+                <p class="hs-paint-tip">Pick a colour, then put an object in the room — or tap an object in the room to paint it.</p>
+              </div>` : ''}
+            <div class="hs-shelf">
+              ${r.items.map(i => {
+                const isIn = Boolean(placed()[i.id]);
+                const canRepaint = r.paint && isIn;
+                return `
+                  <button class="bp-card hs-card${isIn ? ' packed' : ''}${canRepaint ? ' repaint' : ''}${listen ? ' no-label' : ''}" data-item="${i.id}" aria-label="${igEscapeHtml(i.en)}">
+                    ${houseItemSVG(i, placed()[i.id] || colorFor(i), 'bp-thumb')}
+                    ${listen ? '' : `<span class="bp-card-en">${igEscapeHtml(i.en)}</span><span class="bp-card-pt">${igEscapeHtml(i.pt)}</span>`}
+                    ${isIn ? '<span class="bp-card-on">✓</span>' : ''}
+                  </button>`;
+              }).join('')}
+            </div>
+            <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+            <p class="bp-tip">Drag an object into the room — or just tap it. Tap it in the room to take it out.</p>
+          </div>
+        </div>`;
+    }
+
+    function paint() {
+      container.innerHTML = roomId ? roomHTML() : overviewHTML();
+      newest = null;
+      shake = false;
+      bind();
+    }
+
+    function openRoom(id) {
+      roomId = id;
+      activeColor = null;
+      msg = '';
+      target = null;
+      say(room().en);
+      if (mode === 'listen' && !isDone()) setTimeout(() => { if (roomId === id) { nextTarget(); paint(); } }, 700);
+      paint();
+    }
+
+    function bind() {
+      const act = name => container.querySelector(`[data-action="${name}"]`);
+
+      container.querySelectorAll('.hs-cell[data-room]').forEach(cell => {
+        cell.addEventListener('click', () => openRoom(cell.dataset.room));
+        cell.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRoom(cell.dataset.room); } });
+      });
+      container.querySelectorAll('.hs-room-chip').forEach(btn => btn.addEventListener('click', () => {
+        const r = houseRoomById(btn.dataset.room);
+        say(r.en);
+      }));
+      const pt = act('pt');
+      if (pt) pt.addEventListener('click', () => { showPt = !showPt; paint(); });
+
+      if (!roomId) return;
+
+      container.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => {
+        if (btn.dataset.mode === mode) return;
+        mode = btn.dataset.mode;
+        msg = '';
+        target = null;
+        if (mode === 'listen') nextTarget();
+        paint();
+      }));
+
+      container.querySelectorAll('.hs-card').forEach(card => {
+        card.addEventListener('pointerdown', ev => {
+          if (ev.button != null && ev.button !== 0) return;
+          const item = itemById(card.dataset.item);
+          if (!item) return;
+          if (placed()[item.id] && !(room().paint && activeColor)) return;
+          beginDrag(ev, item);
+        });
+      });
+      container.querySelectorAll('.hs-scene [data-placed]').forEach(g => {
+        g.addEventListener('click', () => tapPlaced(g.dataset.placed));
+      });
+      container.querySelectorAll('[data-color]').forEach(btn => btn.addEventListener('click', () => {
+        activeColor = btn.dataset.color || null;
+        if (activeColor) say(houseColorName(activeColor));
+        paint();
+      }));
+
+      const house = act('house');
+      if (house) house.addEventListener('click', () => { roomId = null; target = null; msg = ''; paint(); });
+      const next = act('next');
+      if (next) next.addEventListener('click', () => {
+        const idx = HOUSE_ROOMS.findIndex(x => x.id === roomId);
+        openRoom(HOUSE_ROOMS[(idx + 1) % HOUSE_ROOMS.length].id);
+      });
+      const empty = act('empty');
+      if (empty) empty.addEventListener('click', () => {
+        placedByRoom[roomId] = {};
+        msg = '';
+        playWrong();
+        if (mode === 'listen') nextTarget();
+        paint();
+      });
+      const sayRoom = act('say-room');
+      if (sayRoom) sayRoom.addEventListener('click', () => say(room().en));
+      const sayTarget = act('say-target');
+      if (sayTarget) sayTarget.addEventListener('click', () => { if (target) say(sentence(itemById(target))); });
+    }
+
+    paint();
+
+    return () => {
+      if (dragEnd) dragEnd();
+      document.querySelectorAll('.hs-ghost').forEach(el => el.remove());
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }
+
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -2117,6 +2450,7 @@ const GameEngine = (() => {
       case 'sortit': activeCleanup = renderSortIt(container, topic); break;
       case 'dressup': activeCleanup = renderDressUp(container, topic); break;
       case 'backpack': activeCleanup = renderBackpack(container, topic); break;
+      case 'house': activeCleanup = renderHouse(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }

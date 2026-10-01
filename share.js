@@ -404,6 +404,7 @@ function renderStudentHome(shell, studentId) {
         <button class="stu-tile" data-go="homework"><span>📚</span><b>Minha lição</b><small>${pending.length ? pending.length + ' pendente(s)' : 'Tudo em dia 🎉'}</small></button>
         <button class="stu-tile" data-go="games"><span>🎮</span><b>Jogos</b><small>Jogar com as palavras do meu nível</small></button>
         <button class="stu-tile" data-go="backpack"><span>🎒</span><b>Mochila</b><small>School objects</small></button>
+        <button class="stu-tile" data-go="house"><span>🏠</span><b>Casa</b><small>Parts of the house</small></button>
         <button class="stu-tile" data-go="practice"><span>⚡</span><b>Treinar</b><small>Exercícios de gramática</small></button>
         <button class="stu-tile" data-go="dictation"><span>🎧</span><b>Ditado</b><small>Ouvir e escrever</small></button>
         <button class="stu-tile" data-go="speaking"><span>🎤</span><b>Falar</b><small>Ler em voz alta</small></button>
@@ -424,6 +425,7 @@ function renderStudentHome(shell, studentId) {
     review: () => openReviewSession(student.id),
     games: () => openStudentGames(shell, student, topics),
     backpack: () => openBackpackGame(),
+    house: () => openHouseGame(),
     practice: () => {
       const picked = (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
       if (!picked.length) return;
