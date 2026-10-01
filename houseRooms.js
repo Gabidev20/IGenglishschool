@@ -422,9 +422,9 @@ function houseItemSVG(item, color, cls) {
 
 // A whole room with whatever has been put in it, in the room's own order
 // (the fence behind the tree, the pillow on the bed).
-function houseSceneInner(room, placed, newestId) {
+function houseSceneInner(room, placed, newestId, selectedId) {
   return room.bg() + room.items.filter(i => placed && placed[i.id]).map(i =>
-    `<g class="hs-item${i.id === newestId ? ' hs-new' : ''}" data-placed="${i.id}">${i.draw(placed[i.id])}</g>`).join('');
+    `<g class="hs-item${i.id === newestId ? ' hs-new' : ''}${i.id === selectedId ? ' hs-selected' : ''}" data-placed="${i.id}">${i.draw(placed[i.id])}</g>`).join('');
 }
 
 function houseDataUri(viewBox, inner) {

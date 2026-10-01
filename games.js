@@ -1409,7 +1409,7 @@ const GameEngine = (() => {
   function renderDressUp(container, topic) {
     let gender = null;
     let worn = {};                 // slot -> { id, color }
-    let activeColor = null;        // null = each garment keeps its own colour
+    let selectedSlot = null;       // the garment the palette paints
     let skin = DRESS_SKINS[0];
     let hair = DRESS_HAIRS[0];
     let hairStyle = DRESS_HAIR_DEFAULT.boy;
@@ -1422,7 +1422,6 @@ const GameEngine = (() => {
 
     const itemById = id => DRESS_ITEMS.find(i => i.id === id);
     const available = () => DRESS_ITEMS.filter(i => i.who === 'both' || i.who === gender);
-    const colorFor = item => activeColor || item.color;
 
     function say(text) {
       if (!('speechSynthesis' in window)) return;
@@ -1477,17 +1476,26 @@ const GameEngine = (() => {
 
     // ---- wearing -----------------------------------------------------------
     function wear(item) {
-      worn[item.slot] = { id: item.id, color: colorFor(item) };
-      item.conflicts.forEach(s => { delete worn[s]; });
+      worn[item.slot] = { id: item.id, color: item.color };
+      item.conflicts.forEach(s => { delete worn[s]; if (selectedSlot === s) selectedSlot = null; });
+      // A piece just put on is ready to be painted straight away.
+      selectedSlot = item.slot;
       playCorrect();
       say(item.en);
       paint();
       checkMission();
     }
 
+    function selectSlot(slot) {
+      selectedSlot = selectedSlot === slot ? null : slot;
+      if (selectedSlot) say(itemById(worn[slot].id).en);
+      paint();
+    }
+
     function takeOff(slot) {
       if (!worn[slot]) return;
       delete worn[slot];
+      if (selectedSlot === slot) selectedSlot = null;
       playWrong();
       paint();
     }
@@ -1516,7 +1524,7 @@ const GameEngine = (() => {
       if (!stage) return;
       const ghost = document.createElement('div');
       ghost.className = 'dressup-ghost';
-      ghost.innerHTML = previewSVG(item, fromDoll ? worn[item.slot].color : colorFor(item));
+      ghost.innerHTML = previewSVG(item, fromDoll ? worn[item.slot].color : item.color);
       document.body.appendChild(ghost);
 
       const startX = ev.clientX;
@@ -1549,7 +1557,8 @@ const GameEngine = (() => {
         if (!e) return;                              // unmounted mid-drag
         const over = isOver(e.clientX, e.clientY);
         if (fromDoll) {
-          if (!over || !moved) takeOff(item.slot);   // dragged off, or tapped
+          if (!moved) selectSlot(item.slot);         // tapped: pick it to paint
+          else if (!over) takeOff(item.slot);        // dragged off the doll
         } else if (over || !moved) {
           wear(item);                                // dropped on doll, or tapped
         }
@@ -1625,7 +1634,7 @@ const GameEngine = (() => {
                 <ellipse class="dressup-shadow" cx="150" cy="452" rx="92" ry="16"/>
                 ${dressBody(gender, skin, hair, hairStyle)}
                 ${DRESS_LAYERS.filter(s => worn[s]).map(s => `
-                  <g class="dressup-worn" data-worn="${s}">${DRESS_DRAW[worn[s].id](worn[s].color, gender)}</g>`).join('')}
+                  <g class="dressup-worn${s === selectedSlot ? ' is-selected' : ''}" data-worn="${s}">${DRESS_DRAW[worn[s].id](worn[s].color, gender)}</g>`).join('')}
               </svg>
               <span class="dressup-drop-hint">Drop the clothes here 👗</span>
               ${celebrating ? '<div class="dressup-cheer">🎉 Perfect outfit!</div>' : ''}
@@ -1652,23 +1661,33 @@ const GameEngine = (() => {
             <div class="dressup-tabs">
               ${DRESS_CATS.map(c => `<button class="dressup-tab${filter === c.id ? ' active' : ''}" data-cat="${c.id}">${c.icon} ${c.label}</button>`).join('')}
             </div>
-            <div class="dressup-palette">
-              <button class="dressup-swatch rainbow${activeColor === null ? ' active' : ''}" data-color="" title="Each piece keeps its own colour">🎨</button>
-              ${DRESS_COLORS.map(c => `<button class="dressup-swatch${activeColor === c.hex ? ' active' : ''}" data-color="${c.hex}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}
-            </div>
+            ${selectedSlot && worn[selectedSlot] ? (() => {
+              const sel = itemById(worn[selectedSlot].id);
+              return `
+                <div class="dressup-paint active">
+                  <span class="dressup-paint-label">🎨 Colour for the <b>${igEscapeHtml(sel.en.toLowerCase())}</b>:</span>
+                  <div class="dressup-palette">
+                    ${DRESS_COLORS.map(c => `<button class="dressup-swatch${worn[selectedSlot].color.toLowerCase() === c.hex.toLowerCase() ? ' active' : ''}" data-color="${c.hex}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}
+                  </div>
+                  <button class="dressup-paint-done" data-action="deselect">✓ Pronto</button>
+                </div>`;
+            })() : `
+              <div class="dressup-paint">
+                <span class="dressup-paint-label">👆 Toque numa roupa na boneca para escolher a cor dela.</span>
+              </div>`}
             <div class="dressup-rack">
               ${items.map(i => {
                 const on = worn[i.slot] && worn[i.slot].id === i.id;
                 return `
                   <button class="dressup-card${on ? ' worn' : ''}" data-item="${i.id}">
-                    ${previewSVG(i, on ? worn[i.slot].color : colorFor(i))}
+                    ${previewSVG(i, on ? worn[i.slot].color : i.color)}
                     <span class="dressup-card-en">${igEscapeHtml(i.en)}</span>
                     <span class="dressup-card-pt">${igEscapeHtml(i.pt)}</span>
                     ${on ? '<span class="dressup-card-on">✓</span>' : ''}
                   </button>`;
               }).join('')}
             </div>
-            <p class="dressup-tip">Drag a piece onto the doll — or just tap it. Tap what ${gender === 'girl' ? 'she' : 'he'}'s wearing to take it off.</p>
+            <p class="dressup-tip">Drag a piece onto the doll — or just tap it. Tap what ${gender === 'girl' ? 'she' : 'he'}'s wearing to choose its colour; drag it off the doll to take it off.</p>
           </div>
         </div>
 
@@ -1712,9 +1731,20 @@ const GameEngine = (() => {
         btn.addEventListener('click', () => { filter = btn.dataset.cat; paint(); });
       });
 
-      container.querySelectorAll('[data-color]').forEach(btn => {
-        btn.addEventListener('click', () => { activeColor = btn.dataset.color || null; paint(); });
+      container.querySelectorAll('.dressup-palette [data-color]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!selectedSlot || !worn[selectedSlot]) return;
+          worn[selectedSlot].color = btn.dataset.color;
+          playCorrect();
+          const it = itemById(worn[selectedSlot].id);
+          const cn = dressColorName(btn.dataset.color);
+          say(cn ? `${cn} ${it.en}` : it.en);
+          paint();
+          checkMission();
+        });
       });
+      const deselect = container.querySelector('[data-action="deselect"]');
+      if (deselect) deselect.addEventListener('click', () => { selectedSlot = null; paint(); });
 
       container.querySelectorAll('[data-skin]').forEach(btn => {
         btn.addEventListener('click', () => { skin = btn.dataset.skin; paint(); });
@@ -1730,7 +1760,10 @@ const GameEngine = (() => {
       container.querySelectorAll('.dressup-card').forEach(card => {
         card.addEventListener('pointerdown', ev => {
           if (ev.button != null && ev.button !== 0) return;
-          beginDrag(ev, itemById(card.dataset.item), false);
+          const item = itemById(card.dataset.item);
+          // Already on the doll: tapping its card picks it to paint.
+          if (worn[item.slot] && worn[item.slot].id === item.id) { selectSlot(item.slot); return; }
+          beginDrag(ev, item, false);
         });
       });
 
@@ -1747,7 +1780,7 @@ const GameEngine = (() => {
       const act = name => container.querySelector(`[data-action="${name}"]`);
 
       const undress = act('undress');
-      if (undress) undress.addEventListener('click', () => { worn = {}; playWrong(); paint(); });
+      if (undress) undress.addEventListener('click', () => { worn = {}; selectedSlot = null; playWrong(); paint(); });
 
       const mode = act('mode');
       if (mode) mode.addEventListener('click', () => {
@@ -1759,6 +1792,7 @@ const GameEngine = (() => {
       const surprise = act('surprise');
       if (surprise) surprise.addEventListener('click', () => {
         worn = {};
+        selectedSlot = null;
         const pool = available();
         const useDress = gender === 'girl' && Math.random() < 0.4;
         const slots = useDress ? ['full', 'feet', 'head'] : ['top', 'bottom', 'feet'];
@@ -2096,7 +2130,8 @@ const GameEngine = (() => {
 
   // -------------------------------------------------------------------------
   // HOUSE — the house in cross-section; pick a room, then put its furniture
-  // and utensils in. In the bedroom every object can be painted; the other
+  // and utensils in. In the bedroom every object can be painted, one at a
+  // time: tap the object, then pick its colour. The other
   // rooms keep beige / brown / grey / black furniture. "Listen & find" says
   // one object at a time and shows pictures only. Drawings: houseRooms.js.
   // -------------------------------------------------------------------------
@@ -2105,7 +2140,7 @@ const GameEngine = (() => {
     let roomId = null;                // null = the house overview
     let mode = 'free';
     let target = null;
-    let activeColor = null;           // bedroom only; null = the object's own colour
+    let selected = null;              // bedroom: the object the palette paints
     let showPt = false;
     let newest = null;
     let shake = false;
@@ -2129,7 +2164,6 @@ const GameEngine = (() => {
       } catch (e) {}
     }
 
-    const colorFor = item => (room().paint && activeColor) || item.color;
     const where = () => (roomId === 'yard' ? 'in the yard' : `in the ${room().en.toLowerCase()}`);
     const sentence = item => `Put the ${item.en.toLowerCase()} ${where()}!`;
 
@@ -2153,13 +2187,8 @@ const GameEngine = (() => {
     function place(item) {
       if (!item) return;
       if (placed()[item.id]) {
-        // Already in the room: in the bedroom, dropping it again repaints it.
-        if (room().paint && activeColor && placed()[item.id] !== activeColor) {
-          placed()[item.id] = activeColor;
-          playCorrect();
-          say(`${houseColorName(activeColor)} ${item.en}`);
-          paint();
-        }
+        // Already in the room: in the bedroom, that picks it for painting.
+        if (room().paint) select(item.id);
         return;
       }
       if (mode === 'listen' && target && item.id !== target) {
@@ -2170,8 +2199,10 @@ const GameEngine = (() => {
         paint();
         return;
       }
-      placed()[item.id] = colorFor(item);
+      placed()[item.id] = item.color;
       newest = item.id;
+      // A new object in the bedroom is ready to be painted straight away.
+      if (room().paint) selected = item.id;
       playCorrect();
       msg = `✅ ${item.en} — ${item.pt}`;
       if (isDone()) { roomComplete(); return; }
@@ -2181,25 +2212,40 @@ const GameEngine = (() => {
         say(item.en);
         return;
       }
-      say(room().paint && activeColor ? `${houseColorName(activeColor)} ${item.en}` : item.en);
+      say(item.en);
       paint();
     }
 
-    // Tapping something in the room: paint it (bedroom, with a colour
-    // picked), otherwise take it back out.
-    function tapPlaced(id) {
-      const item = itemById(id);
-      if (room().paint && activeColor && placed()[id] !== activeColor) {
-        placed()[id] = activeColor;
-        playCorrect();
-        say(`${houseColorName(activeColor)} ${item.en}`);
-      } else {
-        delete placed()[id];
-        playWrong();
-        msg = '';
-        if (mode === 'listen' && !target) nextTarget();
-      }
+    function select(id) {
+      selected = selected === id ? null : id;
+      if (selected) say(itemById(id).en);
       paint();
+    }
+
+    function paintSelected(hex) {
+      const item = selected && itemById(selected);
+      if (!item || !placed()[item.id]) return;
+      placed()[item.id] = hex;
+      playCorrect();
+      msg = `🎨 ${houseColorName(hex)} ${item.en.toLowerCase()}`;
+      say(`${houseColorName(hex)} ${item.en}`);
+      paint();
+    }
+
+    function takeOut(id) {
+      delete placed()[id];
+      if (selected === id) selected = null;
+      playWrong();
+      msg = '';
+      if (mode === 'listen' && !target) nextTarget();
+      paint();
+    }
+
+    // Tapping something in the room: in the bedroom it picks that object
+    // for painting; anywhere else it takes it back out.
+    function tapPlaced(id) {
+      if (room().paint) select(id);
+      else takeOut(id);
     }
 
     function houseColorName(hex) {
@@ -2214,7 +2260,7 @@ const GameEngine = (() => {
       if (!stage) return;
       const ghost = document.createElement('div');
       ghost.className = 'hs-ghost';
-      ghost.innerHTML = houseItemSVG(item, placed()[item.id] || colorFor(item));
+      ghost.innerHTML = houseItemSVG(item, placed()[item.id] || item.color);
       document.body.appendChild(ghost);
       const startX = ev.clientX;
       const startY = ev.clientY;
@@ -2270,6 +2316,7 @@ const GameEngine = (() => {
       const listen = mode === 'listen';
       const t = target && itemById(target);
       const count = Object.keys(placed()).length;
+      const sel = r.paint && selected && placed()[selected] ? itemById(selected) : null;
       const idx = HOUSE_ROOMS.findIndex(x => x.id === roomId);
       const next = HOUSE_ROOMS[(idx + 1) % HOUSE_ROOMS.length];
       return `
@@ -2301,33 +2348,43 @@ const GameEngine = (() => {
 
         <div class="hs-layout">
           <div class="hs-stage${shake ? ' bp-shake' : ''}${isDone() ? ' done' : ''}">
-            <svg class="hs-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${houseSceneInner(r, placed(), newest)}</svg>
+            <svg class="hs-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${houseSceneInner(r, placed(), newest, selected)}</svg>
             <span class="bp-drop-hint">Drop it here! 🏠</span>
           </div>
           <div class="hs-shelf-wrap">
-            ${r.paint ? `
-              <div class="hs-paint">
-                <span class="hs-paint-label">🎨 Choose a colour:</span>
-                <div class="hs-palette">
-                  <button class="dressup-swatch rainbow${activeColor === null ? ' active' : ''}" data-color="" title="Own colour">🎨</button>
-                  ${HOUSE_COLORS.map(c => `<button class="dressup-swatch${activeColor === c.hex ? ' active' : ''}" data-color="${c.hex}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}
+            ${r.paint ? (sel ? `
+              <div class="hs-paint active">
+                <div class="hs-paint-head">
+                  ${houseItemSVG(sel, placed()[sel.id], 'hs-paint-thumb')}
+                  <span class="hs-paint-label">🎨 Colour for the <b>${igEscapeHtml(sel.en.toLowerCase())}</b>:</span>
                 </div>
-                <p class="hs-paint-tip">Pick a colour, then put an object in the room — or tap an object in the room to paint it.</p>
-              </div>` : ''}
+                <div class="hs-palette">
+                  ${HOUSE_COLORS.map(c => `<button class="dressup-swatch${placed()[sel.id] === c.hex ? ' active' : ''}" data-color="${c.hex}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}
+                </div>
+                <div class="hs-paint-actions">
+                  <button class="game-btn secondary" data-action="deselect">✓ Pronto</button>
+                  <button class="game-btn secondary danger" data-action="takeout">🗑️ Tirar do quarto</button>
+                </div>
+              </div>` : `
+              <div class="hs-paint">
+                <span class="hs-paint-label">👆 Toque num objeto do quarto para escolher a cor dele.</span>
+              </div>`) : ''}
             <div class="hs-shelf">
               ${r.items.map(i => {
                 const isIn = Boolean(placed()[i.id]);
                 const canRepaint = r.paint && isIn;
                 return `
-                  <button class="bp-card hs-card${isIn ? ' packed' : ''}${canRepaint ? ' repaint' : ''}${listen ? ' no-label' : ''}" data-item="${i.id}" aria-label="${igEscapeHtml(i.en)}">
-                    ${houseItemSVG(i, placed()[i.id] || colorFor(i), 'bp-thumb')}
+                  <button class="bp-card hs-card${isIn ? ' packed' : ''}${canRepaint ? ' repaint' : ''}${sel && sel.id === i.id ? ' selected' : ''}${listen ? ' no-label' : ''}" data-item="${i.id}" aria-label="${igEscapeHtml(i.en)}">
+                    ${houseItemSVG(i, placed()[i.id] || i.color, 'bp-thumb')}
                     ${listen ? '' : `<span class="bp-card-en">${igEscapeHtml(i.en)}</span><span class="bp-card-pt">${igEscapeHtml(i.pt)}</span>`}
                     ${isIn ? '<span class="bp-card-on">✓</span>' : ''}
                   </button>`;
               }).join('')}
             </div>
             <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
-            <p class="bp-tip">Drag an object into the room — or just tap it. Tap it in the room to take it out.</p>
+            <p class="bp-tip">${r.paint
+              ? 'Drag an object into the room — or just tap it. Then tap it in the room and pick its colour.'
+              : 'Drag an object into the room — or just tap it. Tap it in the room to take it out.'}</p>
           </div>
         </div>`;
     }
@@ -2341,7 +2398,7 @@ const GameEngine = (() => {
 
     function openRoom(id) {
       roomId = id;
-      activeColor = null;
+      selected = null;
       msg = '';
       target = null;
       say(room().en);
@@ -2379,18 +2436,21 @@ const GameEngine = (() => {
           if (ev.button != null && ev.button !== 0) return;
           const item = itemById(card.dataset.item);
           if (!item) return;
-          if (placed()[item.id] && !(room().paint && activeColor)) return;
+          if (placed()[item.id]) {          // already in: bedroom picks it to paint
+            if (room().paint) select(item.id);
+            return;
+          }
           beginDrag(ev, item);
         });
       });
       container.querySelectorAll('.hs-scene [data-placed]').forEach(g => {
         g.addEventListener('click', () => tapPlaced(g.dataset.placed));
       });
-      container.querySelectorAll('[data-color]').forEach(btn => btn.addEventListener('click', () => {
-        activeColor = btn.dataset.color || null;
-        if (activeColor) say(houseColorName(activeColor));
-        paint();
-      }));
+      container.querySelectorAll('.hs-palette [data-color]').forEach(btn => btn.addEventListener('click', () => paintSelected(btn.dataset.color)));
+      const deselect = act('deselect');
+      if (deselect) deselect.addEventListener('click', () => { selected = null; paint(); });
+      const takeout = act('takeout');
+      if (takeout) takeout.addEventListener('click', () => { if (selected) takeOut(selected); });
 
       const house = act('house');
       if (house) house.addEventListener('click', () => { roomId = null; target = null; msg = ''; paint(); });
@@ -2402,6 +2462,7 @@ const GameEngine = (() => {
       const empty = act('empty');
       if (empty) empty.addEventListener('click', () => {
         placedByRoom[roomId] = {};
+        selected = null;
         msg = '';
         playWrong();
         if (mode === 'listen') nextTarget();
