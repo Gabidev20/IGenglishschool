@@ -424,6 +424,19 @@ const IGCloud = (() => {
         stats: s.sheet ? Object.assign({}, s.stats || {}, { sheet: s.sheet }) : (s.stats || {}),
       }));
       if (rows.length) await sb.from(tbl('class_sessions')).upsert(rows, { onConflict: 'teacher_id,id' });
+      // A class the teacher deleted in Today's Class must go from the cloud
+      // too, or the next pull brings it back. Only the ids she actually
+      // deleted are removed (never "whatever this device does not have"),
+      // so a computer with an incomplete copy can never erase classes.
+      // A class moved to another student keeps its id: the upsert above
+      // already re-homed its row, so it is not in this list.
+      const doomed = igSessionTombstones(sid).filter(id => !list.some(x => x.id === id));
+      if (doomed.length) {
+        const { error } = await sb.from(tbl('class_sessions')).delete()
+          .eq('teacher_id', tid).eq('student_id', sid)
+          .in('id', doomed);
+        if (!error) igClearSessionTombstones(sid, doomed);
+      }
       return;
     }
 

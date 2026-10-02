@@ -353,7 +353,8 @@ const TeacherTour = (() => {
         target: ['#openSessionDrawerBtn', '#liveClassCockpit'], before: openSection('live-class'), icon: '📋', title: "6. No fim da aula: Today's Class",
         html: `<p>Registre a <b>presença ou falta</b>, o <b>tópico</b> (a lista mostra primeiro o nível do aluno), as palavras novas e a lição pedida.
                Suas anotações ficam só para você.</p>
-               <p>O botão <b>"Salvar e gerar ficha p/ WhatsApp"</b> cria a ficha da aula para mandar à família. Esse registro alimenta a frequência, o boletim e os assuntos liberados no link do aluno.</p>`,
+               <p>O botão <b>"Salvar e gerar ficha p/ WhatsApp"</b> cria a ficha da aula para mandar à família. Esse registro alimenta a frequência, o boletim e os assuntos liberados no link do aluno.</p>
+               <p>Errou alguma coisa? No histórico, no fim da mesma janela, toque em <b>✏️</b> na aula para corrigir, mudar para outro aluno ou apagar.</p>`,
       },
       {
         target: ['#homework', '#homeworkRoot'], before: openSection('homework'), icon: '🏠', title: '7. Lição de casa',
@@ -385,7 +386,7 @@ const TeacherTour = (() => {
         target: ['#reportsNavBtn', '#mainNav'], icon: '📊', title: '12. Boletim (Progress Report)',
         html: `<p>Preenchido sozinho com as aulas do trimestre. Em <b>Histórico de frequência por período</b> você traz presenças e faltas de cada período
                (ex.: jan–jun, jul–dez) — digitando das suas anotações ou com <b>↻ Contar</b>.</p>
-               <p>Depois é só <b>Salvar</b>, <b>Copiar para WhatsApp</b> ou <b>Salvar em PDF</b>.</p>`,
+               <p>Tudo é editável: títulos, números, habilidades, assinatura e data — e dá para tirar uma seção desmarcando <b>incluir no boletim</b>. Depois <b>Salvar</b>, <b>Texto para WhatsApp</b> (você revisa o texto antes de copiar) ou <b>Salvar em PDF</b>.</p>`,
       },
       {
         target: '#teacherHelpBtn', icon: '🎯', title: 'Pronto!',

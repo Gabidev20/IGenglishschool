@@ -197,16 +197,16 @@ function openReportsModal() {
 
   openModal(`
     <div class="modal-content-pad">
-      <h3 id="modalTitle">📊 Quarterly Progress Report</h3>
+      <h3 id="modalTitle">📊 Boletim · Progress Report</h3>
       <div class="report-controls no-print">
         <div class="gm-form-field">
-          <label for="rpStudentSelect">Student</label>
+          <label for="rpStudentSelect">Aluno</label>
           <select id="rpStudentSelect">
             ${students.map(s => `<option value="${s.id}" ${s.id === activeId ? 'selected' : ''}>${escapeHtmlLite(s.name)}</option>`).join('')}
           </select>
         </div>
         <div class="gm-form-field">
-          <label for="rpQuarterSelect">Quarter</label>
+          <label for="rpQuarterSelect">Trimestre</label>
           <select id="rpQuarterSelect">
             ${quarters.map((q, i) => `<option value="${q.id}" data-label="${escapeAttrLite(q.label)}" ${i === 0 ? 'selected' : ''}>${q.label}</option>`).join('')}
           </select>
@@ -240,47 +240,141 @@ function refreshSavedBadge(student, quarterId) {
   const badge = document.getElementById('rpSavedBadge');
   if (!badge) return;
   const exists = Boolean(findSavedReport(student.id, quarterId));
-  badge.textContent = exists ? '✅ Saved' : '🆕 Not saved yet';
+  badge.textContent = exists ? '✅ Salvo' : '🆕 Ainda não salvo';
   badge.className = 'report-saved-badge ' + (exists ? 'is-saved' : 'is-new');
 }
 
 // ---------------------------------------------------------------------------
-// EDITABLE FORM
+// EVERY PART OF THE REPORT IS EDITABLE
+// What goes to the family must be exactly what the teacher wants, so the
+// form holds everything the PDF and the WhatsApp text are made of: the
+// title, each section's heading (and whether it is included at all), the
+// numbers, the names of the skills, the topics, the signature and the date.
+// Reports saved before this existed are read through rpNormalize(), which
+// fills the new fields with what they used to show.
 // ---------------------------------------------------------------------------
-let rpTopics = [];
+const RP_DEFAULT_TITLE = 'Boletim Trimestral · Quarterly Progress Report';
+const RP_SECTIONS = [
+  ['attendance', 'Frequência & Engajamento'],
+  ['stats', 'Números do período'],
+  ['periods', 'Histórico de Frequência por Período'],
+  ['topics', 'Conteúdos & Tópicos Trabalhados'],
+  ['skills', 'Habilidades Avaliadas'],
+  ['strengths', '✨ Destaques do Aluno'],
+  ['nextGoals', '🎯 Próximos Passos'],
+  ['teacherNote', '💌 Mensagem da Teacher'],
+  ['signature', 'Assinatura'],
+];
+const RP_DEFAULT_HEADINGS = Object.fromEntries(RP_SECTIONS);
+
+function rpTodayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function rpNormalize(data, student) {
+  const d = { ...data };
+  const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
+  if (!Array.isArray(d.skills)) {
+    const old = d.skills || {};
+    d.skills = SKILL_KEYS.map(k => ({
+      label: k === 'writing' && grown ? 'Writing' : SKILL_LABELS[k],
+      level: (old[k] && old[k].level) || SKILL_LEVELS[0],
+      comment: (old[k] && old[k].comment) || '',
+    }));
+  }
+  const a = d.autoStats || {};
+  d.stats = d.stats || {
+    classes: a.totalClasses || 0, attendance: a.attendanceRate || 0,
+    stars: a.totalStars || 0, stickers: a.stickerCount || 0,
+  };
+  d.show = { ...Object.fromEntries(RP_SECTIONS.map(([k]) => [k, true])), ...(d.show || {}) };
+  d.headings = { ...RP_DEFAULT_HEADINGS, ...(d.headings || {}) };
+  d.title = d.title || RP_DEFAULT_TITLE;
+  d.signature = d.signature || 'Assinatura da Teacher';
+  d.teacherName = d.teacherName != null ? d.teacherName
+    : (typeof IGCloud !== 'undefined' && IGCloud.teacher && IGCloud.teacher.name && !/@/.test(IGCloud.teacher.name) ? IGCloud.teacher.name : '');
+  d.issueDate = d.issueDate || rpTodayISO();
+  d.topics = Array.isArray(d.topics) ? d.topics : [];
+  return d;
+}
+
+function rpStatsFromSessions(student, quarterId) {
+  const s = computeQuarterStats(student, quarterId);
+  return { classes: s.totalClasses, attendance: s.attendanceRate, stars: s.totalStars, stickers: s.stickerCount };
+}
+
+// One section of the form: its heading (editable) and whether it goes into
+// the report, then its fields.
+function rpSectionHTML(d, key, inner, extraClass) {
+  return `
+    <section class="rp-sec${extraClass ? ' ' + extraClass : ''}${d.show[key] ? '' : ' is-off'}" data-sec="${key}">
+      <div class="rp-sec-head">
+        <input type="text" class="rp-sec-title" data-heading="${key}" value="${escapeAttrLite(d.headings[key])}" aria-label="Título da seção" title="Clique para mudar o título desta seção" />
+        <label class="rp-sec-toggle" title="Mostrar esta seção no boletim">
+          <input type="checkbox" data-show="${key}" ${d.show[key] ? 'checked' : ''} /> incluir no boletim
+        </label>
+      </div>
+      <div class="rp-sec-body">${inner}</div>
+    </section>`;
+}
+
+function rpSkillRowHTML(s) {
+  const levels = SKILL_LEVELS.includes(s.level) ? SKILL_LEVELS : SKILL_LEVELS.concat([s.level]);
+  return `
+    <div class="report-skill-row rp-skill-row">
+      <input type="text" class="rp-skill-label" value="${escapeAttrLite(s.label)}" placeholder="Habilidade" aria-label="Nome da habilidade" />
+      <select class="rp-skill-level" aria-label="Nível">
+        ${levels.map(lv => `<option value="${escapeAttrLite(lv)}" ${lv === s.level ? 'selected' : ''}>${escapeHtmlLite(lv)}</option>`).join('')}
+      </select>
+      <input type="text" class="rp-skill-comment" placeholder="Comentário (opcional)" value="${escapeAttrLite(s.comment)}" />
+      <button type="button" class="gm-remove-row" data-del-skill aria-label="Remover habilidade" title="Remover">✕</button>
+    </div>`;
+}
+
+function rpTopicRowHTML(t) {
+  return `
+    <div class="rp-topic-row">
+      <input type="text" class="rp-topic" value="${escapeAttrLite(t)}" aria-label="Tópico" />
+      <button type="button" class="gm-remove-row" data-del-topic aria-label="Remover tópico" title="Remover">✕</button>
+    </div>`;
+}
 
 function renderReportForm(container, student, quarterId, quarterLabel) {
-  const data = getFormDefaults(student, quarterId, quarterLabel);
-  rpTopics = data.topics.slice();
-  const isSaved = Boolean(data.id);
-  const stats = data.autoStats || computeQuarterStats(student, quarterId);
+  const d = rpNormalize(getFormDefaults(student, quarterId, quarterLabel), student);
+  const isSaved = Boolean(d.id);
 
   container.innerHTML = `
     <p class="report-saved-indicator no-print">${isSaved
-      ? '✅ Showing the saved report for this quarter — edit anything and save again to update it.'
-      : '🆕 Auto-filled from this quarter\'s class history — review and edit before saving.'}</p>
+      ? '✅ Este é o boletim salvo deste trimestre. Corrija o que quiser e clique em <b>Salvar</b> de novo.'
+      : '🆕 Preenchido com as aulas do trimestre — revise e corrija tudo antes de salvar e mandar.'}
+      <br><small>Tudo aqui pode ser editado: os títulos das seções, os números, as habilidades, a assinatura e a data. Desmarque <b>incluir no boletim</b> para tirar uma seção.</small></p>
 
-    <div class="report-auto-stats no-print">
-      <div class="report-stat"><strong>${stats.totalClasses}</strong><span>Classes</span></div>
-      <div class="report-stat"><strong>${stats.attendanceRate}%</strong><span>Attendance</span></div>
-      <div class="report-stat"><strong>${stats.totalStars}</strong><span>Stars</span></div>
-      <div class="report-stat"><strong>${stats.stickerCount}</strong><span>Stickers</span></div>
+    <div class="gm-form-field">
+      <label for="rpTitle">Título do boletim</label>
+      <input type="text" id="rpTitle" value="${escapeAttrLite(d.title)}" />
     </div>
 
     <div class="report-form-grid">
-      <div class="gm-form-field"><label for="rpName">Student Name</label><input type="text" id="rpName" value="${escapeAttrLite(data.name)}" /></div>
-      <div class="gm-form-field"><label for="rpAge">Age</label><input type="text" id="rpAge" value="${escapeAttrLite(data.age)}" /></div>
-      <div class="gm-form-field"><label for="rpLevel">Level</label><input type="text" id="rpLevel" value="${escapeAttrLite(data.levelLabel)}" /></div>
-      <div class="gm-form-field"><label for="rpPeriod">Period</label><input type="text" id="rpPeriod" value="${escapeAttrLite(data.period)}" /></div>
+      <div class="gm-form-field"><label for="rpName">Nome do aluno</label><input type="text" id="rpName" value="${escapeAttrLite(d.name)}" /></div>
+      <div class="gm-form-field"><label for="rpAge">Idade</label><input type="text" id="rpAge" value="${escapeAttrLite(d.age)}" /></div>
+      <div class="gm-form-field"><label for="rpLevel">Nível</label><input type="text" id="rpLevel" value="${escapeAttrLite(d.levelLabel)}" /></div>
+      <div class="gm-form-field"><label for="rpPeriod">Período</label><input type="text" id="rpPeriod" value="${escapeAttrLite(d.period)}" /></div>
     </div>
 
-    <div class="gm-form-field">
-      <label for="rpAttendance">Frequência &amp; Engajamento</label>
-      <input type="text" id="rpAttendance" value="${escapeAttrLite(data.attendanceText)}" />
-    </div>
+    ${rpSectionHTML(d, 'attendance', `
+      <input type="text" id="rpAttendance" value="${escapeAttrLite(d.attendanceText)}" aria-label="Frequência e engajamento" />`)}
 
-    <div class="gm-form-field report-periods">
-      <label>🗓️ Histórico de frequência por período</label>
+    ${rpSectionHTML(d, 'stats', `
+      <div class="rp-stats">
+        <label><input type="number" min="0" id="rpStatClasses" value="${escapeAttrLite(d.stats.classes)}" /> <span>aulas</span></label>
+        <label><input type="number" min="0" max="100" id="rpStatAttendance" value="${escapeAttrLite(d.stats.attendance)}" /> <span>% presença</span></label>
+        <label><input type="number" min="0" id="rpStatStars" value="${escapeAttrLite(d.stats.stars)}" /> <span>estrelas</span></label>
+        <label><input type="number" min="0" id="rpStatStickers" value="${escapeAttrLite(d.stats.stickers)}" /> <span>figurinhas</span></label>
+        <button class="game-btn secondary" type="button" id="rpRecalcStats" title="Contar de novo a partir das aulas registradas neste trimestre">↻ Recalcular das aulas</button>
+      </div>`)}
+
+    ${rpSectionHTML(d, 'periods', `
       <p class="report-periods-help no-print">Traga as presenças e faltas de cada período em que ${escapeHtmlLite(student.name)} teve aula —
         por exemplo <em>jan–jun</em> e depois <em>jul–dez</em>. Digite os números das suas anotações, ou use
         <b>↻ Contar</b> para somar as aulas registradas aqui no site naquele intervalo. Fica salvo no histórico do aluno e aparece em todos os boletins dele.</p>
@@ -296,86 +390,82 @@ function renderReportForm(container, student, quarterId, quarterLabel) {
       <div class="game-btn-row no-print">
         <button class="game-btn secondary" id="rpAddPeriodBtn" type="button">+ Adicionar período</button>
         <button class="game-btn secondary" id="rpAddSemesterBtn" type="button">+ Semestres deste ano</button>
-      </div>
-    </div>
+      </div>`, 'report-periods')}
 
-    <div class="gm-form-field">
-      <label>Conteúdos &amp; Tópicos Trabalhados</label>
-      <div class="report-tags" id="rpTopicsTags"></div>
+    ${rpSectionHTML(d, 'topics', `
+      <div class="rp-topics" id="rpTopics">${d.topics.map(rpTopicRowHTML).join('')}</div>
       <div class="report-tag-input-row">
-        <input type="text" id="rpTopicInput" placeholder="Add a topic and press Enter" />
-        <button class="game-btn secondary" id="rpAddTopicBtn" type="button">+ Add</button>
-      </div>
-    </div>
+        <input type="text" id="rpTopicInput" placeholder="Novo tópico — escreva e aperte Enter" />
+        <button class="game-btn secondary" id="rpAddTopicBtn" type="button">+ Adicionar</button>
+      </div>`)}
 
-    <div class="gm-form-field">
-      <label>Habilidades Avaliadas</label>
-      <div class="report-skills-grid">
-        ${SKILL_KEYS.map(k => `
-          <div class="report-skill-row">
-            <span class="report-skill-label">${SKILL_LABELS[k]}</span>
-            <select id="rpSkillLevel_${k}">
-              ${SKILL_LEVELS.map(lv => `<option value="${lv}" ${lv === data.skills[k].level ? 'selected' : ''}>${lv}</option>`).join('')}
-            </select>
-            <input type="text" id="rpSkillComment_${k}" placeholder="Short comment (optional)" value="${escapeAttrLite(data.skills[k].comment)}" />
-          </div>
-        `).join('')}
-      </div>
-    </div>
+    ${rpSectionHTML(d, 'skills', `
+      <div class="report-skills-grid" id="rpSkills">${d.skills.map(rpSkillRowHTML).join('')}</div>
+      <button class="game-btn secondary" id="rpAddSkillBtn" type="button">+ Adicionar habilidade</button>`)}
 
-    <div class="gm-form-field">
-      <label for="rpStrengths">✨ Destaques do Aluno (Strengths)</label>
-      <textarea id="rpStrengths" rows="3">${escapeHtmlLite(data.strengths)}</textarea>
-    </div>
+    ${rpSectionHTML(d, 'strengths', `<textarea id="rpStrengths" rows="3" aria-label="Destaques">${escapeHtmlLite(d.strengths)}</textarea>`)}
+    ${rpSectionHTML(d, 'nextGoals', `<textarea id="rpNextGoals" rows="3" placeholder="No que vamos focar no próximo período?" aria-label="Próximos passos">${escapeHtmlLite(d.nextGoals)}</textarea>`)}
+    ${rpSectionHTML(d, 'teacherNote', `<textarea id="rpTeacherNote" rows="3" aria-label="Mensagem da teacher">${escapeHtmlLite(d.teacherNote)}</textarea>`)}
 
-    <div class="gm-form-field">
-      <label for="rpNextGoals">🎯 Próximos Passos (Next Goals)</label>
-      <textarea id="rpNextGoals" rows="3" placeholder="What will we focus on next term?">${escapeHtmlLite(data.nextGoals)}</textarea>
-    </div>
-
-    <div class="gm-form-field">
-      <label for="rpTeacherNote">💌 Teacher's Note</label>
-      <textarea id="rpTeacherNote" rows="3">${escapeHtmlLite(data.teacherNote)}</textarea>
-    </div>
+    ${rpSectionHTML(d, 'signature', `
+      <div class="report-form-grid">
+        <div class="gm-form-field"><label for="rpTeacherName">Nome da professora</label><input type="text" id="rpTeacherName" value="${escapeAttrLite(d.teacherName)}" placeholder="ex.: Teacher Isa" /></div>
+        <div class="gm-form-field"><label for="rpSignature">Texto da assinatura</label><input type="text" id="rpSignature" value="${escapeAttrLite(d.signature)}" /></div>
+        <div class="gm-form-field"><label for="rpIssueDate">Data de emissão</label><input type="date" id="rpIssueDate" value="${escapeAttrLite(d.issueDate)}" /></div>
+      </div>`)}
 
     <div class="game-btn-row no-print" style="margin-top:10px">
-      <button class="btn btn-primary" id="rpSaveBtn">💾 Salvar Relatório no Histórico</button>
-      <button class="game-btn" id="rpWhatsAppBtn">📱 Copiar para WhatsApp</button>
+      <button class="btn btn-primary" id="rpSaveBtn">💾 Salvar boletim</button>
+      <button class="game-btn" id="rpWhatsAppBtn">📱 Texto para WhatsApp</button>
       <button class="game-btn secondary" id="rpPrintBtn">🖨️ Salvar em PDF / Imprimir</button>
     </div>
     <p class="report-save-confirm no-print" id="rpSaveConfirm" hidden></p>
+    <div class="rp-wa no-print" id="rpWhatsAppPanel" hidden></div>
   `;
 
-  paintTopicTags();
   wireAttendancePeriods(student);
 
-  function addTopicFromInput() {
-    const input = document.getElementById('rpTopicInput');
+  // Section on/off: grey the section out so it is obvious it will not go.
+  container.querySelectorAll('[data-show]').forEach(box => box.addEventListener('change', () => {
+    box.closest('.rp-sec').classList.toggle('is-off', !box.checked);
+  }));
+
+  // Topics
+  const topicsEl = container.querySelector('#rpTopics');
+  const addTopic = () => {
+    const input = container.querySelector('#rpTopicInput');
     const val = input.value.trim();
     if (!val) return;
-    if (!rpTopics.includes(val)) rpTopics.push(val);
+    topicsEl.insertAdjacentHTML('beforeend', rpTopicRowHTML(val));
     input.value = '';
-    paintTopicTags();
-  }
+    input.focus();
+  };
+  container.querySelector('#rpAddTopicBtn').addEventListener('click', addTopic);
+  container.querySelector('#rpTopicInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); addTopic(); }
+  });
+  topicsEl.addEventListener('click', (e) => { const b = e.target.closest('[data-del-topic]'); if (b) b.closest('.rp-topic-row').remove(); });
 
-  function paintTopicTags() {
-    const el = document.getElementById('rpTopicsTags');
-    el.innerHTML = rpTopics.length
-      ? rpTopics.map((t, i) => `<span class="report-tag">${escapeHtmlLite(t)}<button type="button" data-remove-topic="${i}" aria-label="Remove ${escapeAttrLite(t)}">✕</button></span>`).join('')
-      : `<span class="report-tags-empty">No topics added yet.</span>`;
-    el.querySelectorAll('[data-remove-topic]').forEach(btn => {
-      btn.addEventListener('click', () => { rpTopics.splice(Number(btn.dataset.removeTopic), 1); paintTopicTags(); });
-    });
-  }
+  // Skills
+  const skillsEl = container.querySelector('#rpSkills');
+  container.querySelector('#rpAddSkillBtn').addEventListener('click', () => {
+    skillsEl.insertAdjacentHTML('beforeend', rpSkillRowHTML({ label: '', level: SKILL_LEVELS[0], comment: '' }));
+    skillsEl.lastElementChild.querySelector('input').focus();
+  });
+  skillsEl.addEventListener('click', (e) => { const b = e.target.closest('[data-del-skill]'); if (b) b.closest('.rp-skill-row').remove(); });
 
-  document.getElementById('rpAddTopicBtn').addEventListener('click', addTopicFromInput);
-  document.getElementById('rpTopicInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); addTopicFromInput(); }
+  // Numbers
+  container.querySelector('#rpRecalcStats').addEventListener('click', () => {
+    const s = rpStatsFromSessions(student, quarterId);
+    container.querySelector('#rpStatClasses').value = s.classes;
+    container.querySelector('#rpStatAttendance').value = s.attendance;
+    container.querySelector('#rpStatStars').value = s.stars;
+    container.querySelector('#rpStatStickers').value = s.stickers;
   });
 
-  document.getElementById('rpSaveBtn').addEventListener('click', () => saveCurrentReport(student, quarterId, quarterLabel));
-  document.getElementById('rpWhatsAppBtn').addEventListener('click', () => exportReportToWhatsApp());
-  document.getElementById('rpPrintBtn').addEventListener('click', () => printReport(student, quarterId));
+  container.querySelector('#rpSaveBtn').addEventListener('click', () => saveCurrentReport(student, quarterId, quarterLabel));
+  container.querySelector('#rpWhatsAppBtn').addEventListener('click', () => openReportWhatsApp(student, quarterId, quarterLabel));
+  container.querySelector('#rpPrintBtn').addEventListener('click', () => printReport(student, quarterId, quarterLabel));
 }
 
 function wireAttendancePeriods(student) {
@@ -475,23 +565,34 @@ function wireAttendancePeriods(student) {
 }
 
 function gatherReportFormData() {
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const num = id => { const v = val(id); return v === '' ? '' : Math.max(0, Number(v) || 0); };
+  const area = document.getElementById('reportFormArea') || document;
+  const show = {}, headings = {};
+  area.querySelectorAll('[data-show]').forEach(b => { show[b.dataset.show] = b.checked; });
+  area.querySelectorAll('[data-heading]').forEach(i => { headings[i.dataset.heading] = i.value.trim() || RP_DEFAULT_HEADINGS[i.dataset.heading]; });
   return {
-    name: document.getElementById('rpName').value.trim(),
-    age: document.getElementById('rpAge').value.trim(),
-    levelLabel: document.getElementById('rpLevel').value.trim(),
-    period: document.getElementById('rpPeriod').value.trim(),
-    attendanceText: document.getElementById('rpAttendance').value.trim(),
-    topics: rpTopics.slice(),
-    skills: SKILL_KEYS.reduce((acc, k) => {
-      acc[k] = {
-        level: document.getElementById(`rpSkillLevel_${k}`).value,
-        comment: document.getElementById(`rpSkillComment_${k}`).value.trim(),
-      };
-      return acc;
-    }, {}),
-    strengths: document.getElementById('rpStrengths').value.trim(),
-    nextGoals: document.getElementById('rpNextGoals').value.trim(),
-    teacherNote: document.getElementById('rpTeacherNote').value.trim(),
+    title: val('rpTitle') || RP_DEFAULT_TITLE,
+    name: val('rpName'),
+    age: val('rpAge'),
+    levelLabel: val('rpLevel'),
+    period: val('rpPeriod'),
+    attendanceText: val('rpAttendance'),
+    stats: { classes: num('rpStatClasses'), attendance: num('rpStatAttendance'), stars: num('rpStatStars'), stickers: num('rpStatStickers') },
+    topics: [...area.querySelectorAll('.rp-topic')].map(i => i.value.trim()).filter(Boolean),
+    skills: [...area.querySelectorAll('.rp-skill-row')].map(r => ({
+      label: r.querySelector('.rp-skill-label').value.trim(),
+      level: r.querySelector('.rp-skill-level').value,
+      comment: r.querySelector('.rp-skill-comment').value.trim(),
+    })).filter(s => s.label),
+    strengths: val('rpStrengths'),
+    nextGoals: val('rpNextGoals'),
+    teacherNote: val('rpTeacherNote'),
+    teacherName: val('rpTeacherName'),
+    signature: val('rpSignature'),
+    issueDate: val('rpIssueDate') || rpTodayISO(),
+    show,
+    headings,
     periods: (() => {
       const sid = document.getElementById('rpStudentSelect') && document.getElementById('rpStudentSelect').value;
       return sid ? loadAttendancePeriods(sid).filter(p => p.label || p.from || p.present || p.absent) : [];
@@ -502,7 +603,7 @@ function gatherReportFormData() {
 // ---------------------------------------------------------------------------
 // SAVE TO HISTORY
 // ---------------------------------------------------------------------------
-function saveCurrentReport(student, quarterId, quarterLabel) {
+function saveCurrentReport(student, quarterId, quarterLabel, quiet) {
   const formData = gatherReportFormData();
   const existing = findSavedReport(student.id, quarterId);
   const record = {
@@ -518,64 +619,78 @@ function saveCurrentReport(student, quarterId, quarterLabel) {
   upsertReport(student.id, record);
 
   const confirmEl = document.getElementById('rpSaveConfirm');
-  if (confirmEl) {
+  if (confirmEl && !quiet) {
     confirmEl.hidden = false;
-    confirmEl.textContent = '✅ Report saved to history!';
+    confirmEl.textContent = '✅ Boletim salvo!';
     setTimeout(() => { if (confirmEl.isConnected) confirmEl.hidden = true; }, 2200);
   }
   refreshSavedBadge(student, quarterId);
+  return record;
 }
 
 // ---------------------------------------------------------------------------
-// EXPORT — WhatsApp text
+// EXPORT — WhatsApp text, shown in an editable box before it is copied
 // ---------------------------------------------------------------------------
-function exportReportToWhatsApp() {
-  const d = gatherReportFormData();
-  const skillLines = SKILL_KEYS
-    .map(k => `• ${SKILL_LABELS[k]}: *${d.skills[k].level}*${d.skills[k].comment ? ' — ' + d.skills[k].comment : ''}`)
-    .join('\n');
-
-  const text = `📚 *IGenglishschool — Boletim Trimestral* 📚
-
-👤 *${d.name}* (${d.age} anos) — ${d.levelLabel}
-🗓️ ${d.period}
-
-📈 *Frequência & Engajamento:*
-${d.attendanceText}
-${periodsWhatsApp(d.periods)}
-📖 *Conteúdos trabalhados:*
-${d.topics.length ? d.topics.map(t => `• ${t}`).join('\n') : '—'}
-
-🎧 *Habilidades avaliadas:*
-${skillLines}
-
-✨ *Destaques do aluno:*
-${d.strengths || '—'}
-
-🎯 *Próximos passos:*
-${d.nextGoals || '—'}
-
-💌 *Mensagem da Teacher:*
-${d.teacherNote || '—'}
-
-Com carinho,
-IGenglishschool 💛`;
-
-  const btn = document.getElementById('rpWhatsAppBtn');
-  const originalLabel = '📱 Copiar para WhatsApp';
-  const done = () => {
-    btn.textContent = '✅ Copiado!';
-    setTimeout(() => { if (btn.isConnected) btn.textContent = originalLabel; }, 1500);
-  };
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopyReportText(text, done));
-  } else {
-    fallbackCopyReportText(text, done);
+function buildReportWhatsAppText(d) {
+  const on = k => d.show[k] !== false;
+  const h = k => d.headings[k] || RP_DEFAULT_HEADINGS[k];
+  const parts = [];
+  parts.push(`📚 *IGenglishschool — ${d.title || RP_DEFAULT_TITLE}* 📚`);
+  parts.push(`👤 *${d.name}*${d.age ? ` (${d.age} anos)` : ''}${d.levelLabel ? ` — ${d.levelLabel}` : ''}${d.period ? `\n🗓️ ${d.period}` : ''}`);
+  if (on('attendance') && d.attendanceText) parts.push(`📈 *${h('attendance')}:*\n${d.attendanceText}`);
+  if (on('stats')) {
+    const s = d.stats || {};
+    const bits = [];
+    if (s.classes !== '' && s.classes != null) bits.push(`${s.classes} aulas`);
+    if (s.attendance !== '' && s.attendance != null) bits.push(`${s.attendance}% de presença`);
+    if (s.stars !== '' && s.stars != null) bits.push(`${s.stars} estrelas`);
+    if (s.stickers !== '' && s.stickers != null) bits.push(`${s.stickers} figurinhas`);
+    if (bits.length) parts.push(`🔢 *${h('stats')}:* ${bits.join(' · ')}`);
   }
+  if (on('periods') && d.periods && d.periods.length) parts.push(periodsWhatsApp(d.periods, h('periods')).trim());
+  if (on('topics')) parts.push(`📖 *${h('topics')}:*\n${d.topics.length ? d.topics.map(t => `• ${t}`).join('\n') : '—'}`);
+  if (on('skills') && d.skills.length) parts.push(`🎧 *${h('skills')}:*\n${d.skills.map(s => `• ${s.label}: *${s.level}*${s.comment ? ' — ' + s.comment : ''}`).join('\n')}`);
+  if (on('strengths')) parts.push(`*${h('strengths')}:*\n${d.strengths || '—'}`);
+  if (on('nextGoals')) parts.push(`*${h('nextGoals')}:*\n${d.nextGoals || '—'}`);
+  if (on('teacherNote')) parts.push(`*${h('teacherNote')}:*\n${d.teacherNote || '—'}`);
+  parts.push(`Com carinho,\n${d.teacherName ? d.teacherName + ' · ' : ''}IGenglishschool 💛`);
+  return parts.join('\n\n');
 }
 
-function periodsWhatsApp(periods) {
+function openReportWhatsApp(student, quarterId, quarterLabel) {
+  // What is sent is what is saved: copying never leaves an unsaved version.
+  saveCurrentReport(student, quarterId, quarterLabel, true);
+  const panel = document.getElementById('rpWhatsAppPanel');
+  if (!panel) return;
+  const text = buildReportWhatsAppText(gatherReportFormData());
+  panel.hidden = false;
+  panel.innerHTML = `
+    <p class="rp-wa-head"><b>📱 Texto para WhatsApp</b> — confira e corrija aqui antes de copiar. O que estiver nesta caixa é o que vai ser copiado.</p>
+    <textarea id="rpWhatsAppText" rows="16">${escapeHtmlLite(text)}</textarea>
+    <div class="game-btn-row">
+      <button class="btn btn-primary" type="button" id="rpWaCopy">📋 Copiar texto</button>
+      <button class="game-btn secondary" type="button" id="rpWaRegen" title="Montar o texto de novo a partir do formulário (perde as mudanças feitas nesta caixa)">↻ Gerar de novo do formulário</button>
+      <button class="game-btn secondary" type="button" id="rpWaClose">Fechar</button>
+    </div>`;
+  const area = panel.querySelector('#rpWhatsAppText');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  panel.querySelector('#rpWaCopy').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    const done = () => { btn.textContent = '✅ Copiado!'; setTimeout(() => { if (btn.isConnected) btn.textContent = '📋 Copiar texto'; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(area.value).then(done).catch(() => fallbackCopyReportText(area.value, done));
+    } else {
+      fallbackCopyReportText(area.value, done);
+    }
+  });
+  panel.querySelector('#rpWaRegen').addEventListener('click', () => {
+    saveCurrentReport(student, quarterId, quarterLabel, true);
+    area.value = buildReportWhatsAppText(gatherReportFormData());
+  });
+  panel.querySelector('#rpWaClose').addEventListener('click', () => { panel.hidden = true; panel.innerHTML = ''; });
+}
+
+function periodsWhatsApp(periods, heading) {
   if (!periods || !periods.length) return '';
   const lines = periods.map(p => {
     const t = periodTotals(p);
@@ -583,7 +698,7 @@ function periodsWhatsApp(periods) {
   });
   const sum = attendanceSummary(periods);
   if (periods.length > 1) lines.push(`• *Total:* ${sum.present} presença(s), ${sum.absent} falta(s)${sum.rate === null ? '' : ` — ${sum.rate}%`}`);
-  return `\n🗓️ *Histórico por período:*\n${lines.join('\n')}\n`;
+  return `\n🗓️ *${heading || 'Histórico por período'}:*\n${lines.join('\n')}\n`;
 }
 
 function fallbackCopyReportText(text, done) {
@@ -654,15 +769,25 @@ function skillRatingIcon(levelLabel) {
 }
 
 function buildReportPrintHTML(student, d) {
-  const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-  const stats = d.autoStats || {};
+  const on = k => !d.show || d.show[k] !== false;
+  const h = k => escapeHtmlLite((d.headings && d.headings[k]) || RP_DEFAULT_HEADINGS[k]);
+  let issued = '';
+  try {
+    issued = new Date((d.issueDate || rpTodayISO()) + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  } catch (e) { issued = d.issueDate || ''; }
+  const s = d.stats || {};
+  const statBits = [
+    [s.classes, 'aulas'], [s.attendance === '' || s.attendance == null ? '' : `${s.attendance}%`, 'presença'],
+    [s.stars, 'estrelas'], [s.stickers, 'figurinhas'],
+  ].filter(([v]) => v !== '' && v != null);
+  const skills = Array.isArray(d.skills) ? d.skills : [];
 
   return `
     <div class="report-sheet">
       <div class="report-letterhead">
         <img src="logo.png" alt="IGenglishschool" class="report-letterhead-logo"
              data-fallback="IGenglishschool" onerror="igImageFallback(this)" />
-        <p class="report-letterhead-title">Boletim Trimestral · Quarterly Progress Report</p>
+        <p class="report-letterhead-title">${escapeHtmlLite(d.title || RP_DEFAULT_TITLE)}</p>
       </div>
 
       <div class="report-print-card">
@@ -670,25 +795,22 @@ function buildReportPrintHTML(student, d) {
           <span class="report-print-avatar" style="background:${escapeAttrLite(student.color)}">${escapeHtmlLite(student.avatar)}</span>
           <div>
             <h2>${escapeHtmlLite(d.name)}</h2>
-            <p>${escapeHtmlLite(String(d.age))} anos · ${escapeHtmlLite(d.levelLabel)} · ${escapeHtmlLite(d.period)}</p>
+            <p>${[d.age ? `${escapeHtmlLite(String(d.age))} anos` : '', escapeHtmlLite(d.levelLabel), escapeHtmlLite(d.period)].filter(Boolean).join(' · ')}</p>
           </div>
         </div>
 
+        ${on('attendance') || (on('stats') && statBits.length) ? `
         <div class="report-print-section">
-          <h4>Frequência &amp; Engajamento</h4>
-          <p>${nl2brEscaped(d.attendanceText) || '—'}</p>
-          ${(stats.totalClasses || stats.totalStars) ? `
+          ${on('attendance') ? `<h4>${h('attendance')}</h4><p>${nl2brEscaped(d.attendanceText) || '—'}</p>` : `<h4>${h('stats')}</h4>`}
+          ${on('stats') && statBits.length ? `
             <ul class="report-print-stats">
-              <li><strong>${stats.totalClasses || 0}</strong> aulas</li>
-              <li><strong>${stats.attendanceRate || 0}%</strong> presença</li>
-              <li><strong>${stats.totalStars || 0}</strong> estrelas</li>
-              <li><strong>${stats.stickerCount || 0}</strong> stickers</li>
+              ${statBits.map(([v, label]) => `<li><strong>${escapeHtmlLite(String(v))}</strong> ${label}</li>`).join('')}
             </ul>` : ''}
-        </div>
+        </div>` : ''}
 
-        ${d.periods && d.periods.length ? `
+        ${on('periods') && d.periods && d.periods.length ? `
         <div class="report-print-section">
-          <h4>Histórico de Frequência por Período</h4>
+          <h4>${h('periods')}</h4>
           <table class="report-print-skills report-print-periods">
             <thead><tr><th>Período</th><th>Presenças</th><th>Faltas</th><th>Aulas</th><th>Frequência</th><th>Observação</th></tr></thead>
             <tbody>
@@ -705,64 +827,73 @@ function buildReportPrintHTML(student, d) {
           </table>
         </div>` : ''}
 
+        ${on('topics') ? `
         <div class="report-print-section">
-          <h4>Conteúdos &amp; Tópicos Trabalhados</h4>
+          <h4>${h('topics')}</h4>
           ${d.topics.length
             ? `<ul class="report-print-topics">${d.topics.map(t => `<li>${escapeHtmlLite(t)}</li>`).join('')}</ul>`
             : '<p>—</p>'}
-        </div>
+        </div>` : ''}
 
+        ${on('skills') && skills.length ? `
         <div class="report-print-section">
-          <h4>Habilidades Avaliadas</h4>
+          <h4>${h('skills')}</h4>
           <table class="report-print-skills">
             <thead>
               <tr><th>Habilidade</th><th>Nível</th><th>Observação</th></tr>
             </thead>
             <tbody>
-              ${SKILL_KEYS.map(k => `
+              ${skills.map(sk => `
                 <tr>
-                  <td class="skill-name">${escapeHtmlLite(SKILL_LABELS[k])}</td>
-                  <td class="skill-level"><span class="skill-stars">${skillRatingIcon(d.skills[k].level)}</span> ${escapeHtmlLite(d.skills[k].level)}</td>
-                  <td class="skill-comment">${escapeHtmlLite(d.skills[k].comment) || '—'}</td>
+                  <td class="skill-name">${escapeHtmlLite(sk.label)}</td>
+                  <td class="skill-level"><span class="skill-stars">${skillRatingIcon(sk.level)}</span> ${escapeHtmlLite(sk.level)}</td>
+                  <td class="skill-comment">${escapeHtmlLite(sk.comment) || '—'}</td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
-        </div>
+        </div>` : ''}
 
+        ${on('strengths') ? `
         <div class="report-print-section">
-          <h4>✨ Destaques do Aluno</h4>
+          <h4>${h('strengths')}</h4>
           <p>${nl2brEscaped(d.strengths) || '—'}</p>
-        </div>
+        </div>` : ''}
 
+        ${on('nextGoals') ? `
         <div class="report-print-section">
-          <h4>🎯 Próximos Passos</h4>
+          <h4>${h('nextGoals')}</h4>
           <p>${nl2brEscaped(d.nextGoals) || '—'}</p>
-        </div>
+        </div>` : ''}
 
+        ${on('teacherNote') ? `
         <div class="report-print-note">
-          <h4>💌 Mensagem da Teacher</h4>
+          <h4>${h('teacherNote')}</h4>
           <p>${nl2brEscaped(d.teacherNote) || '—'}</p>
-        </div>
+        </div>` : ''}
 
+        ${on('signature') ? `
         <div class="report-print-signature">
-          <div class="report-signature-line"><span>Assinatura da Teacher</span></div>
-          <p class="report-print-date">Emitido em ${escapeHtmlLite(today)}</p>
-        </div>
+          <div class="report-signature-line">
+            ${d.teacherName ? `<b class="report-signature-name">${escapeHtmlLite(d.teacherName)}</b>` : ''}
+            <span>${escapeHtmlLite(d.signature || 'Assinatura da Teacher')}</span>
+          </div>
+          <p class="report-print-date">Emitido em ${escapeHtmlLite(issued)}</p>
+        </div>` : ''}
       </div>
     </div>
   `;
 }
 
-function printReport(student, quarterId) {
+function printReport(student, quarterId, quarterLabel) {
   const d = gatherReportFormData();
 
   if (!d.name) {
     alert('Preencha o nome do aluno antes de imprimir.');
     return;
   }
-
-  d.autoStats = quarterId ? computeQuarterStats(student, quarterId) : null;
+  // The PDF the family gets is the saved version, never a draft.
+  if (quarterId) saveCurrentReport(student, quarterId, quarterLabel, true);
 
   const root = getPrintRoot();
   root.innerHTML = buildReportPrintHTML(student, d);

@@ -383,10 +383,34 @@ function openRoutineSongModal(songId) {
 // "TODAY'S CLASS" DRAWER — attendance, date, topic, notes, auto-tallied score
 // ---------------------------------------------------------------------------
 let drawerAttendance = 'present';
+// The class being corrected, when the drawer is in edit mode (null = a new
+// class). A class logged with the wrong date, topic or student is fixed in
+// place instead of being logged twice.
+let drawerEditingId = null;
+let drawerShowAllHistory = false;
 
 function openSessionDrawer() {
   drawerAttendance = 'present';
+  drawerEditingId = null;
   document.getElementById('sessionDrawer').classList.add('open');
+  paintSessionDrawer();
+}
+
+function editClassSession(sessionId) {
+  const student = getActiveStudent();
+  const session = student && loadSessions(student.id).find(x => x.id === sessionId);
+  if (!session) return;
+  drawerEditingId = session.id;
+  drawerAttendance = session.present ? 'present' : 'absent';
+  document.getElementById('sessionDrawer').classList.add('open');
+  paintSessionDrawer();
+  const body = document.getElementById('sessionDrawerBody');
+  if (body) body.scrollTop = 0;
+}
+
+function cancelSessionEdit() {
+  drawerEditingId = null;
+  drawerAttendance = 'present';
   paintSessionDrawer();
 }
 function closeSessionDrawer() {
@@ -411,6 +435,11 @@ function paintSessionDrawer() {
 
   const acc = loadCurrentSessionAccumulator(student.id);
   const todayStr = new Date().toISOString().slice(0, 10);
+  const editing = drawerEditingId ? loadSessions(student.id).find(x => x.id === drawerEditingId) : null;
+  if (drawerEditingId && !editing) drawerEditingId = null;
+  const sheet = (editing && editing.sheet) || {};
+  const fmtDay = d => { try { return new Date(d + 'T12:00').toLocaleDateString('pt-BR'); } catch (e) { return d; } };
+  const others = loadStudents().filter(x => x.id !== student.id);
 
   // The picker inserts a label into the free-text field — it is a shortcut for
   // typing, not the only way to fill it in. A class is often "Unit 4 + revisão
@@ -450,6 +479,21 @@ function paintSessionDrawer() {
       <strong>${escapeHtmlLite(student.name)}</strong>
     </div>
 
+    ${editing ? `
+      <div class="session-edit-banner">
+        <p>✏️ <b>Editando a aula de ${escapeHtmlLite(fmtDay(editing.date))}</b>${sheet.classNumber ? ` (nº ${escapeHtmlLite(sheet.classNumber)})` : ''}.
+           Corrija o que precisar e clique em <b>Salvar alterações</b>.</p>
+        <button type="button" class="game-btn secondary" id="sessionEditCancel">Cancelar edição</button>
+      </div>
+      ${others.length ? `
+        <div class="gm-form-field">
+          <label for="sessionMoveTo">Aluno desta aula <span class="sheet-private-hint">(troque se registrou no aluno errado)</span></label>
+          <select id="sessionMoveTo">
+            <option value="${escapeAttrLite(student.id)}" selected>${escapeHtmlLite(student.name)}</option>
+            ${others.map(o => `<option value="${escapeAttrLite(o.id)}">${escapeHtmlLite(o.name)}</option>`).join('')}
+          </select>
+        </div>` : ''}` : ''}
+
     <div class="gm-form-field">
       <label>Attendance</label>
       <div class="attendance-toggle">
@@ -461,18 +505,18 @@ function paintSessionDrawer() {
     <div class="session-date-row">
       <div class="gm-form-field session-classno-field">
         <label for="sessionClassNo">Class nº</label>
-        <input type="number" id="sessionClassNo" min="1" inputmode="numeric" value="${nextClassNumber(student.id)}" />
+        <input type="number" id="sessionClassNo" min="1" inputmode="numeric" value="${editing ? escapeAttrLite(sheet.classNumber || '') : nextClassNumber(student.id)}" />
       </div>
       <div class="gm-form-field">
         <label for="sessionDate">Class date</label>
-        <input type="date" id="sessionDate" value="${todayStr}" />
+        <input type="date" id="sessionDate" value="${editing ? escapeAttrLite(editing.date) : todayStr}" />
       </div>
     </div>
 
     <div class="gm-form-field">
       <label for="sessionTopic">In class · content worked on</label>
       <input type="text" id="sessionTopic" list="sessionTopicList" autocomplete="off"
-             placeholder="Digite o conteúdo da aula…" />
+             placeholder="Digite o conteúdo da aula…" value="${editing ? escapeAttrLite(editing.topicLabel || '') : ''}" />
       <datalist id="sessionTopicList">${datalistHTML}</datalist>
       <div class="session-topic-tools">
         <select id="sessionTopicPicker" aria-label="Inserir um tópico do curso">
@@ -497,16 +541,17 @@ function paintSessionDrawer() {
 
     <div class="gm-form-field">
       <label for="sessionNotes">Teacher's notes <span class="sheet-private-hint">(só para você — não vai na ficha)</span></label>
-      <textarea id="sessionNotes" rows="4" placeholder="e.g. Great pronunciation of /p/ and /t/ sounds, practiced Simple Past regular verbs..."></textarea>
+      <textarea id="sessionNotes" rows="4" placeholder="e.g. Great pronunciation of /p/ and /t/ sounds, practiced Simple Past regular verbs...">${editing ? escapeHtmlLite(editing.notes || '') : ''}</textarea>
     </div>
 
     <div class="session-score-summary">
-      <span>⭐ Session score</span>
-      <strong>${acc.xp} XP · ${acc.stars} stars</strong>
+      <span>⭐ ${editing ? 'Pontos desta aula' : 'Session score'}</span>
+      <strong>${editing ? `${(editing.stats && editing.stats.xp) || 0} XP · ${(editing.stats && editing.stats.stars) || 0} stars` : `${acc.xp} XP · ${acc.stars} stars`}</strong>
     </div>
 
-    <button class="btn btn-primary" id="saveSessionBtn" style="width:100%">💾 Save Class Session</button>
-    <button class="btn btn-ghost" id="saveSessionSheetBtn" style="width:100%;margin-top:8px">🖼️ Salvar e gerar ficha p/ WhatsApp</button>
+    <button class="btn btn-primary" id="saveSessionBtn" style="width:100%">${editing ? '💾 Salvar alterações' : '💾 Save Class Session'}</button>
+    <button class="btn btn-ghost" id="saveSessionSheetBtn" style="width:100%;margin-top:8px">${editing ? '🖼️ Salvar alterações e gerar ficha' : '🖼️ Salvar e gerar ficha p/ WhatsApp'}</button>
+    ${editing ? '<button class="btn btn-ghost session-delete-btn" id="deleteSessionBtn" style="width:100%;margin-top:8px">🗑️ Apagar esta aula</button>' : ''}
 
     <div class="session-history" id="sessionHistoryList"></div>
   `;
@@ -547,15 +592,38 @@ function paintSessionDrawer() {
   // sheet; Enter on the last line opens the next one.
   const wordsEl = document.getElementById('sessionWords');
   const hwEl = document.getElementById('sessionHomework');
-  for (let i = 0; i < 3; i++) addSheetWordRow(wordsEl);
-  for (let i = 0; i < 4; i++) addSheetHomeworkRow(hwEl);
+  // Editing: the saved lines first, then the usual blanks to add more.
+  const savedWords = Array.isArray(sheet.words) ? sheet.words : [];
+  const savedHw = Array.isArray(sheet.homework) ? sheet.homework : [];
+  savedWords.forEach(w => addSheetWordRow(wordsEl, false, w));
+  savedHw.forEach(h => addSheetHomeworkRow(hwEl, false, h));
+  for (let i = savedWords.length; i < 3; i++) addSheetWordRow(wordsEl);
+  for (let i = savedHw.length; i < 4; i++) addSheetHomeworkRow(hwEl);
   document.getElementById('sessionAddWord').addEventListener('click', () => addSheetWordRow(wordsEl, true));
   document.getElementById('sessionAddHomework').addEventListener('click', () => addSheetHomeworkRow(hwEl, true));
 
   document.getElementById('saveSessionBtn').addEventListener('click', () => saveClassSession(student));
   document.getElementById('saveSessionSheetBtn').addEventListener('click', () => {
     const saved = saveClassSession(student);
-    if (saved) { closeSessionDrawer(); openClassSheetModal(student, saved); }
+    if (saved) {
+      const owner = loadStudents().find(x => x.id === saved.studentId) || student;
+      closeSessionDrawer();
+      openClassSheetModal(owner, saved);
+    }
+  });
+  const cancelEdit = document.getElementById('sessionEditCancel');
+  if (cancelEdit) cancelEdit.addEventListener('click', cancelSessionEdit);
+  const del = document.getElementById('deleteSessionBtn');
+  if (del) del.addEventListener('click', () => {
+    if (!editing) return;
+    if (!confirm(`Apagar a aula de ${fmtDay(editing.date)}${editing.topicLabel ? ` (${editing.topicLabel})` : ''}? Isso não pode ser desfeito.`)) return;
+    if (typeof igMarkSessionDeleted === 'function') igMarkSessionDeleted(student.id, editing.id);
+    saveSessions(student.id, loadSessions(student.id).filter(x => x.id !== editing.id));
+    drawerEditingId = null;
+    drawerAttendance = 'present';
+    paintSessionDrawer();
+    refreshLiveClassCockpit();
+    if (typeof renderDashboardStatsOnly === 'function') renderDashboardStatsOnly();
   });
   renderSessionHistory(student.id);
 }
@@ -569,12 +637,13 @@ function nextClassNumber(studentId) {
   return Math.max(highest, list.length) + 1;
 }
 
-function addSheetWordRow(container, focus) {
+function addSheetWordRow(container, focus, value) {
+  const v = value || {};
   const row = document.createElement('div');
   row.className = 'sheet-row sheet-row--word';
   row.innerHTML = `
-    <input type="text" class="sheet-word" placeholder="word / expression" autocomplete="off" />
-    <input type="text" class="sheet-pron" placeholder="pronunciation" autocomplete="off" />
+    <input type="text" class="sheet-word" placeholder="word / expression" autocomplete="off" value="${escapeAttrLite(v.word || '')}" />
+    <input type="text" class="sheet-pron" placeholder="pronunciation" autocomplete="off" value="${escapeAttrLite(v.pron || '')}" />
     <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
   `;
   wireSheetRow(row, container, () => addSheetWordRow(container, true));
@@ -582,12 +651,12 @@ function addSheetWordRow(container, focus) {
   if (focus) row.querySelector('input').focus();
 }
 
-function addSheetHomeworkRow(container, focus) {
+function addSheetHomeworkRow(container, focus, value) {
   const row = document.createElement('div');
   row.className = 'sheet-row sheet-row--hw';
   row.innerHTML = `
     <span class="sheet-row-no"></span>
-    <input type="text" class="sheet-hw" placeholder="ex.: Workbook page 12" autocomplete="off" />
+    <input type="text" class="sheet-hw" placeholder="ex.: Workbook page 12" autocomplete="off" value="${escapeAttrLite(value || '')}" />
     <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
   `;
   wireSheetRow(row, container, () => addSheetHomeworkRow(container, true));
@@ -628,18 +697,28 @@ function gatherSheetFields() {
 function renderSessionHistory(studentId) {
   const el = document.getElementById('sessionHistoryList');
   if (!el) return;
-  const list = loadSessions(studentId).slice(-5).reverse();
-  if (list.length === 0) { el.innerHTML = `<p class="session-history-empty">No classes logged yet.</p>`; return; }
-  el.innerHTML = `<p class="session-history-label">Recent classes</p>` + list.map(s => `
-    <div class="session-history-item">
+  const all = loadSessions(studentId).slice().sort((a, b) =>
+    String(a.date).localeCompare(String(b.date)) || (a.createdAt || 0) - (b.createdAt || 0)).reverse();
+  if (all.length === 0) { el.innerHTML = `<p class="session-history-empty">No classes logged yet.</p>`; return; }
+  const list = drawerShowAllHistory ? all : all.slice(0, 5);
+  el.innerHTML = `<p class="session-history-label">${drawerShowAllHistory ? `Todas as aulas (${all.length})` : 'Recent classes'} <small>— ✏️ para corrigir</small></p>` + list.map(s => `
+    <div class="session-history-item${s.id === drawerEditingId ? ' is-editing' : ''}">
       <span>${s.present ? '✅' : '❌'} ${s.sheet && s.sheet.classNumber ? `#${s.sheet.classNumber} · ` : ''}${s.date}</span>
       <span class="session-history-topic">${escapeHtmlLite(s.topicLabel || '—')}</span>
+      <button type="button" class="session-history-sheet" data-edit-session="${escapeAttrLite(s.id)}"
+              title="Editar esta aula" aria-label="Editar a aula de ${escapeAttrLite(s.date)}">✏️</button>
       <button type="button" class="session-history-sheet" data-sheet="${escapeAttrLite(s.id)}"
               title="Ver ficha da aula / enviar pelo WhatsApp" aria-label="Ficha da aula de ${escapeAttrLite(s.date)}">🖼️</button>
       <button type="button" class="session-history-sheet" data-review="${escapeAttrLite(s.id)}"
               title="Class review — flashcards desta aula" aria-label="Revisão da aula de ${escapeAttrLite(s.date)}">🧠</button>
     </div>
-  `).join('');
+  `).join('') + (all.length > 5 ? `
+    <button type="button" class="session-history-more" id="sessionHistoryMore">${drawerShowAllHistory ? '▲ Mostrar só as últimas 5' : `▼ Ver todas as ${all.length} aulas`}</button>` : '');
+  const more = el.querySelector('#sessionHistoryMore');
+  if (more) more.addEventListener('click', () => { drawerShowAllHistory = !drawerShowAllHistory; renderSessionHistory(studentId); });
+  el.querySelectorAll('[data-edit-session]').forEach(btn => {
+    btn.addEventListener('click', () => editClassSession(btn.dataset.editSession));
+  });
   el.querySelectorAll('[data-review]').forEach(btn => {
     btn.addEventListener('click', () => {
       const student = getActiveStudent();
@@ -669,6 +748,8 @@ function saveClassSession(student) {
 
   const sheet = gatherSheetFields();
 
+  if (drawerEditingId) return saveEditedSession(student, { date, notes, topicLabel, sheet });
+
   const acc = loadCurrentSessionAccumulator(student.id);
   const sessions = loadSessions(student.id);
   const record = {
@@ -696,6 +777,47 @@ function saveClassSession(student) {
     setTimeout(() => { const b = document.getElementById('saveSessionBtn'); if (b) b.textContent = '💾 Save Class Session'; }, 1500);
   }
   return record;
+}
+
+// Saving in edit mode: the same record (same id, same points) with the
+// corrected fields — and, when the teacher picked another student, moved to
+// that student's class log.
+function saveEditedSession(student, fields) {
+  const sessions = loadSessions(student.id);
+  const idx = sessions.findIndex(x => x.id === drawerEditingId);
+  if (idx < 0) { drawerEditingId = null; paintSessionDrawer(); return null; }
+  const record = { ...sessions[idx], ...fields, present: drawerAttendance === 'present', editedAt: Date.now() };
+  const moveSel = document.getElementById('sessionMoveTo');
+  const targetId = moveSel ? moveSel.value : student.id;
+
+  if (targetId && targetId !== student.id) {
+    const target = loadStudents().find(x => x.id === targetId);
+    if (!target) return null;
+    if (!confirm(`Mover esta aula de ${student.name} para ${target.name}?`)) return null;
+    sessions.splice(idx, 1);
+    saveSessions(student.id, sessions);
+    const theirs = loadSessions(target.id);
+    theirs.push(record);
+    theirs.sort((a, b) => String(a.date).localeCompare(String(b.date)) || (a.createdAt || 0) - (b.createdAt || 0));
+    saveSessions(target.id, theirs);
+  } else {
+    sessions[idx] = record;
+    saveSessions(student.id, sessions);
+  }
+
+  drawerEditingId = null;
+  drawerAttendance = 'present';
+  paintSessionDrawer();
+  refreshLiveClassCockpit();
+  if (typeof renderDashboardStatsOnly === 'function') renderDashboardStatsOnly();
+
+  const btn = document.getElementById('saveSessionBtn');
+  if (btn) {
+    const moved = targetId && targetId !== student.id;
+    btn.textContent = moved ? '✅ Aula movida!' : '✅ Alterações salvas!';
+    setTimeout(() => { const b = document.getElementById('saveSessionBtn'); if (b) b.textContent = '💾 Save Class Session'; }, 1800);
+  }
+  return { ...record, studentId: targetId || student.id };
 }
 
 // Called after every awardProgress() so the score line updates live without

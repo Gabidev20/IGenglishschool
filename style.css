@@ -7989,3 +7989,51 @@ body.ig-adult-only .kids-only { display: none !important; }
 .tour-card.is-docked.is-docked-top { top: 12px !important; bottom: auto !important; }
 .tour-card.is-docked { max-height: 46vh; }
 @media (max-width: 639px) { body.tour-on { padding-bottom: 50vh; } }
+
+/* ==========================================================================
+   Today's Class — editing a saved class
+   ========================================================================== */
+.session-edit-banner {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  background: var(--a1-soft); border: 2px solid var(--color-accent-soft-deep);
+  border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 12px;
+}
+.session-edit-banner p { margin: 0; flex: 1 1 200px; font-size: 0.88rem; }
+.session-history-label small { font-weight: 600; color: var(--ink-faint); }
+.session-history-item.is-editing { background: var(--a1-soft); border-radius: 8px; padding-left: 6px; padding-right: 6px; }
+.session-history-more {
+  width: 100%; margin-top: 6px; border: 1px dashed var(--border); background: transparent; border-radius: 8px;
+  padding: 6px; font: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); cursor: pointer;
+}
+.session-history-more:hover { border-color: var(--primary); color: var(--primary-dark); }
+.session-delete-btn { color: var(--primary-dark); }
+
+/* ==========================================================================
+   Progress report — every part editable
+   ========================================================================== */
+.rp-sec { border: 2px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px 12px; margin-bottom: 12px; background: var(--surface); }
+.rp-sec.is-off { opacity: .55; background: var(--bg); }
+.rp-sec.is-off .rp-sec-body { display: none; }
+.rp-sec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin-bottom: 8px; }
+.rp-sec-title {
+  flex: 1 1 220px; border: 1px dashed transparent; border-radius: var(--radius-sm); padding: 4px 6px; margin-left: -6px;
+  font: inherit; font-weight: 800; font-size: 0.95rem; color: var(--ink); background: transparent;
+}
+.rp-sec-title:hover { border-color: var(--border); }
+.rp-sec-title:focus { border-color: var(--primary); background: var(--surface); outline: none; }
+.rp-sec-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--ink-soft); cursor: pointer; white-space: nowrap; }
+.rp-sec-body > input[type="text"], .rp-sec-body > textarea { width: 100%; }
+.rp-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.rp-stats label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; font-weight: 700; color: var(--ink-soft); }
+.rp-stats input { width: 82px; padding: 6px 8px; border: 2px solid var(--border); border-radius: var(--radius-sm); font: inherit; font-weight: 800; }
+.rp-topics { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.rp-topic-row { display: flex; gap: 6px; align-items: center; }
+.rp-topic-row input { flex: 1; }
+.report-skill-row.rp-skill-row { grid-template-columns: minmax(120px, 1fr) 170px minmax(140px, 2fr) auto; }
+@media (max-width: 640px) { .report-skill-row.rp-skill-row { grid-template-columns: 1fr auto; } .rp-skill-row .rp-skill-level, .rp-skill-row .rp-skill-comment { grid-column: 1 / -1; } }
+#rpSkills { margin-bottom: 8px; }
+.rp-wa { margin-top: 12px; padding: 12px; border: 2px solid var(--primary); border-radius: var(--radius-md); background: var(--surface); }
+.rp-wa-head { margin: 0 0 8px; font-size: 0.88rem; }
+.rp-wa textarea { width: 100%; font-family: inherit; font-size: 0.88rem; line-height: 1.4; padding: 10px; border: 2px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
+.report-saved-indicator small { color: var(--ink-faint); }
+.report-signature-name { display: block; font-size: 0.86rem; color: #2e2b2e; margin-bottom: 2px; }

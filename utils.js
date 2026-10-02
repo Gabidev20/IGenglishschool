@@ -129,6 +129,26 @@ let igWorkspace = 'local';
 
 function igWorkspaceId() { return igWorkspace; }
 
+// Classes the teacher deleted in Today's Class, waiting to be deleted from
+// the cloud too (cloud.js). Kept on this device only, per workspace.
+function igTombstoneKey() { return `hopscotch_session_tombstones_${igWorkspace}`; }
+function igReadTombstones() {
+  try { const m = JSON.parse(localStorage.getItem(igTombstoneKey()) || '{}'); return m && typeof m === 'object' ? m : {}; }
+  catch (e) { return {}; }
+}
+function igSessionTombstones(studentId) { return (igReadTombstones()[studentId] || []).slice(); }
+function igMarkSessionDeleted(studentId, sessionId) {
+  const m = igReadTombstones();
+  m[studentId] = [...new Set((m[studentId] || []).concat([sessionId]))];
+  try { localStorage.setItem(igTombstoneKey(), JSON.stringify(m)); } catch (e) { /* private mode */ }
+}
+function igClearSessionTombstones(studentId, ids) {
+  const m = igReadTombstones();
+  m[studentId] = (m[studentId] || []).filter(id => !ids.includes(id));
+  if (!m[studentId].length) delete m[studentId];
+  try { localStorage.setItem(igTombstoneKey(), JSON.stringify(m)); } catch (e) { /* private mode */ }
+}
+
 function igSetWorkspace(id) {
   igWorkspace = String(id || 'local');
   try { localStorage.setItem(IG_WORKSPACE_KEY, igWorkspace); } catch (e) {}
