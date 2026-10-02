@@ -188,12 +188,19 @@ function loadStickerOverrides(studentId) {
 function loadStudents() {
   try {
     const raw = IGStore.getJSON(STUDENTS_KEY, null);
-    if (Array.isArray(raw) && raw.length > 0) {
+    // An empty list is a real list: a teacher who removed the sample class
+    // (or has not added anyone yet) must not see it come back.
+    if (Array.isArray(raw)) {
       const normalized = raw.map(normalizeStudent);
       if (normalized.some((s, i) => s !== raw[i])) saveStudents(normalized);
       return normalized;
     }
   } catch (e) {}
+  // Never saved. Only the original no-account site starts from the sample
+  // class: a teacher's own account starts empty, so a second teacher does
+  // not find somebody else's children in her list (and in her cloud).
+  const workspace = typeof igWorkspaceId === 'function' ? igWorkspaceId() : 'local';
+  if (workspace && workspace !== 'local') return [];
   saveStudents(DEFAULT_STUDENTS);
   return DEFAULT_STUDENTS.map(s => ({ ...s }));
 }
@@ -363,6 +370,7 @@ function renderProfileList() {
     <button class="profile-add-btn" id="addStudentQuickBtn">+ Add New Student</button>
     <button class="profile-manage-btn" id="reportsQuickBtn">📊 Relatório Trimestral</button>
     <button class="profile-manage-btn" id="manageStudentsBtn">⚙️ Manage All Students</button>
+    <button class="profile-manage-btn" id="teacherSetupBtn">🎯 Perfil das minhas turmas</button>
   `;
 
   list.querySelectorAll('[data-student]').forEach(btn => {
@@ -386,6 +394,10 @@ function renderProfileList() {
   actions.querySelector('#manageStudentsBtn').addEventListener('click', () => {
     closeProfileDropdown();
     openStudentManager();
+  });
+  actions.querySelector('#teacherSetupBtn').addEventListener('click', () => {
+    closeProfileDropdown();
+    if (typeof openTeacherSetup === 'function') openTeacherSetup();
   });
 }
 
@@ -411,8 +423,9 @@ function applyActiveStudent(student) {
 
   if (greeting) {
     const meta = tierMeta(student.tier);
+    const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
     greeting.style.setProperty('--accent-color', student.color);
-    greeting.innerHTML = `<span class="greeting-avatar">${student.avatar}</span> Hi <strong>${escapeHtmlLite(student.name)}</strong>! Ready for some ${meta.label} English today? <span class="greeting-stars" id="greetingStars"></span>`;
+    greeting.innerHTML = `<span class="greeting-avatar">${student.avatar}</span> Hi <strong>${escapeHtmlLite(student.name)}</strong>! ${grown ? "Ready for today's English class?" : `Ready for some ${meta.label} English today?`} <span class="greeting-stars" id="greetingStars"></span>`;
     renderGreetingStars(student.id);
   }
 }
@@ -472,7 +485,7 @@ function openStudentManager() {
       <h3 id="modalTitle">👥 Manage Students</h3>
       <div class="game-btn-row" style="margin-bottom:18px">
         <button class="game-btn" id="addStudentBtn">+ New Student</button>
-        <button class="game-btn secondary danger" id="resetStudentsBtn">↺ Reset to Default List</button>
+        ${typeof teacherAdultOnly === 'function' && teacherAdultOnly() ? '' : '<button class="game-btn secondary danger" id="resetStudentsBtn">↺ Reset to Default List</button>'}
       </div>
       <div class="student-manager-grid" id="studentManagerGrid"></div>
     </div>
@@ -481,7 +494,8 @@ function openStudentManager() {
   paintStudentManagerGrid();
 
   document.getElementById('addStudentBtn').addEventListener('click', () => openStudentForm(null, openStudentManager));
-  document.getElementById('resetStudentsBtn').addEventListener('click', () => {
+  const resetBtn = document.getElementById('resetStudentsBtn');
+  if (resetBtn) resetBtn.addEventListener('click', () => {
     if (confirm('Reset the student list to the default 12 students? Custom students you added will be removed (progress stats are kept).')) {
       resetStudentsToDefault();
       const activeId = getActiveStudentId();
@@ -521,7 +535,6 @@ function paintStudentManagerGrid() {
     btn.addEventListener('click', () => {
       const student = students.find(s => s.id === btn.dataset.deleteStudent);
       if (!student) return;
-      if (students.length <= 1) { alert("You need at least one student — add a new one before deleting this one."); return; }
       if (confirm(`Delete "${student.name}"? This can't be undone.`)) {
         const remaining = students.filter(s => s.id !== student.id);
         saveStudents(remaining);
@@ -540,9 +553,13 @@ function paintStudentManagerGrid() {
 function openStudentForm(existing, onDone) {
   const isEdit = Boolean(existing);
   const returnTo = onDone || closeModal;
+  // A teacher of grown-ups starts a new student at 18 and at her first level.
+  const myLevels = typeof teacherLevelIds === 'function' ? teacherLevelIds() : LEVEL_OPTIONS.map(o => o.id);
+  const adultOnly = typeof teacherAdultOnly === 'function' && teacherAdultOnly();
   const state = existing
     ? { ...existing }
-    : { id: 'st' + Date.now().toString(36), name: '', age: 6, levelId: 'a0', color: '#8e6d86', avatar: '⭐' };
+    : { id: 'st' + Date.now().toString(36), name: '', age: adultOnly ? 18 : 6, levelId: myLevels[0] || 'a0', color: '#8e6d86', avatar: adultOnly ? '🙂' : '⭐' };
+  const levelChoices = LEVEL_OPTIONS.filter(o => myLevels.includes(o.id) || o.id === state.levelId);
 
   openModal(`
     <div class="modal-content-pad">
@@ -558,7 +575,7 @@ function openStudentForm(existing, onDone) {
       <div class="gm-form-field">
         <label for="stLevel">Level</label>
         <select id="stLevel">
-          ${LEVEL_OPTIONS.map(o => `<option value="${o.id}" ${o.id === state.levelId ? 'selected' : ''}>${o.label}</option>`).join('')}
+          ${levelChoices.map(o => `<option value="${o.id}" ${o.id === state.levelId ? 'selected' : ''}>${adultOnly ? o.label.replace(/^(Kids|Juniors|Teens|Advanced) /, '') : o.label}</option>`).join('')}
         </select>
       </div>
       <div class="gm-form-field">
@@ -600,7 +617,9 @@ function openStudentForm(existing, onDone) {
     const opt = levelOption(levelId);
     const students = loadStudents();
     // An adult reads as "Adults (A2)", not "Kids (A0)" / "Teens (A2)".
-    const levelLabel = age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults') : opt.levelLabel;
+    const levelLabel = age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults')
+      : age >= 15 ? opt.levelLabel.replace(/^(Kids|Juniors)/, 'Teens')
+      : opt.levelLabel;
     const record = { id: state.id, name, age, levelId, tier: opt.tier, levelLabel, avatar, color };
     const idx = students.findIndex(s => s.id === state.id);
     if (idx >= 0) students[idx] = record; else students.push(record);
@@ -618,7 +637,6 @@ function openStudentForm(existing, onDone) {
   if (isEdit) {
     document.getElementById('stDeleteBtn').addEventListener('click', () => {
       const students = loadStudents();
-      if (students.length <= 1) { alert("You need at least one student — add a new one before deleting this one."); return; }
       if (!confirm(`Delete "${state.name}"? This can't be undone.`)) return;
       const remaining = students.filter(s => s.id !== state.id);
       saveStudents(remaining);

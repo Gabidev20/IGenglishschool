@@ -91,7 +91,7 @@ mainNav.addEventListener('click', (e) => {
 // ---------------------------------------------------------------------------
 const siteHeader = document.getElementById('siteHeader');
 const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-const observedSections = ['live-class', 'levels', 'games', 'songs', 'game-maker', 'exam-maker', 'homework']
+const observedSections = ['live-class', 'dashboard', 'levels', 'games', 'songs', 'game-maker', 'exam-maker', 'homework']
   .map(id => document.getElementById(id))
   .filter(Boolean);
 
@@ -132,22 +132,47 @@ const levelTabsEl = document.getElementById('levelTabs');
 const topicsGridEl = document.getElementById('topicsGrid');
 const levelFilterBarEl = document.getElementById('levelFilterBar');
 
-let activeTierId = TIERS[0].id;
+// The tabs follow the teacher's setup (teacherSetup.js): only the levels
+// she teaches, and — for a teacher of grown-ups only — one tab per level
+// instead of "Kids / Juniors / Teens", which mean nothing to an adult class.
+function curriculumTabs() {
+  const mine = typeof teacherLevelIds === 'function' ? teacherLevelIds() : LEVELS.map(l => l.id);
+  const levelOk = l => mine.includes(l.id) || !['a0', 'a1', 'a2', 'b1', 'b1b2'].includes(l.id);
+  if (typeof teacherAdultOnly === 'function' && teacherAdultOnly()) {
+    return LEVELS.filter(levelOk).map(l => ({
+      id: 'lvl:' + l.id, label: l.code, sub: l.name, icon: l.icon || '📘', color: l.color, levelIds: [l.id],
+    }));
+  }
+  const tabs = TIERS.map(t => ({
+    id: t.id, label: t.label, sub: t.ages, icon: t.icon, color: t.color,
+    levelIds: LEVELS.filter(l => l.tier === t.id && levelOk(l)).map(l => l.id),
+  })).filter(t => t.levelIds.length);
+  return tabs.length ? tabs : TIERS.map(t => ({ id: t.id, label: t.label, sub: t.ages, icon: t.icon, color: t.color, levelIds: LEVELS.filter(l => l.tier === t.id).map(l => l.id) }));
+}
+function activeTab() {
+  const tabs = curriculumTabs();
+  return tabs.find(t => t.id === activeTierId) || tabs[0];
+}
+const topicShown = t => (typeof igTopicVisibleToTeacher === 'function' ? igTopicVisibleToTeacher(t) : true);
+
+let activeTierId = curriculumTabs()[0].id;
 let activeLevelFilter = 'all';
 
 function renderLevelTabs() {
-  levelTabsEl.innerHTML = TIERS.map(tier => `
-    <button class="level-tab ${tier.id === activeTierId ? 'active' : ''}"
-            style="--tab-color:${tier.color}"
-            data-tier="${tier.id}" role="tab" aria-selected="${tier.id === activeTierId}">
-      <span class="tab-icon">${tier.icon}</span>
-      ${tier.label} <span class="tab-age">(${tier.ages})</span>
+  const tabs = curriculumTabs();
+  if (!tabs.some(t => t.id === activeTierId)) activeTierId = tabs[0].id;
+  levelTabsEl.innerHTML = tabs.map(tab => `
+    <button class="level-tab ${tab.id === activeTierId ? 'active' : ''}"
+            style="--tab-color:${tab.color}"
+            data-tier="${tab.id}" role="tab" aria-selected="${tab.id === activeTierId}">
+      <span class="tab-icon">${tab.icon}</span>
+      ${igEscapeHtml(tab.label)} <span class="tab-age">(${igEscapeHtml(tab.sub)})</span>
     </button>
   `).join('');
 }
 
 function renderLevelFilters() {
-  const levelsInTier = LEVELS.filter(l => l.tier === activeTierId);
+  const levelsInTier = LEVELS.filter(l => activeTab().levelIds.includes(l.id));
   const hasMultipleLevels = levelsInTier.length > 1;
 
   if (!hasMultipleLevels) {
@@ -171,14 +196,18 @@ function renderLevelFilters() {
 }
 
 function renderTopics() {
-  let levelsInTier = LEVELS.filter(l => l.tier === activeTierId);
+  let levelsInTier = LEVELS.filter(l => activeTab().levelIds.includes(l.id));
 
   if (activeLevelFilter !== 'all') {
     levelsInTier = levelsInTier.filter(l => l.id === activeLevelFilter);
   }
 
   const cards = [];
-  levelsInTier.forEach(level => level.topics.forEach(topic => cards.push({ level, topic })));
+  levelsInTier.forEach(level => level.topics.filter(topicShown).forEach(topic => cards.push({ level, topic })));
+  // A teacher of grown-ups finds the everyday-English topics first.
+  if (typeof teacherAdultOnly === 'function' && teacherAdultOnly()) {
+    cards.sort((a, b) => (b.topic.audience === 'adult') - (a.topic.audience === 'adult'));
+  }
 
   topicsGridEl.innerHTML = cards.map(({ level, topic }) => `
     <button class="topic-card" data-level="${level.id}" data-topic="${topic.id}">
@@ -224,6 +253,14 @@ topicsGridEl.addEventListener('click', (e) => {
 renderLevelTabs();
 renderLevelFilters();
 renderTopics();
+
+// Called by teacherSetup.js after the teacher answers (or changes) her setup.
+function refreshCurriculumForAudience() {
+  activeLevelFilter = 'all';
+  renderLevelTabs();
+  renderLevelFilters();
+  renderTopics();
+}
 
 // ---------------------------------------------------------------------------
 // MODAL SYSTEM (base container reused by topic details, games, lesson plans)
@@ -331,7 +368,7 @@ function openTopicModal(levelId, topicId) {
     </div>
   `, true);
 
-  const tabs = getModalTabs(level);
+  const tabs = getModalTabs(level, topic);
   document.getElementById('modalTabs').innerHTML = tabs.map((t, i) => `
     <button class="modal-tab ${i === 0 ? 'active' : ''}" data-pane="${t.id}">${t.icon} ${t.label}</button>
   `).join('');
@@ -352,15 +389,22 @@ function openTopicModal(levelId, topicId) {
 // The order is the student's route through a topic, not a menu: watch the
 // explanation, play with it, then test yourself. Lesson Plan is the teacher's
 // tab and stays at the end.
-function getModalTabs(level) {
+// Phonics is a young-learner tool: it is not shown to a teacher with no
+// students under 11, on a grown-up topic, or while teaching a grown-up.
+function getModalTabs(level, topic) {
   const tabs = [
     { id: 'watch', label: 'Watch', icon: '📺' },
     { id: 'game', label: 'Game', icon: '🎮' },
     { id: 'quiz', label: 'Quiz', icon: '📝' },
     { id: 'reading', label: 'Reading', icon: '📖' },
     { id: 'practice', label: 'Practice', icon: '🏆' },
+    { id: 'skills', label: 'Speaking · Listening · Writing', icon: '🗣️' },
   ];
-  if (level.tier !== 'teens') tabs.push({ id: 'phonics', label: 'Phonics', icon: '🔤' });
+  const young = level.tier !== 'teens'
+    && !(topic && topic.audience === 'adult')
+    && (typeof teacherHasYoungKids !== 'function' || teacherHasYoungKids())
+    && !(typeof igAdultContext === 'function' && igAdultContext());
+  if (young) tabs.push({ id: 'phonics', label: 'Phonics', icon: '🔤' });
   tabs.push({ id: 'flashcards', label: 'Flashcards', icon: '🗂️' });
   tabs.push({ id: 'lesson', label: 'Lesson Plan', icon: '📘' });
   return tabs;
@@ -376,6 +420,7 @@ function renderModalPane(kind, level, topic) {
   if (kind === 'practice') { renderPracticeArena(mountEl, level, topic); return; }
   if (kind === 'phonics') { renderPhonicsStation(mountEl, level, topic); return; }
   if (kind === 'flashcards') { renderFlashcards(mountEl, level, topic); return; }
+  if (kind === 'skills') { renderSkillsPane(mountEl, level, topic); return; }
 
   // kind === 'game'
   // Unscramble needs example sentences and Sort It needs grammar rules, so
@@ -404,12 +449,61 @@ function renderModalPane(kind, level, topic) {
 }
 
 // ---------------------------------------------------------------------------
+// SKILLS TAB — speaking, listening (dictation) and writing on THIS topic's
+// own sentences, for the active student. The same modules the student's
+// link and the homework use, so what she does here lands in their log.
+// ---------------------------------------------------------------------------
+function renderSkillsPane(mountEl, level, topic) {
+  const student = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
+  const task = topic.writingPrompt || {
+    prompt: `Write about "${topic.title}" using some of the new words.`,
+    help: (topic.words || []).slice(0, 4).map(w => w.en),
+    words: 30,
+  };
+  const SKILLS = [
+    ['speaking', '🗣️', 'Speaking', 'Ler em voz alta — o microfone confere as palavras'],
+    ['dictation', '🎧', 'Listening', 'Ouvir a frase e escrever (ditado)'],
+    ['writing', '✍️', 'Writing', igEscapeHtml(task.prompt)],
+  ];
+  let active = 'speaking';
+
+  mountEl.innerHTML = `
+    <div class="skills-pane">
+      <div class="skills-pane-pick">
+        ${SKILLS.map(([id, icon, label, sub]) => `
+          <button class="skills-pane-btn ${id === active ? 'active' : ''}" data-skill="${id}" type="button">
+            <span>${icon}</span><b>${label}</b><small>${sub}</small>
+          </button>`).join('')}
+      </div>
+      ${student ? '' : '<p class="skills-pane-note">💡 Escolha o aluno da aula no topo para o resultado ir para o registro dele.</p>'}
+      <div class="game-mount" id="skillsPaneMount"></div>
+    </div>`;
+
+  const mount = () => {
+    if (typeof SkillsModules === 'undefined') return;
+    SkillsModules.stopAll();
+    const el = document.getElementById('skillsPaneMount');
+    const base = { topic, studentId: student ? student.id : null, source: 'class' };
+    if (active === 'speaking') SkillsModules.speaking(el, base);
+    else if (active === 'dictation') SkillsModules.dictation(el, base);
+    else SkillsModules.writing(el, { ...base, promptId: `topic-${topic.id}`, promptText: task.prompt, help: task.help, words: task.words });
+  };
+  mountEl.querySelectorAll('[data-skill]').forEach(btn => btn.addEventListener('click', () => {
+    active = btn.dataset.skill;
+    mountEl.querySelectorAll('[data-skill]').forEach(b => b.classList.toggle('active', b === btn));
+    mount();
+  }));
+  mount();
+}
+
+// ---------------------------------------------------------------------------
 // LESSON PLAN GENERATOR (6-step template, tailored per topic)
 // ---------------------------------------------------------------------------
 function renderLessonPlanHTML(level, topic) {
   const words = (topic.words || []).slice(0, 4).map(w => w.en);
   const wordList = words.length ? words.join(', ') : topic.title;
-  const isYoung = level.tier !== 'teens';
+  const isYoung = level.tier !== 'teens' && topic.audience !== 'adult'
+    && !(typeof igAdultContext === 'function' && igAdultContext());
 
   const warmupStep = isYoung
     ? `Sing the <strong>Hello Song</strong> from the Live Class Cockpit and flash last class's picture cards for a 1-minute review.`
@@ -418,13 +512,20 @@ function renderLessonPlanHTML(level, topic) {
     ? `Chant ${wordList} together to a simple clap rhythm — a quick sing-song moment keeps energy high.`
     : `Work ${wordList} naturally into a short conversation or role-play with the student.`;
 
-  const steps = [
+  const steps = isYoung ? [
     { icon: '☀️', title: 'Warm-up', text: warmupStep },
     { icon: '🎓', title: 'Presentation', text: `Introduce ${topic.title.toLowerCase()} with the picture cards. Say ${wordList} — students repeat each word 3 times.` },
     { icon: '✍️', title: 'Practice', text: `Open the Game tab and play Memory or Match-up together as a whole class before students try alone.` },
     { icon: '🎵', title: 'Song', text: songStep },
     { icon: '🎮', title: 'Game', text: `Let students choose their own game from the Game tab — Hangman and Balloon Pop work great for a quick review round.` },
     { icon: '🏠', title: 'Homework', text: `Ask students to find or draw 2 things at home related to ${wordList} and bring them to share next class.` },
+  ] : [
+    { icon: '☕', title: 'Warm-up', text: warmupStep },
+    { icon: '🎓', title: 'Presentation', text: `Read the dialogue on the Reading tab together and highlight the key language: ${wordList}. Check meaning with concept questions, not translation.` },
+    { icon: '🧩', title: 'Controlled practice', text: `Quiz tab and Unscramble / Sort It on the Game tab — accuracy first, quick feedback.` },
+    { icon: '🗣️', title: 'Speaking', text: `${songStep} Then use the Speaking · Listening · Writing tab: the student reads the sentences aloud and you correct pronunciation.` },
+    { icon: '🎧', title: 'Listening', text: `Dictation on the same tab — 4 or 5 sentences from the topic, then compare spelling together.` },
+    { icon: '✍️', title: 'Writing / homework', text: topic.writingPrompt ? `${topic.writingPrompt.prompt} (about ${topic.writingPrompt.words} words) — send it as homework and correct it on the Writing desk.` : `Write 5 sentences of their own using ${wordList}, sent as homework.` },
   ];
 
   return `
@@ -463,8 +564,82 @@ if (typeof renderHomework === 'function') renderHomework(document.getElementById
   });
 });
 
-// The teacher dashboard sits above the hero and is the first thing drawn.
 if (typeof renderDashboard === 'function') renderDashboard();
+
+// ---------------------------------------------------------------------------
+// COLLAPSIBLE SECTIONS — every section of the page folds away with the
+// arrow next to its title, so the teacher reaches the part she needs without
+// scrolling past everything else. Remembered per browser.
+// ---------------------------------------------------------------------------
+const COLLAPSED_KEY = 'hopscotch_collapsed_sections';
+function loadCollapsed() {
+  try { const v = JSON.parse(localStorage.getItem(COLLAPSED_KEY) || '[]'); return Array.isArray(v) ? v : []; }
+  catch (e) { return []; }
+}
+function saveCollapsed(list) {
+  try { localStorage.setItem(COLLAPSED_KEY, JSON.stringify(list)); } catch (e) { /* private mode */ }
+}
+function setSectionCollapsed(section, collapsed) {
+  section.classList.toggle('is-collapsed', collapsed);
+  const btn = section.querySelector(':scope > .section-head .section-collapse');
+  if (btn) {
+    btn.setAttribute('aria-expanded', String(!collapsed));
+    btn.title = collapsed ? 'Mostrar esta seção' : 'Recolher esta seção';
+  }
+  const body = section.querySelector(':scope > .section-body');
+  if (body) body.hidden = collapsed;
+  const list = loadCollapsed().filter(id => id !== section.id);
+  if (collapsed) list.push(section.id);
+  saveCollapsed(list);
+}
+function initCollapsibleSections() {
+  const collapsed = loadCollapsed();
+  document.querySelectorAll('main > section[data-collapsible]').forEach(section => {
+    const head = section.querySelector(':scope > .section-head');
+    if (!head || head.querySelector('.section-collapse')) return;
+    // Everything after the heading goes into one body that folds away.
+    const body = document.createElement('div');
+    body.className = 'section-body';
+    [...section.children].filter(el => el !== head).forEach(el => body.appendChild(el));
+    section.appendChild(body);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'section-collapse';
+    btn.setAttribute('aria-controls', section.id);
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setSectionCollapsed(section, !section.classList.contains('is-collapsed'));
+    });
+    head.classList.add('section-head--collapsible');
+    head.prepend(btn);
+    // The title itself is a big target too.
+    const title = head.querySelector('h2');
+    if (title) title.addEventListener('click', () => setSectionCollapsed(section, !section.classList.contains('is-collapsed')));
+    setSectionCollapsed(section, collapsed.includes(section.id));
+  });
+
+  // A menu link to a folded section opens it.
+  const openFromHash = (id) => {
+    const section = id && document.getElementById(id);
+    if (section && section.matches('main > section[data-collapsible]') && section.classList.contains('is-collapsed')) {
+      setSectionCollapsed(section, false);
+    }
+  };
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', () => openFromHash(a.getAttribute('href').slice(1))));
+  window.addEventListener('hashchange', () => openFromHash(location.hash.slice(1)));
+  openFromHash(location.hash.slice(1));
+}
+initCollapsibleSections();
+
+// Without accounts nobody "signs in", so the setup questions are asked as
+// soon as the page is ready; with accounts, auth.js asks after sign-in.
+if (typeof applyTeacherAudience === 'function') applyTeacherAudience();
+if (typeof saRefreshTaughtAll === 'function') { try { saRefreshTaughtAll(); } catch (e) { console.error(e); } }
+if (typeof TeacherSetupUI !== 'undefined' && !(typeof IGCloud !== 'undefined' && IGCloud.enabled && IGCloud.enabled())) {
+  setTimeout(() => TeacherSetupUI.maybeAsk(), 400);
+}
 
 const reportsNavBtn = document.getElementById('reportsNavBtn');
 if (reportsNavBtn) reportsNavBtn.addEventListener('click', () => openReportsModal());
@@ -478,7 +653,7 @@ if (reportsNavBtn) reportsNavBtn.addEventListener('click', () => openReportsModa
 // they filtered to, otherwise the first level of the active age tier.
 function currentEditorLevelId() {
   if (activeLevelFilter !== 'all') return activeLevelFilter;
-  const first = LEVELS.find(l => l.tier === activeTierId);
+  const first = LEVELS.find(l => activeTab().levelIds.includes(l.id));
   return first ? first.id : (LEVELS[0] && LEVELS[0].id);
 }
 
@@ -595,6 +770,7 @@ const ArcadeGames = (() => {
 
   let kind = null;
   let tier = 'kids';
+  let grownMode = false;
   let topics = [];
   let topicKey = null;
   let stageEl = null;
@@ -617,10 +793,28 @@ const ArcadeGames = (() => {
     if (pill) pill.textContent = text;
   }
 
+  // Grown-ups (15+) play the text version of every game, on their own
+  // topics first; a teacher with nobody selected gets her first tab.
+  function arcadeTopicsFor(student) {
+    const grown = student ? igIsGrownup(student) : (typeof teacherAdultOnly === 'function' && teacherAdultOnly());
+    const levelIds = student
+      ? LEVELS.filter(l => l.tier === student.tier).map(l => l.id)
+      : (typeof curriculumTabs === 'function' ? curriculumTabs()[0].levelIds : LEVELS.filter(l => l.tier === 'kids').map(l => l.id));
+    const list = LEVELS.filter(l => levelIds.includes(l.id))
+      .flatMap(l => l.topics
+        .filter(t => (t.audience === 'adult' ? grown : true))
+        .map(topic => ({ ...topic, levelId: l.id, levelCode: l.code })));
+    if (grown) list.sort((a, b) => (b.audience === 'adult') - (a.audience === 'adult'));
+    return { grown, list };
+  }
+
   function open(gameKind) {
     kind = gameKind;
-    tier = currentTier();
-    topics = tierTopics(tier);
+    const student = (typeof getActiveStudent === 'function') ? getActiveStudent() : null;
+    const pick = arcadeTopicsFor(student);
+    tier = pick.grown ? 'teens' : (student ? currentTier() : ((typeof curriculumTabs === 'function' && TIERS.some(t => t.id === curriculumTabs()[0].id)) ? curriculumTabs()[0].id : currentTier()));
+    grownMode = pick.grown;
+    topics = pick.list;
     if (topics.length === 0) return;
     topicKey = keyOf(topics[0]);
     renderShell();
@@ -629,7 +823,7 @@ const ArcadeGames = (() => {
 
   function renderShell() {
     const meta = GAME_META[kind];
-    const tm = (typeof tierMeta === 'function') ? tierMeta(tier) : { icon: '🎓', label: '' };
+    const tm = grownMode ? { icon: '💼', label: 'Teens & Adults' } : ((typeof tierMeta === 'function') ? tierMeta(tier) : { icon: '🎓', label: '' });
 
     openModal(`
       <div class="modal-content-pad arcade-modal">

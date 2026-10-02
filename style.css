@@ -7681,3 +7681,204 @@ html.ig-student-mode .inbox-btn { display: none; }
 .am-item audio { flex: 1; min-width: 200px; }
 .am-reply { margin: 0; font-weight: 700; color: var(--primary-dark); }
 .am-wait { margin: 0; }
+
+/* ==========================================================================
+   Page order, collapsible sections (app.js initCollapsibleSections)
+   ========================================================================== */
+/* Less air between bands: the teacher should reach what she needs without
+   scrolling through 180px of padding per section. */
+main > section { padding: 36px 28px; }
+main > section:first-child { padding-top: 20px; }
+.dashboard-section { padding: 36px clamp(16px, 4vw, 48px) 24px; }
+.section-head { margin-bottom: 28px; }
+.section-head--compact { margin-bottom: 14px; }
+
+.section-head--collapsible { position: relative; display: grid; justify-items: center; }
+.section-head--collapsible h2 { cursor: pointer; }
+.section-head--collapsible .section-collapse {
+  display: inline-grid; place-items: center; order: 10;
+  width: 38px; height: 38px; border-radius: 50%; margin-top: 8px;
+  border: 2px solid var(--border); background: var(--surface); color: var(--primary-dark);
+  cursor: pointer; transition: background .15s ease, border-color .15s ease;
+}
+.section-head--collapsible .section-collapse:hover { background: var(--primary-soft); border-color: var(--primary); }
+.section-head--collapsible .section-collapse svg { transition: transform .2s ease; transform: rotate(180deg); }
+main > section.is-collapsed .section-collapse svg { transform: rotate(0deg); }
+main > section.is-collapsed { padding-top: 12px; padding-bottom: 12px; }
+main > section.is-collapsed .section-head { margin-bottom: 0; max-width: 760px; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; }
+main > section.is-collapsed .section-head .section-eyebrow { justify-self: end; }
+main > section.is-collapsed .section-head .section-collapse { justify-self: start; }
+main > section.is-collapsed .section-head > p,
+main > section.is-collapsed .section-head > .section-edit-btn { display: none; }
+main > section.is-collapsed .section-head .section-eyebrow { margin-bottom: 0; }
+main > section.is-collapsed .section-head h2 { font-size: 1.3rem; }
+main > section.is-collapsed .section-collapse { margin-top: 0; }
+.section-body[hidden] { display: none !important; }
+
+/* ==========================================================================
+   Live Class — pick who has class now
+   ========================================================================== */
+.cockpit-pick-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px;
+  width: 100%; margin: 14px 0 10px;
+}
+.cockpit-pick {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px;
+  background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-md);
+  font-family: inherit; color: var(--ink); cursor: pointer; transition: transform .12s ease, border-color .12s ease;
+}
+.cockpit-pick:hover { transform: translateY(-2px); border-color: var(--accent-color, var(--primary)); }
+.cockpit-pick-avatar { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; }
+.cockpit-pick-name { font-weight: 800; font-size: 0.95rem; text-align: center; }
+.cockpit-pick small { color: var(--ink-faint); font-size: 0.72rem; text-align: center; line-height: 1.2; }
+.live-class-cockpit.has-picker { max-width: 900px; }
+
+/* ==========================================================================
+   Teacher setup (teacherSetup.js)
+   ========================================================================== */
+body.ts-open { overflow: hidden; }
+.ts-overlay {
+  position: fixed; inset: 0; z-index: 2000; background: rgba(46, 43, 46, .55);
+  display: flex; align-items: flex-start; justify-content: center; padding: 4vh 16px; overflow-y: auto;
+}
+.ts-card {
+  position: relative; background: var(--surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 860px; padding: 26px clamp(18px, 3vw, 34px) 22px;
+  animation: popIn .22s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ts-close { top: 14px; right: 14px; }
+.ts-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; padding-right: 30px; }
+.ts-head-icon { font-size: 2.2rem; line-height: 1; }
+.ts-head h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); margin-bottom: 4px; }
+.ts-head p { color: var(--ink-soft); margin: 0; }
+.ts-q { border: none; margin: 0 0 16px; padding: 0; min-width: 0; }
+.ts-q legend { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; padding: 0; }
+.ts-q legend small { font-weight: 600; color: var(--ink-faint); margin-left: 6px; font-size: 0.8rem; }
+.ts-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.ts-option { position: relative; cursor: pointer; }
+.ts-option input { position: absolute; opacity: 0; pointer-events: none; }
+.ts-option-body {
+  display: flex; flex-direction: column; gap: 2px; height: 100%; padding: 10px 12px;
+  border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--bg);
+  transition: border-color .12s ease, background .12s ease;
+}
+.ts-option--row .ts-option-body { flex-direction: row; align-items: center; gap: 8px; }
+.ts-option-icon { font-size: 1.4rem; }
+.ts-option-body b { font-size: 0.92rem; }
+.ts-option-body small { color: var(--ink-faint); font-size: 0.76rem; }
+.ts-option input:checked + .ts-option-body { border-color: var(--primary); background: var(--primary-soft); }
+.ts-option input:focus-visible + .ts-option-body { outline: 3px solid var(--primary); outline-offset: 2px; }
+.ts-samples {
+  display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; margin-bottom: 12px;
+  background: var(--a1-soft); border-radius: var(--radius-md); cursor: pointer;
+}
+.ts-samples input { margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; }
+.ts-samples small { display: block; color: var(--ink-soft); }
+.ts-error { color: var(--primary-dark); font-weight: 700; margin: 0 0 10px; }
+.ts-actions { display: flex; justify-content: flex-end; }
+
+/* What a teacher of grown-ups only never needs to see. */
+body.ig-adult-only .kids-only { display: none !important; }
+
+/* ==========================================================================
+   Student link — what the student can open (studentAccess.js)
+   ========================================================================== */
+.sa-editor { margin-top: 18px; padding: 14px 16px; background: var(--bg); border-radius: var(--radius-lg); }
+.sa-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.sa-head h4 { margin: 0; font-size: 1.05rem; }
+.sa-mode { font-size: 0.78rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--surface); color: var(--ink-soft); }
+.sa-mode.is-custom { background: var(--primary-soft); color: var(--primary-dark); }
+.sa-lead { font-size: 0.86rem; color: var(--ink-soft); margin: 8px 0 6px; }
+.sa-group-label { font-weight: 800; font-size: 0.85rem; margin: 12px 0 6px; }
+.sa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px; }
+.sa-item {
+  display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border-radius: var(--radius-sm);
+  background: var(--surface); border: 1px solid var(--border); cursor: pointer; font-size: 0.86rem;
+}
+.sa-item input { margin-top: 2px; flex-shrink: 0; }
+.sa-item.is-taught { border-color: var(--color-secondary-deep); }
+.sa-tag { display: inline-block; font-size: 0.68rem; font-weight: 800; padding: 1px 6px; border-radius: 999px; background: var(--a1-soft); color: var(--ink-soft); vertical-align: 1px; }
+.sa-tag--ok { background: var(--a0-soft); color: var(--color-secondary-deep); }
+.sa-level { margin-top: 6px; background: var(--surface); border-radius: var(--radius-md); padding: 6px 10px; }
+.sa-level summary { cursor: pointer; padding: 4px 0; }
+.sa-level summary small { color: var(--ink-faint); margin-left: 6px; }
+.sa-level .sa-grid { padding: 6px 0 4px; }
+.sa-badge { font-size: 0.7rem; font-weight: 800; color: var(--primary-dark); background: var(--primary-soft); padding: 1px 8px; border-radius: 999px; }
+.sa-actions { margin-top: 12px; }
+.sa-saved { min-height: 1.2em; font-weight: 700; color: var(--color-secondary-deep); margin: 6px 0 0; font-size: 0.86rem; }
+
+/* ==========================================================================
+   Topic modal — Speaking · Listening · Writing tab
+   ========================================================================== */
+.skills-pane-pick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+@media (max-width: 640px) { .skills-pane-pick { grid-template-columns: 1fr; } }
+.skills-pane-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left;
+  padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--surface);
+  font-family: inherit; color: var(--ink); cursor: pointer;
+}
+.skills-pane-btn span { font-size: 1.4rem; }
+.skills-pane-btn small { color: var(--ink-faint); font-size: 0.78rem; }
+.skills-pane-btn.active { border-color: var(--primary); background: var(--primary-soft); }
+.skills-pane-note { font-size: 0.86rem; color: var(--ink-soft); margin: 0 0 10px; }
+
+/* ==========================================================================
+   Progress report — attendance by period
+   ========================================================================== */
+.report-periods-help { font-size: 0.84rem; color: var(--ink-soft); margin: 0 0 8px; }
+.report-periods-table-wrap { overflow-x: auto; margin-bottom: 8px; }
+.report-periods-table { width: 100%; border-collapse: collapse; min-width: 820px; font-size: 0.88rem; }
+.report-periods-table th { text-align: left; font-size: 0.74rem; text-transform: uppercase; letter-spacing: .03em; color: var(--ink-faint); padding: 4px 6px; }
+.report-periods-table td { padding: 4px 6px; border-top: 1px solid var(--border); vertical-align: middle; }
+.report-periods-table input { width: 100%; padding: 6px 8px; border: 2px solid var(--border); border-radius: var(--radius-sm); font: inherit; background: var(--surface); }
+.report-periods-table input[type="number"] { max-width: 84px; }
+.report-periods-table input[type="date"] { min-width: 132px; }
+.report-periods-table .rp-total, .report-periods-table .rp-rate { font-weight: 800; white-space: nowrap; }
+.report-periods-table .rp-row-actions { white-space: nowrap; }
+.report-periods-table .rp-row-actions .gm-remove-row { width: auto; padding: 0 8px; }
+.report-periods-total td { font-weight: 800; background: var(--bg); }
+.report-periods-empty { color: var(--ink-faint); text-align: center; padding: 12px !important; }
+.report-print-periods td, .report-print-periods th { text-align: center; }
+.report-print-periods td.skill-name, .report-print-periods td.skill-comment { text-align: left; }
+.report-print-periods tfoot td { font-weight: 800; }
+
+/* ==========================================================================
+   Weather — fit the scene AND the choices on one screen
+   --------------------------------------------------------------------------
+   The scene used to be 100% of the modal's width: on a shared screen it was
+   ~730px tall, so the six weather cards sat below the fold and the teacher
+   had to scroll down to pick one and back up to see it. The scene is now
+   sized by the HEIGHT left in the window; on a wide screen the cards sit
+   beside it, on a narrow one right underneath.
+   ========================================================================== */
+.wx-layout { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.wx-main { display: flex; flex-direction: column; align-items: center; width: 100%; min-width: 0; }
+.wx-stage { width: min(100%, max(300px, calc((100vh - 470px) * 1.538))); margin-left: auto; margin-right: auto; }
+.wx-layout .wx-cards { width: 100%; max-width: 760px; }
+.wx-under { margin-top: 6px; }
+.wx-under .fe-sentence { font-size: 1.25rem; padding: 6px 18px; }
+.wx-layout .bp-msg { min-height: 1.2em; }
+
+@media (min-width: 900px) {
+  .wx-layout { flex-direction: row; align-items: flex-start; justify-content: center; gap: 18px; }
+  .wx-main { width: auto; flex: 0 1 auto; }
+  .wx-stage { width: min(calc(100vw - 460px), max(320px, calc((100vh - 350px) * 1.538))); margin-top: 6px; }
+  .wx-layout .wx-cards { width: 270px; flex: 0 0 270px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 6px; }
+}
+.modal--fullscreen .wx-stage { width: min(100%, max(320px, calc((100vh - 400px) * 1.538))); }
+@media (min-width: 900px) {
+  .modal--fullscreen .wx-stage { width: min(calc(100vw - 420px), max(320px, calc((100vh - 290px) * 1.538))); }
+}
+/* Short windows (a laptop sharing its screen): smaller cards. */
+@media (max-height: 760px) {
+  .wx-thumb { width: 50px; height: 50px; }
+  .wx-card { padding: 6px 4px; }
+}
+
+/* Prepositions — same fix as Weather: the box scene is sized by the height
+   left in the window, so the preposition buttons stay on screen. */
+.pp-stage { width: min(100%, max(300px, calc((100vh - 500px) * 1.538))); margin-left: auto; margin-right: auto; }
+.modal--fullscreen .pp-stage { width: min(100%, max(300px, calc((100vh - 440px) * 1.538))); }
+.report-periods-table td:first-child input { min-width: 160px; }
+.report-periods-table td:nth-child(8) input { min-width: 140px; }
+.report-periods-table { min-width: 980px; }

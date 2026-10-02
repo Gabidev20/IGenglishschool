@@ -95,18 +95,22 @@ if (typeof EXAM_TOPICS !== 'undefined') {
 }
 
 // Practice games for writers (Quiz Race with typed gaps, Sentence Builder…).
-function openWriterPractice() {
+// `only` = the topics opened up for this student (studentAccess.js).
+function openWriterPractice(only) {
+  const list = Array.isArray(only) && only.length ? only : WRITER_TOPICS;
   openExamGames({
     id: 'writers', title: 'Practice · Treinar',
-    topicIds: WRITER_TOPICS.map(t => t.id), topicLabels: WRITER_TOPICS.map(t => t.label),
+    topicIds: list.map(t => t.id), topicLabels: list.map(t => t.label),
     createdAt: new Date().toISOString(), count: 0, parts: [], items: [],
   });
 }
 
-// Writing practice: ten typed / built answers in the exam runner.
-function openWritingPractice(studentId) {
+// Writing practice: ten typed / built answers in the exam runner. Works
+// with any exam-style topics, so grown-ups get it from their own level.
+function openWritingPractice(studentId, only) {
+  const source = Array.isArray(only) && only.length ? only : WRITER_TOPICS;
   const items = [];
-  const gens = WRITER_TOPICS.flatMap(t => t.gens.map(g => ({ g, t })));
+  const gens = source.flatMap(t => (t.gens || []).map(g => ({ g, t })));
   let guard = 0;
   while (items.length < 10 && guard++ < 80) {
     const { g, t } = exPick(gens);
@@ -118,7 +122,7 @@ function openWritingPractice(studentId) {
   const parts = typeof exPartition === 'function' ? exPartition(items) : [];
   openExamRunner({
     id: 'writing-practice-' + Date.now().toString(36), title: 'Writing practice', group: '',
-    topicIds: WRITER_TOPICS.map(t => t.id), topicLabels: WRITER_TOPICS.map(t => t.label),
+    topicIds: source.map(t => t.id), topicLabels: source.map(t => t.label),
     createdAt: new Date().toISOString(), count: items.length, parts,
     items: parts.length ? parts.reduce((all, p) => all.concat(p.items), []) : items,
   }, { studentId, source: 'practice' });
@@ -147,9 +151,18 @@ const WRITER_PROMPTS = [
   { id: 'w-now', prompt: 'What are the people at home doing now?', help: ['My mom is …ing.', 'I am …ing.'], words: 20 },
   { id: 'w-friend', prompt: 'Describe your best friend.', help: ['He/She is…', 'He/She likes…'], words: 25 },
 ];
+// Teens of 15+ and adults write about their own life, not their teddy bear.
+const ADULT_PROMPTS = [
+  { id: 'a-intro', prompt: 'Introduce yourself: where you are from, what you do and why you study English.', help: ["I'm from…", 'I work as / I study…', 'I study English because…'], words: 40 },
+  { id: 'a-routine', prompt: 'Describe a typical day in your week.', help: ['I usually get up at…', 'Then I…', 'In the evening I…'], words: 40 },
+  { id: 'a-weekend', prompt: 'What did you do last weekend? Write about it.', help: ['On Saturday I…', 'Then we went…', 'It was…'], words: 50 },
+  { id: 'a-plans', prompt: 'What are your plans for next year?', help: ["I'm going to…", 'I would like to…', 'I hope…'], words: 50 },
+  { id: 'a-email', prompt: 'Write a short email to a colleague to arrange a meeting.', help: ['Hi …,', 'Are you free on…?', 'Best regards,'], words: 40 },
+  { id: 'a-trip', prompt: 'Describe the best trip you have ever taken.', help: ['I went to…', 'I stayed at…', 'The best part was…'], words: 60 },
+];
 function openProfileWriting(student) {
   const prof = typeof studentProfile === 'function' ? studentProfile(student) : 'writer';
-  const task = exPick(prof === 'reader' ? READER_PROMPTS : WRITER_PROMPTS);
+  const task = exPick(prof === 'reader' ? READER_PROMPTS : prof === 'adult' ? ADULT_PROMPTS : WRITER_PROMPTS);
   openWritingModal({ studentId: student.id, promptId: task.id, promptText: task.prompt, help: task.help, words: task.words });
 }
 

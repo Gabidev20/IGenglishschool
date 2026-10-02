@@ -53,8 +53,15 @@ const WORD_GAME_TYPES = GAME_TYPES.filter(g => g.needs === 'words');
 // Which games THIS topic can actually offer. A vocabulary topic has no
 // grammar rules to sort, so Sort It is simply not shown for it rather than
 // being shown and then apologising.
+// Picture-scene games and Balloon Pop are made for children. With a
+// learner of 15+ (or a teacher of grown-ups only, nobody selected) the
+// topic offers the word and sentence games instead.
+const KIDS_ONLY_GAMES = ['balloon', 'dressup', 'backpack', 'house', 'animal', 'feelings', 'instruments', 'prepositions', 'weather'];
+
 function gamesForTopic(topic) {
+  const grown = typeof igAdultContext === 'function' && igAdultContext();
   return GAME_TYPES.filter(g => {
+    if (grown && KIDS_ONLY_GAMES.includes(g.id)) return false;
     if (g.needs === 'sentences') {
       return typeof lkSentences === 'function' && lkSentences(topic).length >= 3;
     }
@@ -3327,22 +3334,26 @@ const GameEngine = (() => {
             <button class="bp-list-say" data-action="say-target" aria-label="Listen again">🔊</button>
             <span>What's the weather like? It's <b>${igEscapeHtml(t.en.toLowerCase())}</b>!</span>
           </div>` : ''}
-        <div class="wx-stage wx--${shown || 'none'}${shake ? ' bp-shake' : ''}">
-          <svg class="wx-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${weatherSceneInner(shown)}</svg>
-          <span class="bp-drop-hint">Drop it in the sky! ☁️</span>
-        </div>
-        <div class="wx-under">
-          ${w ? `<button class="fe-sentence" data-action="say-shown">🔊 ${igEscapeHtml(its(w))}</button>
-                 <span class="wx-extra">${igEscapeHtml(w.extra)}</span>`
-              : `<p class="fe-hint">👆 ${listen ? 'Listen and drag the weather to the sky!' : 'What\'s the weather like today? Drag it to the sky!'}</p>`}
-        </div>
-        <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
-        <div class="wx-cards">
-          ${list.map(x => `
-            <button class="fe-card wx-card${shown === x.id ? ' on' : ''}${listen ? ' no-label' : ''}" data-weather="${x.id}" aria-label="${igEscapeHtml(x.en)}">
-              ${weatherIconSVG(x.id, 'wx-thumb')}
-              ${listen ? '' : `<span class="bp-card-en">${igEscapeHtml(x.en)}</span><span class="bp-card-pt">${igEscapeHtml(x.pt)}</span>`}
-            </button>`).join('')}
+        <div class="wx-layout">
+          <div class="wx-main">
+            <div class="wx-stage wx--${shown || 'none'}${shake ? ' bp-shake' : ''}">
+              <svg class="wx-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${weatherSceneInner(shown)}</svg>
+              <span class="bp-drop-hint">Drop it in the sky! ☁️</span>
+            </div>
+            <div class="wx-under">
+              ${w ? `<button class="fe-sentence" data-action="say-shown">🔊 ${igEscapeHtml(its(w))}</button>
+                     <span class="wx-extra">${igEscapeHtml(w.extra)}</span>`
+                  : `<p class="fe-hint">👆 ${listen ? 'Listen and drag the weather to the sky!' : 'What\'s the weather like today? Drag it to the sky!'}</p>`}
+            </div>
+            <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+          </div>
+          <div class="wx-cards">
+            ${list.map(x => `
+              <button class="fe-card wx-card${shown === x.id ? ' on' : ''}${listen ? ' no-label' : ''}" data-weather="${x.id}" aria-label="${igEscapeHtml(x.en)}">
+                ${weatherIconSVG(x.id, 'wx-thumb')}
+                ${listen ? '' : `<span class="bp-card-en">${igEscapeHtml(x.en)}</span><span class="bp-card-pt">${igEscapeHtml(x.pt)}</span>`}
+              </button>`).join('')}
+          </div>
         </div>`;
       shake = false;
       bind();

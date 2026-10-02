@@ -55,7 +55,7 @@ function renderGameMaker(container) {
     <div class="gamemaker-toolbar">
       <button class="btn btn-primary" id="newGameBtn">✨ Create New Game</button>
     </div>
-    <div class="gamemaker-ready">
+    <div class="gamemaker-ready kids-only">
       <p class="gamemaker-ready-label">Jogos prontos</p>
       <button class="gamemaker-ready-card" type="button" data-open-backpack>
         <span class="gamemaker-ready-art">${backpackSVG('classic', '#3d7bd9', ['ruler', 'book', 'pencil', 'paintbrush', 'scissors'])}</span>

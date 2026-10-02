@@ -23,8 +23,8 @@
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="Primary">
-      <a href="#dashboard" class="nav-link" data-section="dashboard">Painel</a>
       <a href="#live-class" class="nav-link" data-section="live-class">Live Class</a>
+      <a href="#dashboard" class="nav-link" data-section="dashboard">Painel</a>
       <a href="#levels" class="nav-link" data-section="levels">Levels</a>
       <a href="#games" class="nav-link" data-section="games">Games</a>
       <a href="#game-maker" class="nav-link" data-section="game-maker">Game Maker</a>
@@ -68,66 +68,35 @@
 
 <main id="top">
 
-  <!-- ============ TEACHER DASHBOARD ============
-       First on the page on purpose: the teacher opens the site to find out
-       who she teaches today, who turned up last month and who has paid. -->
-  <section class="dashboard-section" id="dashboard">
-    <div id="teacherDashboard"></div>
-  </section>
-
-  <!-- ============ HERO ============ -->
-  <section class="hero" id="hero">
-    <div class="hero-blob blob-1" aria-hidden="true"></div>
-    <div class="hero-blob blob-2" aria-hidden="true"></div>
-    <div class="hero-blob blob-3" aria-hidden="true"></div>
-
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <span class="eyebrow">🎈 Learning English feels like play</span>
-        <h1>Hop into English, <br/>one square at a time.</h1>
-        <p class="hero-sub">Levels built for real progress, games that don't feel like homework, and a Game Maker where kids build their own challenges.</p>
-        <div class="hero-cta-row">
-          <a href="#levels" class="btn btn-primary">Start Learning</a>
-          <a href="#games" class="btn btn-ghost">Explore Games</a>
-        </div>
-      </div>
-
-      <div class="hero-cards" id="heroCards">
-        <a href="#levels" class="tilt-card card-a" data-tilt>
-          <span class="tilt-icon">📚</span>
-          <h3>Levels</h3>
-          <p>A0 to B1-B2 curriculum</p>
-        </a>
-        <a href="#games" class="tilt-card card-b" data-tilt>
-          <span class="tilt-icon">🎮</span>
-          <h3>Games</h3>
-          <p>Play to practice</p>
-        </a>
-        <a href="#game-maker" class="tilt-card card-c" data-tilt>
-          <span class="tilt-icon">🛠️</span>
-          <h3>Game Maker</h3>
-          <p>Build your own</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ LIVE CLASS COCKPIT ============ -->
-  <section class="live-class-section" id="live-class">
+  <!-- ============ LIVE CLASS COCKPIT ============
+       First on the page on purpose: the teacher opens the site, picks who
+       has class now, and today's lesson is right there. Every section below
+       folds away with the arrow next to its title. -->
+  <section class="live-class-section" id="live-class" data-collapsible>
     <div class="section-head">
       <span class="section-eyebrow">Teach</span>
-      <h2>Live Class Cockpit</h2>
-      <p>Everything you need for today's 30-minute lesson with the active student.</p>
+      <h2>Live Class</h2>
+      <p>Everything you need for today's lesson with the active student.</p>
     </div>
     <div class="live-class-cockpit" id="liveClassCockpit"></div>
   </section>
 
+  <!-- ============ TEACHER DASHBOARD ============
+       Who she teaches this week, who turned up last month and who has paid. -->
+  <section class="dashboard-section" id="dashboard" data-collapsible>
+    <div class="section-head section-head--compact">
+      <span class="section-eyebrow">Gestão</span>
+      <h2>Painel da professora</h2>
+    </div>
+    <div id="teacherDashboard"></div>
+  </section>
+
   <!-- ============ LEVELS & CURRICULUM ============ -->
-  <section class="levels-section" id="levels">
+  <section class="levels-section" id="levels" data-collapsible>
     <div class="section-head">
       <span class="section-eyebrow">Curriculum</span>
       <h2>Levels &amp; Curriculum</h2>
-      <p>Four stages, each one unlocking new words, sounds and stories.</p>
+      <p>Every level, each one unlocking new words, situations and stories.</p>
     </div>
 
     <div class="level-tabs" id="levelTabs" role="tablist"></div>
@@ -138,7 +107,7 @@
   </section>
 
   <!-- ============ GAMES ============ -->
-  <section class="teaser-section" id="games">
+  <section class="teaser-section" id="games" data-collapsible>
     <div class="section-head">
       <span class="section-eyebrow">Play</span>
       <h2>Games</h2>
@@ -168,7 +137,7 @@
   </section>
 
   <!-- ============ GAME MAKER ============ -->
-  <section class="teaser-section" id="game-maker">
+  <section class="teaser-section" id="game-maker" data-collapsible>
     <div class="section-head">
       <span class="section-eyebrow">Create</span>
       <h2>Game Maker</h2>
@@ -179,7 +148,7 @@
   </section>
 
   <!-- ============ EXAM MAKER ============ -->
-  <section class="teaser-section" id="exam-maker">
+  <section class="teaser-section" id="exam-maker" data-collapsible>
     <div class="section-head">
       <span class="section-eyebrow">Avaliar</span>
       <h2>Gerador de Provas</h2>
@@ -193,7 +162,7 @@
   </section>
 
   <!-- ============ HOMEWORK ============ -->
-  <section class="teaser-section" id="homework">
+  <section class="teaser-section" id="homework" data-collapsible>
     <div class="section-head">
       <span class="section-eyebrow">Praticar em casa</span>
       <h2>Lição de Casa</h2>
@@ -205,7 +174,7 @@
 </main>
 
 <footer class="site-footer">
-  <p>Made with 💜 for curious young learners — IG English School</p>
+  <p>Made with 💜 for curious learners of every age — IG English School</p>
 </footer>
 
 <!-- ============ MODAL BASE ============ -->
@@ -225,9 +194,9 @@
     <button class="live-tool-btn" data-tool="wheel">🎡 Wheel of Fortune</button>
     <button class="live-tool-btn" data-tool="scoreboard">🏅 Scoreboard</button>
     <button class="live-tool-btn" data-tool="timer">⏱️ Timer &amp; Bell</button>
-    <button class="live-tool-btn" data-tool="stickers">📔 Sticker Book</button>
+    <button class="live-tool-btn kids-only" data-tool="stickers">📔 Sticker Book</button>
     <button class="live-tool-btn" data-tool="links">🔗 Links da Aula</button>
-    <button class="live-tool-btn" data-tool="drawing">🎨 Drawing Challenge</button>
+    <button class="live-tool-btn kids-only" data-tool="drawing">🎨 Drawing Challenge</button>
   </div>
 </div>
 
@@ -277,8 +246,11 @@
 <script src="classReview.js"></script>
 <script src="liveTools.js"></script>
 <script src="topicsData.js"></script>
+<script src="adultContent.js"></script>
 <script src="contentStore.js"></script>
 <script src="inbox.js"></script>
+<script src="teacherSetup.js"></script>
+<script src="studentAccess.js"></script>
 <script src="app.js"></script>
 <!-- Last: decides who is signed in, once the app has painted. -->
 <script src="auth.js"></script>

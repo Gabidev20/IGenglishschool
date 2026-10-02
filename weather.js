@@ -181,6 +181,17 @@ function weatherSceneInner(id) {
 // ---------------------------------------------------------------------------
 // The sound of each weather, played when it arrives (about two seconds).
 // ---------------------------------------------------------------------------
+// Rain as rain sounds: a soft hiss of many small drops (high band) over the
+// body of the shower (low band), both held steady and faded in and out — no
+// pulsing bursts and no pitched "drip" notes, which read as strange beeps.
+function wxRain(S, start, duration, strength) {
+  if (!S.wash) return;
+  const k = strength || 1;
+  S.wash(start, duration, 'highpass', 2600, 0.12 * k, [0.5, 1.0]);
+  S.wash(start, duration, 'bandpass', 1200, 0.16 * k, [0.5, 1.0], 0.5);
+  S.wash(start, duration, 'lowpass', 500, 0.07 * k, [0.6, 1.1]);
+}
+
 function playWeatherSound(id) {
   if (typeof IGSound === 'undefined' || IGSound.muted()) return;
   const S = IGSound;
@@ -188,18 +199,18 @@ function playWeatherSound(id) {
     if (id === 'sunny') {           // birds singing
       [[0, 2200, 3200], [0.18, 2600, 3600], [0.5, 2000, 3000], [0.66, 2400, 3400], [1.0, 2800, 3800]]
         .forEach(([t, a, b]) => S.slide(a, b, t, 0.12, 'sine', 0.06));
-    } else if (id === 'rainy') {    // rain on the roof, with a few drips
-      for (let i = 0; i < 8; i++) S.noise(i * 0.25, 0.5, 'lowpass', 1600, 1200, 0.16);
-      [0.3, 0.8, 1.3, 1.7].forEach(t => S.slide(1400, 600, t, 0.08, 'sine', 0.05));
+    } else if (id === 'rainy') {    // just rain: one steady shower, nothing else
+      wxRain(S, 0, 3.2, 1);
     } else if (id === 'cloudy') {   // a soft, grey hum
       S.note(220, 0, 1.6, 'sine', 0.06); S.note(277, 0.2, 1.4, 'sine', 0.05); S.note(330, 0.4, 1.2, 'sine', 0.04);
     } else if (id === 'snowy') {    // twinkling, quiet
       [1568, 2093, 1760, 2349, 1976, 2637].forEach((f, i) => S.note(f, i * 0.18, 0.5, 'sine', 0.035));
-    } else if (id === 'stormy') {   // thunder: a crack, then the rumble
-      S.noise(0, 0.12, 'highpass', 2500, 0, 0.35);
-      S.noise(0.05, 2.2, 'lowpass', 420, 60, 0.75);
-      S.noise(0.4, 1.6, 'lowpass', 200, 50, 0.55);
-      for (let i = 0; i < 6; i++) S.noise(1.4 + i * 0.22, 0.4, 'lowpass', 1400, 1200, 0.1);
+    } else if (id === 'stormy') {   // only three things: lightning, thunder, rain
+      wxRain(S, 0, 4.2, 1.2);                                   // heavy rain under it all
+      S.noise(0.15, 0.09, 'highpass', 3200, 1800, 0.5);         // lightning: the sharp crack…
+      S.noise(0.22, 0.16, 'bandpass', 1800, 700, 0.35);         // …and its crackle
+      S.noise(0.35, 2.6, 'lowpass', 380, 55, 0.85);             // thunder rolling in
+      S.noise(0.9, 2.2, 'lowpass', 160, 40, 0.6);               // the low rumble fading away
     } else if (id === 'windy') {    // a whoosh rising and falling
       S.noise(0, 1.0, 'bandpass', 300, 1400, 0.3);
       S.noise(0.8, 1.2, 'bandpass', 1300, 350, 0.28);

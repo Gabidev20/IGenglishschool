@@ -139,6 +139,11 @@ begin
     'writing', coalesce(v_data->('writing_' || v_link.student_id), '[]'::jsonb),
     'review',  coalesce(v_data->('review_'  || v_link.student_id), '{}'::jsonb),
     'profile', v_data->'student_profiles'->(v_link.student_id),
+    -- o que a professora liberou para este aluno (studentAccess.js) e o
+    -- perfil das turmas dela (teacherSetup.js): sem eles o link usa o
+    -- automático, então rodar esta versão é opcional, mas recomendado.
+    'access',  v_data->'student_access'->(v_link.student_id),
+    'setup',   v_data->'teacher_setup',
     'signature', v_data->'cert_signature',
     'activity', v_activity
   );

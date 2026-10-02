@@ -87,17 +87,43 @@ function refreshLiveClassCockpit() {
   const root = document.getElementById('liveClassCockpit');
   if (!root) return;
   const student = getActiveStudent();
+  root.classList.toggle('has-picker', !student);
 
   if (!student) {
+    // The students are right here, one tap each — today's (from the weekly
+    // schedule on the dashboard) first, so the usual pick is the first one.
+    const all = typeof loadStudents === 'function' ? loadStudents() : [];
+    let todayIds = [];
+    try {
+      if (typeof dashToday === 'function' && typeof DASH_DAYS !== 'undefined' && typeof dashScheduleFor === 'function') {
+        const dow = DASH_DAYS.find(d => d.dow === dashToday().getDay());
+        if (dow) todayIds = all.filter(s => dashScheduleFor(s.id).days.includes(dow.id)).map(s => s.id);
+      }
+    } catch (e) { todayIds = []; }
+    const ordered = all.slice().sort((a, b) => todayIds.includes(b.id) - todayIds.includes(a.id));
     root.innerHTML = `
       <div class="cockpit-empty">
         <span class="cockpit-empty-icon">👋</span>
         <h3>Quem tem aula agora?</h3>
-        <p>Escolha o aluno no topo da página para abrir a rotina, os slides,
-           o Zoom e o registro da aula dele.</p>
-        <button class="btn btn-primary" id="cockpitPickStudent" type="button">👤 Escolher aluno</button>
+        <p>Toque no aluno para abrir a rotina, os slides, o Zoom e o registro da aula dele.</p>
+        ${ordered.length ? `
+          <div class="cockpit-pick-grid">
+            ${ordered.map(s => `
+              <button class="cockpit-pick" type="button" data-pick-student="${escapeHtmlLite(s.id)}" style="--accent-color:${escapeHtmlLite(s.color)}">
+                <span class="cockpit-pick-avatar" style="background:${escapeHtmlLite(s.color)}">${escapeHtmlLite(s.avatar)}</span>
+                <span class="cockpit-pick-name">${escapeHtmlLite(s.name)}</span>
+                <small>${todayIds.includes(s.id) ? '📅 hoje · ' : ''}${escapeHtmlLite(s.levelLabel || '')}</small>
+              </button>`).join('')}
+          </div>` : `
+          <button class="btn btn-primary" id="cockpitAddStudent" type="button">+ Cadastrar o primeiro aluno</button>`}
+        <button class="btn btn-ghost" id="cockpitPickStudent" type="button" ${ordered.length ? '' : 'hidden'}>👤 Abrir a lista completa</button>
       </div>
     `;
+    root.querySelectorAll('[data-pick-student]').forEach(btn => {
+      btn.addEventListener('click', () => { if (typeof selectStudent === 'function') selectStudent(btn.dataset.pickStudent); });
+    });
+    const add = document.getElementById('cockpitAddStudent');
+    if (add) add.addEventListener('click', () => { if (typeof openStudentForm === 'function') openStudentForm(); });
     const pick = document.getElementById('cockpitPickStudent');
     if (pick) pick.addEventListener('click', () => {
       // Open the same switcher in the header rather than building a second

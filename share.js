@@ -110,7 +110,10 @@ function openShareLinkModal(studentId) {
           : '⚠️ Sem Supabase configurado, este link só funciona <b>neste navegador</b>. Preencha o supabaseConfig.js para que a família consiga abrir do aparelho dela.'}
       </div>
 
-      <p class="share-note">🔒 O código é secreto e longo, como um link do Google Drive. Quem tiver o link vê este aluno — e nada mais do site. Dá para revogar quando quiser.</p>`;
+      <p class="share-note">🔒 O código é secreto e longo, como um link do Google Drive. Quem tiver o link vê este aluno — e nada mais do site. Dá para revogar quando quiser.</p>
+
+      ${typeof saEditorHTML === 'function' ? saEditorHTML(student) : ''}`;
+    if (typeof saWireEditor === 'function') saWireEditor(mount, student);
 
     const urlInput = mount.querySelector('#shareUrl');
     const copy = (text, btn, label) => {
@@ -178,6 +181,11 @@ const ShareMode = (() => {
     IGStore.setJSON('homework', Array.isArray(data.homework) ? data.homework : []);
     IGStore.setJSON('review_' + student.id, data.review && typeof data.review === 'object' ? data.review : {});
     if (data.profile) IGStore.setJSON('student_profiles', { [student.id]: data.profile });
+    // What the teacher opened up for this student (studentAccess.js). Older
+    // databases do not send it yet; the link then falls back to the
+    // automatic choice, which needs nothing from the server.
+    if (data.access && typeof data.access === 'object') IGStore.setJSON('student_access', { [student.id]: data.access });
+    if (data.setup && typeof data.setup === 'object') IGStore.setJSON('teacher_setup', data.setup);
     if (data.signature) IGStore.setJSON('cert_signature', data.signature);
 
     // Anything this student already sent from another device.
@@ -366,14 +374,20 @@ function renderStudentHome(shell, studentId) {
   const pending = homework.filter(h => !hwIsDone(h));
   const due = stats ? stats.bank.due : 0;
 
-  const levelTopics = (typeof LEVELS !== 'undefined' ? LEVELS : [])
-    .filter(l => l.id === student.levelId)
-    .flatMap(l => (l.topics || []).map(t => ({ ...t, levelId: l.id })));
+  // Only what this student has been given (studentAccess.js): the
+  // vocabulary of their level and the grammar already taught in class.
+  const levelTopics = typeof saAllowedTopics === 'function'
+    ? saAllowedTopics(student)
+    : (typeof LEVELS !== 'undefined' ? LEVELS : [])
+      .filter(l => l.id === student.levelId)
+      .flatMap(l => (l.topics || []).map(t => ({ ...t, levelId: l.id })));
+  const gameOk = id => (typeof saGameAllowed === 'function' ? saGameAllowed(student, id) : true);
+  const practiceTopics = typeof saAllowedPractice === 'function' ? saAllowedPractice(student) : null;
   // Older students also play with their hobbies vocabulary — first, so it is easy to find.
   const extraTopics = typeof studentProfile === 'function' && studentProfile(student) === 'writer' && typeof HOBBIES_TOPIC !== 'undefined'
+    && (!practiceTopics || practiceTopics.some(t => t.id === 'easy-hobbies'))
     ? [{ ...HOBBIES_TOPIC, levelId: 'extra' }] : [];
-  const topics = extraTopics.concat(levelTopics.length ? levelTopics
-    : (typeof LEVELS !== 'undefined' ? (LEVELS[0].topics || []).map(t => ({ ...t, levelId: LEVELS[0].id })) : []));
+  const topics = extraTopics.concat(levelTopics);
 
   // English first, Portuguese underneath: the page is part of the lesson.
   const mistakes = typeof msCards === 'function' ? msCards(student.id).filter(c => !msPracticedToday(c)).length : due;
@@ -387,7 +401,7 @@ function renderStudentHome(shell, studentId) {
     progress: () => tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas'),
     homework: () => tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉'),
     review: () => (review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
-    games: () => tile('games', '🎮', 'Games', 'Jogos com as palavras do meu nível'),
+    games: () => tile('games', '🎮', prof === 'adult' ? 'Topics & games' : 'Games', prof === 'adult' ? 'Vocabulário, leitura e jogos dos meus tópicos' : 'Jogos com as palavras do meu nível'),
     colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
     backpack: () => tile('backpack', '🎒', 'Backpack', 'Mochila — school objects'),
     house: () => tile('house', '🏠', 'House', 'Casa — parts of the house'),
@@ -396,20 +410,36 @@ function renderStudentHome(shell, studentId) {
     music: () => tile('instruments', '🎸', 'Music', 'Música — instrumentos'),
     where: () => tile('prepositions', '📦', 'Where is it?', 'Onde está? — preposições'),
     weather: () => tile('weather', '🌦️', 'Weather', 'Clima'),
-    practice: () => tile('practice', '⚡', 'Practice', prof === 'reader' ? 'Treinar — animais, cores, números…' : 'Treinar — to be, past, present continuous, hobbies'),
-    writingPractice: () => tile('writing-practice', '📝', 'Writing practice', 'Treinar a escrita — completar e montar frases'),
+    practice: () => (practiceTopics && !practiceTopics.length ? '' : tile('practice', '⚡', 'Practice',
+      `Treinar — ${shareEsc((practiceTopics || []).slice(0, 3).map(t => t.label.split(' (')[0]).join(', ') || 'exercícios do meu nível')}${practiceTopics && practiceTopics.length > 3 ? '…' : ''}`)),
+    writingPractice: () => (practiceTopics && !practiceTopics.length ? '' : tile('writing-practice', '📝', 'Writing practice', 'Treinar a escrita — completar e montar frases')),
     dictation: () => tile('dictation', '🎧', 'Dictation', 'Ditado — ouvir e escrever'),
     speaking: () => tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta'),
     write: () => tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher'),
     audio: () => tile('audio', '🎙️', 'Talk to my teacher', 'Mandar um áudio para a teacher'),
     mistakes: () => tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente'),
   };
+  // The picture games are tiles of their own; the teacher can switch each
+  // one off in the link window.
+  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack' };
+  // A grown-up's page leads with the skill their teacher said matters most.
+  const adultSkills = () => {
+    const order = { speaking: ['speaking', 'audio'], listening: ['dictation'], writing: ['write', 'writingPractice'], reading: ['games'], grammar: ['practice'] };
+    const focus = typeof teacherSkills === 'function' ? teacherSkills() : [];
+    const lead = [...new Set(focus.flatMap(f => order[f] || []))];
+    const rest = ['speaking', 'dictation', 'write', 'games', 'practice', 'writingPractice', 'audio'].filter(k => !lead.includes(k));
+    return ['homework', 'review'].concat(lead, rest, ['mistakes', 'progress']);
+  };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
     prereader: ['review', 'colors', 'feelings', 'weather', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
     reader: ['progress', 'homework', 'review', 'games', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
     writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'games', 'mistakes'],
-  }[p] || []).map(k => T[k]());
+    adult: adultSkills(),
+  }[p] || [])
+    .filter(k => !READY_TILE[k] || gameOk(READY_TILE[k]))
+    .filter(k => k !== 'games' || topics.length)
+    .map(k => T[k]());
 
   shell.innerHTML = `
     <div class="stu-wrap">
@@ -467,11 +497,11 @@ function renderStudentHome(shell, studentId) {
     weather: () => openWeatherGame(),
     colors: () => openColorsGame(),
     audio: () => openAudioMessage(student),
-    'writing-practice': () => openWritingPractice(student.id),
+    'writing-practice': () => openWritingPractice(student.id, practiceTopics),
     practice: () => {
-      if (prof === 'reader' && typeof openKidsPractice === 'function') { openKidsPractice(); return; }
-      if (prof === 'writer' && typeof openWriterPractice === 'function') { openWriterPractice(); return; }
-      const picked = (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
+      if (prof === 'reader' && typeof openKidsPractice === 'function') { openKidsPractice(practiceTopics); return; }
+      if (prof === 'writer' && typeof openWriterPractice === 'function') { openWriterPractice(practiceTopics); return; }
+      const picked = practiceTopics || (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
       if (!picked.length) return;
       openExamGames({
         id: 'free', title: 'Treino livre',
@@ -479,8 +509,10 @@ function renderStudentHome(shell, studentId) {
         createdAt: new Date().toISOString(), count: 0, parts: [], items: [],
       });
     },
-    dictation: () => openDictationModal({ studentId: student.id, source: 'home' }),
-    speaking: () => openSpeakingModal({ studentId: student.id, source: 'home' }),
+    // Dictation and Speaking read sentences from the topics this student
+    // has been given, not from the whole bank.
+    dictation: () => openDictationModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
+    speaking: () => openSpeakingModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
     writing: () => (typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
   };
   shell.querySelectorAll('[data-go]').forEach(btn => {
@@ -492,6 +524,18 @@ function renderStudentHome(shell, studentId) {
       const fn = go[btn.dataset.go]; if (fn) fn();
     });
   });
+}
+
+// Practice sentences from the student's own topics, for Dictation and
+// Speaking. Null when there are too few — the skills module then picks
+// level-appropriate sentences itself.
+function shareLinesFor(topics) {
+  if (typeof lkSentences !== 'function') return null;
+  const all = [];
+  (topics || []).forEach(t => lkSentences(t).forEach(x => { if (!all.includes(x)) all.push(x); }));
+  if (all.length < 4) return null;
+  for (let i = all.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
+  return all.slice(0, 10);
 }
 
 function openStudentGames(shell, student, topics) {

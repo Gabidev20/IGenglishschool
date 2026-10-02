@@ -506,6 +506,35 @@ const IGSound = (() => {
     src.start(t);
   }
 
+  // A steady bed of noise that fades in, holds and fades out — rain, wind,
+  // a rumble. Unlike noise() above, which is a percussive burst: chaining
+  // bursts end to end is what made the old rain pulse like a machine.
+  // `shape` = [attack, release] in seconds.
+  function wash(start, duration, filterType, freq, gain, shape, q) {
+    const c = audio();
+    if (!c) return;
+    const [attack, release] = shape || [0.4, 0.8];
+    const len = Math.max(1, Math.floor(c.sampleRate * duration));
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource();
+    const f = c.createBiquadFilter();
+    const g = c.createGain();
+    const t = c.currentTime + start;
+    src.buffer = buf;
+    f.type = filterType;
+    f.frequency.setValueAtTime(freq, t);
+    f.Q.value = q || 0.7;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(gain, t + attack);
+    g.gain.setValueAtTime(gain, Math.max(t + attack, t + duration - release));
+    g.gain.linearRampToValueAtTime(0.0001, t + duration);
+    src.connect(f).connect(g).connect(master);
+    src.start(t);
+    src.stop(t + duration + 0.05);
+  }
+
   // A note whose pitch slides — boings, drops, whooshes.
   function slide(f1, f2, start, duration, type, gain) {
     const c = audio();
@@ -599,7 +628,7 @@ const IGSound = (() => {
     bell: play(() => bell(1175, 0, 0.18)),
   };
 
-  return { stars, starsDown, sticker, muted, setMuted, note, noise, slide, ...sfx };
+  return { stars, starsDown, sticker, muted, setMuted, note, noise, wash, slide, ...sfx };
 })();
 
 window.IGSound = IGSound;

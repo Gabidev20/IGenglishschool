@@ -61,7 +61,7 @@ const IGAuth = (() => {
           <button class="auth-link" id="authForgot" type="button">Forgot your password?</button>
         </form>
 
-        <p class="auth-footer">Each teacher gets her own students, class log, reports and games.</p>
+        <p class="auth-footer">Each teacher gets her own students, class log, reports and games — and the site adapts to the ages and levels she teaches.</p>
       </div>
     `;
     document.body.appendChild(gateEl);
@@ -173,6 +173,13 @@ const IGAuth = (() => {
     hideGate();
     await IGCloud.start(session);
     renderTeacherChip();
+    askSetup();
+  }
+
+  // The "who do you teach?" questions (teacherSetup.js), asked once the
+  // cloud copy has arrived — she may already have answered on another computer.
+  function askSetup() {
+    if (typeof TeacherSetupUI !== 'undefined') TeacherSetupUI.maybeAsk();
   }
 
   function hideGate() {
@@ -198,6 +205,7 @@ const IGAuth = (() => {
       </button>
       <div class="teacher-menu" id="teacherMenu" hidden>
         <p class="teacher-menu-email">${igEscapeHtml(t.email)}</p>
+        <button class="teacher-menu-btn" id="teacherSetupMenu" type="button">🎯 Perfil das minhas turmas</button>
         <button class="teacher-menu-btn" id="teacherSyncNow" type="button">🔄 Sync now</button>
         <button class="teacher-menu-btn" id="teacherRecover" type="button">📦 Trazer dados deste computador</button>
         <button class="teacher-menu-btn danger" id="teacherSignOut" type="button">🚪 Sign out</button>
@@ -216,6 +224,10 @@ const IGAuth = (() => {
     if (recoverBtn) recoverBtn.addEventListener('click', () => {
       menu.hidden = true;
       if (typeof openDataRecovery === 'function') openDataRecovery(false);
+    });
+    slot.querySelector('#teacherSetupMenu').addEventListener('click', () => {
+      menu.hidden = true;
+      if (typeof openTeacherSetup === 'function') openTeacherSetup();
     });
     slot.querySelector('#teacherSyncNow').addEventListener('click', () => {
       menu.hidden = true;
@@ -303,6 +315,9 @@ const IGAuth = (() => {
       console.error('Initial sync failed', e);
       renderTeacherChip();
     }
+    // The pull may have changed the students, the setup and the class log.
+    if (typeof saRefreshTaughtAll === 'function') { try { saRefreshTaughtAll(); } catch (e) { console.error(e); } }
+    askSetup();
   }
 
   // Only ever runs for an account with nothing in it yet, and only once per

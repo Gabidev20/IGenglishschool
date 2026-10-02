@@ -138,11 +138,13 @@ if (typeof EXAM_TOPICS !== 'undefined') {
   KID_TOPICS.forEach(t => { if (!EXAM_TOPICS.some(x => x.id === t.id)) EXAM_TOPICS.push(t); });
 }
 
-// The Practice tile for a young learner.
-function openKidsPractice() {
+// The Practice tile for a young learner. `only` narrows it to the topics
+// the teacher has opened up for this child (studentAccess.js).
+function openKidsPractice(only) {
+  const list = Array.isArray(only) && only.length ? only : KID_TOPICS;
   openExamGames({
     id: 'kids', title: 'Practice · Treinar',
-    topicIds: KID_TOPICS.map(t => t.id), topicLabels: KID_TOPICS.map(t => t.label),
+    topicIds: list.map(t => t.id), topicLabels: list.map(t => t.label),
     createdAt: new Date().toISOString(), count: 0, parts: [], items: [],
   });
 }

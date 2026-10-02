@@ -60,6 +60,64 @@ function upsertReport(studentId, record) {
 }
 
 // ---------------------------------------------------------------------------
+// ATTENDANCE BY PERIOD — the whole history of a student, period by period
+// ---------------------------------------------------------------------------
+// Many teachers kept attendance somewhere else (a notebook, a spreadsheet)
+// before this site. Each period — "Jan–Jun 2025", "2º semestre 2025"… — is
+// typed in once with its presences and absences, or counted from the class
+// log when the lessons were recorded here. Kept per student (not per
+// quarter), so every report for that student shows the full history.
+function attendancePeriodsKey(studentId) { return `attendance_periods_${studentId}`; }
+
+function loadAttendancePeriods(studentId) {
+  const list = IGStore.getJSON(attendancePeriodsKey(studentId), []);
+  return Array.isArray(list) ? list : [];
+}
+function saveAttendancePeriods(studentId, list) {
+  IGStore.setJSON(attendancePeriodsKey(studentId), list);
+}
+
+function periodTotals(p) {
+  const present = Math.max(0, Number(p.present) || 0);
+  const absent = Math.max(0, Number(p.absent) || 0);
+  const total = present + absent;
+  return { present, absent, total, rate: total ? Math.round((present / total) * 100) : null };
+}
+
+function attendanceSummary(periods) {
+  const t = periods.reduce((acc, p) => {
+    const x = periodTotals(p);
+    acc.present += x.present; acc.absent += x.absent;
+    return acc;
+  }, { present: 0, absent: 0 });
+  const total = t.present + t.absent;
+  return { ...t, total, rate: total ? Math.round((t.present / total) * 100) : null };
+}
+
+// Count presences / absences in the class log between two dates.
+function countSessionsBetween(student, from, to) {
+  const start = from ? new Date(from + 'T00:00:00').getTime() : -Infinity;
+  const end = to ? new Date(to + 'T23:59:59').getTime() : Infinity;
+  const list = loadSessions(student.id).filter(s => {
+    const t = new Date(s.date).getTime();
+    return t >= start && t <= end;
+  });
+  return { present: list.filter(s => s.present).length, absent: list.filter(s => !s.present).length, count: list.length };
+}
+
+const PT_MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+function periodAutoLabel(from, to) {
+  const f = from ? new Date(from + 'T12:00:00') : null;
+  const t = to ? new Date(to + 'T12:00:00') : null;
+  if (!f && !t) return '';
+  const fmt = d => `${PT_MONTHS[d.getMonth()]}/${d.getFullYear()}`;
+  if (f && t) return f.getFullYear() === t.getFullYear()
+    ? `${PT_MONTHS[f.getMonth()]}–${PT_MONTHS[t.getMonth()]} ${t.getFullYear()}`
+    : `${fmt(f)} – ${fmt(t)}`;
+  return fmt(f || t);
+}
+
+// ---------------------------------------------------------------------------
 // AUTO-PULLED DATA — from the class session history (sessions.js) + progress
 // ---------------------------------------------------------------------------
 function computeQuarterStats(student, quarterId) {
@@ -170,6 +228,10 @@ function renderReportFromControls() {
   const quarterId = quarterSelect.value;
   const quarterLabel = quarterSelect.selectedOptions[0].dataset.label;
   const student = loadStudents().find(s => s.id === studentId);
+  if (!student) {
+    document.getElementById('reportFormArea').innerHTML = '<p class="quiz-empty">Cadastre um aluno primeiro para fazer o relatório.</p>';
+    return;
+  }
   renderReportForm(document.getElementById('reportFormArea'), student, quarterId, quarterLabel);
   refreshSavedBadge(student, quarterId);
 }
@@ -215,6 +277,26 @@ function renderReportForm(container, student, quarterId, quarterLabel) {
     <div class="gm-form-field">
       <label for="rpAttendance">Frequência &amp; Engajamento</label>
       <input type="text" id="rpAttendance" value="${escapeAttrLite(data.attendanceText)}" />
+    </div>
+
+    <div class="gm-form-field report-periods">
+      <label>🗓️ Histórico de frequência por período</label>
+      <p class="report-periods-help no-print">Traga as presenças e faltas de cada período em que ${escapeHtmlLite(student.name)} teve aula —
+        por exemplo <em>jan–jun</em> e depois <em>jul–dez</em>. Digite os números das suas anotações, ou use
+        <b>↻ Contar</b> para somar as aulas registradas aqui no site naquele intervalo. Fica salvo no histórico do aluno e aparece em todos os boletins dele.</p>
+      <div class="report-periods-table-wrap">
+        <table class="report-periods-table">
+          <thead>
+            <tr><th>Período</th><th>De</th><th>Até</th><th>Presenças</th><th>Faltas</th><th>Aulas</th><th>Frequência</th><th>Observação</th><th class="no-print"></th></tr>
+          </thead>
+          <tbody id="rpPeriodsBody"></tbody>
+          <tfoot id="rpPeriodsFoot"></tfoot>
+        </table>
+      </div>
+      <div class="game-btn-row no-print">
+        <button class="game-btn secondary" id="rpAddPeriodBtn" type="button">+ Adicionar período</button>
+        <button class="game-btn secondary" id="rpAddSemesterBtn" type="button">+ Semestres deste ano</button>
+      </div>
     </div>
 
     <div class="gm-form-field">
@@ -265,6 +347,7 @@ function renderReportForm(container, student, quarterId, quarterLabel) {
   `;
 
   paintTopicTags();
+  wireAttendancePeriods(student);
 
   function addTopicFromInput() {
     const input = document.getElementById('rpTopicInput');
@@ -295,6 +378,102 @@ function renderReportForm(container, student, quarterId, quarterLabel) {
   document.getElementById('rpPrintBtn').addEventListener('click', () => printReport(student, quarterId));
 }
 
+function wireAttendancePeriods(student) {
+  const body = document.getElementById('rpPeriodsBody');
+  const foot = document.getElementById('rpPeriodsFoot');
+  if (!body) return;
+  let periods = loadAttendancePeriods(student.id);
+  const persist = () => saveAttendancePeriods(student.id, periods);
+
+  function paintFoot() {
+    if (!periods.length) { foot.innerHTML = ''; return; }
+    const sum = attendanceSummary(periods);
+    foot.innerHTML = `<tr class="report-periods-total"><td colspan="3">Total de todos os períodos</td>
+      <td>${sum.present}</td><td>${sum.absent}</td><td>${sum.total}</td><td>${sum.rate === null ? '—' : sum.rate + '%'}</td><td colspan="2"></td></tr>`;
+  }
+
+  function paint() {
+    body.innerHTML = periods.length ? periods.map((p, i) => {
+      const t = periodTotals(p);
+      return `
+        <tr data-row="${i}">
+          <td><input type="text" data-f="label" value="${escapeAttrLite(p.label)}" placeholder="${escapeAttrLite(periodAutoLabel(p.from, p.to) || 'Ex.: jan–jun 2025')}" /></td>
+          <td><input type="date" data-f="from" value="${escapeAttrLite(p.from || '')}" /></td>
+          <td><input type="date" data-f="to" value="${escapeAttrLite(p.to || '')}" /></td>
+          <td><input type="number" min="0" inputmode="numeric" data-f="present" value="${escapeAttrLite(p.present === '' || p.present == null ? '' : p.present)}" /></td>
+          <td><input type="number" min="0" inputmode="numeric" data-f="absent" value="${escapeAttrLite(p.absent === '' || p.absent == null ? '' : p.absent)}" /></td>
+          <td class="rp-total" data-out="total">${t.total || '—'}</td>
+          <td class="rp-rate" data-out="rate">${t.rate === null ? '—' : t.rate + '%'}</td>
+          <td><input type="text" data-f="note" value="${escapeAttrLite(p.note || '')}" placeholder="opcional" /></td>
+          <td class="no-print rp-row-actions">
+            <button type="button" class="gm-remove-row" data-count="${i}" title="Contar as aulas registradas no site entre as duas datas">↻ Contar</button>
+            <button type="button" class="gm-remove-row" data-del="${i}" aria-label="Remover período">✕</button>
+          </td>
+        </tr>`;
+    }).join('') : `<tr><td colspan="9" class="report-periods-empty">Nenhum período ainda — clique em <b>+ Adicionar período</b>.</td></tr>`;
+    paintFoot();
+  }
+
+  body.addEventListener('input', (e) => {
+    const input = e.target.closest('[data-f]');
+    const row = e.target.closest('[data-row]');
+    if (!input || !row) return;
+    const p = periods[Number(row.dataset.row)];
+    const f = input.dataset.f;
+    p[f] = (f === 'present' || f === 'absent') ? (input.value === '' ? '' : Math.max(0, parseInt(input.value, 10) || 0)) : input.value;
+    if (f === 'from' || f === 'to') {
+      const labelInput = row.querySelector('[data-f="label"]');
+      if (labelInput) labelInput.placeholder = periodAutoLabel(p.from, p.to) || 'Ex.: jan–jun 2025';
+    }
+    const t = periodTotals(p);
+    row.querySelector('[data-out="total"]').textContent = t.total || '—';
+    row.querySelector('[data-out="rate"]').textContent = t.rate === null ? '—' : t.rate + '%';
+    persist();
+    paintFoot();
+  });
+
+  body.addEventListener('click', (e) => {
+    const del = e.target.closest('[data-del]');
+    if (del) {
+      const p = periods[Number(del.dataset.del)];
+      if ((p.present || p.absent) && !confirm(`Remover o período "${p.label || periodAutoLabel(p.from, p.to) || 'sem nome'}"?`)) return;
+      periods.splice(Number(del.dataset.del), 1);
+      persist(); paint();
+      return;
+    }
+    const count = e.target.closest('[data-count]');
+    if (count) {
+      const p = periods[Number(count.dataset.count)];
+      if (!p.from && !p.to) { alert('Preencha as datas "De" e "Até" primeiro.'); return; }
+      const c = countSessionsBetween(student, p.from, p.to);
+      if (!c.count) { alert('Nenhuma aula registrada no site nesse intervalo. Digite os números das suas anotações.'); return; }
+      if ((p.present || p.absent) && !confirm(`Substituir ${p.present || 0} presenças e ${p.absent || 0} faltas por ${c.present} e ${c.absent} (do registro de aulas)?`)) return;
+      p.present = c.present; p.absent = c.absent;
+      if (!p.label) p.label = periodAutoLabel(p.from, p.to);
+      persist(); paint();
+    }
+  });
+
+  document.getElementById('rpAddPeriodBtn').addEventListener('click', () => {
+    periods.push({ id: 'per' + Date.now().toString(36), label: '', from: '', to: '', present: '', absent: '', note: '' });
+    persist(); paint();
+    const last = body.querySelector('tr:last-child [data-f="label"]');
+    if (last) last.focus();
+  });
+  document.getElementById('rpAddSemesterBtn').addEventListener('click', () => {
+    const y = new Date().getFullYear();
+    [[`1º semestre ${y}`, `${y}-01-01`, `${y}-06-30`], [`2º semestre ${y}`, `${y}-07-01`, `${y}-12-31`]].forEach(([label, from, to]) => {
+      if (periods.some(p => p.from === from && p.to === to)) return;
+      const c = countSessionsBetween(student, from, to);
+      periods.push({ id: 'per' + Date.now().toString(36) + periods.length, label, from, to,
+        present: c.count ? c.present : '', absent: c.count ? c.absent : '', note: '' });
+    });
+    persist(); paint();
+  });
+
+  paint();
+}
+
 function gatherReportFormData() {
   return {
     name: document.getElementById('rpName').value.trim(),
@@ -313,6 +492,10 @@ function gatherReportFormData() {
     strengths: document.getElementById('rpStrengths').value.trim(),
     nextGoals: document.getElementById('rpNextGoals').value.trim(),
     teacherNote: document.getElementById('rpTeacherNote').value.trim(),
+    periods: (() => {
+      const sid = document.getElementById('rpStudentSelect') && document.getElementById('rpStudentSelect').value;
+      return sid ? loadAttendancePeriods(sid).filter(p => p.label || p.from || p.present || p.absent) : [];
+    })(),
   };
 }
 
@@ -359,7 +542,7 @@ function exportReportToWhatsApp() {
 
 📈 *Frequência & Engajamento:*
 ${d.attendanceText}
-
+${periodsWhatsApp(d.periods)}
 📖 *Conteúdos trabalhados:*
 ${d.topics.length ? d.topics.map(t => `• ${t}`).join('\n') : '—'}
 
@@ -390,6 +573,17 @@ IGenglishschool 💛`;
   } else {
     fallbackCopyReportText(text, done);
   }
+}
+
+function periodsWhatsApp(periods) {
+  if (!periods || !periods.length) return '';
+  const lines = periods.map(p => {
+    const t = periodTotals(p);
+    return `• ${p.label || periodAutoLabel(p.from, p.to) || 'Período'}: ${t.present} presença(s), ${t.absent} falta(s)${t.rate === null ? '' : ` — ${t.rate}%`}${p.note ? ` (${p.note})` : ''}`;
+  });
+  const sum = attendanceSummary(periods);
+  if (periods.length > 1) lines.push(`• *Total:* ${sum.present} presença(s), ${sum.absent} falta(s)${sum.rate === null ? '' : ` — ${sum.rate}%`}`);
+  return `\n🗓️ *Histórico por período:*\n${lines.join('\n')}\n`;
 }
 
 function fallbackCopyReportText(text, done) {
@@ -491,6 +685,25 @@ function buildReportPrintHTML(student, d) {
               <li><strong>${stats.stickerCount || 0}</strong> stickers</li>
             </ul>` : ''}
         </div>
+
+        ${d.periods && d.periods.length ? `
+        <div class="report-print-section">
+          <h4>Histórico de Frequência por Período</h4>
+          <table class="report-print-skills report-print-periods">
+            <thead><tr><th>Período</th><th>Presenças</th><th>Faltas</th><th>Aulas</th><th>Frequência</th><th>Observação</th></tr></thead>
+            <tbody>
+              ${d.periods.map(p => { const t = periodTotals(p); return `
+                <tr>
+                  <td class="skill-name">${escapeHtmlLite(p.label || periodAutoLabel(p.from, p.to) || '—')}</td>
+                  <td>${t.present}</td><td>${t.absent}</td><td>${t.total}</td>
+                  <td>${t.rate === null ? '—' : t.rate + '%'}</td>
+                  <td class="skill-comment">${escapeHtmlLite(p.note) || '—'}</td>
+                </tr>`; }).join('')}
+            </tbody>
+            ${d.periods.length > 1 ? (() => { const sum = attendanceSummary(d.periods); return `
+            <tfoot><tr><td class="skill-name">Total</td><td>${sum.present}</td><td>${sum.absent}</td><td>${sum.total}</td><td>${sum.rate === null ? '—' : sum.rate + '%'}</td><td></td></tr></tfoot>`; })() : ''}
+          </table>
+        </div>` : ''}
 
         <div class="report-print-section">
           <h4>Conteúdos &amp; Tópicos Trabalhados</h4>
