@@ -368,16 +368,28 @@ function openTopicModal(levelId, topicId) {
     </div>
   `, true);
 
+  // The tabs used in almost every lesson are always in view; the rest wait
+  // behind "Mais", so the row fits on one line on a shared screen.
   const tabs = getModalTabs(level, topic);
-  document.getElementById('modalTabs').innerHTML = tabs.map((t, i) => `
-    <button class="modal-tab ${i === 0 ? 'active' : ''}" data-pane="${t.id}">${t.icon} ${t.label}</button>
-  `).join('');
+  const tabsEl = document.getElementById('modalTabs');
+  const hasExtra = tabs.some(t => t.extra);
+  tabsEl.innerHTML = tabs.map((t, i) => `
+    <button class="modal-tab ${i === 0 ? 'active' : ''}${t.extra ? ' modal-tab--extra' : ''}" data-pane="${t.id}">${t.icon} ${t.label}</button>
+  `).join('') + (hasExtra ? `<button class="modal-tab modal-tab--more" type="button" aria-expanded="false">➕ Mais</button>` : '');
 
   renderModalPane(tabs[0].id, level, topic);
 
-  document.getElementById('modalTabs').querySelectorAll('.modal-tab').forEach(tab => {
+  const moreBtn = tabsEl.querySelector('.modal-tab--more');
+  if (moreBtn) moreBtn.addEventListener('click', () => {
+    const open = !tabsEl.classList.contains('show-extra');
+    tabsEl.classList.toggle('show-extra', open);
+    moreBtn.setAttribute('aria-expanded', String(open));
+    moreBtn.textContent = open ? '➖ Menos' : '➕ Mais';
+  });
+
+  tabsEl.querySelectorAll('.modal-tab[data-pane]').forEach(tab => {
     tab.addEventListener('click', () => {
-      document.getElementById('modalTabs').querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      tabsEl.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       GameEngine.stopAll();
       stopLearningModules();
@@ -397,16 +409,17 @@ function getModalTabs(level, topic) {
     { id: 'game', label: 'Game', icon: '🎮' },
     { id: 'quiz', label: 'Quiz', icon: '📝' },
     { id: 'reading', label: 'Reading', icon: '📖' },
-    { id: 'practice', label: 'Practice', icon: '🏆' },
-    { id: 'skills', label: 'Speaking · Listening · Writing', icon: '🗣️' },
+    { id: 'skills', label: 'Speak · Listen · Write', icon: '🗣️' },
   ];
   const young = level.tier !== 'teens'
     && !(topic && topic.audience === 'adult')
     && (typeof teacherHasYoungKids !== 'function' || teacherHasYoungKids())
     && !(typeof igAdultContext === 'function' && igAdultContext());
   if (young) tabs.push({ id: 'phonics', label: 'Phonics', icon: '🔤' });
-  tabs.push({ id: 'flashcards', label: 'Flashcards', icon: '🗂️' });
-  tabs.push({ id: 'lesson', label: 'Lesson Plan', icon: '📘' });
+  // Behind "Mais":
+  tabs.push({ id: 'practice', label: 'Practice', icon: '🏆', extra: true });
+  tabs.push({ id: 'flashcards', label: 'Flashcards', icon: '🗂️', extra: true });
+  tabs.push({ id: 'lesson', label: 'Lesson Plan', icon: '📘', extra: true });
   return tabs;
 }
 
@@ -551,6 +564,7 @@ function renderLessonPlanHTML(level, topic) {
 // GAME MAKER — page section init
 // ---------------------------------------------------------------------------
 renderGameMaker(document.getElementById('gameMakerRoot'));
+if (typeof renderReadyGames === 'function') renderReadyGames(document.getElementById('readyGamesRoot'));
 LiveTools.initFab();
 
 // Homework, printables and the certificate — the student-facing half of the app.
@@ -657,10 +671,9 @@ function currentEditorLevelId() {
   return first ? first.id : (LEVELS[0] && LEVELS[0].id);
 }
 
-['editorNavBtn', 'editGamesBtn', 'editCurriculumBtn'].forEach(id => {
-  const btn = document.getElementById(id);
-  if (btn) btn.addEventListener('click', () => openContentEditor(currentEditorLevelId()));
-});
+// One way into the editor: the 🧩 Editor button in the menu.
+const editorNavBtn = document.getElementById('editorNavBtn');
+if (editorNavBtn) editorNavBtn.addEventListener('click', () => openContentEditor(currentEditorLevelId()));
 
 ContentStore.onChange(() => {
   // A deleted level filter must not leave the grid stuck on an empty view.

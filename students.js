@@ -209,11 +209,6 @@ function saveStudents(list) {
   IGStore.setJSON(STUDENTS_KEY, list);
 }
 
-function resetStudentsToDefault() {
-  const fresh = DEFAULT_STUDENTS.map(s => ({ ...s }));
-  saveStudents(fresh);
-  return fresh;
-}
 
 function getActiveStudentId() {
   return IGStore.getRaw(ACTIVE_STUDENT_KEY);
@@ -368,7 +363,6 @@ function renderProfileList() {
   const actions = document.getElementById('profileActions');
   actions.innerHTML = `
     <button class="profile-add-btn" id="addStudentQuickBtn">+ Add New Student</button>
-    <button class="profile-manage-btn" id="reportsQuickBtn">📊 Relatório Trimestral</button>
     <button class="profile-manage-btn" id="manageStudentsBtn">⚙️ Manage All Students</button>
     <button class="profile-manage-btn" id="teacherSetupBtn">🎯 Perfil das minhas turmas</button>
   `;
@@ -386,10 +380,6 @@ function renderProfileList() {
   actions.querySelector('#addStudentQuickBtn').addEventListener('click', () => {
     closeProfileDropdown();
     openStudentForm();
-  });
-  actions.querySelector('#reportsQuickBtn').addEventListener('click', () => {
-    closeProfileDropdown();
-    if (typeof openReportsModal === 'function') openReportsModal();
   });
   actions.querySelector('#manageStudentsBtn').addEventListener('click', () => {
     closeProfileDropdown();
@@ -409,9 +399,11 @@ function applyActiveStudent(student) {
     document.getElementById('profileAvatar').textContent = '👤';
     document.getElementById('profileName').textContent = 'Escolher aluno';
     document.getElementById('profileLevel').textContent = 'Nenhum selecionado';
+    // The Live Class at the top of the page already lists the students to
+    // pick from, so the banner would only say the same thing twice.
     if (greeting) {
-      greeting.style.setProperty('--accent-color', 'var(--color-primary)');
-      greeting.innerHTML = '<span class="greeting-avatar">👋</span> Escolha o aluno da aula de hoje aqui em cima →';
+      greeting.innerHTML = '';
+      greeting.classList.add('is-empty');
     }
     return;
   }
@@ -424,6 +416,7 @@ function applyActiveStudent(student) {
   if (greeting) {
     const meta = tierMeta(student.tier);
     const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
+    greeting.classList.remove('is-empty');
     greeting.style.setProperty('--accent-color', student.color);
     greeting.innerHTML = `<span class="greeting-avatar">${student.avatar}</span> Hi <strong>${escapeHtmlLite(student.name)}</strong>! ${grown ? "Ready for today's English class?" : `Ready for some ${meta.label} English today?`} <span class="greeting-stars" id="greetingStars"></span>`;
     renderGreetingStars(student.id);
@@ -485,7 +478,6 @@ function openStudentManager() {
       <h3 id="modalTitle">👥 Manage Students</h3>
       <div class="game-btn-row" style="margin-bottom:18px">
         <button class="game-btn" id="addStudentBtn">+ New Student</button>
-        ${typeof teacherAdultOnly === 'function' && teacherAdultOnly() ? '' : '<button class="game-btn secondary danger" id="resetStudentsBtn">↺ Reset to Default List</button>'}
       </div>
       <div class="student-manager-grid" id="studentManagerGrid"></div>
     </div>
@@ -494,17 +486,6 @@ function openStudentManager() {
   paintStudentManagerGrid();
 
   document.getElementById('addStudentBtn').addEventListener('click', () => openStudentForm(null, openStudentManager));
-  const resetBtn = document.getElementById('resetStudentsBtn');
-  if (resetBtn) resetBtn.addEventListener('click', () => {
-    if (confirm('Reset the student list to the default 12 students? Custom students you added will be removed (progress stats are kept).')) {
-      resetStudentsToDefault();
-      const activeId = getActiveStudentId();
-      if (!loadStudents().find(s => s.id === activeId)) clearActiveStudent();
-      paintStudentManagerGrid();
-      renderProfileList();
-      onActiveStudentChanged();
-    }
-  });
 }
 
 function paintStudentManagerGrid() {

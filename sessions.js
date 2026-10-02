@@ -167,6 +167,8 @@ function refreshLiveClassCockpit() {
       `}
     </div>
 
+    ${cockpitContextHTML(student)}
+
     <div class="cockpit-actions">
       <button class="btn btn-primary" id="openSessionDrawerBtn">📋 Today's Class</button>
       <button class="btn btn-ghost" id="openReportsBtn">📊 Reports &amp; Progress</button>
@@ -189,7 +191,92 @@ function refreshLiveClassCockpit() {
   document.getElementById('openSessionDrawerBtn').addEventListener('click', openSessionDrawer);
   document.getElementById('openReportsBtn').addEventListener('click', openReportsModal);
   document.getElementById('openClassReviewBtn').addEventListener('click', openLatestClassReview);
+  wireCockpitContext(root, student);
   renderCockpitLinks(student);
+}
+
+// ---------------------------------------------------------------------------
+// COCKPIT CONTEXT — what the teacher needs in the first minute of a lesson:
+// what happened last time, the topic to open now, and the homework that is
+// still waiting. All read-only shortcuts into screens that already exist.
+// ---------------------------------------------------------------------------
+function cockpitFindTopic(label) {
+  const text = String(label || '').toLowerCase();
+  if (!text) return null;
+  for (const level of LEVELS) {
+    for (const topic of level.topics) {
+      if (text.includes(String(topic.title || '').toLowerCase())) return { level, topic };
+    }
+  }
+  return null;
+}
+
+function cockpitTopicChoices(student) {
+  const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
+  const level = LEVELS.find(l => l.id === student.levelId) || LEVELS[0];
+  return level ? level.topics.filter(t => (t.audience === 'adult' ? grown : true)).map(t => ({ level, topic: t })) : [];
+}
+
+function cockpitContextHTML(student) {
+  const sessions = loadSessions(student.id).slice().sort((a, b) =>
+    String(a.date).localeCompare(String(b.date)) || (a.createdAt || 0) - (b.createdAt || 0));
+  const last = sessions[sessions.length - 1] || null;
+  const lastTopic = last ? cockpitFindTopic(last.topicLabel) : null;
+  const pending = (typeof hwForStudent === 'function' ? hwForStudent(student.id) : []).filter(h => !hwIsDone(h));
+  const choices = cockpitTopicChoices(student);
+  const fmtDate = d => { try { return new Date(d + 'T12:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); } catch (e) { return d; } };
+  const lastHw = last && last.sheet && Array.isArray(last.sheet.homework) ? last.sheet.homework : [];
+
+  return `
+    <div class="cockpit-context">
+      <div class="cockpit-ctx-card">
+        <p class="cockpit-ctx-label">🕘 Última aula</p>
+        ${last ? `
+          <p class="cockpit-ctx-main">${last.present ? '✅' : '❌ Faltou ·'} ${escapeHtmlLite(fmtDate(last.date))}
+            ${last.topicLabel ? ` · <b>${escapeHtmlLite(last.topicLabel)}</b>` : ''}</p>
+          ${last.notes ? `<p class="cockpit-ctx-note">📝 ${escapeHtmlLite(last.notes.length > 160 ? last.notes.slice(0, 160) + '…' : last.notes)}</p>` : ''}
+          ${lastHw.length ? `<p class="cockpit-ctx-note">🏠 Lição pedida: ${lastHw.map(escapeHtmlLite).join(' · ')}</p>` : ''}
+          ${lastTopic ? `<button class="game-btn secondary" type="button" data-open-topic="${escapeAttrLite(lastTopic.level.id)}|${escapeAttrLite(lastTopic.topic.id)}">↺ Revisar: ${escapeHtmlLite(lastTopic.topic.title)}</button>` : ''}
+        ` : `<p class="cockpit-ctx-note">Nenhuma aula registrada ainda — use <b>📋 Today's Class</b> no fim da aula.</p>`}
+      </div>
+
+      <div class="cockpit-ctx-card">
+        <p class="cockpit-ctx-label">📖 Tópico de hoje</p>
+        ${choices.length ? `
+          <div class="cockpit-topic-row">
+            <select id="cockpitTopicSelect" aria-label="Tópico para abrir">
+              ${choices.map(c => `<option value="${escapeAttrLite(c.level.id)}|${escapeAttrLite(c.topic.id)}" ${lastTopic && lastTopic.topic.id === c.topic.id && lastTopic.level.id === c.level.id ? 'selected' : ''}>${escapeHtmlLite(c.topic.emoji || '')} ${escapeHtmlLite(c.topic.title)}</option>`).join('')}
+            </select>
+            <button class="btn btn-primary" type="button" id="cockpitOpenTopic">▶ Abrir</button>
+          </div>
+          <p class="cockpit-ctx-note">Vídeo, jogos, quiz, leitura e speaking do tópico, prontos para compartilhar a tela.</p>
+        ` : '<p class="cockpit-ctx-note">Este nível ainda não tem tópicos.</p>'}
+      </div>
+
+      <div class="cockpit-ctx-card">
+        <p class="cockpit-ctx-label">🏠 Lição de casa</p>
+        ${pending.length ? `
+          <p class="cockpit-ctx-main"><b>${pending.length}</b> pendente${pending.length === 1 ? '' : 's'}: ${pending.slice(0, 2).map(h => escapeHtmlLite(h.title || 'Lição de casa')).join(' · ')}${pending.length > 2 ? '…' : ''}</p>
+        ` : '<p class="cockpit-ctx-note">Nada pendente. 🎉</p>'}
+        <button class="game-btn secondary" type="button" id="cockpitGoHomework">${pending.length ? '👀 Ver lições' : '✨ Passar uma lição'}</button>
+      </div>
+    </div>`;
+}
+
+function wireCockpitContext(root, student) {
+  const openFromValue = (value) => {
+    const [levelId, topicId] = String(value || '').split('|');
+    if (levelId && topicId && typeof openTopicModal === 'function') openTopicModal(levelId, topicId);
+  };
+  root.querySelectorAll('[data-open-topic]').forEach(btn => btn.addEventListener('click', () => openFromValue(btn.dataset.openTopic)));
+  const openBtn = root.querySelector('#cockpitOpenTopic');
+  if (openBtn) openBtn.addEventListener('click', () => openFromValue(root.querySelector('#cockpitTopicSelect').value));
+  const hw = root.querySelector('#cockpitGoHomework');
+  if (hw) hw.addEventListener('click', () => {
+    const section = document.getElementById('homework');
+    if (section && section.classList.contains('is-collapsed') && typeof setSectionCollapsed === 'function') setSectionCollapsed(section, false);
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -329,11 +416,21 @@ function paintSessionDrawer() {
   // typing, not the only way to fill it in. A class is often "Unit 4 + revisão
   // do past simple", which no list of topics can hold.
   const topicLabelOf = (level, topic) => `${level.code} · ${topic.title}`;
-  const topicOptionsHTML = LEVELS.map(level => `
-    <optgroup label="${level.code} · ${level.name}">
-      ${level.topics.map(t => `<option value="${escapeHtmlLite(topicLabelOf(level, t))}">${escapeHtmlLite(t.title)}</option>`).join('')}
-    </optgroup>
-  `).join('');
+  // Only what fits this student: their own level first, then the other
+  // levels the teacher teaches; grown-up topics only for learners of 15+.
+  const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
+  const myLevels = typeof teacherLevelIds === 'function' ? teacherLevelIds() : LEVELS.map(l => l.id);
+  const pickerLevels = LEVELS
+    .filter(l => l.id === student.levelId || myLevels.includes(l.id))
+    .sort((a, b) => (b.id === student.levelId) - (a.id === student.levelId));
+  const topicOptionsHTML = pickerLevels.map(level => {
+    const topics = level.topics.filter(t => (t.audience === 'adult' ? grown : true));
+    if (!topics.length) return '';
+    return `
+    <optgroup label="${level.id === student.levelId ? '⭐ ' : ''}${level.code} · ${level.name}${level.id === student.levelId ? ' (nível do aluno)' : ''}">
+      ${topics.map(t => `<option value="${escapeHtmlLite(topicLabelOf(level, t))}">${escapeHtmlLite(t.title)}</option>`).join('')}
+    </optgroup>`;
+  }).join('');
 
   // Everything the teacher can be offered: the curriculum, plus whatever she
   // has typed for this student before (her own wording comes back).
@@ -341,7 +438,7 @@ function paintSessionDrawer() {
     .map(x => (x.topicLabel || '').trim())
     .filter(Boolean))].reverse();
   const allLabels = [...new Set(pastLabels.concat(
-    LEVELS.flatMap(level => level.topics.map(t => topicLabelOf(level, t)))))];
+    pickerLevels.flatMap(level => level.topics.filter(t => (t.audience === 'adult' ? grown : true)).map(t => topicLabelOf(level, t)))))];
   const datalistHTML = allLabels.map(l => `<option value="${escapeHtmlLite(l)}"></option>`).join('');
   const recentHTML = pastLabels.slice(0, 3)
     .map(l => `<button type="button" class="session-topic-chip" data-topic-chip="${escapeHtmlLite(l)}" title="${escapeHtmlLite(l)}">↺ ${escapeHtmlLite(l)}</button>`)
@@ -590,6 +687,8 @@ function saveClassSession(student) {
   drawerAttendance = 'present';
 
   paintSessionDrawer();
+  // "Última aula" on the cockpit now shows this one.
+  refreshLiveClassCockpit();
 
   const btn = document.getElementById('saveSessionBtn');
   if (btn) {

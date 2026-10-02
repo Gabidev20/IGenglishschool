@@ -1329,6 +1329,34 @@ let examState = {
   showAnswers: false,
 };
 
+// The ready-made topics, grouped, and only those that fit the teacher's
+// setup (teacherSetup.js): no children's vocabulary for a teacher of
+// grown-ups, no everyday-adult topics for a teacher of children, and no
+// grammar above the highest level she teaches. Without a setup: everything
+// except the grown-up topics, as before.
+const EX_LEVEL_ORDER = ['a0', 'a1', 'a2', 'b1', 'b1b2'];
+const EX_GRAMMAR_LEVEL = {
+  plurals: 'a0', thereisare: 'a1', presentsimple: 'a1', prepositions: 'a1', questions: 'a1', ordinals: 'a1',
+  bignumbers: 'a1', presentcontinuous: 'a1', pastsimple: 'a2', verbs: 'a2', whpast: 'a2',
+  comparatives: 'a2', future: 'a2', modals: 'a2', tenses: 'b1',
+};
+function exChipGroups() {
+  const has = name => typeof window[name] === 'function';
+  const adultOnly = has('teacherAdultOnly') && teacherAdultOnly();
+  const grown = has('teacherHasGrownups') && teacherHasGrownups();
+  const young = has('teacherHasYoungKids') ? teacherHasYoungKids() : true;
+  const levels = has('teacherLevelIds') ? teacherLevelIds() : EX_LEVEL_ORDER;
+  const top = Math.max(...levels.map(l => EX_LEVEL_ORDER.indexOf(l)));
+  const groups = [
+    { label: '🧸 Vocabulário (crianças)', topics: EXAM_TOPICS.filter(t => t.kids && young && !adultOnly) },
+    { label: '✍️ Gramática fácil', topics: EXAM_TOPICS.filter(t => t.writers && !adultOnly) },
+    { label: '🧩 Gramática', topics: EXAM_TOPICS.filter(t => !t.kids && !t.writers && !t.adult
+        && (EX_LEVEL_ORDER.indexOf(EX_GRAMMAR_LEVEL[t.id] || 'a0') <= top)) },
+    { label: '💼 Inglês do dia a dia (15+ e adultos)', topics: EXAM_TOPICS.filter(t => t.adult && grown && levels.includes(t.level)) },
+  ];
+  return groups.filter(g => g.topics.length);
+}
+
 function renderExamMaker(container) {
   if (!container) return;
   const saved = exLoadExams();
@@ -1344,7 +1372,11 @@ function renderExamMaker(container) {
 
         <div class="exam-chips">
           <span class="exam-chips-label">Tópicos prontos:</span>
-          ${EXAM_TOPICS.map(t => `<button type="button" class="exam-chip" data-add="${t.id}">+ ${exEsc(t.label)}</button>`).join('')}
+          ${exChipGroups().map(g => `
+            <div class="exam-chip-group">
+              <span class="exam-chip-group-label">${g.label}</span>
+              ${g.topics.map(t => `<button type="button" class="exam-chip" data-add="${t.id}">+ ${exEsc(t.label)}</button>`).join('')}
+            </div>`).join('')}
         </div>
 
         <div class="exam-row">

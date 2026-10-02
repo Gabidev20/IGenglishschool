@@ -523,6 +523,55 @@ const ADULT_TOPICS = {
   ],
 };
 
+// ---------------------------------------------------------------------------
+// The same topics as test / practice topics for the Exam Maker, the
+// homework and the student's Practice tile (examMaker.js item shapes).
+// Built from each topic's own words, sentences and sort board.
+// ---------------------------------------------------------------------------
+function adultSentence(s) {
+  const t = String(s || '').trim();
+  if (/[.?!]$/.test(t)) return t;
+  return /^(what|where|when|who|why|how|can|could|do|does|did|is|are|would|will|have)\b/i.test(t) ? `${t}?` : `${t}.`;
+}
+
+function adultExamTopic(levelId, topic) {
+  const words = (topic.words || []).filter(w => w.en && w.pt);
+  const sentences = (topic.practiceSentences || []).map(adultSentence);
+  const others = (list, keep, key) => exPickN(list.filter(x => x[key] !== keep[key]), 3).map(x => x[key]);
+  const gens = [
+    () => { const w = exPick(words); return exMC(`How do you say "${w.pt}" in English?`, w.en, others(words, w, 'en')); },
+    () => { const w = exPick(words); return exMC(`What does "${w.en}" mean?`, w.pt, others(words, w, 'pt')); },
+  ];
+  if (sentences.length) {
+    gens.push(() => exOrder(exPick(sentences)));
+    // Gap-fill: blank out a word-bank word the sentence actually contains.
+    const gappable = sentences.map(s => {
+      const hit = words.find(w => !/\s/.test(w.en) && new RegExp(`\\b${w.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(s));
+      return hit ? { s, w: hit } : null;
+    }).filter(Boolean);
+    if (gappable.length) gens.push(() => {
+      const g = exPick(gappable);
+      return exGap(g.s.replace(new RegExp(`\\b${g.w.en}\\b`, 'i'), '___'), g.w.en, { hint: g.w.pt });
+    });
+  }
+  if (topic.sort && Array.isArray(topic.sort.items) && topic.sort.items.length) {
+    gens.push(() => { const it = exPick(topic.sort.items); return exSort(it.text, it.bucket, topic.sort.buckets, topic.sort.prompt); });
+  }
+  return {
+    id: topic.id, label: topic.title, pt: topic.description, adult: true, level: levelId,
+    aliases: [topic.title.toLowerCase(), topic.id.replace(/^adult-/, '').replace(/-/g, ' ')],
+    gens,
+    pairs: () => exPickN(words, 6).map(w => ({ left: w.pt, right: w.en })),
+    words: () => words.map(w => ({ id: `${topic.id}_${w.id}`, en: w.en, pt: w.pt, emoji: w.emoji })),
+  };
+}
+
+if (typeof EXAM_TOPICS !== 'undefined' && typeof exMC === 'function') {
+  Object.entries(ADULT_TOPICS).forEach(([levelId, topics]) => topics.forEach(t => {
+    if (!EXAM_TOPICS.some(x => x.id === t.id)) EXAM_TOPICS.push(adultExamTopic(levelId, t));
+  }));
+}
+
 // Merge into the shipped curriculum. Guarded by id, so a second load (or a
 // teacher who already has a topic with the same id) never duplicates one.
 (function addAdultTopics() {
