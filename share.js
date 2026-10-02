@@ -177,6 +177,7 @@ const ShareMode = (() => {
     IGStore.setJSON('writing_' + student.id, Array.isArray(data.writing) ? data.writing : []);
     IGStore.setJSON('homework', Array.isArray(data.homework) ? data.homework : []);
     IGStore.setJSON('review_' + student.id, data.review && typeof data.review === 'object' ? data.review : {});
+    if (data.profile) IGStore.setJSON('student_profiles', { [student.id]: data.profile });
 
     // Anything this student already sent from another device.
     (data.activity || []).forEach(row => applyActivityLocally(row, student.id));
@@ -371,11 +372,40 @@ function renderStudentHome(shell, studentId) {
     : (typeof LEVELS !== 'undefined' ? (LEVELS[0].topics || []).map(t => ({ ...t, levelId: LEVELS[0].id })) : []);
 
   // English first, Portuguese underneath: the page is part of the lesson.
-  const easy = typeof igIsEasyLevel === 'function' && igIsEasyLevel(student);
   const mistakes = typeof msCards === 'function' ? msCards(student.id).filter(c => !msPracticedToday(c)).length : due;
   const review = typeof latestReview === 'function' ? latestReview(student.id) : null;
   const tile = (go, icon, en, pt, cls) => `
         <button class="stu-tile${cls ? ' ' + cls : ''}" data-go="${go}"><span>${icon}</span><b>${en}</b><small>${pt}</small></button>`;
+
+  // What each kind of learner gets (profiles.js).
+  const prof = typeof studentProfile === 'function' ? studentProfile(student) : 'writer';
+  const T = {
+    progress: () => tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas'),
+    homework: () => tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉'),
+    review: () => (review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
+    games: () => tile('games', '🎮', 'Games', 'Jogos com as palavras do meu nível'),
+    colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
+    backpack: () => tile('backpack', '🎒', 'Backpack', 'Mochila — school objects'),
+    house: () => tile('house', '🏠', 'House', 'Casa — parts of the house'),
+    animals: () => tile('animals', '🦁', 'Animals', 'Animais'),
+    feelings: () => tile('feelings', '😊', 'Feelings', 'Sentimentos'),
+    music: () => tile('instruments', '🎸', 'Music', 'Música — instrumentos'),
+    where: () => tile('prepositions', '📦', 'Where is it?', 'Onde está? — preposições'),
+    weather: () => tile('weather', '🌦️', 'Weather', 'Clima'),
+    practice: () => tile('practice', '⚡', 'Practice', prof === 'reader' ? 'Treinar — animais, cores, números…' : 'Treinar — to be, past, present continuous, hobbies'),
+    writingPractice: () => tile('writing-practice', '📝', 'Writing practice', 'Treinar a escrita — completar e montar frases'),
+    dictation: () => tile('dictation', '🎧', 'Dictation', 'Ditado — ouvir e escrever'),
+    speaking: () => tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta'),
+    write: () => tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher'),
+    audio: () => tile('audio', '🎙️', 'Talk to my teacher', 'Mandar um áudio para a teacher'),
+    mistakes: () => tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente'),
+  };
+  const tilesFor = p => ({
+    // Can't read yet: pictures and voice only — no writing, no reading.
+    prereader: ['review', 'colors', 'feelings', 'weather', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
+    reader: ['progress', 'homework', 'review', 'games', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
+    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'games', 'mistakes'],
+  }[p] || []).map(k => T[k]());
 
   shell.innerHTML = `
     <div class="stu-wrap">
@@ -383,7 +413,7 @@ function renderStudentHome(shell, studentId) {
         <span class="stu-avatar">${shareEsc(student.avatar || '🙂')}</span>
         <div>
           <h1>Hello, ${shareEsc(student.name)}! 👋</h1>
-          <p>${shareEsc(typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : '')}
+          <p>${shareEsc(student.levelLabel || (typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : ''))}
              · ${progress.xp || 0} XP · ${progress.stars || 0} ⭐
              ${stats && stats.streak ? ` · 🔥 ${stats.streak} day${stats.streak === 1 ? '' : 's'}` : ''}</p>
         </div>
@@ -407,23 +437,8 @@ function renderStudentHome(shell, studentId) {
           <button class="btn btn-primary" data-go="review">Review</button>
         </div>` : ''}
 
-      <div class="stu-tiles">
-        ${tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas')}
-        ${tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉')}
-        ${review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''}
-        ${tile('games', '🎮', 'Games', 'Jogos com as palavras do meu nível')}
-        ${tile('backpack', '🎒', 'Backpack', 'Mochila — school objects')}
-        ${tile('house', '🏠', 'House', 'Casa — parts of the house')}
-        ${tile('animals', '🦁', 'Animals', 'Animais')}
-        ${tile('feelings', '😊', 'Feelings', 'Sentimentos')}
-        ${tile('instruments', '🎸', 'Music', 'Música — instrumentos')}
-        ${tile('prepositions', '📦', 'Where is it?', 'Onde está? — preposições')}
-        ${tile('weather', '🌦️', 'Weather', 'Clima')}
-        ${tile('practice', '⚡', 'Practice', easy ? 'Treinar — animais, cores, números…' : 'Treinar — exercícios de gramática')}
-        ${tile('dictation', '🎧', 'Dictation', 'Ditado — ouvir e escrever')}
-        ${tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta')}
-        ${tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher')}
-        ${tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente')}
+      <div class="stu-tiles${prof === 'prereader' ? ' stu-tiles--big' : ''}">
+        ${tilesFor(prof).join('')}
       </div>
 
       <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br><small>a teacher vê o que você faz aqui</small></p>
@@ -446,8 +461,12 @@ function renderStudentHome(shell, studentId) {
     instruments: () => openInstrumentsGame(),
     prepositions: () => openPrepositionsGame(),
     weather: () => openWeatherGame(),
+    colors: () => openColorsGame(),
+    audio: () => openAudioMessage(student),
+    'writing-practice': () => openWritingPractice(student.id),
     practice: () => {
-      if (easy && typeof openKidsPractice === 'function') { openKidsPractice(); return; }
+      if (prof === 'reader' && typeof openKidsPractice === 'function') { openKidsPractice(); return; }
+      if (prof === 'writer' && typeof openWriterPractice === 'function') { openWriterPractice(); return; }
       const picked = (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
       if (!picked.length) return;
       openExamGames({
@@ -458,10 +477,16 @@ function renderStudentHome(shell, studentId) {
     },
     dictation: () => openDictationModal({ studentId: student.id, source: 'home' }),
     speaking: () => openSpeakingModal({ studentId: student.id, source: 'home' }),
-    writing: () => openWritingModal({ studentId: student.id }),
+    writing: () => (typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
   };
   shell.querySelectorAll('[data-go]').forEach(btn => {
-    btn.addEventListener('click', () => { const fn = go[btn.dataset.go]; if (fn) fn(); });
+    btn.addEventListener('click', () => {
+      // A child who can't read hears the button's name.
+      if (prof === 'prereader' && 'speechSynthesis' in window) {
+        try { const u = new SpeechSynthesisUtterance((btn.querySelector('b') || btn).textContent); u.lang = 'en-US'; u.rate = 0.85; window.speechSynthesis.speak(u); } catch (e) {}
+      }
+      const fn = go[btn.dataset.go]; if (fn) fn();
+    });
   });
 }
 

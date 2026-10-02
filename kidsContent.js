@@ -68,12 +68,12 @@ function kidSentences(n) {
   return exShuffle([...out]).slice(0, n || 8);
 }
 
-// Is this student young enough for the easy content?
+// The easy content is for readers (profiles.js): the youngest who can't
+// read yet get picture games instead, and the older ones practise writing.
 function igIsEasyLevel(student) {
   if (!student) return false;
-  if (['a0', 'a1'].includes(String(student.levelId || '').toLowerCase())) return true;
-  if (['kids', 'juniors'].includes(student.tier)) return true;
-  return Number(student.age) > 0 && Number(student.age) <= 10;
+  if (typeof studentProfile === 'function') return studentProfile(student) === 'reader';
+  return Number(student.age) > 0 && Number(student.age) <= 9;
 }
 
 // ---------------------------------------------------------------------------

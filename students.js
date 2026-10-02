@@ -562,6 +562,13 @@ function openStudentForm(existing, onDone) {
         </select>
       </div>
       <div class="gm-form-field">
+        <label for="stProfile">Perfil de atividades (o que aparece no link do aluno)</label>
+        <select id="stProfile">
+          <option value="">Automático pela idade${isEdit && typeof studentProfileAuto === 'function' ? ` — agora: ${PROFILE_META[studentProfileAuto(state)].icon} ${PROFILE_META[studentProfileAuto(state)].label}` : ''}</option>
+          ${typeof PROFILE_META !== 'undefined' ? Object.entries(PROFILE_META).map(([id, m]) => `<option value="${id}" ${isEdit && loadStudentProfiles()[state.id] === id ? 'selected' : ''}>${m.icon} ${m.label} — ${m.desc}</option>`).join('') : ''}
+        </select>
+      </div>
+      <div class="gm-form-field">
         <label for="stAvatar">Avatar emoji</label>
         <input type="text" id="stAvatar" class="gm-input-emoji" style="max-width:100px" placeholder="⭐" value="${escapeAttrLite(state.avatar)}" />
       </div>
@@ -587,14 +594,18 @@ function openStudentForm(existing, onDone) {
 
     const errorEl = document.getElementById('stFormError');
     if (!name) return showFormErrorLite(errorEl, 'Please enter the student\'s name.');
-    if (!age || age < 1 || age > 18) return showFormErrorLite(errorEl, 'Please enter a valid age (1-18).');
+    // Adults too: some teachers have grown-up students.
+    if (!age || age < 1 || age > 120) return showFormErrorLite(errorEl, 'Please enter a valid age (1-120).');
 
     const opt = levelOption(levelId);
     const students = loadStudents();
-    const record = { id: state.id, name, age, levelId, tier: opt.tier, levelLabel: opt.levelLabel, avatar, color };
+    // An adult reads as "Adults (A2)", not "Kids (A0)" / "Teens (A2)".
+    const levelLabel = age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults') : opt.levelLabel;
+    const record = { id: state.id, name, age, levelId, tier: opt.tier, levelLabel, avatar, color };
     const idx = students.findIndex(s => s.id === state.id);
     if (idx >= 0) students[idx] = record; else students.push(record);
     saveStudents(students);
+    if (typeof saveStudentProfile === 'function') saveStudentProfile(record.id, document.getElementById('stProfile').value || null);
 
     if (!getActiveStudentId()) setActiveStudentId(record.id);
     renderProfileList();

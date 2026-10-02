@@ -88,6 +88,9 @@ const msPracticedToday = c => c.right > 0 && c.due && new Date(c.due).getTime() 
 function openMistakes(studentId) {
   const id = studentId || (typeof getActiveStudentId === 'function' ? getActiveStudentId() : null);
   if (!id) { alert('Escolha um aluno primeiro.'); return; }
+  // Children who can't read yet tap the right picture instead of typing.
+  const who = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === id);
+  const prereader = typeof studentProfile === 'function' && who && studentProfile(who) === 'prereader';
 
   openModal(`
     <div class="modal-content-pad">
@@ -159,7 +162,14 @@ function openMistakes(studentId) {
   function drill(card, after) {
     const item = card.item;
     const isSentence = item.kind === 'sentence';
-    const steps = isSentence ? ['listen', 'say', 'order'] : ['listen', 'say', 'type'];
+    const steps = prereader
+      ? (isSentence ? ['listen', 'say'] : ['listen', 'say', 'pick'])
+      : (isSentence ? ['listen', 'say', 'order'] : ['listen', 'say', 'type']);
+    // Pictures to choose from for 'pick': this word's and three others.
+    const pool = (typeof KID_VOCAB !== 'undefined' ? Object.values(KID_VOCAB).flat() : [])
+      .filter(x => x[0] !== item.correct).sort(() => Math.random() - 0.5).slice(0, 3)
+      .map(x => ({ correct: x[0], emoji: x[2], image: '' }));
+    const options = [{ correct: item.correct, emoji: item.emoji, image: item.image }, ...pool].sort(() => Math.random() - 0.5);
     let step = 0;
     let hints = 0;
     let typed = '';
@@ -221,6 +231,13 @@ function openMistakes(studentId) {
             ${canRec ? `<button class="game-btn" data-a="mic">🎤 Speak</button>` : ''}
             <button class="game-btn${canRec ? ' secondary' : ''}" data-a="said">✅ I said it!</button>
           </div>`;
+      } else if (s === 'pick') {
+        body = `
+          <p class="ms-step-title">👆 🔊</p>
+          <div class="ms-pick">
+            ${options.map((o, i) => `<button class="ms-pick-btn" data-pickpic="${i}" aria-label="picture">${msPicHTML({ ...o, kind: 'vocab' }, 'ms-pick-pic')}</button>`).join('')}
+          </div>
+          <div class="rv-actions"><button class="game-btn secondary" data-a="hear">🔊</button></div>`;
       } else if (s === 'type') {
         const word = item.correct;
         const shown = word.split('').map((ch, i) => (ch === ' ' ? '&nbsp;' : i < hints ? igEscapeHtml(ch) : '_')).join(' ');
@@ -258,6 +275,7 @@ function openMistakes(studentId) {
       if (step >= steps.length) { success(); return; }
       paintStep();
       if (steps[step] === 'say') msSay(item.correct);
+      if (steps[step] === 'pick') msSay(`Find ${item.correct}!`);
     }
 
     function bindStep(box, s) {
@@ -297,6 +315,14 @@ function openMistakes(studentId) {
       on('hint', () => { hints = Math.min(item.correct.length, hints + 1); typed = item.correct.slice(0, hints); IGSound.click(); paintStep(); });
       box.querySelectorAll('[data-take]').forEach(b => b.addEventListener('click', () => { chosen.push(Number(b.dataset.take)); IGSound.click(); paintStep(); }));
       box.querySelectorAll('[data-un]').forEach(b => b.addEventListener('click', () => { chosen.splice(Number(b.dataset.un), 1); IGSound.drop(); paintStep(); }));
+      box.querySelectorAll('[data-pickpic]').forEach(b => b.addEventListener('click', () => {
+        const o = options[Number(b.dataset.pickpic)];
+        if (o.correct === item.correct) { advance(); return; }
+        IGSound.wrong();
+        b.classList.add('shake');
+        setTimeout(() => b.classList.remove('shake'), 500);
+        msSay(`Find ${item.correct}!`);
+      }));
       on('checkorder', () => {
         const built = chosen.map(i => tokens[i]).join(' ').replace(/\s([.!?])$/, '$1');
         if (msNorm(built) === msNorm(item.correct)) { advance(); return; }

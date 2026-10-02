@@ -91,8 +91,12 @@ function skSentences(opts) {
   // Young learners: short sentences with the verb to be and easy vocabulary
   // ("She is happy.", "It is a cat.") instead of the general bank.
   const student = o.studentId && typeof loadStudents === 'function' ? loadStudents().find(s => s.id === o.studentId) : null;
-  if (student && typeof igIsEasyLevel === 'function' && igIsEasyLevel(student) && typeof kidSentences === 'function') {
-    return kidSentences(8);
+  if (student && typeof studentProfile === 'function') {
+    const prof = studentProfile(student);
+    if (prof === 'reader' && typeof kidSentences === 'function') return kidSentences(8);
+    if (prof === 'writer' && typeof writerSentences === 'function') return writerSentences(8);
+    // Pre-readers say colours, not sentences.
+    if (prof === 'prereader' && typeof KID_VOCAB !== 'undefined') return exShuffle(KID_VOCAB.colors.slice(0, 6).map(c => `${c[0][0].toUpperCase()}${c[0].slice(1)}.`));
   }
   if (typeof EX_FRAMES !== 'undefined' && typeof exAff === 'function') {
     return exShuffle(EX_FRAMES.map(f => exAff(f))).slice(0, 8);
@@ -520,12 +524,12 @@ function skAllSubmissions() {
 
 function openWritingDesk() {
   const all = skAllSubmissions();
-  const pending = all.filter(w => !(w.correction && w.correction.text));
+  const pending = all.filter(w => !(w.correction && (w.correction.text || w.correction.note)));
 
   openModal(`
     <div class="modal-content-pad">
       <h3 id="modalTitle">✉️ Mensagens e textos dos alunos</h3>
-      <p class="lt-count-note">${all.filter(w => !w.seen && !(w.correction && w.correction.text)).length} nova(s) · ${pending.length} aguardando resposta · ${all.length} no total</p>
+      <p class="lt-count-note">${all.filter(w => !w.seen && !(w.correction && (w.correction.text || w.correction.note))).length} nova(s) · ${pending.length} aguardando resposta · ${all.length} no total</p>
       <div id="skDeskMount" class="sk-desk"></div>
     </div>`, true);
 
@@ -537,14 +541,14 @@ function openWritingDesk() {
       return;
     }
     mount.innerHTML = all.map(w => `
-      <div class="sk-desk-row ${w.correction && w.correction.text ? 'done' : ''}${w.seen || (w.correction && w.correction.text) ? '' : ' unread'}">
+      <div class="sk-desk-row ${w.correction && (w.correction.text || w.correction.note) ? 'done' : ''}${w.seen || (w.correction && (w.correction.text || w.correction.note)) ? '' : ' unread'}">
         <div>
-          <b>${w.seen || (w.correction && w.correction.text) ? '' : '<span class="sk-new">NOVA</span> '}${skEsc(w.avatar || '🙂')} ${skEsc(w.studentName)}</b>
+          <b>${w.seen || (w.correction && (w.correction.text || w.correction.note)) ? '' : '<span class="sk-new">NOVA</span> '}${skEsc(w.avatar || '🙂')} ${skEsc(w.studentName)}</b>
           <span>${skEsc(w.prompt)}</span>
-          <span>${new Date(w.sentAt).toLocaleDateString('pt-BR')} · ${w.words} palavras</span>
+          <span>${new Date(w.sentAt).toLocaleDateString('pt-BR')} · ${w.audio ? `🎤 áudio${w.seconds ? ` · ${w.seconds}s` : ''}` : `${w.words} palavras`}</span>
         </div>
-        <button class="game-btn ${w.correction && w.correction.text ? 'secondary' : ''}" data-correct="${w.studentId}:${w.id}">
-          ${w.correction && w.correction.text ? '👁️ Ver' : '🖊️ Corrigir'}
+        <button class="game-btn ${w.correction && (w.correction.text || w.correction.note) ? 'secondary' : ''}" data-correct="${w.studentId}:${w.id}">
+          ${w.correction && (w.correction.text || w.correction.note) ? '👁️ Ver' : w.audio ? '🎧 Ouvir' : '🖊️ Corrigir'}
         </button>
       </div>`).join('');
 
@@ -570,6 +574,33 @@ function openWritingDesk() {
       if (typeof refreshInboxBadge === 'function') refreshInboxBadge();
     }
 
+    // An audio message (from a child who can't write yet): listen, answer.
+    if (w.audio) {
+      mount.innerHTML = `
+        <div class="sk-editor">
+          <button class="game-btn secondary" data-action="back">← Voltar</button>
+          <h4 class="watch-h">${skEsc(student ? student.name : '')} — 🎤 mensagem de áudio${w.seconds ? ` (${w.seconds}s)` : ''}</h4>
+          <audio controls src="${skEsc(w.audio)}" class="am-player"></audio>
+          <label class="exam-field">
+            <span class="exam-label">Sua resposta (o aluno vê no app, embaixo do áudio dele)</span>
+            <input type="text" id="skNote" placeholder="Great job! 👏" value="${skEsc((w.correction && w.correction.note) || '')}" />
+          </label>
+          <div class="game-btn-row ex-actions">
+            <button class="btn btn-primary" data-action="save-audio">💾 Salvar resposta</button>
+          </div>
+        </div>`;
+      mount.querySelector('[data-action="back"]').addEventListener('click', paintList);
+      mount.querySelector('[data-action="save-audio"]').addEventListener('click', () => {
+        w.correction = { text: '', note: mount.querySelector('#skNote').value.trim(), at: new Date().toISOString() };
+        w.status = 'corrected';
+        SkillsModules.saveWriting(studentId, list);
+        const idx = all.findIndex(x => x.studentId === studentId && x.id === id);
+        if (idx !== -1) all[idx] = { ...all[idx], correction: w.correction, status: 'corrected' };
+        paintList();
+      });
+      return;
+    }
+
     mount.innerHTML = `
       <div class="sk-editor">
         <button class="game-btn secondary" data-action="back">← Voltar</button>
@@ -578,7 +609,7 @@ function openWritingDesk() {
         <p class="sk-written">${skEsc(w.text)}</p>
 
         <p class="sk-label">Versão corrigida <small>(edite o texto; o aluno verá a diferença marcada)</small></p>
-        <textarea class="sk-textarea" id="skCorrected" rows="7">${skEsc((w.correction && w.correction.text) || w.text)}</textarea>
+        <textarea class="sk-textarea" id="skCorrected" rows="7">${skEsc((w.correction && (w.correction.text || w.correction.note)) || w.text)}</textarea>
 
         <div class="exam-row">
           <label class="exam-field small">
