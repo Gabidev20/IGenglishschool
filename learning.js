@@ -809,7 +809,8 @@ function renderSpellingExercise(container, ex, onAnswered) {
    3) PHONICS & BLENDING STATION (Kids / Juniors tiers)
    ========================================================================== */
 
-const CVC_WORDS = ['cat', 'dog', 'sun', 'hat', 'pig', 'bed', 'cup', 'bus', 'map', 'pen', 'log', 'mud', 'box', 'van', 'fox', 'jam', 'web', 'zip'];
+// Three-letter words a young learner already knows (no log, mud, jam…).
+const CVC_WORDS = ['cat', 'dog', 'sun', 'hat', 'pig', 'bed', 'bus', 'box', 'cup', 'pen'];
 const phonicsDecks = {};
 
 function drawPhonicsWord(topicId) {

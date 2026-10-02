@@ -4683,7 +4683,7 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 
 
   .matchup-item .word-visual { width: 40px; height: 40px; font-size: 1.6rem; }
-  .hangman-word-visual { max-width: 84px; font-size: 3rem; }
+  .hangman-word-visual { max-width: 116px; font-size: 4.4rem; }
   .quiz-visual { width: 96px; height: 96px; font-size: 3rem; }
   #arcadeStage .quiz-visual { width: 110px; height: 110px; font-size: 3.4rem; }
   .listen-speaker-btn { width: 92px; height: 92px; font-size: 2.4rem; }
@@ -5071,7 +5071,7 @@ i.att { width: 14px; height: 14px; margin: 0; border-radius: 4px; }
 @media (max-width: 640px) {
   .hangman-layout { grid-template-columns: 1fr; justify-content: stretch; }
   .gallows-svg { max-width: 130px; }
-  .hangman-word-visual { max-width: 84px; font-size: 3rem; }
+  .hangman-word-visual { max-width: 116px; font-size: 4.4rem; }
   .hangman-word { font-size: 1.5rem; }
   .keyboard { max-width: 100%; }
   .key-btn { font-size: 0.85rem; padding: 8px 0; }

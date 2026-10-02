@@ -203,158 +203,64 @@ const LEVELS = [
         "grammarTip": "Say each letter sound before the word, like 'C-A-T, cat'. Repeat simple 3-letter words often so children hear the sounds clearly.",
         "words": [
           {
-            "id": "a_apple",
-            "en": "A is for Apple",
-            "pt": "A de Maçã",
-            "emoji": "🍎",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg"
+            "id": "apple",
+            "en": "apple",
+            "pt": "maçã",
+            "emoji": "🍎"
           },
           {
-            "id": "b_ball",
-            "en": "B is for Ball",
-            "pt": "B de Bola",
-            "emoji": "⚽",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Many_balls.jpg/500px-Many_balls.jpg"
-          },
-          {
-            "id": "c_cat",
-            "en": "C is for Cat",
-            "pt": "C de Gato",
-            "emoji": "🐱",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg"
-          },
-          {
-            "id": "d_dog",
-            "en": "D is for Dog",
-            "pt": "D de Cachorro",
-            "emoji": "🐶",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+            "id": "ball",
+            "en": "ball",
+            "pt": "bola",
+            "emoji": "⚽"
           },
           {
             "id": "cat",
             "en": "cat",
             "pt": "gato",
-            "emoji": "🐱",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg"
+            "emoji": "🐱"
           },
           {
             "id": "dog",
             "en": "dog",
             "pt": "cachorro",
-            "emoji": "🐶",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+            "emoji": "🐶"
           },
           {
             "id": "sun",
             "en": "sun",
             "pt": "sol",
-            "emoji": "☀️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/The_Sun_in_white_light.jpg/500px-The_Sun_in_white_light.jpg"
+            "emoji": "☀️"
           },
           {
             "id": "hat",
             "en": "hat",
             "pt": "chapéu",
-            "emoji": "🎩",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Chapeaux_en_peau_de_castor.jpg/500px-Chapeaux_en_peau_de_castor.jpg"
+            "emoji": "👒"
           },
           {
             "id": "bed",
             "en": "bed",
             "pt": "cama",
-            "emoji": "🛏️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg/500px-2008-04-12_Freilichtmuseum_Detmold_%2811%29.jpg"
+            "emoji": "🛏️"
           },
           {
             "id": "pig",
             "en": "pig",
             "pt": "porco",
-            "emoji": "🐷",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Pig_farm_Vampula_1.jpg/500px-Pig_farm_Vampula_1.jpg"
-          },
-          {
-            "id": "cup",
-            "en": "cup",
-            "pt": "xícara",
-            "emoji": "☕",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mug_of_Tea.JPG/500px-Mug_of_Tea.JPG"
+            "emoji": "🐷"
           },
           {
             "id": "bus",
             "en": "bus",
             "pt": "ônibus",
-            "emoji": "🚌",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/LTZ1328-19-20241030-160332.jpg/500px-LTZ1328-19-20241030-160332.jpg"
-          },
-          {
-            "id": "pen",
-            "en": "pen",
-            "pt": "caneta",
-            "emoji": "🖊️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Carandache_Ecridor.jpg"
+            "emoji": "🚌"
           },
           {
             "id": "box",
             "en": "box",
             "pt": "caixa",
-            "emoji": "📦",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/L%C3%A5da_-_Livrustkammaren_-_107142.tif/lossy-page1-500px-L%C3%A5da_-_Livrustkammaren_-_107142.tif.jpg"
-          },
-          {
-            "id": "fox",
-            "en": "fox",
-            "pt": "raposa",
-            "emoji": "🦊",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Vulpes_vulpes_ssp_fulvus.jpg/500px-Vulpes_vulpes_ssp_fulvus.jpg"
-          },
-          {
-            "id": "van",
-            "en": "van",
-            "pt": "van",
-            "emoji": "🚐",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/2018_Ford_Transit_Custom_300_Base_2.0_facelift.jpg/500px-2018_Ford_Transit_Custom_300_Base_2.0_facelift.jpg"
-          },
-          {
-            "id": "jam",
-            "en": "jam",
-            "pt": "geleia",
-            "emoji": "🍓",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Fruits_jam_variants.jpg/500px-Fruits_jam_variants.jpg"
-          },
-          {
-            "id": "web",
-            "en": "web",
-            "pt": "teia",
-            "emoji": "🕸️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/A_classic_circular_form_spider%27s_web.jpg/500px-A_classic_circular_form_spider%27s_web.jpg"
-          },
-          {
-            "id": "map",
-            "en": "map",
-            "pt": "mapa",
-            "emoji": "🗺️",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/World_Map_1689.JPG/500px-World_Map_1689.JPG"
-          },
-          {
-            "id": "log",
-            "en": "log",
-            "pt": "tronco",
-            "emoji": "🪵",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Felling_a_gumtree_c1884-1917_Powerhouse_Museum.jpg/500px-Felling_a_gumtree_c1884-1917_Powerhouse_Museum.jpg"
-          },
-          {
-            "id": "net",
-            "en": "net",
-            "pt": "rede",
-            "emoji": "🥅",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/A_fishing_net_in_Brandon_Creek_-_geograph.org.uk_-_921094.jpg/500px-A_fishing_net_in_Brandon_Creek_-_geograph.org.uk_-_921094.jpg"
-          },
-          {
-            "id": "zip",
-            "en": "zip",
-            "pt": "zíper",
-            "emoji": "🤐",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Coil_plastic_and_metal_zippers.jpg/500px-Coil_plastic_and_metal_zippers.jpg"
+            "emoji": "📦"
           }
         ],
         "readingTime": {
