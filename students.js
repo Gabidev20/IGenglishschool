@@ -714,7 +714,7 @@ function wireStickerBook(root, studentId) {
     `).join('');
 
     dots.querySelectorAll('[data-go]').forEach(b => {
-      b.addEventListener('click', () => { index = Number(b.dataset.go); paint(); });
+      b.addEventListener('click', () => { index = Number(b.dataset.go); if (typeof IGSound !== 'undefined') IGSound.flip(); paint(); });
     });
   }
 
@@ -722,6 +722,7 @@ function wireStickerBook(root, studentId) {
   // getting stickers instead of hitting a dead button they have to reason about.
   function step(by) {
     index = (index + by + stickers.length) % stickers.length;
+    if (typeof IGSound !== 'undefined') IGSound.flip();
     paint();
   }
 

@@ -23,6 +23,10 @@ const GAME_TYPES = [
   { id: 'dressup', label: 'Dress Up', icon: '🧥', needs: 'clothes' },
   { id: 'backpack', label: 'Backpack', icon: '🎒', needs: 'school' },
   { id: 'house', label: 'House', icon: '🏠', needs: 'house' },
+  { id: 'animal', label: 'Animal Builder', icon: '🦁', needs: 'animals' },
+  { id: 'feelings', label: 'Faces', icon: '😊', needs: 'feelings' },
+  { id: 'instruments', label: 'Music', icon: '🎸', needs: 'instruments' },
+  { id: 'prepositions', label: 'Where is it?', icon: '📦', needs: 'prepositions' },
 ];
 
 // Words that mark a topic as a wardrobe topic. Three hits is enough: a single
@@ -65,6 +69,18 @@ function gamesForTopic(topic) {
     if (g.needs === 'house') {
       return typeof isHouseTopic === 'function' && isHouseTopic(topic);
     }
+    if (g.needs === 'animals') {
+      return typeof isAnimalTopic === 'function' && isAnimalTopic(topic);
+    }
+    if (g.needs === 'feelings') {
+      return typeof isFeelingsTopic === 'function' && isFeelingsTopic(topic);
+    }
+    if (g.needs === 'instruments') {
+      return typeof isInstrumentsTopic === 'function' && isInstrumentsTopic(topic);
+    }
+    if (g.needs === 'prepositions') {
+      return typeof isPrepositionsTopic === 'function' && isPrepositionsTopic(topic);
+    }
     return (topic.words || []).length > 0;
   });
 }
@@ -89,34 +105,11 @@ const GameEngine = (() => {
 
   const wordVisualHTML = (word, extraClass) => igWordVisualHTML(word, extraClass);
 
-  // Web Audio synthesized feedback sounds (no external audio files needed)
-  let audioCtx = null;
-  function ctx() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    return audioCtx;
-  }
-  function tone(freq, start, duration, type = 'sine', gain = 0.16) {
-    const c = ctx();
-    const osc = c.createOscillator();
-    const g = c.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
-    g.gain.value = gain;
-    osc.connect(g).connect(c.destination);
-    osc.start(c.currentTime + start);
-    g.gain.setValueAtTime(gain, c.currentTime + start);
-    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + start + duration);
-    osc.stop(c.currentTime + start + duration);
-  }
-  function playCorrect() {
-    try { tone(523, 0, 0.12); tone(784, 0.1, 0.18); } catch (e) {}
-  }
-  function playWrong() {
-    try { tone(160, 0, 0.22, 'sawtooth', 0.12); } catch (e) {}
-  }
-  function playWin() {
-    try { tone(523, 0, 0.14); tone(659, 0.12, 0.14); tone(784, 0.24, 0.3); } catch (e) {}
-  }
+  // The shared sound palette (utils.js) — richer than single beeps, and it
+  // respects the device's mute switch.
+  function playCorrect() { IGSound.correct(); }
+  function playWrong() { IGSound.wrong(); }
+  function playWin() { IGSound.win(); }
 
   const CONFETTI_COLORS = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
   function confettiBurst(x, y) {
@@ -218,7 +211,7 @@ const GameEngine = (() => {
       } else {
         state.wrong++;
         playWrong();
-        if (state.wrong >= MAX_WRONG) state.status = 'lost';
+        if (state.wrong >= MAX_WRONG) { state.status = 'lost'; setTimeout(() => IGSound.wrong(), 250); }
       }
       paint();
     }
@@ -366,6 +359,7 @@ const GameEngine = (() => {
     function flipCard(index) {
       if (lock || matched.has(index) || flipped.includes(index)) return;
       flipped.push(index);
+      IGSound.flip();
       if (flipped.length === 1) { paint(); return; }
 
       moves++;
@@ -379,6 +373,7 @@ const GameEngine = (() => {
         if (isMatch) {
           matched.add(a); matched.add(b);
           playCorrect();
+          if (matched.size === cards.length) setTimeout(playWin, 350);
         } else {
           playWrong();
           const els = [a, b].map(i => container.querySelector(`.memory-card[data-index="${i}"]`));
@@ -464,11 +459,13 @@ const GameEngine = (() => {
       if (matchedIds.has(id) && (side === 'left' ? selectedLeft !== id : selectedRight !== id)) return;
       if (side === 'left') selectedLeft = (selectedLeft === id) ? null : id;
       else selectedRight = (selectedRight === id) ? null : id;
+      if (!(selectedLeft && selectedRight)) IGSound.click();
 
       if (selectedLeft && selectedRight) {
         if (selectedLeft === selectedRight) {
           matchedIds.add(selectedLeft);
           playCorrect();
+          if (matchedIds.size === words.length) setTimeout(playWin, 350);
           selectedLeft = null; selectedRight = null;
           paint();
         } else {
@@ -612,7 +609,7 @@ const GameEngine = (() => {
       const spawnedForRound = roundIndex;
       const endTimer = setTimeout(() => {
         if (el.isConnected) {
-          if (!ended && spawnedForRound === roundIndex && word.en === target.en) { misses++; updateHUD(); }
+          if (!ended && spawnedForRound === roundIndex && word.en === target.en) { misses++; updateHUD(); IGSound.drop(); }
           el.remove();
         }
       }, duration * 1000);
@@ -755,8 +752,10 @@ const GameEngine = (() => {
 
   function renderWordSearch(container, topic) {
     let words, grid, placements, found, selecting, startCell, currentPath, gridEl;
+    let celebrated = false;   // the win (confetti + reward) happens once per board
 
     function setup() {
+      celebrated = false;
       words = pickN(topic.words, Math.min(6, topic.words.length));
       ({ grid, placements } = buildWordSearchGrid(words));
       found = new Set();
@@ -793,7 +792,8 @@ const GameEngine = (() => {
       gridEl = container.querySelector('.wordsearch-grid');
       container.querySelector('[data-action="restart"]').addEventListener('click', setup);
 
-      if (won) {
+      if (won && !celebrated) {
+        celebrated = true;
         confettiFromElement(container.querySelector('.game-end-banner'));
         if (typeof awardProgress === 'function') awardProgress(15, 0);
       }
@@ -826,6 +826,7 @@ const GameEngine = (() => {
       selecting = true;
       startCell = [Number(cell.dataset.r), Number(cell.dataset.c)];
       currentPath = [startCell];
+      IGSound.click();
       paintSelection();
     }
     function onPointerMove(e) {
@@ -857,6 +858,7 @@ const GameEngine = (() => {
       if (match) {
         found.add(match.word.id);
         playCorrect();
+        if (found.size === placements.length) setTimeout(playWin, 350);
       } else if (currentPath.length > 1) {
         playWrong();
       }
@@ -960,6 +962,7 @@ const GameEngine = (() => {
         btn.addEventListener('click', () => {
           if (checked === true) return;
           placed.push(Number(btn.dataset.place));
+          IGSound.click();
           checked = null;
           paint();
         });
@@ -968,6 +971,7 @@ const GameEngine = (() => {
         btn.addEventListener('click', () => {
           if (checked === true) return;
           placed.splice(Number(btn.dataset.unplace), 1);
+          IGSound.drop();
           checked = null;
           paint();
         });
@@ -1004,6 +1008,7 @@ const GameEngine = (() => {
     function finish() {
       const perfect = solved === sentences.length;
       if (perfect) { playWin(); if (typeof awardProgress === 'function') awardProgress(0, 1); }
+      else IGSound.bell();
       container.innerHTML = `
         <div class="game-end-banner ${perfect ? 'win' : ''}">
           ${perfect ? '🎉 Every sentence in the right order!' : `You built ${solved} of ${sentences.length}.`}
@@ -1096,6 +1101,7 @@ const GameEngine = (() => {
     function finish() {
       const perfect = right === queue.length;
       if (perfect) { playWin(); if (typeof awardProgress === 'function') awardProgress(0, 2); }
+      else IGSound.bell();
       container.innerHTML = `
         <div class="game-end-banner win">
           ${perfect ? '🏆 Every single one in the right place!' : right + ' of ' + queue.length + ' sorted.'}
@@ -1540,7 +1546,7 @@ const GameEngine = (() => {
       };
 
       const onMove = e => {
-        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+        if (!moved && (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6)) { moved = true; IGSound.pickup(); }
         place(e.clientX, e.clientY);
         const over = isOver(e.clientX, e.clientY);
         stage.classList.toggle('is-target', over && !fromDoll);
@@ -1945,7 +1951,7 @@ const GameEngine = (() => {
       };
 
       const onMove = e => {
-        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+        if (!moved && (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6)) { moved = true; IGSound.pickup(); }
         place(e.clientX, e.clientY);
         stage.classList.toggle('is-target', isOver(e.clientX, e.clientY));
       };
@@ -2272,7 +2278,7 @@ const GameEngine = (() => {
         return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
       };
       const onMove = e => {
-        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+        if (!moved && (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6)) { moved = true; IGSound.pickup(); }
         put(e.clientX, e.clientY);
         stage.classList.toggle('is-target', isOver(e.clientX, e.clientY));
       };
@@ -2484,6 +2490,761 @@ const GameEngine = (() => {
   }
 
 
+  // -------------------------------------------------------------------------
+  // ANIMAL BUILDER — pick an animal, then describe it: big or small, its
+  // colour(s), and its body parts. Every right answer builds a bit more of
+  // the animal (it starts grey and bare); a wrong one is gently refused out
+  // loud. Built for children who can't read yet: every choice is a picture
+  // and every tap is spoken. The end shows the animal at home with its
+  // sentence. Drawings and facts: animals.js.
+  // -------------------------------------------------------------------------
+  function renderAnimal(container, topic) {
+    const seen = new Set();
+    const animals = [];
+    (topic.words || []).forEach(w => {
+      const a = animalFor(w);
+      if (a && !seen.has(a.id)) { seen.add(a.id); animals.push(a); }
+    });
+
+    let animal = null;               // null = the picking grid
+    let size = null;
+    let colors = [];                 // colour names found so far
+    let parts = {};                  // parts found so far
+    let finished = false;
+    let wrong = null;                // the button to shake on the next paint
+    let msg = '';
+    const doneIds = new Set();
+
+    function say(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.85;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    const article = word => (/^[aeiou]/i.test(word) ? 'an' : 'a');
+    const name = () => animal.en.toLowerCase();
+    const sizeDone = () => size === animal.size;
+    const colorsDone = () => animal.colors.every(c => colors.includes(c));
+    const partsDone = () => animal.parts.every(p => parts[p]);
+    const allDone = () => sizeDone() && colorsDone() && partsDone();
+    const joinAnd = list => (list.length < 2 ? list.join('') : `${list.slice(0, -1).join(', ')} and ${list[list.length - 1]}`);
+
+    // c1 / c2 follow the animal's own colour order, whatever order they're found in.
+    const c1 = () => (colors.includes(animal.colors[0]) ? anHex(animal.colors[0]) : null);
+    const c2 = () => (animal.colors[1] && colors.includes(animal.colors[1]) ? anHex(animal.colors[1]) : null);
+
+    function sentences() {
+      const has = animal.parts.map(p => anPart(p).say);
+      const lines = [
+        { icon: animalFullSVG(animal, 'an-line-icon'), text: `It is ${article(name())} ${name()}.` },
+        { icon: `<span class="an-line-dots">${animal.colors.map(c => `<i style="background:${anHex(c)}"></i>`).join('')}</span>`,
+          text: `It is ${joinAnd([animal.size, ...animal.colors])}.` },
+        { icon: `<span class="an-line-parts">${animal.parts.map(p => `<svg viewBox="0 0 64 64">${anPart(p).icon}</svg>`).join('')}</span>`,
+          text: `It has ${joinAnd(has)}.` },
+      ];
+      if (!animal.parts.some(p => p === 'legs2' || p === 'legs4')) {
+        lines.push({ icon: '<span class="an-line-emoji">🚫🦵</span>', text: 'It has no legs.' });
+      }
+      lines.push({ icon: `<svg class="an-line-icon an-line-home" viewBox="0 0 400 260">${AN_HABITATS[animal.habitat].bg()}</svg>`, text: AN_HABITATS[animal.habitat].say });
+      return lines;
+    }
+
+    function finishCheck() {
+      if (!allDone()) return;
+      setTimeout(() => {
+        if (!container.isConnected || !animal || finished) return;
+        say(`Great job! Where does the ${name()} live?`);
+      }, 1100);
+    }
+
+    function pickSize(s) {
+      if (sizeDone()) return;
+      if (s === animal.size) {
+        size = s;
+        playCorrect();
+        msg = `✅ It is ${s}!`;
+        say(`Yes! It is ${s}.`);
+      } else {
+        playWrong();
+        wrong = `size-${s}`;
+        msg = `❌ It is not ${s}.`;
+        say(`No! ${article(name())} ${name()} is not ${s}.`);
+      }
+      paint();
+      finishCheck();
+    }
+
+    function pickColor(cname) {
+      if (colors.includes(cname)) return;
+      if (animal.colors.includes(cname)) {
+        colors.push(cname);
+        playCorrect();
+        const left = animal.colors.filter(c => !colors.includes(c)).length;
+        msg = `✅ ${cname}!${left ? ' One more colour…' : ''}`;
+        say(left ? `Yes! ${cname}. And…?` : `Yes! It is ${joinAnd(animal.colors)}.`);
+      } else {
+        playWrong();
+        wrong = `color-${cname}`;
+        msg = `❌ It is not ${cname}.`;
+        say(`No! ${article(name())} ${name()} is not ${cname}.`);
+      }
+      paint();
+      finishCheck();
+    }
+
+    function pickPart(id) {
+      if (parts[id]) return;
+      const part = anPart(id);
+      if (animal.parts.includes(id)) {
+        parts[id] = true;
+        playCorrect();
+        msg = `✅ It has ${part.say}!`;
+        say(`Yes! It has ${part.say}.`);
+      } else {
+        playWrong();
+        wrong = `part-${id}`;
+        msg = `❌ It doesn't have ${part.say}.`;
+        say(`No! ${article(name())} ${name()} doesn't have ${part.say}.`);
+      }
+      paint();
+      finishCheck();
+    }
+
+    function start(id) {
+      animal = animalById(id);
+      size = null;
+      colors = [];
+      parts = {};
+      finished = false;
+      msg = '';
+      paint();
+      say(`${article(name())} ${name()}! Is it big or small?`);
+    }
+
+    function finish() {
+      finished = true;
+      doneIds.add(animal.id);
+      playWin();
+      if (typeof awardProgress === 'function') awardProgress(12, 1);
+      paint();
+      const scene = container.querySelector('.an-habitat');
+      if (scene) confettiFromElement(scene);
+      say(sentences().map(l => l.text).join(' '));
+    }
+
+    // ---- drawing helpers ------------------------------------------------------
+    const sizeScale = s => (s === 'big' ? 1 : s === 'small' ? 0.6 : 0.82);
+
+    function stageSVG() {
+      const s = sizeScale(size);
+      return `<svg class="an-stage-svg" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+        ${AN_HABITATS[animal.habitat].water ? '' : '<ellipse cx="100" cy="151" rx="70" ry="5" fill="#000" opacity=".07"/>'}
+        <g class="an-grow" style="transform: scale(${s})">${animal.draw(parts, c1(), c2())}</g>
+      </svg>`;
+    }
+
+    function habitatSVG() {
+      const h = AN_HABITATS[animal.habitat];
+      const full = Object.fromEntries(animal.parts.map(p => [p, true]));
+      const s = animal.size === 'big' ? 1.25 : 0.75;
+      const place = h.water
+        ? `translate(200 128) scale(${s}) translate(-100 -92)`
+        : `translate(200 ${h.ground}) scale(${s}) translate(-100 -150)`;
+      return `<svg class="an-habitat" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        ${h.bg()}
+        <g transform="${place}"><g class="an-arrive">${animal.draw(full, c1(), c2())}</g></g>
+      </svg>`;
+    }
+
+    // ---- screens ---------------------------------------------------------------
+    function pickHTML() {
+      return `
+        <div class="an-pick">
+          <p class="hs-ask">Choose an animal! 👆 ${doneIds.size ? `<span class="an-stars">⭐ ${doneIds.size}</span>` : ''}</p>
+          <div class="an-grid">
+            ${animals.map(a => `
+              <button class="an-card${doneIds.has(a.id) ? ' done' : ''}" data-animal="${a.id}" aria-label="${igEscapeHtml(a.en)}">
+                ${animalFullSVG(a, 'an-card-svg')}
+                <span class="an-card-en">${igEscapeHtml(a.en)}</span>
+                ${doneIds.has(a.id) ? '<span class="bp-card-on">⭐</span>' : ''}
+              </button>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function buildHTML() {
+      const slot = (filled, color) => `<i class="an-slot${filled ? ' on' : ''}"${filled && color ? ` style="background:${color}"` : ''}></i>`;
+      const sizeBtn = s => `
+        <button class="an-size-btn${size === s ? ' right' : ''}${wrong === `size-${s}` ? ' an-wrong' : ''}${sizeDone() && size !== s ? ' faded' : ''}" data-size="${s}" aria-label="${s}">
+          <svg viewBox="0 0 200 160"><g style="transform: scale(${sizeScale(s)}); transform-origin: 100px 150px">${animal.draw(parts, c1(), c2())}</g></svg>
+          <span>${s}</span>
+        </button>`;
+      return `
+        <div class="game-toolbar">
+          <div class="game-btn-row"><button class="game-btn secondary" data-action="animals">🐾 Animals</button></div>
+          <span class="game-status-pill">${[sizeDone(), colorsDone(), partsDone()].filter(Boolean).length}/3 ✓</span>
+        </div>
+        <div class="an-layout">
+          <div class="an-stage-wrap">
+            <div class="an-stage">${stageSVG()}</div>
+            <button class="an-name" data-action="say-name">🔊 ${igEscapeHtml(animal.en)}</button>
+            <p class="bp-msg an-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+            ${allDone() ? `<button class="game-btn an-finish" data-action="finish">🌍 Where does it live? ▶</button>` : ''}
+          </div>
+
+          <div class="an-steps">
+            <section class="an-step${sizeDone() ? ' done' : ''}">
+              <button class="an-step-head" data-say="Is it big or small?"><b>1</b> 📏 big · small ${sizeDone() ? '✅' : ''}</button>
+              <div class="an-size-row">${sizeBtn('big')}${sizeBtn('small')}</div>
+            </section>
+
+            <section class="an-step${colorsDone() ? ' done' : ''}">
+              <button class="an-step-head" data-say="What colour is it?"><b>2</b> 🎨 colour
+                <span class="an-slots">${animal.colors.map(c => slot(colors.includes(c), anHex(c))).join('')}</span> ${colorsDone() ? '✅' : ''}</button>
+              <div class="an-colors">
+                ${AN_COLORS.map(c => `
+                  <button class="an-color${colors.includes(c.name) ? ' right' : ''}${wrong === `color-${c.name}` ? ' an-wrong' : ''}${colorsDone() && !colors.includes(c.name) ? ' faded' : ''}" data-color="${c.name}" aria-label="${c.name}">
+                    <i style="background:${c.hex}"></i><span>${c.name}</span>
+                  </button>`).join('')}
+              </div>
+            </section>
+
+            <section class="an-step${partsDone() ? ' done' : ''}">
+              <button class="an-step-head" data-say="What does it have?"><b>3</b> 🦒 It has…
+                <span class="an-slots">${animal.parts.map(p => slot(parts[p])).join('')}</span> ${partsDone() ? '✅' : ''}</button>
+              <div class="an-parts">
+                ${AN_PARTS.map(p => `
+                  <button class="an-part${parts[p.id] ? ' right' : ''}${wrong === `part-${p.id}` ? ' an-wrong' : ''}${partsDone() && !parts[p.id] ? ' faded' : ''}" data-part="${p.id}" aria-label="${p.en}">
+                    <svg viewBox="0 0 64 64">${p.icon}</svg><span>${p.en}</span>
+                    ${parts[p.id] ? '<span class="bp-card-on">✓</span>' : ''}
+                  </button>`).join('')}
+              </div>
+            </section>
+          </div>
+        </div>`;
+    }
+
+    function doneHTML() {
+      return `
+        <div class="game-toolbar">
+          <div class="game-btn-row"><button class="game-btn secondary" data-action="animals">🐾 Animals</button></div>
+          <span class="game-status-pill">⭐ ${doneIds.size}/${animals.length}</span>
+        </div>
+        <div class="an-done">
+          ${habitatSVG()}
+          <div class="an-sentences">
+            ${sentences().map(l => `
+              <button class="an-line" data-line="${igEscapeHtml(l.text)}">
+                ${l.icon}<span class="an-line-text">${igEscapeHtml(l.text)}</span><span class="an-line-say">🔊</span>
+              </button>`).join('')}
+          </div>
+          <div class="an-done-actions">
+            <button class="game-btn secondary" data-action="read">🔊 Read it all</button>
+            <button class="game-btn" data-action="another">🐾 Another animal ▶</button>
+          </div>
+        </div>`;
+    }
+
+    function paint() {
+      container.innerHTML = !animal ? pickHTML() : finished ? doneHTML() : buildHTML();
+      wrong = null;
+      bind();
+    }
+
+    function bind() {
+      const act = n => container.querySelector(`[data-action="${n}"]`);
+      container.querySelectorAll('[data-animal]').forEach(b => b.addEventListener('click', () => start(b.dataset.animal)));
+      container.querySelectorAll('[data-size]').forEach(b => b.addEventListener('click', () => pickSize(b.dataset.size)));
+      container.querySelectorAll('[data-color]').forEach(b => b.addEventListener('click', () => pickColor(b.dataset.color)));
+      container.querySelectorAll('[data-part]').forEach(b => b.addEventListener('click', () => pickPart(b.dataset.part)));
+      container.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => say(b.dataset.say)));
+      container.querySelectorAll('[data-line]').forEach(b => b.addEventListener('click', () => say(b.dataset.line)));
+      const back = act('animals');
+      if (back) back.addEventListener('click', () => { animal = null; paint(); });
+      const another = act('another');
+      if (another) another.addEventListener('click', () => { animal = null; paint(); });
+      const sayName = act('say-name');
+      if (sayName) sayName.addEventListener('click', () => say(`${article(name())} ${name()}`));
+      const fin = act('finish');
+      if (fin) fin.addEventListener('click', finish);
+      const read = act('read');
+      if (read) read.addEventListener('click', () => say(sentences().map(l => l.text).join(' ')));
+    }
+
+    if (!animals.length) {
+      container.innerHTML = `<div class="game-end-banner lose">This topic has no animals to build.</div>`;
+      return () => {};
+    }
+    paint();
+    return () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+
+  // -------------------------------------------------------------------------
+  // Shared by Feelings, Instruments and Prepositions: speaking, and a
+  // pointer drag with a floating copy of what is being dragged.
+  // -------------------------------------------------------------------------
+  function ttsSay(text, rate) {
+    if (!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = rate || 0.85;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  // `targets` is a list of elements that can be hovered; onDrop gets the
+  // element under the pointer (or null), the pointer and whether it moved.
+  function ghostDrag(ev, ghostHTML, targets, onDrop) {
+    ev.preventDefault();
+    const ghost = document.createElement('div');
+    ghost.className = 'bp-ghost';
+    ghost.innerHTML = ghostHTML;
+    document.body.appendChild(ghost);
+    const startX = ev.clientX, startY = ev.clientY;
+    let moved = false;
+    const put = (x, y) => { ghost.style.transform = `translate(${x - 45}px, ${y - 45}px)`; };
+    put(startX, startY);
+    const over = (x, y) => targets.find(t => {
+      const r = t.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    }) || null;
+    const onMove = e => {
+      if (!moved && (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6)) { moved = true; IGSound.pickup(); }
+      put(e.clientX, e.clientY);
+      const hit = over(e.clientX, e.clientY);
+      targets.forEach(t => t.classList.toggle('is-target', t === hit));
+    };
+    const finish = e => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', finish);
+      window.removeEventListener('pointercancel', finish);
+      ghost.remove();
+      targets.forEach(t => t.classList.remove('is-target'));
+      if (e) onDrop(over(e.clientX, e.clientY), e, moved);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', finish);
+    window.addEventListener('pointercancel', finish);
+    return () => finish(null);
+  }
+
+  const modeButtons = (mode, a, b) => `
+    <div class="bp-modes">
+      <button class="bp-mode${mode === a[0] ? ' active' : ''}" data-mode="${a[0]}">${a[1]}</button>
+      <button class="bp-mode${mode === b[0] ? ' active' : ''}" data-mode="${b[0]}">${b[1]}</button>
+    </div>`;
+
+  // -------------------------------------------------------------------------
+  // FEELINGS — a blank face; drag the right face onto it. "Teacher says":
+  // the teacher says "I'm sad!" and anything dropped shows and is spoken.
+  // "Listen & find": the game says it, the cards are pictures only.
+  // -------------------------------------------------------------------------
+  function renderFeelings(container, topic) {
+    const seen = new Set();
+    const feelings = [];
+    (topic.words || []).forEach(w => { const f = feelingFor(w); if (f && !seen.has(f.id)) { seen.add(f.id); feelings.push(f); } });
+    let mode = 'teacher', shown = null, target = null, score = 0, msg = '', shake = false, pop = false;
+    let stopDrag = null;
+    const sentence = f => `I'm ${f.en.toLowerCase()}.`;
+
+    function newTarget() {
+      const pool = feelings.filter(f => f.id !== target);
+      target = pickN(pool, 1)[0].id;
+      shown = null;
+      msg = '';
+      ttsSay(`I'm ${feelingById(target).en.toLowerCase()}!`);
+    }
+
+    function drop(f) {
+      if (mode === 'teacher') {
+        shown = f.id; pop = true; playCorrect();
+        msg = '';
+        ttsSay(sentence(f));
+        paint();
+        return;
+      }
+      if (f.id === target) {
+        shown = f.id; pop = true; score++; playCorrect();
+        msg = '⭐ Yes!';
+        ttsSay(`Yes! ${sentence(f)}`);
+        paint();
+        const face = container.querySelector('.fe-stage');
+        if (face) confettiFromElement(face);
+        const was = target;
+        setTimeout(() => { if (container.isConnected && mode === 'listen' && target === was) { newTarget(); paint(); } }, 1800);
+      } else {
+        playWrong(); shake = true;
+        msg = `❌ That's ${f.en.toLowerCase()}.`;
+        ttsSay(`No, that's ${f.en.toLowerCase()}. I'm ${feelingById(target).en.toLowerCase()}!`);
+        paint();
+      }
+    }
+
+    function paint() {
+      const t = target && feelingById(target);
+      const f = shown && feelingById(shown);
+      const listen = mode === 'listen';
+      container.innerHTML = `
+        <div class="game-toolbar">
+          ${modeButtons(mode, ['teacher', '👩‍🏫 Teacher says'], ['listen', '🎧 Listen & find'])}
+          ${listen ? `<span class="game-status-pill">⭐ ${score}</span>` : `<button class="game-btn secondary" data-action="clear">🧽 Limpar</button>`}
+        </div>
+        ${listen && t ? `
+          <div class="hs-target fe-target">
+            <button class="bp-list-say" data-action="say-target" aria-label="Listen again">🔊</button>
+            <span>I'm <b>${igEscapeHtml(t.en.toLowerCase())}</b>! Show me!</span>
+          </div>` : ''}
+        <div class="fe-layout">
+          <div class="fe-side">
+            <div class="fe-stage${shake ? ' bp-shake' : ''}${pop ? ' fe-pop' : ''}">${faceSVG(f, 'fe-face')}
+              <span class="bp-drop-hint">Drop it here! 🙂</span>
+            </div>
+            ${f ? `<button class="fe-sentence" data-action="say-shown">🔊 ${igEscapeHtml(sentence(f))}</button>`
+                : `<p class="fe-hint">👆 ${listen ? 'Listen and drag the face here!' : 'Drag a face here!'}</p>`}
+            <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+          </div>
+          <div class="fe-shelf">
+            ${feelings.map(x => `
+              <button class="fe-card${shown === x.id ? ' on' : ''}${listen ? ' no-label' : ''}" data-feeling="${x.id}" aria-label="${igEscapeHtml(x.en)}">
+                ${faceSVG(x, 'fe-thumb')}
+                ${listen ? '' : `<span class="bp-card-en">${igEscapeHtml(x.en)}</span><span class="bp-card-pt">${igEscapeHtml(x.pt)}</span>`}
+              </button>`).join('')}
+          </div>
+        </div>`;
+      shake = false; pop = false;
+      bind();
+    }
+
+    function bind() {
+      const act = n => container.querySelector(`[data-action="${n}"]`);
+      container.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.mode === mode) return;
+        mode = b.dataset.mode; shown = null; msg = ''; target = null; score = 0;
+        if (mode === 'listen') newTarget();
+        paint();
+      }));
+      const stage = container.querySelector('.fe-stage');
+      container.querySelectorAll('[data-feeling]').forEach(card => card.addEventListener('pointerdown', ev => {
+        if (ev.button != null && ev.button !== 0) return;
+        const f = feelingById(card.dataset.feeling);
+        stopDrag = ghostDrag(ev, faceSVG(f), [stage], (hit, e, moved) => {
+          stopDrag = null;
+          if (hit || !moved) drop(f);
+        });
+      }));
+      const clear = act('clear');
+      if (clear) clear.addEventListener('click', () => { shown = null; msg = ''; paint(); });
+      const st = act('say-target');
+      if (st) st.addEventListener('click', () => ttsSay(`I'm ${feelingById(target).en.toLowerCase()}!`));
+      const ss = act('say-shown');
+      if (ss) ss.addEventListener('click', () => ttsSay(sentence(feelingById(shown))));
+    }
+
+    if (!feelings.length) { container.innerHTML = `<div class="game-end-banner lose">This topic has no feelings to show.</div>`; return () => {}; }
+    paint();
+    return () => { if (stopDrag) stopDrag(); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+  // -------------------------------------------------------------------------
+  // INSTRUMENTS — "Play": tap an instrument, a child plays it, it sounds,
+  // and "I'm playing the piano." is said. "Loud or quiet?": drag each one
+  // into the right box; tapping a card plays it so the child can listen.
+  // -------------------------------------------------------------------------
+  function renderInstruments(container, topic) {
+    const seen = new Set();
+    const insts = [];
+    (topic.words || []).forEach(w => { const i = instrumentFor(w); if (i && !seen.has(i.id)) { seen.add(i.id); insts.push(i); } });
+    let mode = 'play', current = null, sorted = {}, msg = '', shakeBin = null, sortDone = false;
+    let stopDrag = null;
+    const timers = [];
+    const later = (fn, ms) => timers.push(setTimeout(() => { if (container.isConnected) fn(); }, ms));
+
+    const speakerSVG = loud => `<svg class="in-speaker" viewBox="0 0 80 60" aria-hidden="true">
+      <path d="M8,22 H20 L36,8 V52 L20,38 H8Z" fill="${loud ? '#f05d77' : '#9ea3a9'}" stroke="#2e2b2e" stroke-width="2.5" stroke-linejoin="round"/>
+      ${loud
+        ? `<path d="M44,20 Q52,30 44,40 M52,12 Q66,30 52,48 M60,4 Q80,30 60,56" fill="none" stroke="#f05d77" stroke-width="4" stroke-linecap="round"/>`
+        : `<path d="M44,24 Q49,30 44,36" fill="none" stroke="#9ea3a9" stroke-width="3" stroke-linecap="round"/><text x="52" y="40" font-size="20">🤫</text>`}
+    </svg>`;
+
+    function playIt(inst, then) {
+      const dur = InstrumentSound.play(inst.id);
+      if (then) later(then, dur || 1200);
+    }
+
+    function choose(inst) {
+      current = inst.id;
+      paint();
+      playIt(inst, () => ttsSay(`I'm playing the ${inst.en.toLowerCase()}.`));
+      later(() => { const p = container.querySelector('.in-player'); if (p && current === inst.id) p.classList.remove('playing'); }, 4200);
+    }
+
+    function sortInto(inst, bin) {
+      if (sorted[inst.id]) return;
+      const right = inst.loud === (bin === 'loud');
+      if (right) {
+        sorted[inst.id] = bin;
+        playCorrect();
+        msg = `✅ The ${inst.en.toLowerCase()} is ${bin}!`;
+        paint();
+        playIt(inst, () => ttsSay(`The ${inst.en.toLowerCase()} is ${bin}!`));
+        if (insts.every(i => sorted[i.id])) {
+          sortDone = true;
+          later(() => {
+            playWin();
+            if (typeof awardProgress === 'function') awardProgress(12, 1);
+            msg = '🎉 Great listening!';
+            paint();
+            const bins = container.querySelector('.in-bins');
+            if (bins) confettiFromElement(bins);
+          }, 2600);
+        }
+      } else {
+        playWrong();
+        shakeBin = bin;
+        msg = `❌ Listen again! The ${inst.en.toLowerCase()} is ${inst.loud ? 'loud' : 'quiet'}.`;
+        paint();
+        later(() => playIt(inst, () => ttsSay(`Listen! The ${inst.en.toLowerCase()} is ${inst.loud ? 'loud' : 'quiet'}.`)), 400);
+      }
+    }
+
+    function playHTML() {
+      const inst = current && instrumentById(current);
+      return `
+        <div class="in-play">
+          <div class="in-stage">${playerSVG(current, Boolean(current))}</div>
+          ${inst ? `<button class="fe-sentence" data-action="say-play">🔊 I'm playing the ${igEscapeHtml(inst.en.toLowerCase())}.</button>`
+                 : `<p class="fe-hint">👆 Choose an instrument and listen!</p>`}
+          <div class="in-row">
+            ${insts.map(i => `
+              <button class="in-card${current === i.id ? ' on' : ''}" data-play="${i.id}" aria-label="${igEscapeHtml(i.en)}">
+                ${instrumentSVG(i.id, 'in-thumb')}
+                <span class="bp-card-en">${igEscapeHtml(i.en)}</span><span class="bp-card-pt">${igEscapeHtml(i.pt)}</span>
+              </button>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function sortHTML() {
+      const binHTML = bin => `
+        <div class="in-bin in-bin--${bin}${shakeBin === bin ? ' bp-shake' : ''}" data-bin="${bin}">
+          <button class="in-bin-head" data-say="${bin}">${speakerSVG(bin === 'loud')}<b>${bin}</b></button>
+          <div class="in-bin-items">
+            ${insts.filter(i => sorted[i.id] === bin).map(i => `<span class="in-bin-item">${instrumentSVG(i.id)}</span>`).join('')}
+          </div>
+        </div>`;
+      const left = insts.filter(i => !sorted[i.id]);
+      return `
+        <p class="hs-ask">Is it loud or quiet? Tap to listen, then drag it to the box! 👂</p>
+        <div class="in-tray">
+          ${left.length ? left.map(i => `
+            <button class="in-card" data-drag="${i.id}" aria-label="${igEscapeHtml(i.en)}">
+              ${instrumentSVG(i.id, 'in-thumb')}
+              <span class="bp-card-en">${igEscapeHtml(i.en)}</span><span class="in-listen">🔊</span>
+            </button>`).join('') : ''}
+        </div>
+        <div class="in-bins">${binHTML('loud')}${binHTML('quiet')}</div>
+        <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+        ${sortDone ? `<div class="an-done-actions"><button class="game-btn" data-action="again">🔄 Play again</button></div>` : ''}`;
+    }
+
+    function paint() {
+      container.innerHTML = `
+        <div class="game-toolbar">
+          ${modeButtons(mode, ['play', '🎵 Play'], ['sort', '🔊 Loud or quiet?'])}
+          ${mode === 'sort' ? `<span class="game-status-pill">✓ ${Object.keys(sorted).length}/${insts.length}</span>` : ''}
+        </div>
+        ${mode === 'play' ? playHTML() : sortHTML()}`;
+      shakeBin = null;
+      bind();
+    }
+
+    function bind() {
+      container.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.mode === mode) return;
+        mode = b.dataset.mode; msg = ''; current = null;
+        paint();
+      }));
+      container.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => choose(instrumentById(b.dataset.play))));
+      const sp = container.querySelector('[data-action="say-play"]');
+      if (sp) sp.addEventListener('click', () => ttsSay(`I'm playing the ${instrumentById(current).en.toLowerCase()}.`));
+      container.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => ttsSay(b.dataset.say)));
+      const bins = [...container.querySelectorAll('[data-bin]')];
+      container.querySelectorAll('[data-drag]').forEach(card => card.addEventListener('pointerdown', ev => {
+        if (ev.button != null && ev.button !== 0) return;
+        const inst = instrumentById(card.dataset.drag);
+        stopDrag = ghostDrag(ev, instrumentSVG(inst.id), bins, (hit, e, moved) => {
+          stopDrag = null;
+          if (!moved) { playIt(inst, () => ttsSay(inst.en)); return; }   // a tap = listen
+          if (hit) sortInto(inst, hit.dataset.bin);
+        });
+      }));
+      const again = container.querySelector('[data-action="again"]');
+      if (again) again.addEventListener('click', () => { sorted = {}; sortDone = false; msg = ''; paint(); });
+    }
+
+    if (!insts.length) { container.innerHTML = `<div class="game-end-banner lose">This topic has no instruments.</div>`; return () => {}; }
+    paint();
+    return () => { if (stopDrag) stopDrag(); timers.forEach(clearTimeout); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+  // -------------------------------------------------------------------------
+  // PREPOSITIONS — choose a thing, then move it around the box. Dropping it
+  // snaps it to the nearest spot (the spots light up while dragging) and the
+  // sentence is said: "The cat is under the box." "Teacher says": anything
+  // goes, and the buttons move it for a demonstration. "Listen & find": the
+  // game asks for one place at a time.
+  // -------------------------------------------------------------------------
+  function renderPrepositions(container, topic) {
+    const fromTopic = PREPOSITIONS.filter(p => (topic.words || []).some(w => prepositionFor(w) === p));
+    const preps = fromTopic.length >= 3 ? fromTopic : PREPOSITIONS;
+    let thing = null, pos = null, mode = 'teacher', target = null, score = 0, msg = '', shake = false, newest = false;
+    let stopDrag = null;
+    const sentence = (t, p) => `The ${t.en} is ${p.phrase}.`;
+
+    function newTarget() {
+      const pool = preps.filter(p => p.id !== target && p.id !== pos);
+      target = pickN(pool, 1)[0].id;
+      msg = '';
+      ttsSay(`Put the ${thing.en} ${prepById(target).phrase}!`);
+    }
+
+    function place(prepId) {
+      const p = prepById(prepId);
+      if (mode === 'teacher') {
+        pos = prepId; newest = true; playCorrect();
+        msg = '';
+        ttsSay(sentence(thing, p));
+        paint();
+        return;
+      }
+      pos = prepId; newest = true;
+      if (prepId === target) {
+        score++; playCorrect();
+        msg = `✅ ${sentence(thing, p)}`;
+        ttsSay(`Yes! ${sentence(thing, p)}`);
+        paint();
+        const st = container.querySelector('.pp-stage');
+        if (st) confettiFromElement(st);
+        const was = target;
+        setTimeout(() => { if (container.isConnected && mode === 'listen' && target === was) { newTarget(); paint(); } }, 2000);
+      } else {
+        playWrong(); shake = true;
+        msg = `❌ ${sentence(thing, p)}`;
+        ttsSay(`Oops! ${sentence(thing, p)} Put the ${thing.en} ${prepById(target).phrase}!`);
+        paint();
+      }
+    }
+
+    function chooserHTML() {
+      return `
+        <p class="hs-ask">Choose! 👆</p>
+        <div class="an-grid pp-grid">
+          ${PP_THINGS.map(t => `
+            <button class="an-card" data-thing="${t.id}" aria-label="${igEscapeHtml(t.en)}">
+              <svg class="an-card-svg" viewBox="0 0 100 100">${t.draw}</svg>
+              <span class="an-card-en">${igEscapeHtml(t.en)}</span>
+            </button>`).join('')}
+        </div>`;
+    }
+
+    function sceneHTML() {
+      const listen = mode === 'listen';
+      const t = target && prepById(target);
+      const p = pos && prepById(pos);
+      return `
+        <div class="game-toolbar">
+          <div class="game-btn-row"><button class="game-btn secondary" data-action="change">🔄 Trocar</button></div>
+          ${modeButtons(mode, ['teacher', '👩‍🏫 Teacher says'], ['listen', '🎧 Listen & find'])}
+          ${listen ? `<span class="game-status-pill">⭐ ${score}</span>` : ''}
+        </div>
+        ${listen && t ? `
+          <div class="hs-target fe-target">
+            <button class="bp-list-say" data-action="say-target" aria-label="Listen again">🔊</button>
+            <span>Put the ${igEscapeHtml(thing.en)} <b>${igEscapeHtml(t.en)}</b> ${t.id === 'between' ? 'the boxes' : 'the box'}!</span>
+          </div>` : ''}
+        <div class="pp-stage${shake ? ' bp-shake' : ''}">
+          <svg class="pp-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${ppSceneInner(thing, pos, { newest })}</svg>
+        </div>
+        <div class="pp-under">
+          ${!pos ? `<button class="pp-tray" data-tray aria-label="${igEscapeHtml(thing.en)}"><svg viewBox="0 0 100 100">${thing.draw}</svg><span>Drag me! 👆</span></button>` : ''}
+          ${p ? `<button class="fe-sentence" data-action="say-pos">🔊 ${igEscapeHtml(sentence(thing, p))}</button>`
+              : `<p class="fe-hint">Drag the ${igEscapeHtml(thing.en)} to the box!</p>`}
+        </div>
+        <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+        ${listen ? '' : `
+          <div class="pp-chips">
+            ${preps.map(x => `<button class="pp-chip${pos === x.id ? ' on' : ''}" data-prep="${x.id}">${ppIconSVG(x.id)}<span>${igEscapeHtml(x.en)}</span></button>`).join('')}
+          </div>`}`;
+    }
+
+    function paint() {
+      container.innerHTML = thing ? sceneHTML() : chooserHTML();
+      shake = false; newest = false;
+      bind();
+    }
+
+    function startDrag(ev) {
+      if (ev.button != null && ev.button !== 0) return;
+      const stage = container.querySelector('.pp-stage');
+      const svg = container.querySelector('.pp-scene');
+      if (!stage || !svg) return;
+      // While dragging: the thing leaves its spot and the drop spots light up.
+      svg.innerHTML = ppSceneInner(thing, null, { hots: true });
+      stopDrag = ghostDrag(ev, `<svg viewBox="0 0 100 100">${thing.draw}</svg>`, [stage], (hit, e, moved) => {
+        stopDrag = null;
+        if (!hit || !moved) { paint(); return; }
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX; pt.y = e.clientY;
+        const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+        let best = null, bestD = Infinity;
+        preps.forEach(p => {
+          const d = Math.hypot(p.hot[0] - loc.x, p.hot[1] - loc.y);
+          if (d < bestD) { best = p; bestD = d; }
+        });
+        if (best && bestD < 90) place(best.id);
+        else paint();
+      });
+    }
+
+    function bind() {
+      const act = n => container.querySelector(`[data-action="${n}"]`);
+      container.querySelectorAll('[data-thing]').forEach(b => b.addEventListener('click', () => {
+        thing = ppThingById(b.dataset.thing); pos = null; msg = ''; target = null; score = 0;
+        ttsSay(`The ${thing.en}!`);
+        if (mode === 'listen') newTarget();
+        paint();
+      }));
+      container.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.mode === mode) return;
+        mode = b.dataset.mode; msg = ''; target = null; score = 0;
+        if (mode === 'listen') newTarget();
+        paint();
+      }));
+      const tray = container.querySelector('[data-tray]');
+      if (tray) tray.addEventListener('pointerdown', startDrag);
+      container.querySelectorAll('.pp-scene .pp-thing').forEach(g => g.addEventListener('pointerdown', startDrag));
+      container.querySelectorAll('[data-prep]').forEach(b => b.addEventListener('click', () => place(b.dataset.prep)));
+      const change = act('change');
+      if (change) change.addEventListener('click', () => { thing = null; pos = null; target = null; paint(); });
+      const st = act('say-target');
+      if (st) st.addEventListener('click', () => ttsSay(`Put the ${thing.en} ${prepById(target).phrase}!`));
+      const sp = act('say-pos');
+      if (sp) sp.addEventListener('click', () => ttsSay(sentence(thing, prepById(pos))));
+    }
+
+    paint();
+    return () => { if (stopDrag) stopDrag(); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -2512,6 +3273,10 @@ const GameEngine = (() => {
       case 'dressup': activeCleanup = renderDressUp(container, topic); break;
       case 'backpack': activeCleanup = renderBackpack(container, topic); break;
       case 'house': activeCleanup = renderHouse(container, topic); break;
+      case 'animal': activeCleanup = renderAnimal(container, topic); break;
+      case 'feelings': activeCleanup = renderFeelings(container, topic); break;
+      case 'instruments': activeCleanup = renderInstruments(container, topic); break;
+      case 'prepositions': activeCleanup = renderPrepositions(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }

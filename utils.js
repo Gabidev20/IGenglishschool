@@ -393,6 +393,7 @@ window.igWorkspaceId = igWorkspaceId;
 const IGSound = (() => {
   const MUTE_KEY = 'hopscotch_sound_muted';
   let ctx = null;
+  let master = null;
 
   function muted() {
     try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; }
@@ -404,7 +405,17 @@ const IGSound = (() => {
   function audio() {
     const Ctor = window.AudioContext || window.webkitAudioContext;
     if (!Ctor) return null;
-    if (!ctx) ctx = new Ctor();
+    if (!ctx) {
+      ctx = new Ctor();
+      // Everything goes through one gentle compressor: sounds can be fuller
+      // and louder without clipping when several land at once.
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -14; comp.knee.value = 12; comp.ratio.value = 4;
+      comp.attack.value = 0.004; comp.release.value = 0.2;
+      master = ctx.createGain();
+      master.gain.value = 0.9;
+      master.connect(comp).connect(ctx.destination);
+    }
     // Browsers start the context suspended until a user gesture. Every caller
     // here IS a click, so resuming is allowed — but it returns a promise we
     // deliberately ignore, because the notes below are scheduled on the
@@ -422,7 +433,7 @@ const IGSound = (() => {
     const g = c.createGain();
     osc.type = type || 'sine';
     osc.frequency.setValueAtTime(freq, c.currentTime + start);
-    osc.connect(g).connect(c.destination);
+    osc.connect(g).connect(master);
     // Ramp from silence and back: a square wave switched on at full volume
     // clicks, and the click is the loudest part of a short note.
     g.gain.setValueAtTime(0.0001, c.currentTime + start);
@@ -466,7 +477,129 @@ const IGSound = (() => {
     } catch (e) { /* ignore */ }
   }
 
-  return { stars, starsDown, sticker, muted, setMuted, note };
+  // --------------------------------------------------------------------------
+  // Game sound effects — one shared palette, so every game sounds like the
+  // same app. All synthesised; all silent when the device is muted.
+  // --------------------------------------------------------------------------
+
+  // A burst of noise through a filter: card swishes, pops, drum hits.
+  function noise(start, duration, filterType, freqFrom, freqTo, gain) {
+    const c = audio();
+    if (!c) return;
+    const len = Math.max(1, Math.floor(c.sampleRate * duration));
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource();
+    const f = c.createBiquadFilter();
+    const g = c.createGain();
+    const t = c.currentTime + start;
+    src.buffer = buf;
+    f.type = filterType;
+    f.frequency.setValueAtTime(freqFrom, t);
+    if (freqTo) f.frequency.exponentialRampToValueAtTime(freqTo, t + duration);
+    f.Q.value = 1.2;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+    src.connect(f).connect(g).connect(master);
+    src.start(t);
+  }
+
+  // A note whose pitch slides — boings, drops, whooshes.
+  function slide(f1, f2, start, duration, type, gain) {
+    const c = audio();
+    if (!c) return;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    const t = c.currentTime + start;
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(f1, t);
+    osc.frequency.exponentialRampToValueAtTime(f2, t + duration);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+    osc.connect(g).connect(master);
+    osc.start(t);
+    osc.stop(t + duration + 0.02);
+  }
+
+  // A struck bell: a few inharmonic partials, each fading at its own pace.
+  function bell(freq, start, gain) {
+    [[1, 1, 1.6], [2.0, 0.55, 1.2], [2.76, 0.4, 0.9], [5.4, 0.22, 0.5], [8.9, 0.1, 0.3]]
+      .forEach(([m, g, d]) => note(freq * m, start, d, 'sine', gain * g));
+  }
+
+  const play = fn => () => { if (muted()) return; try { fn(); } catch (e) { /* audio blocked */ } };
+
+  const sfx = {
+    // ✅ right answer: a bright two-note chime with a sparkle on top
+    correct: play(() => {
+      note(880, 0, 0.16, 'triangle', 0.16);
+      note(1319, 0.08, 0.28, 'triangle', 0.16);
+      note(2637, 0.1, 0.22, 'sine', 0.04);
+    }),
+    // ❌ wrong answer: a soft, friendly "boing" — never harsh
+    wrong: play(() => {
+      slide(330, 160, 0, 0.28, 'triangle', 0.18);
+      slide(165, 90, 0.02, 0.26, 'sine', 0.12);
+    }),
+    // 🏆 finished: a little fanfare with a held chord and sparkles
+    win: play(() => {
+      [523, 659, 784].forEach((f, i) => note(f, i * 0.1, 0.18, 'triangle', 0.16));
+      [1047, 1319, 1568].forEach(f => note(f, 0.3, 0.7, 'triangle', 0.1));
+      note(262, 0.3, 0.8, 'sine', 0.1);
+      [2093, 2637, 3136, 4186].forEach((f, i) => note(f, 0.42 + i * 0.07, 0.25, 'sine', 0.035));
+    }),
+    // 🃏 a card turning over: a quick paper swish and a soft tap
+    flip: play(() => {
+      noise(0, 0.11, 'bandpass', 1200, 4200, 0.22);
+      note(1400, 0.06, 0.05, 'triangle', 0.05);
+    }),
+    // 🃏🃏 a pair found: two rising chimes
+    match: play(() => {
+      note(1047, 0, 0.16, 'triangle', 0.14);
+      note(1568, 0.09, 0.32, 'triangle', 0.14);
+      note(3136, 0.12, 0.2, 'sine', 0.03);
+    }),
+    // 🎈 a balloon popping
+    pop: play(() => {
+      noise(0, 0.09, 'highpass', 1800, 900, 0.45);
+      slide(600, 120, 0, 0.1, 'sine', 0.15);
+    }),
+    // a tap on a letter / tile / option
+    click: play(() => { note(1200, 0, 0.045, 'triangle', 0.08); noise(0, 0.025, 'highpass', 3000, 0, 0.05); }),
+    // picking something up to drag it
+    pickup: play(() => slide(500, 900, 0, 0.09, 'sine', 0.07)),
+    // putting it down
+    drop: play(() => { slide(260, 110, 0, 0.12, 'sine', 0.16); noise(0, 0.05, 'lowpass', 900, 0, 0.06); }),
+    // the wheel's peg clacking past the pointer
+    tick: play(() => { noise(0, 0.022, 'bandpass', 2600, 0, 0.22); note(1800, 0, 0.02, 'square', 0.025); }),
+    // the last seconds of a countdown
+    countdown: play(() => note(988, 0, 0.12, 'square', 0.06)),
+    // a drum roll building up to a reveal
+    drumroll: play(() => {
+      for (let i = 0; i < 14; i++) noise(i * 0.055, 0.05, 'bandpass', 900 + i * 40, 0, 0.12 + i * 0.012);
+    }),
+    // ✨ the big reveal
+    reveal: play(() => {
+      noise(0, 0.08, 'highpass', 2500, 0, 0.12);
+      [784, 988, 1175, 1568].forEach((f, i) => note(f, i * 0.06, 0.3, 'triangle', 0.12));
+      [2349, 3136].forEach((f, i) => note(f, 0.26 + i * 0.08, 0.3, 'sine', 0.04));
+    }),
+    // 🔔 time's up — properly loud: three rings of a real-sounding bell,
+    // then a cheerful two-note "done!"
+    timerEnd: play(() => {
+      [0, 0.45, 0.9].forEach(t => { bell(988, t, 0.28); bell(1319, t + 0.12, 0.2); });
+      note(784, 1.55, 0.25, 'triangle', 0.22);
+      note(1047, 1.75, 0.6, 'triangle', 0.24);
+      note(523, 1.75, 0.7, 'sine', 0.14);
+    }),
+    // a soft bell for smaller moments
+    bell: play(() => bell(1175, 0, 0.18)),
+  };
+
+  return { stars, starsDown, sticker, muted, setMuted, note, ...sfx };
 })();
 
 window.IGSound = IGSound;

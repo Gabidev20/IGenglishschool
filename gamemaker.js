@@ -73,6 +73,38 @@ function renderGameMaker(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-animals>
+        <span class="gamemaker-ready-art">${animalFullSVG(animalById('lion'))}</span>
+        <span class="gamemaker-ready-text">
+          <b>🦁 Describing Animals</b>
+          <small>A criança escolhe o animal e o descreve com figuras — big or small, a cor, long tail, long neck, mane, wings… O animal vai sendo montado e no final aparece no habitat dele com a frase.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-feelings>
+        <span class="gamemaker-ready-art">${faceSVG(feelingById('happy'))}</span>
+        <span class="gamemaker-ready-text">
+          <b>😊 Feelings</b>
+          <small>Happy, sad, angry, tired, surprised, sleepy, sick, hungry, scared — a criança arrasta o rosto certo para o emoji em branco quando ouve "I'm sad!".</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-instruments>
+        <span class="gamemaker-ready-art">${instrumentSVG('guitar')}</span>
+        <span class="gamemaker-ready-text">
+          <b>🎸 Musical Instruments</b>
+          <small>Guitar, piano, drum e violin — ouvir o som de cada um ("I'm playing the piano") e separar em loud ou quiet.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-prepositions>
+        <span class="gamemaker-ready-art"><svg viewBox="0 0 400 260">${ppSceneInner(ppThingById('cat'), 'on')}</svg></span>
+        <span class="gamemaker-ready-text">
+          <b>📦 Prepositions of Place</b>
+          <small>In, on, under, next to, between, behind, in front of — a criança move o gato, o cachorro, a borboleta… em volta da caixa.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
     </div>
     <div class="gamemaker-grid">
       ${games.length === 0 ? `
@@ -87,6 +119,10 @@ function renderGameMaker(container) {
   container.querySelector('#newGameBtn').addEventListener('click', () => openGameForm(container));
   container.querySelectorAll('[data-open-backpack]').forEach(btn => btn.addEventListener('click', openBackpackGame));
   container.querySelectorAll('[data-open-house]').forEach(btn => btn.addEventListener('click', openHouseGame));
+  container.querySelectorAll('[data-open-animals]').forEach(btn => btn.addEventListener('click', openAnimalGame));
+  container.querySelectorAll('[data-open-feelings]').forEach(btn => btn.addEventListener('click', openFeelingsGame));
+  container.querySelectorAll('[data-open-instruments]').forEach(btn => btn.addEventListener('click', openInstrumentsGame));
+  container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
   container.querySelectorAll('[data-test]').forEach(btn => {
     btn.addEventListener('click', () => testCustomGame(games.find(g => g.id === btn.dataset.test)));
   });

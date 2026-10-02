@@ -392,6 +392,8 @@ function openHomeworkRunner(hw, onChanged) {
   function finishTask(index, result) {
     hw.tasks[index].result = { ...result, at: new Date().toISOString() };
     save();
+    // The whole homework done gets its own fanfare, a beat after the task's.
+    if (typeof hwIsDone === 'function' && hwIsDone(hw)) setTimeout(() => IGSound.sticker(), 900);
     // Back to the list so the student sees the tick and what is left.
     openHomeworkRunner(hw, onChanged);
   }

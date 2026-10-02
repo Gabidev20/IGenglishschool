@@ -546,8 +546,8 @@ const ArcadeGames = (() => {
     g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + start + duration);
     osc.stop(c.currentTime + start + duration);
   }
-  function playCorrect() { try { tone(523, 0, 0.12); tone(784, 0.1, 0.18); } catch (e) {} }
-  function playWrong() { try { tone(160, 0, 0.22, 'sawtooth', 0.12); } catch (e) {} }
+  function playCorrect() { IGSound.correct(); }
+  function playWrong() { IGSound.wrong(); }
 
   const CONFETTI_COLORS = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
   function confettiBurst(x, y, subtle) {
@@ -791,11 +791,13 @@ const ArcadeGames = (() => {
       if (connected.has(id)) return;
       if (side === 'left') selectedLeft = (selectedLeft === id) ? null : id;
       else selectedRight = (selectedRight === id) ? null : id;
+      if (!(selectedLeft && selectedRight)) IGSound.click();
 
       if (selectedLeft && selectedRight) {
         if (selectedLeft === selectedRight) {
           connected.add(selectedLeft);
           playCorrect();
+          if (connected.size === pairs.length) setTimeout(() => IGSound.win(), 350);
           selectedLeft = null; selectedRight = null;
           paint();
         } else {
@@ -931,6 +933,7 @@ const ArcadeGames = (() => {
         </div>
       `;
       setScoreLabel(`${correctCount} / ${deck.length} correct`);
+      if (stars > 0) IGSound.win(); else IGSound.bell();
       if (stars > 0 && typeof awardProgress === 'function') awardProgress(0, stars);
       confettiFromElement(container.querySelector('.game-end-banner'));
       container.querySelector('[data-action="quiz-again"]').addEventListener('click', setup);
@@ -1121,6 +1124,7 @@ const ArcadeGames = (() => {
         </div>
       `;
       setScoreLabel(`${correctCount} / ${deck.length} correct`);
+      if (stars > 0) IGSound.win(); else IGSound.bell();
       if (stars > 0 && typeof awardProgress === 'function') awardProgress(0, stars);
       confettiFromElement(container.querySelector('.game-end-banner'));
       container.querySelector('[data-action="listen-again"]').addEventListener('click', setup);

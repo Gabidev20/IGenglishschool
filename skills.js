@@ -214,6 +214,7 @@ const SkillsModules = (() => {
       mount.querySelectorAll('[data-self]').forEach(btn => {
         btn.addEventListener('click', () => {
           const ok = btn.dataset.self === '1';
+          if (ok) IGSound.correct(); else IGSound.wrong();
           scores.push(ok ? 100 : 40);
           if (typeof ldRecord === 'function') {
             ldRecord({ kind: 'speak', prompt: deck[index], correct: deck[index], topic: o.topicLabel || 'Speaking' },
@@ -232,6 +233,7 @@ const SkillsModules = (() => {
     function finish() {
       const avg = Math.round(scores.reduce((a, b) => a + b, 0) / (scores.length || 1));
       const stars = avg >= 90 ? 3 : avg >= 70 ? 2 : avg >= 50 ? 1 : 0;
+      if (stars) IGSound.win(); else IGSound.bell();
       if (typeof awardProgress === 'function') awardProgress(scores.length * 4, stars);
       mount.innerHTML = `
         <div class="game-end-banner ${avg >= 60 ? 'win' : 'lose'}">
@@ -337,6 +339,7 @@ const SkillsModules = (() => {
     function finish() {
       const pct = Math.round((correct / deck.length) * 100);
       const stars = typeof exStarsFor === 'function' ? exStarsFor(correct, deck.length) : 0;
+      if (stars) IGSound.win(); else IGSound.bell();
       if (typeof awardProgress === 'function') awardProgress(correct * 5, stars);
       mount.innerHTML = `
         <div class="game-end-banner ${pct >= 50 ? 'win' : 'lose'}">

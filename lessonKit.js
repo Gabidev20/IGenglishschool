@@ -532,7 +532,7 @@ function renderTopicQuiz(container, level, topic) {
         const chosen = q.options[Number(btn.dataset.opt)];
         const right = chosen === q.correct;
         answers.push({ q, chosen, right });
-        if (right) correct++;
+        if (right) { correct++; IGSound.correct(); } else IGSound.wrong();
 
         container.querySelectorAll('.ex-option').forEach(b => {
           b.disabled = true;
@@ -563,6 +563,7 @@ function renderTopicQuiz(container, level, topic) {
     const stars = correct === questions.length ? 3 : correct >= questions.length * 0.7 ? 2 : correct >= questions.length * 0.5 ? 1 : 0;
     const wrong = answers.filter(a => !a.right);
 
+    if (stars) IGSound.win(); else IGSound.bell();
     if (typeof awardProgress === 'function') awardProgress(correct * 5, stars);
 
     container.innerHTML = `

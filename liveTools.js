@@ -113,6 +113,32 @@ const LiveTools = (() => {
   function saveWheelChallenges(list) { IGStore.setJSON(WHEEL_KEY, list); }
   function resetWheelChallenges() { IGStore.remove(WHEEL_KEY); }
   function wheelIsCustom() { return Array.isArray(IGStore.getJSON(WHEEL_KEY, null)); }
+
+  // The wheel deals its challenges like a shuffled deck: each one comes up
+  // once before any repeats. The spin is then aimed at the dealt slice, so
+  // the wheel still looks random but never lands on the same few again.
+  // Kept for the whole visit (not per opening of the tool); a changed list
+  // starts a fresh deck.
+  let wheelDeck = [];
+  let wheelDeckKey = '';
+  let wheelLast = -1;
+  function nextWheelIndex(list) {
+    const key = JSON.stringify(list);
+    if (key !== wheelDeckKey) { wheelDeckKey = key; wheelDeck = []; wheelLast = -1; }
+    if (!wheelDeck.length) {
+      wheelDeck = list.map((_, i) => i);
+      for (let i = wheelDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [wheelDeck[i], wheelDeck[j]] = [wheelDeck[j], wheelDeck[i]];
+      }
+      // A new round must not open with the challenge that closed the last one.
+      if (wheelDeck.length > 1 && wheelDeck[wheelDeck.length - 1] === wheelLast) {
+        [wheelDeck[0], wheelDeck[wheelDeck.length - 1]] = [wheelDeck[wheelDeck.length - 1], wheelDeck[0]];
+      }
+    }
+    wheelLast = wheelDeck.pop();
+    return wheelLast;
+  }
   const WHEEL_COLORS = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c', '#6f7d68', '#f05d77', '#b8953a', '#a9b4a4', '#8e6d86'];
 
   let activeTimers = [];
@@ -142,8 +168,9 @@ const LiveTools = (() => {
     g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + start + duration);
     osc.stop(c.currentTime + start + duration);
   }
-  function playBell() { try { tone(880, 0, 0.3); tone(1175, 0.15, 0.45); } catch (e) {} }
-  function playTick() { try { tone(440, 0, 0.05, 'square', 0.05); } catch (e) {} }
+  // Time's up / last seconds — the shared, louder sounds in utils.js.
+  function playBell() { IGSound.timerEnd(); }
+  function playTick() { IGSound.countdown(); }
 
   const CONFETTI_COLORS = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
   function confettiBurst(x, y) {
@@ -335,11 +362,24 @@ const LiveTools = (() => {
       const banner = document.getElementById('wheelResult');
       banner.hidden = true;
       spinBtn.disabled = true;
-      const spins = 5 + Math.random() * 3;
-      const finalRotation = rotation + spins * Math.PI * 2;
-      const duration = 3200;
+      const challenges = wheelChallenges();
+      const n = challenges.length;
+      const slice = (Math.PI * 2) / n;
+      // The pointer sits at the TOP of the wheel (3π/2 in canvas angles,
+      // where 0 is 3 o'clock).
+      const POINTER_ANGLE = Math.PI * 1.5;
+      const TAU = Math.PI * 2;
+      const sliceAt = rot => Math.floor(((((POINTER_ANGLE - rot) % TAU) + TAU) % TAU) / slice) % n;
+      // Deal the next challenge, then aim for somewhere inside its slice
+      // (never right on a line), at least five full turns away.
+      const index = nextWheelIndex(challenges);
+      const landing = POINTER_ANGLE - (index + 0.2 + Math.random() * 0.6) * slice;
+      const minEnd = rotation + 5 * TAU;
+      const finalRotation = landing + TAU * Math.ceil((minEnd - landing) / TAU) + TAU * Math.floor(Math.random() * 3);
+      const duration = 3600;
       const start = performance.now();
       const from = rotation;
+      let lastSlice = sliceAt(rotation);
 
       function animate(now) {
         if (!canvas.isConnected) { wheelAnimId = null; return; }   // tool closed mid-spin
@@ -347,20 +387,16 @@ const LiveTools = (() => {
         const eased = 1 - Math.pow(1 - t, 3);
         rotation = from + (finalRotation - from) * eased;
         drawWheel(canvas, rotation);
+        // A clack each time a peg passes the pointer — fast, then slowing.
+        const now_ = sliceAt(rotation);
+        if (now_ !== lastSlice) { lastSlice = now_; IGSound.tick(); }
         if (t < 1) {
           wheelAnimId = requestAnimationFrame(animate);
         } else {
           wheelAnimId = null;
           spinBtn.disabled = false;
-          const challenges = wheelChallenges();
-          const n = challenges.length;
-          const slice = (Math.PI * 2) / n;
-          // The pointer sits at the TOP of the wheel (3π/2 in canvas angles,
-          // where 0 is 3 o'clock). Reading the slice from angle 0 announced a
-          // challenge a quarter-turn away from the one actually under the ▼.
-          const POINTER_ANGLE = Math.PI * 1.5;
-          const normalized = (((POINTER_ANGLE - rotation) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-          const index = Math.floor(normalized / slice) % n;
+          rotation = rotation % TAU;
+          IGSound.reveal();
           banner.hidden = false;
           banner.innerHTML = `🎯 Your challenge: <p>${igEscapeHtml(challenges[index])}</p>`;
           const rect = canvas.getBoundingClientRect();
@@ -492,6 +528,7 @@ const LiveTools = (() => {
           finished = false;
           intervalId = track(setInterval(() => {
             remaining -= 1;
+            if (remaining > 0 && remaining <= 5) playTick();
             if (remaining <= 0) {
               remaining = 0;
               running = false;
@@ -869,6 +906,8 @@ const LiveTools = (() => {
     timer: { title: '⏱️ Timer & Bell', render: renderTimer },
     stickers: { title: '📔 Sticker Book', render: renderStickers },
     links: { title: '🔗 Links da Aula', render: renderClassLinks },
+    drawing: { title: '🎨 Drawing Challenge',
+      render: c => renderDrawingChallenge(c, { tone, playBell, playTick, confettiBurst, track }) },
   };
 
   function openTool(toolId) {

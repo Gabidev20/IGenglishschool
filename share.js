@@ -405,6 +405,10 @@ function renderStudentHome(shell, studentId) {
         <button class="stu-tile" data-go="games"><span>🎮</span><b>Jogos</b><small>Jogar com as palavras do meu nível</small></button>
         <button class="stu-tile" data-go="backpack"><span>🎒</span><b>Mochila</b><small>School objects</small></button>
         <button class="stu-tile" data-go="house"><span>🏠</span><b>Casa</b><small>Parts of the house</small></button>
+        <button class="stu-tile" data-go="animals"><span>🦁</span><b>Animais</b><small>Describing animals</small></button>
+        <button class="stu-tile" data-go="feelings"><span>😊</span><b>Sentimentos</b><small>Feelings</small></button>
+        <button class="stu-tile" data-go="instruments"><span>🎸</span><b>Música</b><small>Instruments</small></button>
+        <button class="stu-tile" data-go="prepositions"><span>📦</span><b>Onde está?</b><small>Prepositions</small></button>
         <button class="stu-tile" data-go="practice"><span>⚡</span><b>Treinar</b><small>Exercícios de gramática</small></button>
         <button class="stu-tile" data-go="dictation"><span>🎧</span><b>Ditado</b><small>Ouvir e escrever</small></button>
         <button class="stu-tile" data-go="speaking"><span>🎤</span><b>Falar</b><small>Ler em voz alta</small></button>
@@ -426,6 +430,10 @@ function renderStudentHome(shell, studentId) {
     games: () => openStudentGames(shell, student, topics),
     backpack: () => openBackpackGame(),
     house: () => openHouseGame(),
+    animals: () => openAnimalGame(),
+    feelings: () => openFeelingsGame(),
+    instruments: () => openInstrumentsGame(),
+    prepositions: () => openPrepositionsGame(),
     practice: () => {
       const picked = (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
       if (!picked.length) return;

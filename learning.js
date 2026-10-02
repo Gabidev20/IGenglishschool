@@ -454,9 +454,10 @@ function renderQuizList(container, quiz) {
         answeredCount++;
         const chosen = Number(btn.dataset.opt);
         const isRight = correctIdx >= 0 ? chosen === correctIdx : q.options[chosen] === q.correct;
-        if (isRight) { btn.classList.add('correct'); correctCount++; }
+        if (isRight) { btn.classList.add('correct'); correctCount++; IGSound.correct(); }
         else {
           btn.classList.add('wrong');
+          IGSound.wrong();
           const rightBtn = qEl.querySelector(`.quiz-option[data-opt="${correctIdx}"]`);
           if (rightBtn) rightBtn.classList.add('correct');
         }
@@ -466,6 +467,7 @@ function renderQuizList(container, quiz) {
           const resultEl = container.querySelector('#quizResult');
           resultEl.hidden = false;
           resultEl.textContent = `You got ${correctCount}/${questions.length}! 🎉`;
+          setTimeout(() => (correctCount === questions.length ? IGSound.win() : IGSound.bell()), 400);
           if (typeof awardProgress === 'function') awardProgress(correctCount * 5, correctCount === questions.length ? 1 : 0);
         }
       });
@@ -604,6 +606,7 @@ function renderPracticeArena(container, level, topic) {
   }
 
   function handleResult(correct) {
+    if (correct) IGSound.correct(); else IGSound.wrong();
     if (correct) state.xp += 10; else state.hearts -= 1;
     setTimeout(() => { state.index += 1; paintShell(); }, 1100);
   }
@@ -613,6 +616,7 @@ function renderPracticeArena(container, level, topic) {
       <div class="game-end-banner lose">💔 Out of hearts! <p>You earned ${state.xp} XP this round.</p></div>
       <div class="game-btn-row" style="margin-top:14px;justify-content:center"><button class="game-btn" id="practiceRetryBtn">🔄 Try Again</button></div>
     `;
+    IGSound.bell();
     if (typeof awardProgress === 'function') awardProgress(state.xp, 0);
     container.querySelector('#practiceRetryBtn').addEventListener('click', () => renderPracticeArena(container, level, topic));
   }
@@ -622,6 +626,7 @@ function renderPracticeArena(container, level, topic) {
       <div class="game-end-banner win">🎉 Session Complete! <p>You earned ${state.xp} XP and 1 ⭐ star.</p></div>
       <div class="game-btn-row" style="margin-top:14px;justify-content:center"><button class="game-btn" id="practiceAgainBtn">🔄 Practice Again</button></div>
     `;
+    IGSound.win();
     if (typeof awardProgress === 'function') awardProgress(state.xp, 1);
     container.querySelector('#practiceAgainBtn').addEventListener('click', () => renderPracticeArena(container, level, topic));
   }
@@ -663,6 +668,7 @@ function renderSentenceExercise(container, ex, onAnswered) {
         const item = answer.find(a => a.uid === uid);
         answer = answer.filter(a => a.uid !== uid);
         tray.push(item);
+        IGSound.drop();
         paintTiles();
       });
     });
@@ -673,6 +679,7 @@ function renderSentenceExercise(container, ex, onAnswered) {
         const item = tray.find(a => a.uid === uid);
         tray = tray.filter(a => a.uid !== uid);
         answer.push(item);
+        IGSound.click();
         paintTiles();
       });
     });
@@ -867,6 +874,7 @@ function renderPhonicsStation(container, level, topic) {
         if (nextSlot === -1) return;
         const uid = Number(btn.dataset.uid);
         placed[nextSlot] = tiles.find(t => t.uid === uid);
+        IGSound.click();
         paint();
       });
     });
@@ -876,6 +884,7 @@ function renderPhonicsStation(container, level, topic) {
         const slot = Number(btn.dataset.slot);
         if (!placed[slot]) return;
         placed[slot] = null;
+        IGSound.drop();
         paint();
       });
     });
@@ -965,8 +974,8 @@ function renderFlashcards(container, level, topic) {
       showWordBtn.textContent = 'Word Revealed';
       lmSpeak(word.en, 0.9);
     });
-    document.getElementById('prevBtn').addEventListener('click', () => { index = (index - 1 + words.length) % words.length; paint(); });
-    document.getElementById('nextBtn').addEventListener('click', () => { index = (index + 1) % words.length; paint(); });
+    document.getElementById('prevBtn').addEventListener('click', () => { index = (index - 1 + words.length) % words.length; IGSound.flip(); paint(); });
+    document.getElementById('nextBtn').addEventListener('click', () => { index = (index + 1) % words.length; IGSound.flip(); paint(); });
   }
 
   paint();

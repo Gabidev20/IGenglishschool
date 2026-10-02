@@ -1552,9 +1552,10 @@ function bindExamMaker(container) {
 // FEEDBACK — the same little sounds and confetti the other games use, kept
 // local so this file does not reach inside the GameEngine closure.
 // ---------------------------------------------------------------------------
-function exPlayGood() { try { IGSound.note(523, 0, 0.12, 'triangle', 0.13); IGSound.note(784, 0.09, 0.18, 'triangle', 0.12); } catch (e) {} }
-function exPlayBad() { try { IGSound.note(180, 0, 0.2, 'sawtooth', 0.1); } catch (e) {} }
-function exPlayWin() { try { [523, 659, 784, 1047].forEach((f, i) => IGSound.note(f, i * 0.1, 0.32, 'triangle', 0.14)); } catch (e) {} }
+// The shared sound palette (utils.js), which also respects the mute switch.
+function exPlayGood() { IGSound.correct(); }
+function exPlayBad() { IGSound.wrong(); }
+function exPlayWin() { IGSound.win(); }
 
 const EX_CONFETTI = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c', '#6f7d68'];
 function exConfetti(el) {
@@ -1689,7 +1690,7 @@ const ExamGames = (() => {
     const stars = exStarsFor(correct, total);
     const pct = Math.round((correct / total) * 100);
     if (stars) { exPlayWin(); if (typeof awardProgress === 'function') awardProgress(correct * 4, stars); }
-    else if (typeof awardProgress === 'function') awardProgress(correct * 4, 0);
+    else { IGSound.bell(); if (typeof awardProgress === 'function') awardProgress(correct * 4, 0); }
     container.innerHTML = `
       <div class="game-end-banner ${pct >= 50 ? 'win' : 'lose'}">
         ${pct === 100 ? '🏆 Perfeito!' : pct >= 70 ? '🎉 Muito bem!' : '💪 Quase lá!'}
@@ -1826,6 +1827,7 @@ const ExamGames = (() => {
       container.querySelectorAll('[data-left]').forEach(btn => {
         btn.addEventListener('click', () => {
           picked = leftOrder[Number(btn.dataset.left)].left;
+          IGSound.click();
           paint();
         });
       });
@@ -1891,6 +1893,7 @@ const ExamGames = (() => {
           const i = Number(btn.dataset.card);
           if (found.has(cards[i].id) || open.indexOf(i) !== -1) return;
           open.push(i);
+          IGSound.flip();
           if (open.length < 2) { paint(); return; }
           tries++;
           const [a, b] = open;
@@ -1953,10 +1956,10 @@ const ExamGames = (() => {
           </div>`;
 
         container.querySelectorAll('[data-take]').forEach(btn => {
-          btn.addEventListener('click', () => { chosenIdx.push(Number(btn.dataset.take)); renderIdx(); });
+          btn.addEventListener('click', () => { chosenIdx.push(Number(btn.dataset.take)); IGSound.click(); renderIdx(); });
         });
         container.querySelectorAll('[data-remove]').forEach(btn => {
-          btn.addEventListener('click', () => { chosenIdx.splice(Number(btn.dataset.remove), 1); renderIdx(); });
+          btn.addEventListener('click', () => { chosenIdx.splice(Number(btn.dataset.remove), 1); IGSound.drop(); renderIdx(); });
         });
         container.querySelector('[data-action="clear"]').addEventListener('click', () => { chosenIdx.length = 0; renderIdx(); });
         container.querySelector('[data-action="restart"]').addEventListener('click', () => builder(container, topics));
