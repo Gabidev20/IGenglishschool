@@ -8037,3 +8037,42 @@ body.ig-adult-only .kids-only { display: none !important; }
 .rp-wa textarea { width: 100%; font-family: inherit; font-size: 0.88rem; line-height: 1.4; padding: 10px; border: 2px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
 .report-saved-indicator small { color: var(--ink-faint); }
 .report-signature-name { display: block; font-size: 0.86rem; color: #2e2b2e; margin-bottom: 2px; }
+
+/* ==========================================================================
+   Drawn emoji and word pictures (utils.js igBestPicture / Twemoji)
+   ========================================================================== */
+img.ig-emoji { width: 1.15em; height: 1.15em; vertical-align: -0.22em; display: inline-block; margin: 0 .05em; object-fit: contain; }
+.word-visual img.ig-emoji--word { width: 80%; height: 80%; object-fit: contain; margin: 0; vertical-align: middle; }
+/* The site's drawings and the number / day / shape cards are never cropped. */
+.word-visual img[src^="data:image/svg"] { object-fit: contain; }
+
+/* Quiz answers that name a topic word carry its picture */
+.quiz-option.has-visual, .ex-option.has-visual { display: inline-flex; align-items: center; gap: 8px; }
+.quiz-option .option-visual, .ex-option .option-visual {
+  width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; background: var(--surface);
+  display: grid; place-items: center; font-size: 1.6rem; overflow: hidden;
+}
+
+/* Reading — each line with its pictures and a listen button */
+.reading-passage--pictured { display: flex; flex-direction: column; gap: 6px; }
+.reading-listen-all {
+  align-self: flex-start; border: 2px solid var(--border); background: var(--surface); border-radius: 999px;
+  padding: 6px 14px; font: inherit; font-weight: 800; cursor: pointer; margin-bottom: 4px;
+}
+.reading-listen-all:hover { border-color: var(--primary); background: var(--primary-soft); }
+.reading-line-row { display: flex; align-items: center; gap: 10px; }
+.reading-line-row .reading-line { flex: 1; margin: 0; }
+.reading-line-say {
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border);
+  background: var(--surface); cursor: pointer; font-size: 0.95rem;
+}
+.reading-line-say:hover { border-color: var(--primary); }
+.reading-line-pics { display: inline-flex; gap: 6px; flex-shrink: 0; }
+.reading-line-pics .reading-pic {
+  width: 52px; height: 52px; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-sm);
+  display: grid; place-items: center; font-size: 2rem; overflow: hidden;
+}
+@media (max-width: 560px) { .reading-line-pics .reading-pic { width: 40px; height: 40px; } }
+.footer-credit { font-size: 0.72rem; opacity: .7; margin-top: 4px; }
+.footer-credit a { color: inherit; }
+.stu-credit { opacity: .6; font-size: 0.7rem; }

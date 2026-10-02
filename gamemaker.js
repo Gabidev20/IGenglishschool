@@ -46,17 +46,14 @@ function gameTypeMeta(typeId) {
 }
 
 // ---------------------------------------------------------------------------
-// GAME MAKER — list view
+// READY-MADE PICTURE GAMES — shown in the Games section (they are games to
+// play, not something to build, so they no longer live inside the Game
+// Maker). Hidden for a teacher of grown-ups only (.kids-only).
 // ---------------------------------------------------------------------------
-function renderGameMaker(container) {
-  const games = loadCustomGames();
-
+function renderReadyGames(container) {
+  if (!container) return;
   container.innerHTML = `
-    <div class="gamemaker-toolbar">
-      <button class="btn btn-primary" id="newGameBtn">✨ Create New Game</button>
-    </div>
     <div class="gamemaker-ready kids-only">
-      <p class="gamemaker-ready-label">Jogos prontos</p>
       <button class="gamemaker-ready-card" type="button" data-open-backpack>
         <span class="gamemaker-ready-art">${backpackSVG('classic', '#3d7bd9', ['ruler', 'book', 'pencil', 'paintbrush', 'scissors'])}</span>
         <span class="gamemaker-ready-text">
@@ -114,6 +111,26 @@ function renderGameMaker(container) {
         </span>
       </button>
     </div>
+  `;
+  container.querySelectorAll('[data-open-backpack]').forEach(btn => btn.addEventListener('click', openBackpackGame));
+  container.querySelectorAll('[data-open-house]').forEach(btn => btn.addEventListener('click', openHouseGame));
+  container.querySelectorAll('[data-open-animals]').forEach(btn => btn.addEventListener('click', openAnimalGame));
+  container.querySelectorAll('[data-open-feelings]').forEach(btn => btn.addEventListener('click', openFeelingsGame));
+  container.querySelectorAll('[data-open-instruments]').forEach(btn => btn.addEventListener('click', openInstrumentsGame));
+  container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
+  container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
+}
+
+// ---------------------------------------------------------------------------
+// GAME MAKER — list view
+// ---------------------------------------------------------------------------
+function renderGameMaker(container) {
+  const games = loadCustomGames();
+
+  container.innerHTML = `
+    <div class="gamemaker-toolbar">
+      <button class="btn btn-primary" id="newGameBtn">✨ Create New Game</button>
+    </div>
     <div class="gamemaker-grid">
       ${games.length === 0 ? `
         <div class="gamemaker-empty">
@@ -125,13 +142,6 @@ function renderGameMaker(container) {
   `;
 
   container.querySelector('#newGameBtn').addEventListener('click', () => openGameForm(container));
-  container.querySelectorAll('[data-open-backpack]').forEach(btn => btn.addEventListener('click', openBackpackGame));
-  container.querySelectorAll('[data-open-house]').forEach(btn => btn.addEventListener('click', openHouseGame));
-  container.querySelectorAll('[data-open-animals]').forEach(btn => btn.addEventListener('click', openAnimalGame));
-  container.querySelectorAll('[data-open-feelings]').forEach(btn => btn.addEventListener('click', openFeelingsGame));
-  container.querySelectorAll('[data-open-instruments]').forEach(btn => btn.addEventListener('click', openInstrumentsGame));
-  container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
-  container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
   container.querySelectorAll('[data-test]').forEach(btn => {
     btn.addEventListener('click', () => testCustomGame(games.find(g => g.id === btn.dataset.test)));
   });

@@ -73,7 +73,8 @@ function saPracticeTopics(student) {
   const prof = typeof studentProfile === 'function' ? studentProfile(student) : 'writer';
   if (prof === 'reader' && typeof KID_TOPICS !== 'undefined') return KID_TOPICS;
   if (prof === 'writer' && typeof WRITER_TOPICS !== 'undefined') return WRITER_TOPICS;
-  if (prof === 'adult' && typeof EXAM_TOPICS !== 'undefined') return EXAM_TOPICS.filter(t => SA_PRACTICE_LEVEL[t.id]);
+  // Grown-ups: their everyday-English topics first, then the grammar.
+  if (prof === 'adult' && typeof EXAM_TOPICS !== 'undefined') return EXAM_TOPICS.filter(t => t.adult).concat(EXAM_TOPICS.filter(t => SA_PRACTICE_LEVEL[t.id]));
   return [];
 }
 
@@ -140,7 +141,7 @@ function saDefaultKeys(student) {
       if (t.id === 'easy-past' && !/past/.test(taughtTitles)) return;
       if (t.id === 'easy-prescont' && !/presentcontinuous/.test(taughtTitles)) return;
     }
-    if (prof === 'adult' && saLevelIndex(SA_PRACTICE_LEVEL[t.id]) > own) return;
+    if (prof === 'adult' && saLevelIndex(t.level || SA_PRACTICE_LEVEL[t.id]) > own) return;
     keys.push(`p:${t.id}`);
   });
   return keys;

@@ -514,7 +514,7 @@ function renderTopicQuiz(container, level, topic) {
 
         <p class="ex-prompt">${lkEsc(q.prompt)}</p>
         <div class="ex-options">
-          ${q.options.map((o, i) => `<button class="ex-option" data-opt="${i}">${lkEsc(o)}</button>`).join('')}
+          ${q.options.map((o, i) => { const pic = typeof igOptionVisualHTML === 'function' ? igOptionVisualHTML(o, topic) : ''; return `<button class="ex-option${pic ? ' has-visual' : ''}" data-opt="${i}">${pic}<span>${lkEsc(o)}</span></button>`; }).join('')}
         </div>
         <p class="ex-feedback" id="exFeedback" hidden></p>
         <div class="game-btn-row ex-actions">

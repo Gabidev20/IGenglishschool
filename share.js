@@ -476,7 +476,7 @@ function renderStudentHome(shell, studentId) {
         ${tilesFor(prof).join('')}
       </div>
 
-      <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br><small>a teacher vê o que você faz aqui</small></p>
+      <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br><small>a teacher vê o que você faz aqui</small><br><small class="stu-credit">Emoji graphics: Twemoji (CC-BY 4.0)</small></p>
     </div>`;
 
   const go = {

@@ -294,18 +294,30 @@ function renderReadingModule(container, level, topic) {
   function renderContent() {
     if (content.authored || isCustom) {
       const lines = String(content.text || '').split('\n').filter(Boolean);
+      // Each line shows the pictures of the topic words in it and can be
+      // heard, so a child who cannot read yet still knows the story: the
+      // answer to "Where is Lily?" is right there, 🛏️ next to her line.
       container.innerHTML = `
         <button class="edit-content-btn" id="editReadingBtn" title="Edit this reading">✏️ Edit Content</button>
         ${grammarTipHTML(topic)}
-        <div class="reading-passage reading-passage-authored">
-          ${lines.map(line => `<p class="reading-line">${lmEscape(line)}</p>`).join('')}
+        <div class="reading-passage reading-passage-authored reading-passage--pictured">
+          <button type="button" class="reading-listen-all" id="readingListenAll">🔊 Listen to the story · Ouvir a história</button>
+          ${lines.map((line, i) => `
+            <div class="reading-line-row">
+              <button type="button" class="reading-line-say" data-say-line="${i}" aria-label="Ouvir esta frase" title="Ouvir esta frase">🔊</button>
+              <p class="reading-line">${lmEscape(line)}</p>
+              <span class="reading-line-pics">${lmLinePictures(line, topic)}</span>
+            </div>`).join('')}
         </div>
         <div class="reading-quiz">
           <h4>Quick Check 📝</h4>
           <div id="readingQuizList"></div>
         </div>
       `;
-      renderQuizList(document.getElementById('readingQuizList'), content.quiz);
+      container.querySelectorAll('[data-say-line]').forEach(btn => btn.addEventListener('click', () => lmSpeak(lines[Number(btn.dataset.sayLine)].replace(/^[A-Z][a-z]+:\s*/, ''), 0.8)));
+      const listenAll = container.querySelector('#readingListenAll');
+      if (listenAll) listenAll.addEventListener('click', () => lmSpeak(lines.map(l => l.replace(/^[A-Z][a-z]+:\s*/, '')).join(' '), 0.8));
+      renderQuizList(document.getElementById('readingQuizList'), content.quiz, topic);
       document.getElementById('editReadingBtn').addEventListener('click', showEditPanel);
       return;
     }
@@ -345,7 +357,7 @@ function renderReadingModule(container, level, topic) {
       });
     });
 
-    renderQuizList(document.getElementById('readingQuizList'), content.quiz);
+    renderQuizList(document.getElementById('readingQuizList'), content.quiz, topic);
     document.getElementById('editReadingBtn').addEventListener('click', showEditPanel);
   }
 
@@ -424,7 +436,24 @@ function renderSentenceHTML(sentence) {
 // Options are matched by INDEX, not by their text: authored quizzes (and
 // generated spelling questions) can legitimately repeat a string, and
 // matching on text would light up every duplicate button at once.
-function renderQuizList(container, quiz) {
+// The pictures of the topic words a reading line mentions (up to three,
+// longest phrase first, no word counted twice: "living room" beats "room").
+function lmLinePictures(line, topic) {
+  let text = ` ${String(line || '').toLowerCase().replace(/[^a-z' ]+/g, ' ')} `;
+  const found = [];
+  (topic.words || [])
+    .map(w => ({ w, k: String(w.en || '').toLowerCase().trim() }))
+    .filter(x => x.k.length > 1)
+    .sort((a, b) => b.k.length - a.k.length)
+    .forEach(x => {
+      if (found.length >= 3 || !text.includes(` ${x.k} `)) return;
+      found.push(x.w);
+      text = text.replace(` ${x.k} `, ' ');
+    });
+  return found.map(w => lmWordVisual(w, 'reading-pic')).join('');
+}
+
+function renderQuizList(container, quiz, topic) {
   const questions = (Array.isArray(quiz) ? quiz : []).filter(q => q && Array.isArray(q.options) && q.options.length);
   if (questions.length === 0) {
     container.innerHTML = `<p class="quiz-empty">No comprehension questions for this text yet.</p>`;
@@ -436,7 +465,7 @@ function renderQuizList(container, quiz) {
       <p class="quiz-prompt">${i + 1}. ${lmEscape(q.prompt)}</p>
       ${q.visual ? lmWordVisual(q.visual, 'quiz-visual') : ''}
       <div class="quiz-options">
-        ${q.options.map((opt, oi) => `<button class="quiz-option" data-opt="${oi}">${lmEscape(opt)}</button>`).join('')}
+        ${q.options.map((opt, oi) => `<button class="quiz-option${topic && igOptionVisualHTML(opt, topic) ? ' has-visual' : ''}" data-opt="${oi}">${topic ? igOptionVisualHTML(opt, topic) : ''}<span>${lmEscape(opt)}</span></button>`).join('')}
       </div>
     </div>
   `).join('') + `<p class="quiz-result" id="quizResult" hidden></p>`;
