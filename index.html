@@ -38,6 +38,8 @@
       <!-- Filled in by auth.js only when teacher accounts are switched on. -->
       <div class="teacher-slot" id="teacherSlot" hidden></div>
 
+      <button class="inbox-btn help-btn" id="teacherHelpBtn" type="button" aria-label="Como usar o site" title="Como usar o site (tutorial)">❓</button>
+
       <button class="inbox-btn" id="inboxBtn" type="button" aria-label="Mensagens dos alunos" title="Mensagens dos alunos">✉️<span class="inbox-badge" id="inboxBadge" hidden>0</span></button>
 
       <div class="profile-switcher" id="profileSwitcher">
@@ -76,7 +78,6 @@
     <div class="section-head">
       <span class="section-eyebrow">Teach</span>
       <h2>Live Class</h2>
-      <p>Everything you need for today's lesson with the active student.</p>
     </div>
     <div class="live-class-cockpit" id="liveClassCockpit"></div>
   </section>
@@ -96,7 +97,6 @@
     <div class="section-head">
       <span class="section-eyebrow">Curriculum</span>
       <h2>Levels &amp; Curriculum</h2>
-      <p>Every level, each one unlocking new words, situations and stories.</p>
     </div>
 
     <div class="level-tabs" id="levelTabs" role="tablist"></div>
@@ -111,9 +111,13 @@
     <div class="section-head">
       <span class="section-eyebrow">Play</span>
       <h2>Games</h2>
-      <p>Bite-sized challenges for every topic — matching, spelling, listening and more.</p>
-      <button class="btn btn-ghost section-edit-btn" id="editGamesBtn" type="button">🧩 Edit games &amp; word banks</button>
     </div>
+    <!-- The ready-made picture games (gamemaker.js renderReadyGames). -->
+    <div class="games-group kids-only">
+      <p class="games-group-label">🎨 Jogos com figuras</p>
+      <div id="readyGamesRoot"></div>
+    </div>
+    <p class="games-group-label">🎯 Jogos com as palavras de qualquer tópico <small>(usam o nível do aluno selecionado)</small></p>
     <div class="teaser-grid" id="arcadeGamesGrid">
       <div class="teaser-card game-card" data-arcade="wordmatch">
         <span class="teaser-icon">🧩</span>
@@ -141,8 +145,7 @@
     <div class="section-head">
       <span class="section-eyebrow">Create</span>
       <h2>Game Maker</h2>
-      <p>Build your own Hangman, Memory, Match-up, Balloon Pop or Word Search from any words you choose.</p>
-      <button class="btn btn-ghost section-edit-btn" id="editCurriculumBtn" type="button">🧩 Edit the curriculum word banks</button>
+      <p>Crie seu próprio Hangman, Memory, Match-up ou Word Search com as palavras que quiser.</p>
     </div>
     <div id="gameMakerRoot"></div>
   </section>
@@ -251,6 +254,7 @@
 <script src="inbox.js"></script>
 <script src="teacherSetup.js"></script>
 <script src="studentAccess.js"></script>
+<script src="tutorial.js"></script>
 <script src="app.js"></script>
 <!-- Last: decides who is signed in, once the app has painted. -->
 <script src="auth.js"></script>

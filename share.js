@@ -451,6 +451,7 @@ function renderStudentHome(shell, studentId) {
              · ${progress.xp || 0} XP · ${progress.stars || 0} ⭐
              ${stats && stats.streak ? ` · 🔥 ${stats.streak} day${stats.streak === 1 ? '' : 's'}` : ''}</p>
         </div>
+        <button class="stu-help" id="stuHelpBtn" type="button" title="Ver o tutorial de novo">❓ <span>Ajuda</span></button>
       </header>
 
       ${pending.length ? `
@@ -524,6 +525,10 @@ function renderStudentHome(shell, studentId) {
       const fn = go[btn.dataset.go]; if (fn) fn();
     });
   });
+
+  // First visit: the step-by-step tour for the student and the family.
+  // Afterwards the ❓ Ajuda button in the header replays it.
+  if (typeof StudentTour !== 'undefined') StudentTour.attach(shell, student, prof);
 }
 
 // Practice sentences from the student's own topics, for Dictation and

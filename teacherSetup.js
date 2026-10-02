@@ -245,10 +245,12 @@ const TeacherSetupUI = (() => {
   }
 
   // Asked once per workspace; never inside a student's link.
+  // Then, once, the offer of the guided tour (tutorial.js).
   function maybeAsk() {
     if (window.IG_SHARE_MODE) return;
-    if (teacherSetup()) { refreshForAudience(); return; }
-    open();
+    const offerTour = () => { if (typeof TeacherTour !== 'undefined') setTimeout(() => TeacherTour.offer(), 600); };
+    if (teacherSetup()) { refreshForAudience(); offerTour(); return; }
+    open({ onDone: offerTour });
   }
 
   return { open, close, maybeAsk };
@@ -261,6 +263,7 @@ function refreshForAudience() {
   const call = (name, ...args) => { if (typeof window[name] === 'function') { try { window[name](...args); } catch (e) { console.error(name, e); } } };
   call('refreshCurriculumForAudience');
   call('renderGameMaker', document.getElementById('gameMakerRoot'));
+  call('renderExamMaker', document.getElementById('examMakerRoot'));
   call('renderProfileList');
   call('onActiveStudentChanged');
 }
