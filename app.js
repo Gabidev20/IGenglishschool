@@ -655,8 +655,10 @@ if (typeof TeacherSetupUI !== 'undefined' && !(typeof IGCloud !== 'undefined' &&
   setTimeout(() => TeacherSetupUI.maybeAsk(), 400);
 }
 
-const reportsNavBtn = document.getElementById('reportsNavBtn');
-if (reportsNavBtn) reportsNavBtn.addEventListener('click', () => openReportsModal());
+['reportsNavBtn', 'headerReportsBtn'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', () => openReportsModal());
+});
 
 // ---------------------------------------------------------------------------
 // CONTENT & GAMES EDITOR — entry points, plus the re-render hook so an edit
@@ -671,9 +673,34 @@ function currentEditorLevelId() {
   return first ? first.id : (LEVELS[0] && LEVELS[0].id);
 }
 
-// One way into the editor: the 🧩 Editor button in the menu.
-const editorNavBtn = document.getElementById('editorNavBtn');
-if (editorNavBtn) editorNavBtn.addEventListener('click', () => openContentEditor(currentEditorLevelId()));
+// The editor: the round 🧩 in the header (computer) or 🧩 Editor in the
+// phone menu — the same button, shown where it fits.
+['editorNavBtn', 'headerEditorBtn'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', () => openContentEditor(currentEditorLevelId()));
+});
+
+// When the menu has more items than room, a › appears at its end instead of
+// the last items silently scrolling out of sight.
+(function navOverflowArrow() {
+  const nav = document.getElementById('mainNav');
+  const more = document.getElementById('navMoreBtn');
+  if (!nav || !more) return;
+  const update = () => {
+    const overflow = nav.scrollWidth > nav.clientWidth + 2 && getComputedStyle(nav).display !== 'none';
+    const atEnd = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 2;
+    more.hidden = !overflow;
+    more.textContent = overflow && atEnd ? '‹' : '›';
+  };
+  more.addEventListener('click', () => {
+    const atEnd = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 2;
+    nav.scrollBy({ left: atEnd ? -nav.scrollWidth : 220, behavior: 'smooth' });
+  });
+  nav.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  setTimeout(update, 300);
+  setTimeout(update, 1500);   // after the teacher chip appears
+})();
 
 ContentStore.onChange(() => {
   // A deleted level filter must not leave the grid stuck on an empty view.

@@ -383,7 +383,7 @@ const TeacherTour = (() => {
                a presença do mês (vem sozinha do Today's Class) e o que falta receber.</p>`,
       },
       {
-        target: ['#reportsNavBtn', '#mainNav'], icon: '📊', title: '12. Boletim (Progress Report)',
+        target: ['#headerReportsBtn', '#reportsNavBtn'], icon: '📊', title: '12. Boletim (Progress Report)',
         html: `<p>Preenchido sozinho com as aulas do trimestre. Em <b>Histórico de frequência por período</b> você traz presenças e faltas de cada período
                (ex.: jan–jun, jul–dez) — digitando das suas anotações ou com <b>↻ Contar</b>.</p>
                <p>Tudo é editável: títulos, números, habilidades, assinatura e data — e dá para tirar uma seção desmarcando <b>incluir no boletim</b>. Depois <b>Salvar</b>, <b>Texto para WhatsApp</b> (você revisa o texto antes de copiar) ou <b>Salvar em PDF</b>.</p>`,

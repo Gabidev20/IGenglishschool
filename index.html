@@ -30,14 +30,20 @@
       <a href="#game-maker" class="nav-link" data-section="game-maker">Game Maker</a>
       <a href="#exam-maker" class="nav-link" data-section="exam-maker">Provas</a>
       <a href="#homework" class="nav-link" data-section="homework">Lição</a>
-      <button class="nav-link nav-link-btn" id="editorNavBtn" type="button">🧩 Editor</button>
-      <button class="nav-link nav-link-btn" id="reportsNavBtn" type="button">📊 Reports</button>
+      <!-- In the phone menu only: on a computer these two are the round
+           buttons on the right of the header, so they never scroll out of
+           sight when the menu runs out of room. -->
+      <button class="nav-link nav-link-btn nav-mobile-only" id="editorNavBtn" type="button">🧩 Editor</button>
+      <button class="nav-link nav-link-btn nav-mobile-only" id="reportsNavBtn" type="button">📊 Reports</button>
     </nav>
+    <button class="nav-more" id="navMoreBtn" type="button" aria-label="Mais itens do menu" title="Mais itens do menu" hidden>›</button>
 
     <div class="header-actions">
       <!-- Filled in by auth.js only when teacher accounts are switched on. -->
       <div class="teacher-slot" id="teacherSlot" hidden></div>
 
+      <button class="inbox-btn header-desktop-only" id="headerEditorBtn" type="button" aria-label="Editor de conteúdo" title="🧩 Editor — editar os temas, palavras, vídeos e leituras">🧩</button>
+      <button class="inbox-btn header-desktop-only" id="headerReportsBtn" type="button" aria-label="Boletim" title="📊 Reports — boletim dos alunos">📊</button>
       <button class="inbox-btn help-btn" id="teacherHelpBtn" type="button" aria-label="Como usar o site" title="Como usar o site (tutorial)">❓</button>
 
       <button class="inbox-btn" id="inboxBtn" type="button" aria-label="Mensagens dos alunos" title="Mensagens dos alunos">✉️<span class="inbox-badge" id="inboxBadge" hidden>0</span></button>
