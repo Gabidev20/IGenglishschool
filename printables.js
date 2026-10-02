@@ -358,7 +358,9 @@ function openCertificate(studentId) {
   const id = studentId || (typeof getActiveStudentId === 'function' ? getActiveStudentId() : null);
   const state = {
     id: id || (students[0] && students[0].id),
-    teacher: 'Teacher Ingrid',
+    // The signature she typed last time (synced, and sent to the student's
+    // link), else the school's teacher.
+    teacher: (typeof IGStore !== 'undefined' && IGStore.getJSON('cert_signature', '')) || 'Teacher Gabriela Oliveira',
     text: '',
     level: '',
   };
@@ -375,6 +377,15 @@ function openCertificate(studentId) {
     const student = students.find(s => s.id === state.id);
     if (!student) { mount.innerHTML = '<p class="quiz-empty">Cadastre um aluno primeiro.</p>'; return; }
     const html = prCertificateHTML(student, { teacher: state.teacher, text: state.text, level: state.level });
+    // On the student's own link the certificate is only seen and printed —
+    // the student can't change the signature, the text or the level.
+    if (window.IG_SHARE_MODE) {
+      mount.innerHTML = `
+        <div class="pr-cert-preview">${html}</div>
+        <div class="exam-actions"><button class="btn btn-primary" id="prCertPrintOnly">🖨️ Print</button></div>`;
+      mount.querySelector('#prCertPrintOnly').addEventListener('click', () => prPrint(html));
+      return;
+    }
     mount.innerHTML = `
       <div class="exam-builder">
         <div class="exam-row">
@@ -405,7 +416,7 @@ function openCertificate(studentId) {
 
     const on = (id2, ev, fn) => { const el = mount.querySelector(id2); if (el) el.addEventListener(ev, fn); };
     on('#prCertStudent', 'change', e => { state.id = e.target.value; paint(); });
-    on('#prCertTeacher', 'input', e => { state.teacher = e.target.value; });
+    on('#prCertTeacher', 'input', e => { state.teacher = e.target.value; IGStore.setJSON('cert_signature', e.target.value.trim()); });
     on('#prCertLevel', 'input', e => { state.level = e.target.value; });
     on('#prCertText', 'input', e => { state.text = e.target.value; });
     on('#prCertPrint', 'click', () => {

@@ -178,6 +178,7 @@ const ShareMode = (() => {
     IGStore.setJSON('homework', Array.isArray(data.homework) ? data.homework : []);
     IGStore.setJSON('review_' + student.id, data.review && typeof data.review === 'object' ? data.review : {});
     if (data.profile) IGStore.setJSON('student_profiles', { [student.id]: data.profile });
+    if (data.signature) IGStore.setJSON('cert_signature', data.signature);
 
     // Anything this student already sent from another device.
     (data.activity || []).forEach(row => applyActivityLocally(row, student.id));
@@ -368,8 +369,11 @@ function renderStudentHome(shell, studentId) {
   const levelTopics = (typeof LEVELS !== 'undefined' ? LEVELS : [])
     .filter(l => l.id === student.levelId)
     .flatMap(l => (l.topics || []).map(t => ({ ...t, levelId: l.id })));
-  const topics = levelTopics.length ? levelTopics
-    : (typeof LEVELS !== 'undefined' ? (LEVELS[0].topics || []).map(t => ({ ...t, levelId: LEVELS[0].id })) : []);
+  // Older students also play with their hobbies vocabulary — first, so it is easy to find.
+  const extraTopics = typeof studentProfile === 'function' && studentProfile(student) === 'writer' && typeof HOBBIES_TOPIC !== 'undefined'
+    ? [{ ...HOBBIES_TOPIC, levelId: 'extra' }] : [];
+  const topics = extraTopics.concat(levelTopics.length ? levelTopics
+    : (typeof LEVELS !== 'undefined' ? (LEVELS[0].topics || []).map(t => ({ ...t, levelId: LEVELS[0].id })) : []));
 
   // English first, Portuguese underneath: the page is part of the lesson.
   const mistakes = typeof msCards === 'function' ? msCards(student.id).filter(c => !msPracticedToday(c)).length : due;
@@ -506,8 +510,7 @@ function openStudentGames(shell, student, topics) {
   document.querySelectorAll('[data-topic]').forEach(btn => {
     btn.addEventListener('click', () => {
       const [levelId, topicId] = btn.dataset.topic.split(':');
-      const level = LEVELS.find(l => l.id === levelId);
-      const topic = level ? (level.topics || []).find(t => t.id === topicId) : null;
+      const topic = topics.find(t => t.levelId === levelId && t.id === topicId) || null;
       if (!topic) return;
       const games = typeof gamesForTopic === 'function' ? gamesForTopic(topic) : [];
       if (!games.length) { alert('Este tópico ainda não tem jogos.'); return; }

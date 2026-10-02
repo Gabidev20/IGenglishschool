@@ -152,3 +152,10 @@ function openProfileWriting(student) {
   const task = exPick(prof === 'reader' ? READER_PROMPTS : WRITER_PROMPTS);
   openWritingModal({ studentId: student.id, promptId: task.id, promptText: task.prompt, help: task.help, words: task.words });
 }
+
+// Hobbies as a word bank, so the regular games (Hangman, Memory, Match-up…)
+// can play with it from the student's Games list.
+const HOBBIES_TOPIC = {
+  id: 'hobbies', title: 'Hobbies', emoji: '🎨',
+  words: WR_HOBBIES.map(([w, p, e]) => ({ id: `hob_${w.replace(/\s+/g, '_')}`, en: w, pt: p, emoji: e })),
+};

@@ -2767,7 +2767,7 @@ const LEVELS = [
       {
         "id": "verbtobe",
         "title": "Grammar: Verb To Be",
-        "emoji": "🟰",
+        "emoji": "😊",
         "description": "Learn am, is, are, was, and were",
         "cefr": "A1",
         "grammarTip": "The verb 'to be' changes with each pronoun: I am, you/we/they are, he/she/it is. In the past, we use 'was' for I/he/she/it and 'were' for you/we/they, like 'I was happy' or 'They were tired.'",
