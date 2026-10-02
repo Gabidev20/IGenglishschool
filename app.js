@@ -803,6 +803,7 @@ const ArcadeGames = (() => {
         } else {
           mistakes++;
           playWrong();
+          igMiss(pairs.find(p => p.id === selectedLeft), false, 'Word Match');
           const badLeft = selectedLeft, badRight = selectedRight;
           paint();
           const leftEl = container.querySelector(`.wordmatch-item[data-side="left"][data-id="${badLeft}"]`);
@@ -907,6 +908,7 @@ const ArcadeGames = (() => {
         else if (btn.dataset.id === id) btn.classList.add('wrong', 'shake');
       });
 
+      igMiss(current.word, Boolean(correct), 'Quick Quiz');
       if (correct) { playCorrect(); confettiFromElement(container.querySelector('.quiz-options'), true); }
       else playWrong();
 
@@ -1096,6 +1098,7 @@ const ArcadeGames = (() => {
         if (checkBtn) checkBtn.disabled = true;
       }
 
+      igMiss(current, Boolean(correct), 'Listen & Repeat');
       if (correct) { playCorrect(); confettiFromElement(container.querySelector('.listen-stage'), true); }
       else playWrong();
 

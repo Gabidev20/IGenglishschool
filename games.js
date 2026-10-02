@@ -209,13 +209,14 @@ const GameEngine = (() => {
         playCorrect();
         if (isWon()) {
           state.status = 'won';
+          igMiss(state.word, true, 'Hangman');
           playWin();
           if (typeof awardProgress === 'function') awardProgress(10, 0);
         }
       } else {
         state.wrong++;
         playWrong();
-        if (state.wrong >= MAX_WRONG) { state.status = 'lost'; setTimeout(() => IGSound.wrong(), 250); }
+        if (state.wrong >= MAX_WRONG) { state.status = 'lost'; igMiss(state.word, false, 'Hangman'); setTimeout(() => IGSound.wrong(), 250); }
       }
       paint();
     }
@@ -468,12 +469,14 @@ const GameEngine = (() => {
       if (selectedLeft && selectedRight) {
         if (selectedLeft === selectedRight) {
           matchedIds.add(selectedLeft);
+          igMiss(words.find(w => w.id === selectedLeft), true, 'Match-up');
           playCorrect();
           if (matchedIds.size === words.length) setTimeout(playWin, 350);
           selectedLeft = null; selectedRight = null;
           paint();
         } else {
           playWrong();
+          igMiss(words.find(w => w.id === selectedLeft), false, 'Match-up');
           const badLeft = selectedLeft, badRight = selectedRight;
           paint();
           const leftEl = container.querySelector(`.matchup-item[data-side="left"][data-id="${badLeft}"]`);
@@ -628,6 +631,7 @@ const GameEngine = (() => {
       const rect = el.getBoundingClientRect();
       if (isCorrect) {
         score++;
+        igMiss(target, true, 'Balloon Pop');
         if (typeof awardProgress === 'function') awardProgress(3, 0);
         playCorrect();
         confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -642,6 +646,7 @@ const GameEngine = (() => {
         }
       } else {
         playWrong();
+        igMiss(target, false, 'Balloon Pop');
         el.style.transition = 'transform 0.2s ease';
         el.style.transform = 'translateX(6px)';
         setTimeout(() => { if (el.isConnected) el.style.transform = 'translateX(-6px)'; }, 100);
@@ -993,12 +998,14 @@ const GameEngine = (() => {
         checked = norm(placed.map(i => tiles[i].word).join(' ')) === norm(target);
         if (checked) {
           solved++;
+          igMiss(target, true, 'Unscramble');
           playCorrect();
           confettiFromElement(container.querySelector('#usAnswer'));
           if (typeof awardProgress === 'function') awardProgress(10, 0);
           if (typeof lmSpeak === 'function') lmSpeak(target, 0.85);
         } else {
           playWrong();
+          igMiss(target, false, 'Unscramble');
         }
         paint();
       });
@@ -1093,6 +1100,7 @@ const GameEngine = (() => {
             streak = 0;
             lastWrong = item.bucket;
             playWrong();
+            igMiss(item.text.replace('____', item.bucket), false, 'Sort It');
           }
           paint();
         });
@@ -2202,6 +2210,8 @@ const GameEngine = (() => {
         return;
       }
       if (mode === 'listen' && target && item.id !== target) {
+        const want = itemById(target);
+        igMiss({ en: want.en, pt: want.pt, image: houseDataUri(want.crop, want.draw(want.color)) }, false, 'House');
         playWrong();
         shake = true;
         msg = `Oops! That's the ${item.en.toLowerCase()}.`;
@@ -2886,6 +2896,7 @@ const GameEngine = (() => {
         setTimeout(() => { if (container.isConnected && mode === 'listen' && target === was) { newTarget(); paint(); } }, 1800);
       } else {
         playWrong(); shake = true;
+        igMiss(igWordOf(topic, feelingById(target).en), false, 'Feelings');
         msg = `❌ That's ${f.en.toLowerCase()}.`;
         ttsSay(`No, that's ${f.en.toLowerCase()}. I'm ${feelingById(target).en.toLowerCase()}!`);
         paint();
@@ -3141,6 +3152,7 @@ const GameEngine = (() => {
         setTimeout(() => { if (container.isConnected && mode === 'listen' && target === was) { newTarget(); paint(); } }, 2000);
       } else {
         playWrong(); shake = true;
+        igMiss(sentence(thing, prepById(target)), false, 'Prepositions');
         msg = `❌ ${sentence(thing, p)}`;
         ttsSay(`Oops! ${sentence(thing, p)} Put the ${thing.en} ${prepById(target).phrase}!`);
         paint();
@@ -3294,6 +3306,7 @@ const GameEngine = (() => {
       } else {
         playWrong();
         shake = true;
+        igMiss(igWordOf(topic, weatherById(target).en), false, 'Weather');
         msg = `❌ That's ${w.en.toLowerCase()}.`;
         paint();
         ttsSay(`No, that's ${w.en.toLowerCase()}. ${its(weatherById(target))}`);

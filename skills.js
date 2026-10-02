@@ -88,6 +88,12 @@ function skSentences(opts) {
     const own = lkSentences(o.topic);
     if (own.length >= 3) return own.slice(0, 10);
   }
+  // Young learners: short sentences with the verb to be and easy vocabulary
+  // ("She is happy.", "It is a cat.") instead of the general bank.
+  const student = o.studentId && typeof loadStudents === 'function' ? loadStudents().find(s => s.id === o.studentId) : null;
+  if (student && typeof igIsEasyLevel === 'function' && igIsEasyLevel(student) && typeof kidSentences === 'function') {
+    return kidSentences(8);
+  }
   if (typeof EX_FRAMES !== 'undefined' && typeof exAff === 'function') {
     return exShuffle(EX_FRAMES.map(f => exAff(f))).slice(0, 8);
   }
@@ -518,8 +524,8 @@ function openWritingDesk() {
 
   openModal(`
     <div class="modal-content-pad">
-      <h3 id="modalTitle">🖊️ Correção de textos</h3>
-      <p class="lt-count-note">${pending.length} aguardando correção · ${all.length} no total</p>
+      <h3 id="modalTitle">✉️ Mensagens e textos dos alunos</h3>
+      <p class="lt-count-note">${all.filter(w => !w.seen && !(w.correction && w.correction.text)).length} nova(s) · ${pending.length} aguardando resposta · ${all.length} no total</p>
       <div id="skDeskMount" class="sk-desk"></div>
     </div>`, true);
 
@@ -531,9 +537,9 @@ function openWritingDesk() {
       return;
     }
     mount.innerHTML = all.map(w => `
-      <div class="sk-desk-row ${w.correction && w.correction.text ? 'done' : ''}">
+      <div class="sk-desk-row ${w.correction && w.correction.text ? 'done' : ''}${w.seen || (w.correction && w.correction.text) ? '' : ' unread'}">
         <div>
-          <b>${skEsc(w.avatar || '🙂')} ${skEsc(w.studentName)}</b>
+          <b>${w.seen || (w.correction && w.correction.text) ? '' : '<span class="sk-new">NOVA</span> '}${skEsc(w.avatar || '🙂')} ${skEsc(w.studentName)}</b>
           <span>${skEsc(w.prompt)}</span>
           <span>${new Date(w.sentAt).toLocaleDateString('pt-BR')} · ${w.words} palavras</span>
         </div>
@@ -555,6 +561,14 @@ function openWritingDesk() {
     const w = list.find(x => x.id === id);
     if (!w) return paintList();
     const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === studentId);
+    // Opened = read: it stops counting on the ✉️ badge.
+    if (!w.seen) {
+      w.seen = true;
+      SkillsModules.saveWriting(studentId, list);
+      const idx = all.findIndex(x => x.studentId === studentId && x.id === id);
+      if (idx !== -1) all[idx] = { ...all[idx], seen: true };
+      if (typeof refreshInboxBadge === 'function') refreshInboxBadge();
+    }
 
     mount.innerHTML = `
       <div class="sk-editor">

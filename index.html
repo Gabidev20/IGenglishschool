@@ -38,6 +38,8 @@
       <!-- Filled in by auth.js only when teacher accounts are switched on. -->
       <div class="teacher-slot" id="teacherSlot" hidden></div>
 
+      <button class="inbox-btn" id="inboxBtn" type="button" aria-label="Mensagens dos alunos" title="Mensagens dos alunos">✉️<span class="inbox-badge" id="inboxBadge" hidden>0</span></button>
+
       <div class="profile-switcher" id="profileSwitcher">
         <button class="profile-chip" id="profileChipBtn" aria-haspopup="listbox" aria-expanded="false">
           <span class="profile-avatar" id="profileAvatar">🦊</span>
@@ -256,7 +258,9 @@
 <script src="classSheet.js"></script>
 <script src="reports.js"></script>
 <script src="examMaker.js"></script>
+<script src="kidsContent.js"></script>
 <script src="learnerData.js"></script>
+<script src="mistakes.js"></script>
 <script src="skills.js"></script>
 <script src="printables.js"></script>
 <script src="homework.js"></script>
@@ -270,6 +274,7 @@
 <script src="liveTools.js"></script>
 <script src="topicsData.js"></script>
 <script src="contentStore.js"></script>
+<script src="inbox.js"></script>
 <script src="app.js"></script>
 <!-- Last: decides who is signed in, once the app has painted. -->
 <script src="auth.js"></script>

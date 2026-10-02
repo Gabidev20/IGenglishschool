@@ -234,7 +234,9 @@ function ldStats(studentId) {
 // REVISION — the due cards, served through the exam runner the app already has
 // ---------------------------------------------------------------------------
 function ldReviewExam(studentId, limit) {
-  const cards = ldDueCards(studentId, limit || 10);
+  // Words and sentences missed in the games are revised in "My mistakes"
+  // (mistakes.js); the exam runner only knows question shapes.
+  const cards = ldDueCards(studentId).filter(c => ['vocab', 'sentence'].indexOf(c.item.kind) === -1).slice(0, limit || 10);
   if (!cards.length) return null;
   const items = cards.map(c => ({ ...c.item }));
   const parts = typeof exPartition === 'function' ? exPartition(items) : [];

@@ -7563,3 +7563,61 @@ html.ig-student-mode body > .auth-gate { display: none !important; }
 .rv-edit-actions { display: flex; gap: 8px; justify-content: space-between; flex-wrap: wrap; margin-top: 14px; }
 .rv-share-note { font-size: 0.82rem; color: var(--ink-faint); margin: 10px 0 0; text-align: center; }
 .stu-tile--review { border-color: var(--primary) !important; background: var(--primary-soft) !important; }
+
+/* ==========================================================================
+   Teacher inbox · My mistakes
+   ========================================================================== */
+.inbox-btn {
+  position: relative; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--border);
+  background: var(--surface); font-size: 1.2rem; cursor: pointer; flex: 0 0 auto;
+}
+.inbox-btn:hover { border-color: var(--primary); }
+.inbox-btn.has-unread { border-color: var(--primary); animation: an-bounce 1.6s ease-in-out infinite; }
+.inbox-badge {
+  position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px;
+  background: var(--primary); color: #fff; font-size: 0.72rem; font-weight: 800; line-height: 20px; text-align: center;
+}
+.inbox-toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 30px); opacity: 0; z-index: 4000;
+  background: var(--ink); color: #fff; border: none; border-radius: 999px; padding: 12px 22px;
+  font-family: inherit; font-weight: 700; font-size: 0.95rem; box-shadow: var(--shadow-lg); cursor: pointer;
+  transition: transform .3s ease, opacity .3s ease; max-width: calc(100vw - 32px);
+}
+.inbox-toast.show { transform: translate(-50%, 0); opacity: 1; }
+.sk-desk-row.unread { border-color: var(--primary); background: var(--primary-soft); }
+.sk-new { background: var(--primary); color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 0.68rem; font-weight: 800; letter-spacing: .04em; }
+html.ig-student-mode .inbox-btn { display: none; }
+
+.ms-all { width: 100%; margin-bottom: 12px; font-size: 1.05rem; }
+.ms-list { display: flex; flex-direction: column; gap: 8px; }
+.ms-row {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 2px solid var(--border);
+  border-radius: var(--radius-md); background: var(--surface);
+}
+.ms-row.done { opacity: .6; }
+.ms-pic { flex: 0 0 56px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+.ms-pic img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+.ms-emoji { font-size: 2.4rem; }
+.ms-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ms-text b { font-family: var(--font-display); font-size: 1.15rem; }
+.ms-text small { color: var(--ink-faint); font-weight: 600; }
+.ms-q { font-style: italic; }
+.ms-ok { font-size: 1.4rem; }
+.ms-drill-card { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px; }
+.ms-drill-pic { width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
+.ms-drill-pic img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius-md); }
+.ms-drill-pic.ms-emoji { font-size: 6rem; }
+.ms-drill-word { font-family: var(--font-display); font-weight: 800; font-size: 2rem; margin: 0; }
+.ms-step-title { text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; margin: 6px 0; }
+.ms-slots { text-align: center; font-family: var(--font-display); font-size: 1.6rem; letter-spacing: .12em; margin: 4px 0 10px; }
+.ms-type { display: flex; gap: 8px; justify-content: center; }
+.ms-type input {
+  width: min(320px, 70vw); padding: 12px 14px; font-size: 1.3rem; border-radius: var(--radius-sm); border: 2px solid var(--border);
+  font-family: inherit; text-align: center;
+}
+.ms-type input:focus { outline: none; border-color: var(--primary); }
+.ms-order-answer, .ms-order-tray { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 48px; padding: 8px; }
+.ms-order-answer { border: 2px dashed var(--border); border-radius: var(--radius-md); margin-bottom: 8px; }
+.ms-order-hint { color: var(--ink-faint); font-size: 1.4rem; }
+.ms-feedback { text-align: center; }
+.stu-foot small { color: var(--ink-faint); }

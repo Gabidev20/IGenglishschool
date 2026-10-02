@@ -370,56 +370,63 @@ function renderStudentHome(shell, studentId) {
   const topics = levelTopics.length ? levelTopics
     : (typeof LEVELS !== 'undefined' ? (LEVELS[0].topics || []).map(t => ({ ...t, levelId: LEVELS[0].id })) : []);
 
+  // English first, Portuguese underneath: the page is part of the lesson.
+  const easy = typeof igIsEasyLevel === 'function' && igIsEasyLevel(student);
+  const mistakes = typeof msCards === 'function' ? msCards(student.id).filter(c => !msPracticedToday(c)).length : due;
+  const review = typeof latestReview === 'function' ? latestReview(student.id) : null;
+  const tile = (go, icon, en, pt, cls) => `
+        <button class="stu-tile${cls ? ' ' + cls : ''}" data-go="${go}"><span>${icon}</span><b>${en}</b><small>${pt}</small></button>`;
+
   shell.innerHTML = `
     <div class="stu-wrap">
       <header class="stu-header" style="--stu-color:${shareEsc(student.color || '#8e6d86')}">
         <span class="stu-avatar">${shareEsc(student.avatar || '🙂')}</span>
         <div>
-          <h1>Oi, ${shareEsc(student.name)}! 👋</h1>
+          <h1>Hello, ${shareEsc(student.name)}! 👋</h1>
           <p>${shareEsc(typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : '')}
              · ${progress.xp || 0} XP · ${progress.stars || 0} ⭐
-             ${stats && stats.streak ? ` · 🔥 ${stats.streak} dia${stats.streak === 1 ? '' : 's'}` : ''}</p>
+             ${stats && stats.streak ? ` · 🔥 ${stats.streak} day${stats.streak === 1 ? '' : 's'}` : ''}</p>
         </div>
       </header>
 
       ${pending.length ? `
         <div class="stu-alert">
           <div>
-            <b>📚 Você tem lição de casa</b>
-            <small>${pending.length} lição(ões) esperando por você</small>
+            <b>📚 You have homework!</b>
+            <small>Você tem ${pending.length} lição(ões) esperando por você</small>
           </div>
-          <button class="btn btn-primary" data-go="homework">Fazer agora</button>
+          <button class="btn btn-primary" data-go="homework">Let's go!</button>
         </div>` : ''}
 
-      ${due ? `
+      ${mistakes ? `
         <div class="stu-alert soft">
           <div>
-            <b>🔁 ${due} questão(ões) para revisar</b>
-            <small>São as que você errou — revisar hoje faz elas grudarem</small>
+            <b>🔁 ${mistakes} word${mistakes === 1 ? '' : 's'} to review</b>
+            <small>As que você errou — revisar hoje faz elas grudarem</small>
           </div>
-          <button class="btn btn-primary" data-go="review">Revisar</button>
+          <button class="btn btn-primary" data-go="review">Review</button>
         </div>` : ''}
 
       <div class="stu-tiles">
-        <button class="stu-tile" data-go="progress"><span>📈</span><b>Meu progresso</b><small>Estrelas, semana e figurinhas</small></button>
-        <button class="stu-tile" data-go="homework"><span>📚</span><b>Minha lição</b><small>${pending.length ? pending.length + ' pendente(s)' : 'Tudo em dia 🎉'}</small></button>
-        ${typeof latestReview === 'function' && latestReview(student.id) ? `<button class="stu-tile stu-tile--review" data-go="review-class"><span>🧠</span><b>Revisão da aula</b><small>${shareEsc(latestReview(student.id).title || 'Flashcards')}</small></button>` : ''}
-        <button class="stu-tile" data-go="games"><span>🎮</span><b>Jogos</b><small>Jogar com as palavras do meu nível</small></button>
-        <button class="stu-tile" data-go="backpack"><span>🎒</span><b>Mochila</b><small>School objects</small></button>
-        <button class="stu-tile" data-go="house"><span>🏠</span><b>Casa</b><small>Parts of the house</small></button>
-        <button class="stu-tile" data-go="animals"><span>🦁</span><b>Animais</b><small>Describing animals</small></button>
-        <button class="stu-tile" data-go="feelings"><span>😊</span><b>Sentimentos</b><small>Feelings</small></button>
-        <button class="stu-tile" data-go="instruments"><span>🎸</span><b>Música</b><small>Instruments</small></button>
-        <button class="stu-tile" data-go="prepositions"><span>📦</span><b>Onde está?</b><small>Prepositions</small></button>
-        <button class="stu-tile" data-go="weather"><span>🌦️</span><b>Clima</b><small>Weather</small></button>
-        <button class="stu-tile" data-go="practice"><span>⚡</span><b>Treinar</b><small>Exercícios de gramática</small></button>
-        <button class="stu-tile" data-go="dictation"><span>🎧</span><b>Ditado</b><small>Ouvir e escrever</small></button>
-        <button class="stu-tile" data-go="speaking"><span>🎤</span><b>Falar</b><small>Ler em voz alta</small></button>
-        <button class="stu-tile" data-go="writing"><span>✍️</span><b>Escrever</b><small>Mandar um texto para a teacher</small></button>
-        <button class="stu-tile" data-go="review"><span>🔁</span><b>Meus erros</b><small>${due ? due + ' para revisar' : 'Nada pendente'}</small></button>
+        ${tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas')}
+        ${tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉')}
+        ${review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''}
+        ${tile('games', '🎮', 'Games', 'Jogos com as palavras do meu nível')}
+        ${tile('backpack', '🎒', 'Backpack', 'Mochila — school objects')}
+        ${tile('house', '🏠', 'House', 'Casa — parts of the house')}
+        ${tile('animals', '🦁', 'Animals', 'Animais')}
+        ${tile('feelings', '😊', 'Feelings', 'Sentimentos')}
+        ${tile('instruments', '🎸', 'Music', 'Música — instrumentos')}
+        ${tile('prepositions', '📦', 'Where is it?', 'Onde está? — preposições')}
+        ${tile('weather', '🌦️', 'Weather', 'Clima')}
+        ${tile('practice', '⚡', 'Practice', easy ? 'Treinar — animais, cores, números…' : 'Treinar — exercícios de gramática')}
+        ${tile('dictation', '🎧', 'Dictation', 'Ditado — ouvir e escrever')}
+        ${tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta')}
+        ${tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher')}
+        ${tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente')}
       </div>
 
-      <p class="stu-foot">IG English School · o que você fizer aqui a teacher vê ✨</p>
+      <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br><small>a teacher vê o que você faz aqui</small></p>
     </div>`;
 
   const go = {
@@ -429,7 +436,7 @@ function renderStudentHome(shell, studentId) {
       if (!hw) { alert('Nenhuma lição por enquanto. 🎉'); return; }
       openHomeworkRunner(hw, () => renderStudentHome(shell, studentId));
     },
-    review: () => openReviewSession(student.id),
+    review: () => openMistakes(student.id),
     games: () => openStudentGames(shell, student, topics),
     backpack: () => openBackpackGame(),
     house: () => openHouseGame(),
@@ -440,6 +447,7 @@ function renderStudentHome(shell, studentId) {
     prepositions: () => openPrepositionsGame(),
     weather: () => openWeatherGame(),
     practice: () => {
+      if (easy && typeof openKidsPractice === 'function') { openKidsPractice(); return; }
       const picked = (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
       if (!picked.length) return;
       openExamGames({

@@ -245,7 +245,15 @@ const IGCloud = (() => {
       touched.add('writing_' + r.student_id);
       touched.add('homework');
     });
-    touched.forEach(k => pending.add(k));
+    // Queued (not just marked) so a pull in the middle of a lesson is pushed
+    // back up too, not only the one at sign-in.
+    touched.forEach(k => queue(k));
+    // Tell the page — the inbox badge and toast listen for this.
+    try {
+      window.dispatchEvent(new CustomEvent('ig:student-activity', {
+        detail: { rows: data.map(r => ({ kind: r.kind, studentId: r.student_id })) },
+      }));
+    } catch (e) { /* old browser */ }
     return data.length;
   }
 
@@ -569,6 +577,7 @@ const IGCloud = (() => {
     }
   }
 
+  let activityTimer = null;
   async function start(session) {
     teacher = {
       id: session.user.id,
@@ -586,6 +595,13 @@ const IGCloud = (() => {
     // Then whatever the students did at home since the last time she opened
     // the site. Harmless when the share tables are not installed yet.
     try { await pullStudentActivity(); } catch (e) { /* share tables optional */ }
+    // And keep listening while the site is open: a message a student sends
+    // mid-afternoon shows up within a minute, not at the next sign-in.
+    if (!activityTimer) {
+      const poll = () => { if (document.visibilityState !== 'hidden') pullStudentActivity().catch(() => {}); };
+      activityTimer = setInterval(poll, 60000);
+      window.addEventListener('focus', poll);
+    }
     // Re-render whatever the freshly pulled data affects.
     if (typeof ContentStore !== 'undefined') ContentStore.refresh();
     if (typeof initStudents === 'function') initStudents();
