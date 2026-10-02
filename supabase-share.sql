@@ -137,6 +137,7 @@ begin
     'log',     coalesce(v_data->('log_'     || v_link.student_id), '[]'::jsonb),
     'bank',    coalesce(v_data->('bank_'    || v_link.student_id), '{}'::jsonb),
     'writing', coalesce(v_data->('writing_' || v_link.student_id), '[]'::jsonb),
+    'review',  coalesce(v_data->('review_'  || v_link.student_id), '{}'::jsonb),
     'activity', v_activity
   );
 end;

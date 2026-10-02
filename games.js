@@ -27,6 +27,7 @@ const GAME_TYPES = [
   { id: 'feelings', label: 'Faces', icon: '😊', needs: 'feelings' },
   { id: 'instruments', label: 'Music', icon: '🎸', needs: 'instruments' },
   { id: 'prepositions', label: 'Where is it?', icon: '📦', needs: 'prepositions' },
+  { id: 'weather', label: 'Weather', icon: '🌦️', needs: 'weather' },
 ];
 
 // Words that mark a topic as a wardrobe topic. Three hits is enough: a single
@@ -80,6 +81,9 @@ function gamesForTopic(topic) {
     }
     if (g.needs === 'prepositions') {
       return typeof isPrepositionsTopic === 'function' && isPrepositionsTopic(topic);
+    }
+    if (g.needs === 'weather') {
+      return typeof isWeatherTopic === 'function' && isWeatherTopic(topic);
     }
     return (topic.words || []).length > 0;
   });
@@ -3245,6 +3249,123 @@ const GameEngine = (() => {
   }
 
 
+  // -------------------------------------------------------------------------
+  // WEATHER — drag a weather onto the sky and the whole scene changes: rain
+  // falls, the tree bends in the wind, the child puts on a raincoat… with
+  // its own sound. "Teacher says" takes anything; "Listen & find" asks
+  // "What's the weather like? It's snowy!" with pictures only.
+  // -------------------------------------------------------------------------
+  function renderWeather(container, topic) {
+    const seen = new Set();
+    const list = [];
+    (topic.words || []).forEach(w => { const x = weatherFor(w); if (x && !seen.has(x.id)) { seen.add(x.id); list.push(x); } });
+    let mode = 'teacher', shown = null, target = null, score = 0, msg = '', shake = false;
+    let stopDrag = null;
+    const timers = [];
+    const later = (fn, ms) => timers.push(setTimeout(() => { if (container.isConnected) fn(); }, ms));
+    const its = w => `It's ${w.en.toLowerCase()}!`;
+
+    function newTarget() {
+      const pool = list.filter(w => w.id !== target);
+      target = pickN(pool, 1)[0].id;
+      shown = null;
+      msg = '';
+      ttsSay(`What's the weather like? ${its(weatherById(target))}`);
+    }
+
+    function show(w) {
+      shown = w.id;
+      playWeatherSound(w.id);
+      paint();
+      later(() => ttsSay(`${its(w)} ${w.extra}`), w.id === 'stormy' ? 900 : 300);
+    }
+
+    function drop(w) {
+      if (mode === 'teacher') { msg = ''; show(w); return; }
+      if (w.id === target) {
+        score++;
+        msg = '⭐ Yes!';
+        show(w);
+        playCorrect();
+        const stage = container.querySelector('.wx-stage');
+        if (stage) confettiFromElement(stage);
+        const was = target;
+        later(() => { if (mode === 'listen' && target === was) { newTarget(); paint(); } }, 3600);
+      } else {
+        playWrong();
+        shake = true;
+        msg = `❌ That's ${w.en.toLowerCase()}.`;
+        paint();
+        ttsSay(`No, that's ${w.en.toLowerCase()}. ${its(weatherById(target))}`);
+      }
+    }
+
+    function paint() {
+      const w = shown && weatherById(shown);
+      const t = target && weatherById(target);
+      const listen = mode === 'listen';
+      container.innerHTML = `
+        <div class="game-toolbar">
+          ${modeButtons(mode, ['teacher', '👩‍🏫 Teacher says'], ['listen', '🎧 Listen & find'])}
+          ${listen ? `<span class="game-status-pill">⭐ ${score}</span>` : `<button class="game-btn secondary" data-action="clear">🔄 Limpar</button>`}
+        </div>
+        ${listen && t ? `
+          <div class="hs-target fe-target">
+            <button class="bp-list-say" data-action="say-target" aria-label="Listen again">🔊</button>
+            <span>What's the weather like? It's <b>${igEscapeHtml(t.en.toLowerCase())}</b>!</span>
+          </div>` : ''}
+        <div class="wx-stage wx--${shown || 'none'}${shake ? ' bp-shake' : ''}">
+          <svg class="wx-scene" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${weatherSceneInner(shown)}</svg>
+          <span class="bp-drop-hint">Drop it in the sky! ☁️</span>
+        </div>
+        <div class="wx-under">
+          ${w ? `<button class="fe-sentence" data-action="say-shown">🔊 ${igEscapeHtml(its(w))}</button>
+                 <span class="wx-extra">${igEscapeHtml(w.extra)}</span>`
+              : `<p class="fe-hint">👆 ${listen ? 'Listen and drag the weather to the sky!' : 'What\'s the weather like today? Drag it to the sky!'}</p>`}
+        </div>
+        <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+        <div class="wx-cards">
+          ${list.map(x => `
+            <button class="fe-card wx-card${shown === x.id ? ' on' : ''}${listen ? ' no-label' : ''}" data-weather="${x.id}" aria-label="${igEscapeHtml(x.en)}">
+              ${weatherIconSVG(x.id, 'wx-thumb')}
+              ${listen ? '' : `<span class="bp-card-en">${igEscapeHtml(x.en)}</span><span class="bp-card-pt">${igEscapeHtml(x.pt)}</span>`}
+            </button>`).join('')}
+        </div>`;
+      shake = false;
+      bind();
+    }
+
+    function bind() {
+      const act = n => container.querySelector(`[data-action="${n}"]`);
+      container.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.mode === mode) return;
+        mode = b.dataset.mode; shown = null; msg = ''; target = null; score = 0;
+        if (mode === 'listen') newTarget();
+        paint();
+      }));
+      const stage = container.querySelector('.wx-stage');
+      container.querySelectorAll('[data-weather]').forEach(card => card.addEventListener('pointerdown', ev => {
+        if (ev.button != null && ev.button !== 0) return;
+        const w = weatherById(card.dataset.weather);
+        stopDrag = ghostDrag(ev, weatherIconSVG(w.id), [stage], (hit, e, moved) => {
+          stopDrag = null;
+          if (hit || !moved) drop(w);
+        });
+      }));
+      const clear = act('clear');
+      if (clear) clear.addEventListener('click', () => { shown = null; msg = ''; paint(); });
+      const st = act('say-target');
+      if (st) st.addEventListener('click', () => ttsSay(`What's the weather like? ${its(weatherById(target))}`));
+      const ss = act('say-shown');
+      if (ss) ss.addEventListener('click', () => { const w = weatherById(shown); playWeatherSound(w.id); ttsSay(`${its(w)} ${w.extra}`); });
+    }
+
+    if (!list.length) { container.innerHTML = `<div class="game-end-banner lose">This topic has no weather words.</div>`; return () => {}; }
+    paint();
+    return () => { if (stopDrag) stopDrag(); timers.forEach(clearTimeout); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -3277,6 +3398,7 @@ const GameEngine = (() => {
       case 'feelings': activeCleanup = renderFeelings(container, topic); break;
       case 'instruments': activeCleanup = renderInstruments(container, topic); break;
       case 'prepositions': activeCleanup = renderPrepositions(container, topic); break;
+      case 'weather': activeCleanup = renderWeather(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }

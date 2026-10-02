@@ -105,6 +105,14 @@ function renderGameMaker(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-weather>
+        <span class="gamemaker-ready-art"><svg viewBox="0 0 400 260">${weatherSceneInner('rainy')}</svg></span>
+        <span class="gamemaker-ready-text">
+          <b>🌦️ Weather</b>
+          <small>Sunny, rainy, cloudy, snowy, stormy, windy — a criança arrasta o clima para o céu e a cena inteira muda: chuva caindo, raios, neve, vento… e a roupa da criança também!</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
     </div>
     <div class="gamemaker-grid">
       ${games.length === 0 ? `
@@ -123,6 +131,7 @@ function renderGameMaker(container) {
   container.querySelectorAll('[data-open-feelings]').forEach(btn => btn.addEventListener('click', openFeelingsGame));
   container.querySelectorAll('[data-open-instruments]').forEach(btn => btn.addEventListener('click', openInstrumentsGame));
   container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
+  container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
   container.querySelectorAll('[data-test]').forEach(btn => {
     btn.addEventListener('click', () => testCustomGame(games.find(g => g.id === btn.dataset.test)));
   });

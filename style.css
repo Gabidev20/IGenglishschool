@@ -7431,3 +7431,135 @@ html.ig-student-mode body > .auth-gate { display: none !important; }
 }
 .dc-score-btn b { color: var(--primary-dark); margin-left: 4px; }
 .dc-score-btn:hover { border-color: var(--primary); }
+
+/* ==========================================================================
+   Weather
+   ========================================================================== */
+.wx-stage { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); border: 3px dashed transparent; margin-top: 10px; transition: border-color .15s ease; }
+.wx-stage.is-target { border-color: var(--primary); }
+.wx-stage.is-target .bp-drop-hint { opacity: 1; }
+.wx-stage .bp-drop-hint { top: 12px; bottom: auto; }
+.wx-scene { width: 100%; height: auto; display: block; }
+.wx-scene .wx-sky { transition: fill .6s ease; }
+.wx-under { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 10px; }
+.wx-extra { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--ink-soft); }
+.wx-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+@media (max-width: 640px) { .wx-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.wx-thumb { width: 64px; height: 64px; pointer-events: none; }
+
+/* everything that moves in the sky */
+.wx-spin { animation: wx-spin 12s linear infinite; transform-box: view-box; }
+@keyframes wx-spin { to { transform: rotate(360deg); } }
+.wx-drift { animation: wx-drift 9s ease-in-out infinite alternate; }
+.wx-drift--slow { animation-duration: 14s; }
+.wx-drift--fast { animation-duration: 3s; }
+@keyframes wx-drift { from { transform: translateX(-14px); } to { transform: translateX(18px); } }
+.wx-birds { animation: wx-birds 6s ease-in-out infinite alternate; }
+@keyframes wx-birds { from { transform: translate(0, 0); } to { transform: translate(40px, -8px); } }
+.wx-fall { animation: wx-fall .7s linear infinite; }
+.wx-fall--late { animation-delay: -.35s; }
+.wx-fall--fast { animation-duration: .45s; }
+@keyframes wx-fall { from { transform: translate(0, -60px); } to { transform: translate(-10px, 80px); } }
+.wx-snow { animation: wx-snow 4s linear infinite; }
+.wx-snow--late { animation-delay: -2s; }
+@keyframes wx-snow { from { transform: translate(0, -80px); } 50% { transform: translate(8px, 0); } to { transform: translate(-4px, 80px); } }
+.wx-flash { opacity: 0; animation: wx-flash 3s ease-out infinite; }
+@keyframes wx-flash { 0%, 100% { opacity: 0; } 4% { opacity: .75; } 8% { opacity: 0; } 12% { opacity: .5; } 18% { opacity: 0; } }
+.wx-bolt { animation: wx-bolt 3s ease-out infinite; }
+@keyframes wx-bolt { 0%, 100% { opacity: 0; } 4%, 16% { opacity: 1; } 22% { opacity: 0; } }
+.wx-sway { animation: wx-sway 1.2s ease-in-out infinite alternate; transform-box: view-box; }
+@keyframes wx-sway { from { transform: rotate(-4deg); } to { transform: rotate(6deg); } }
+.wx-wind { animation: wx-wind 1.6s linear infinite; }
+@keyframes wx-wind { from { transform: translateX(-60px); opacity: 0; } 30% { opacity: 1; } to { transform: translateX(80px); opacity: 0; } }
+.wx-leaves { animation: wx-leaves 2.4s linear infinite; }
+@keyframes wx-leaves { from { transform: translate(-40px, 10px) rotate(0); } to { transform: translate(60px, -20px); } }
+.wx-kite { animation: wx-kite 1.4s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 160px 136px; }
+@keyframes wx-kite { from { transform: rotate(-4deg); } to { transform: rotate(5deg); } }
+.wx-hint { animation: an-bounce 1.6s ease-in-out infinite; }
+.wx--stormy .wx-kid { animation: wx-shiver .25s linear infinite; }
+@keyframes wx-shiver { 50% { transform: translateX(1.5px); } }
+@media (prefers-reduced-motion: reduce) {
+  .wx-spin, .wx-drift, .wx-birds, .wx-fall, .wx-snow, .wx-flash, .wx-bolt, .wx-sway, .wx-wind, .wx-leaves, .wx-kite, .wx--stormy .wx-kid { animation: none; }
+  .wx-bolt { opacity: 1; }
+}
+/* Scenes inside the flex-column game mount keep their full height. */
+.wx-stage, .pp-stage, .hs-stage, .an-done, .in-play, .in-bins, .fe-layout, .bp-layout, .hs-layout, .an-layout { flex-shrink: 0; }
+
+/* ==========================================================================
+   Class review — flashcards (player) and the teacher's editor
+   ========================================================================== */
+.rv-progress { display: flex; gap: 5px; justify-content: center; margin: 4px 0 12px; flex-wrap: wrap; }
+.rv-progress i { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.rv-progress i.on { background: var(--primary); transform: scale(1.3); }
+.rv-progress i.ok { background: var(--color-secondary-deep); }
+.rv-card {
+  position: relative; width: 100%; max-width: 420px; height: 380px; margin: 0 auto; cursor: pointer;
+  transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3,1.3,.6,1); outline: none;
+}
+.rv-card.flipped { transform: rotateY(180deg); }
+.rv-face {
+  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg); border: 3px solid var(--border); box-shadow: var(--shadow-md);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 18px; text-align: center;
+}
+.rv-front { background: linear-gradient(160deg, var(--color-accent-soft), var(--surface)); }
+.rv-back { background: linear-gradient(160deg, var(--primary-soft), var(--surface)); transform: rotateY(180deg); justify-content: flex-start; overflow-y: auto; }
+.rv-card:focus-visible .rv-face { border-color: var(--primary); }
+.rv-pic { display: flex; align-items: center; justify-content: center; width: 180px; height: 180px; }
+.rv-pic img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius-md); }
+.rv-pic.rv-emoji { font-size: 7.5rem; line-height: 1; }
+.rv-pic--small { width: 80px; height: 80px; }
+.rv-pic--small.rv-emoji { font-size: 3.4rem; }
+.rv-word { font-family: var(--font-display); font-weight: 800; font-size: 2.3rem; margin: 0; line-height: 1.1; color: var(--ink); }
+.rv-word--small { font-size: 1.5rem; }
+.rv-tap { margin: 0; color: var(--ink-faint); font-weight: 600; font-size: 0.85rem; }
+.rv-pt { margin: 0; color: var(--ink-soft); font-weight: 700; }
+.rv-pron { margin: 0; color: var(--color-primary); font-weight: 600; font-size: 0.9rem; }
+.rv-sentences { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 6px; }
+.rv-sentence {
+  border: 2px solid var(--border); background: var(--surface); border-radius: var(--radius-md); padding: 10px 14px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--ink); cursor: pointer; text-align: left;
+}
+.rv-sentence:hover { border-color: var(--primary); }
+.rv-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+.rv-done { text-align: center; padding: 20px 0; }
+.rv-done-emoji { font-size: 5rem; display: inline-block; animation: an-bounce 1s ease-in-out infinite; }
+.rv-done-title { font-family: var(--font-display); font-weight: 800; font-size: 2rem; margin: 6px 0 0; }
+.rv-done-sub { color: var(--ink-soft); font-weight: 700; margin: 4px 0 14px; }
+.rv-preview-note { background: var(--color-accent-soft); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.88rem; font-weight: 600; }
+.rv-link { border: none; background: none; color: var(--primary-dark); font-weight: 700; cursor: pointer; text-decoration: underline; font-family: inherit; font-size: 0.82rem; padding: 0; }
+@media (max-width: 520px) { .rv-card { height: 340px; } .rv-pic { width: 140px; height: 140px; } .rv-pic.rv-emoji { font-size: 6rem; } .rv-word { font-size: 1.9rem; } }
+
+.rv-notes { background: var(--bg); border-radius: var(--radius-md); padding: 8px 14px; margin-bottom: 12px; font-size: 0.88rem; }
+.rv-notes summary { font-weight: 800; cursor: pointer; color: var(--ink-soft); }
+.rv-notes p { margin: 6px 0; color: var(--ink-soft); }
+.rv-edit-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.rv-title-field { flex: 1; font-weight: 800; font-size: 0.8rem; color: var(--ink-soft); display: flex; flex-direction: column; gap: 4px; }
+.rv-title-field input, .rv-edit-card input, .rv-edit-card textarea, .rv-edit-add input {
+  padding: 8px 10px; border-radius: var(--radius-sm); border: 2px solid var(--border); font-family: inherit; font-size: 0.92rem;
+  background: var(--surface); color: var(--ink); min-width: 0;
+}
+.rv-title-field input:focus, .rv-edit-card input:focus, .rv-edit-card textarea:focus, .rv-edit-add input:focus { outline: none; border-color: var(--primary); }
+.rv-saved { font-size: 0.8rem; font-weight: 700; color: var(--color-secondary-deep); transition: transform .2s ease; }
+.rv-saved.flash { transform: scale(1.15); }
+.rv-empty { background: var(--color-accent-soft); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.9rem; }
+.rv-edit-list { display: flex; flex-direction: column; gap: 10px; }
+.rv-edit-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; border: 2px solid var(--border); border-radius: var(--radius-md); padding: 10px; background: var(--surface); }
+@media (max-width: 520px) { .rv-edit-card { grid-template-columns: 1fr; } }
+.rv-edit-pic { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.rv-edit-pic input { width: 100%; font-size: 0.78rem; text-align: center; }
+.rv-pic--edit { width: 80px; height: 80px; }
+.rv-pic--edit.rv-emoji { font-size: 3.4rem; }
+.rv-edit-fields { display: flex; flex-direction: column; gap: 6px; }
+.rv-edit-row { display: flex; gap: 6px; align-items: center; }
+.rv-edit-row input { flex: 1; }
+.rv-edit-row input[data-field="en"] { font-weight: 800; }
+.rv-edit-no { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; background: var(--primary-soft); color: var(--primary-dark); font-weight: 800; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
+.rv-edit-fields textarea { width: 100%; resize: vertical; }
+.rv-edit-tools { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.rv-edit-pron { font-size: 0.8rem; color: var(--color-primary); font-weight: 600; }
+.rv-edit-add { display: flex; gap: 8px; margin-top: 12px; }
+.rv-edit-add input { flex: 1; }
+.rv-edit-actions { display: flex; gap: 8px; justify-content: space-between; flex-wrap: wrap; margin-top: 14px; }
+.rv-share-note { font-size: 0.82rem; color: var(--ink-faint); margin: 10px 0 0; text-align: center; }
+.stu-tile--review { border-color: var(--primary) !important; background: var(--primary-soft) !important; }

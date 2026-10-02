@@ -144,6 +144,7 @@ function refreshLiveClassCockpit() {
     <div class="cockpit-actions">
       <button class="btn btn-primary" id="openSessionDrawerBtn">📋 Today's Class</button>
       <button class="btn btn-ghost" id="openReportsBtn">📊 Reports &amp; Progress</button>
+      <button class="btn btn-ghost" id="openClassReviewBtn">🧠 Class review</button>
     </div>
 
     <div class="cockpit-links" id="cockpitLinks"></div>
@@ -161,6 +162,7 @@ function refreshLiveClassCockpit() {
 
   document.getElementById('openSessionDrawerBtn').addEventListener('click', openSessionDrawer);
   document.getElementById('openReportsBtn').addEventListener('click', openReportsModal);
+  document.getElementById('openClassReviewBtn').addEventListener('click', openLatestClassReview);
   renderCockpitLinks(student);
 }
 
@@ -511,8 +513,19 @@ function renderSessionHistory(studentId) {
       <span class="session-history-topic">${escapeHtmlLite(s.topicLabel || '—')}</span>
       <button type="button" class="session-history-sheet" data-sheet="${escapeAttrLite(s.id)}"
               title="Ver ficha da aula / enviar pelo WhatsApp" aria-label="Ficha da aula de ${escapeAttrLite(s.date)}">🖼️</button>
+      <button type="button" class="session-history-sheet" data-review="${escapeAttrLite(s.id)}"
+              title="Class review — flashcards desta aula" aria-label="Revisão da aula de ${escapeAttrLite(s.date)}">🧠</button>
     </div>
   `).join('');
+  el.querySelectorAll('[data-review]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const student = getActiveStudent();
+      const session = loadSessions(studentId).find(x => x.id === btn.dataset.review);
+      if (!student || !session) return;
+      closeSessionDrawer();
+      openClassReviewEditor(student, session);
+    });
+  });
   el.querySelectorAll('[data-sheet]').forEach(btn => {
     btn.addEventListener('click', () => {
       const student = getActiveStudent();

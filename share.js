@@ -176,6 +176,7 @@ const ShareMode = (() => {
     IGStore.setJSON('bank_' + student.id, data.bank && typeof data.bank === 'object' ? data.bank : {});
     IGStore.setJSON('writing_' + student.id, Array.isArray(data.writing) ? data.writing : []);
     IGStore.setJSON('homework', Array.isArray(data.homework) ? data.homework : []);
+    IGStore.setJSON('review_' + student.id, data.review && typeof data.review === 'object' ? data.review : {});
 
     // Anything this student already sent from another device.
     (data.activity || []).forEach(row => applyActivityLocally(row, student.id));
@@ -402,6 +403,7 @@ function renderStudentHome(shell, studentId) {
       <div class="stu-tiles">
         <button class="stu-tile" data-go="progress"><span>📈</span><b>Meu progresso</b><small>Estrelas, semana e figurinhas</small></button>
         <button class="stu-tile" data-go="homework"><span>📚</span><b>Minha lição</b><small>${pending.length ? pending.length + ' pendente(s)' : 'Tudo em dia 🎉'}</small></button>
+        ${typeof latestReview === 'function' && latestReview(student.id) ? `<button class="stu-tile stu-tile--review" data-go="review-class"><span>🧠</span><b>Revisão da aula</b><small>${shareEsc(latestReview(student.id).title || 'Flashcards')}</small></button>` : ''}
         <button class="stu-tile" data-go="games"><span>🎮</span><b>Jogos</b><small>Jogar com as palavras do meu nível</small></button>
         <button class="stu-tile" data-go="backpack"><span>🎒</span><b>Mochila</b><small>School objects</small></button>
         <button class="stu-tile" data-go="house"><span>🏠</span><b>Casa</b><small>Parts of the house</small></button>
@@ -409,6 +411,7 @@ function renderStudentHome(shell, studentId) {
         <button class="stu-tile" data-go="feelings"><span>😊</span><b>Sentimentos</b><small>Feelings</small></button>
         <button class="stu-tile" data-go="instruments"><span>🎸</span><b>Música</b><small>Instruments</small></button>
         <button class="stu-tile" data-go="prepositions"><span>📦</span><b>Onde está?</b><small>Prepositions</small></button>
+        <button class="stu-tile" data-go="weather"><span>🌦️</span><b>Clima</b><small>Weather</small></button>
         <button class="stu-tile" data-go="practice"><span>⚡</span><b>Treinar</b><small>Exercícios de gramática</small></button>
         <button class="stu-tile" data-go="dictation"><span>🎧</span><b>Ditado</b><small>Ouvir e escrever</small></button>
         <button class="stu-tile" data-go="speaking"><span>🎤</span><b>Falar</b><small>Ler em voz alta</small></button>
@@ -430,10 +433,12 @@ function renderStudentHome(shell, studentId) {
     games: () => openStudentGames(shell, student, topics),
     backpack: () => openBackpackGame(),
     house: () => openHouseGame(),
+    'review-class': () => { const r = latestReview(student.id); if (r) openClassReviewPlayer(r); },
     animals: () => openAnimalGame(),
     feelings: () => openFeelingsGame(),
     instruments: () => openInstrumentsGame(),
     prepositions: () => openPrepositionsGame(),
+    weather: () => openWeatherGame(),
     practice: () => {
       const picked = (typeof EXAM_TOPICS !== 'undefined' ? EXAM_TOPICS : []).slice(0, 6);
       if (!picked.length) return;
