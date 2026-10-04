@@ -200,6 +200,58 @@ const IG_ACTIVITY_EMOJI = [
   [/^(working|works|work)$/, '🧑‍💼'],
 ];
 
+// Phrases (greetings, classroom language) are not things, so one symbol
+// says nothing — 🏷️ for "What is your name?", ❓ for "How are you?". Each
+// gets a tiny scene of one or two drawings a child can read.
+const IG_PHRASE_PICTURES = {
+  'hello': '👋🙂', 'hi': '👋', 'good morning': '🌅☕', 'good afternoon': '☀️🍎', 'good evening': '🌆🏠',
+  'good night': '😴🌙', 'goodbye': '👋🚪', 'bye': '👋🚪', 'bye bye': '👋🚪', 'see you later': '👋⏰', 'see you tomorrow': '👋📅',
+  'welcome': '🤗🏠', 'please': '🥺🍪', 'thank you': '🎁😊', 'thanks': '🎁😊', "you're welcome": '😊👍',
+  'sorry': '🙇', "i'm sorry": '🙇', 'excuse me': '🙋', 'yes': '🙆', 'no': '🙅',
+  'nice to meet you': '🤝🙂', 'how are you': '🙂💬', "i am fine": '😀👍', "i'm fine": '😀👍', 'fine, thank you': '😀👍',
+  'what is your name': '🪪💬', "what's your name": '🪪💬', 'my name is': '🙋🪪', 'this is my friend': '👭',
+  'how old are you': '🎂💬', 'i am years old': '🎂', 'where are you from': '🌎💬',
+};
+
+// Emoji that are only signs — they point at grammar, they do not show it.
+const IG_SYMBOL_EMOJI = new Set(['🟰', '❓', '❔', '❌', '✅', '✔️', '⏪', '⏩', '⏭️', '⏮️', '🔢', '🚫', '🔁', '🔄', '↩️', '↔️', '🔛', '🈳', '🔣', '1️⃣', '2️⃣']);
+const IG_FAMILY_EMOJI = /^(👨‍👩‍👧‍👦|👨‍👩‍👧|👨‍👩‍👦|👪|👨‍👩‍👦‍👦|👨‍👩‍👧‍👧)$/u;
+const IG_PRONOUN_PICS = { i: '🙋', me: '🙋', my: '🙋', you: '👉', your: '👉', he: '👦', him: '👦', his: '👦', she: '👧', her: '👧', it: '🐶', its: '🐶', we: '🧑‍🤝‍🧑', us: '🧑‍🤝‍🧑', our: '🧑‍🤝‍🧑', they: '👫', them: '👫', their: '👫' };
+const IG_VERB_PICS = {
+  like: '💛', likes: '💛', play: '⚽', plays: '⚽', watch: '📺', watches: '📺', fly: '🕊️', drive: '🚗', cook: '🧑‍🍳',
+  ski: '⛷️', swim: '🏊', run: '🏃', talk: '🗣️', eat: '🍽️', drink: '🥤', read: '📖', sing: '🧑‍🎤', dance: '💃',
+};
+
+function igComposePicture(phrase, original) {
+  const words = phrase.replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(Boolean)
+    .map(w => w.replace(/'m$|'re$|'s$/, ''));
+  const negative = /\b(not|n't|never|no)\b|n't\b/.test(phrase);
+  const question = /\?\s*$/.test(original);
+  const who = words.find(w => IG_PRONOUN_PICS[w]);
+  const verb = words.find(w => IG_VERB_PICS[w]);
+  const main = who ? IG_PRONOUN_PICS[who] : verb ? IG_VERB_PICS[verb] : '';
+  if (!main) return null;
+  const extra = who && verb ? IG_VERB_PICS[verb] : '';
+  const yes = /^yes\b/.test(phrase) ? '👍' : '';
+  return { emoji: main + extra + yes + (negative ? '🚫' : '') + (question ? '❓' : '') };
+}
+
+// A word that no picture can honestly show ("was", "does") is shown as
+// itself on a card — better than a symbol that means nothing.
+function igWordCard(text) {
+  const t = String(text || '').trim();
+  const lines = t.length > 12 ? t.split(/\s+/).reduce((acc, w) => {
+    const last = acc[acc.length - 1];
+    if (last && (last + ' ' + w).length <= 12) acc[acc.length - 1] = last + ' ' + w; else acc.push(w);
+    return acc;
+  }, []).slice(0, 3) : [t];
+  const longest = Math.max(...lines.map(l => l.length));
+  const size = Math.max(12, Math.min(34, Math.floor(150 / Math.max(longest, 4))));
+  const startY = 50 - ((lines.length - 1) * size * 1.15) / 2 + size * 0.35;
+  return igSvgUri(`<rect x="5" y="12" width="90" height="76" rx="16" fill="#eef4ff" stroke="#3d7bd9" stroke-width="4"/>`
+    + lines.map((l, i) => `<text x="50" y="${startY + i * size * 1.15}" font-family="Arial, Helvetica, sans-serif" font-size="${size}" font-weight="800" text-anchor="middle" fill="#1f3a6b">${igEscapeHtml(l)}</text>`).join(''));
+}
+
 // Words that are spelt differently in the illustrated sets.
 const IG_PICTURE_ALIASES = {
   television: 'tv', 'tv set': 'tv', 'paintbrush': 'paint brush', 'bathtub': 'bathtub',
@@ -221,7 +273,7 @@ function igPictures() {
         const key = String(w.en || '').toLowerCase().trim();
         // Whole-room scenes are too busy at answer-button size; 🛏️ 🍳 🛁
         // say "bedroom, kitchen, bathroom" better there and on a card.
-        if (/^(bedroom|bathroom|kitchen|living room|dining room|yard)$/.test(key)) return;
+        if (/^(bedroom|bathroom|kitchen|living room|dining room|yard|ball)$/.test(key)) return;
         if (key && w.image && !lib[key]) lib[key] = w.image;
       });
     });
@@ -254,6 +306,18 @@ function igBestPicture(word) {
     }
   }
   if (IG_DRAWN[key]) return { image: igSvgUri(IG_DRAWN[key]) };
+  const phrase = key.replace(/[.?!…]+/g, '').replace(/\.\.\.$/, '').trim();
+  if (IG_PHRASE_PICTURES[phrase]) return { emoji: IG_PHRASE_PICTURES[phrase] };
+  // The family emoji is drawn as a road sign on most devices.
+  if (IG_FAMILY_EMOJI.test(word.emoji || '')) return { image: igSvgUri(IG_DRAWN.family) };
+  // Grammar phrases whose emoji is only a symbol (🟰 ❓ ❌ ⏪): build the
+  // picture from the words themselves — "Is he?" = 👦❓, "I'm not" = 🙋🚫.
+  const symbolOnly = IG_SYMBOL_EMOJI.has(String(word.emoji || '').trim());
+  if (symbolOnly || !word.emoji) {
+    const built = igComposePicture(phrase, String(word.en || '').trim());
+    if (built) return built;
+    if (symbolOnly) return { image: igWordCard(word.en) };
+  }
   // Activities show someone DOING them, not just the tool: a palette does
   // not say "painting" to a five-year-old, a painter does.
   const isPerson = /[\u{1F466}-\u{1F469}\u{1F9D1}\u{1F9D2}\u{1F468}\u{1F469}\u{1F3C3}-\u{1F3CC}\u{1F6B4}-\u{1F6B6}\u{1F483}\u{1F57A}\u{1F938}-\u{1F93E}\u{1F9D7}]/u.test(word.emoji || '');
@@ -261,7 +325,11 @@ function igBestPicture(word) {
     if (/\bdraw(ing|s)?\b|\bdrew\b/.test(key)) return { image: igSvgUri(IG_DRAWN.drawing) };
     for (const [re, emoji] of IG_ACTIVITY_EMOJI) if (re.test(key)) return { emoji };
   }
-  if (word.emoji) return { emoji: word.emoji };
+  if (word.emoji) {
+    // "can't drive 🚗" must not look like "drive": negatives get a 🚫.
+    const negative = /n't\b|\bnot\b|\bnever\b/.test(phrase) && !/[🚫❌🙅]/u.test(word.emoji);
+    return { emoji: negative ? word.emoji + '🚫' : word.emoji };
+  }
   if (word.image) return { image: word.image };
   return { emoji: '🖼️' };
 }
@@ -277,6 +345,11 @@ function igWordVisualHTML(rawWord, extraClass) {
   }
   const pic = igBestPicture(word);
   if (pic.image) return `<div class="${cls}">${igImageHTML(pic.image, word.emoji, word.en)}</div>`;
+  // Two drawings = a small scene (😴🌙 "good night"), side by side.
+  const parts = igSegmenter ? [...igSegmenter.segment(pic.emoji)].map(s => s.segment).filter(s => s.trim()) : [pic.emoji];
+  if (parts.length > 1) {
+    return `<div class="${cls}"><span class="ig-emoji-scene">${parts.slice(0, 3).map(p => igEmojiImgHTML(p, 'ig-emoji ig-emoji--part')).join('')}</span></div>`;
+  }
   return `<div class="${cls}">${igEmojiImgHTML(pic.emoji, 'ig-emoji ig-emoji--word')}</div>`;
 }
 

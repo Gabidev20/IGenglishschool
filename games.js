@@ -289,6 +289,12 @@ const GameEngine = (() => {
           <div>
             <div class="hangman-category">Category: ${topic.title}</div>
             ${wordVisualHTML(state.word, 'hangman-word-visual')}
+            ${(() => { const h = hangmanHint(state.word, topic); return `
+            <div class="hangman-hint">
+              <p class="hangman-hint-en">💡 <b>Hint:</b> ${igEscapeHtml(h.en)}</p>
+              <button type="button" class="game-btn secondary hangman-hint-btn" data-action="hint-pt" ${state.hintPt ? 'hidden' : ''}>🇧🇷 Ver dica em português</button>
+              ${state.hintPt ? `<p class="hangman-hint-pt">🇧🇷 <b>Dica:</b> ${igEscapeHtml(h.pt)}</p>` : ''}
+            </div>`; })()}
             <div class="hangman-word">${slots}</div>
             <div class="keyboard">${keyboard}</div>
             ${banner}
@@ -301,9 +307,90 @@ const GameEngine = (() => {
       });
       container.querySelector('[data-action="next"]').addEventListener('click', () => newRound(false));
       container.querySelector('[data-action="restart"]').addEventListener('click', () => newRound(true));
+      const ptBtn = container.querySelector('[data-action="hint-pt"]');
+      if (ptBtn) ptBtn.addEventListener('click', () => { state.hintPt = true; paint(); });
     }
 
     newRound(true);
+  }
+
+  // What each greeting / classroom phrase is for — a phrase has no "kind".
+  const HANGMAN_CLUES = {
+    'hello': 'You say it when you meet someone.', 'hi': 'A short, friendly way to say hello.',
+    'good morning': 'You say it before lunch.', 'good afternoon': 'You say it after lunch.',
+    'good evening': 'You say it when it gets dark, when you arrive.', 'good night': 'You say it when you go to bed.',
+    'goodbye': 'You say it when you leave.', 'bye': 'A short way to say goodbye.',
+    'see you later': 'You say it when you will see the person again today.', 'see you tomorrow': 'You say it when you will see the person the next day.',
+    'welcome': 'You say it when someone arrives at your house or school.', 'please': 'A magic word when you ask for something.',
+    'thank you': 'You say it when someone gives you something or helps you.', "you're welcome": 'The answer to "thank you".',
+    'sorry': 'You say it when you make a mistake.', 'excuse me': 'You say it to ask for attention or to pass.',
+    'yes': 'The opposite of "no".', 'no': 'The opposite of "yes".', 'nice to meet you': 'You say it when you meet someone for the first time.',
+    'how are you?': 'You ask it to know if a person is OK.', 'how are you': 'You ask it to know if a person is OK.',
+    'i am fine': 'An answer to "How are you?".', 'what is your name?': 'You ask it to know what to call someone.',
+    'what is your name': 'You ask it to know what to call someone.', 'my name is...': 'You say it to tell people what to call you.',
+    'my name is': 'You say it to tell people what to call you.', 'this is my friend': 'You say it to introduce your friend.',
+  };
+
+  // Otherwise, what KIND of thing the word is, from the topic it belongs to.
+  function hangmanCategoryClue(topic, word) {
+    const t = `${topic.id || ''} ${topic.title || ''}`.toLowerCase();
+    const en = String(word.en || '').toLowerCase();
+    if (typeof IG_DAYS !== 'undefined' && IG_DAYS[en]) return "It's a day of the week.";
+    if (typeof IG_MONTHS !== 'undefined' && IG_MONTHS[en]) return "It's a month of the year.";
+    if (typeof IG_NUMBER_WORDS !== 'undefined' && Object.prototype.hasOwnProperty.call(IG_NUMBER_WORDS, en)) return "It's a number.";
+    if (word.swatch) return "It's a color.";
+    if (/ing\b/.test(en) && !/(thing|ceiling|building|evening|morning|king|ring|spring|swing|living room|dining room)/.test(en)) {
+      return "It's an action — something people do.";
+    }
+    const rules = [
+      [/animal|pet|lion|zoo/, "It's an animal."],
+      [/fruit|food|meal|restaurant/, 'You can eat it or drink it.'],
+      [/cloth|wear|fashion/, 'You wear it.'],
+      [/weather/, "It's about the weather."],
+      [/house|room|home/, "It's a room or a thing in a house."],
+      [/school|classroom|backpack/, 'You use it at school.'],
+      [/family/, "It's a person in a family, or a feeling."],
+      [/feeling|emotion|personality/, "It's how a person feels or is."],
+      [/colou?r|shape/, "It's a color or a shape."],
+      [/job|work|office/, "It's about work."],
+      [/hobb|free time|sport/, 'People do it for fun.'],
+      [/travel|airport|hotel/, "It's about travelling."],
+      [/body|health|doctor/, "It's about the body or health."],
+      [/routine|present|past|continuous|verb|can/, "It's an action — something people do."],
+      [/preposition|where/, 'It says WHERE something is.'],
+      [/pronoun|possessive/, 'It is used instead of a name.'],
+    ];
+    const hit = rules.find(([re]) => re.test(t));
+    return hit ? hit[1] : `It's a word from "${String(topic.title || '').replace(/\s*\(Unit \d+\)\s*$/, '')}".`;
+  }
+
+  // A clue in English for the hangman word — a sentence from the topic with
+  // the word hidden ("___, can I have some water?"), otherwise the topic,
+  // the first letter and the length. The Portuguese clue (behind a button)
+  // is the meaning.
+  function hangmanHint(word, topic) {
+    const en = String(word.en || '').trim();
+    const blank = en.replace(/[A-Za-z]/g, '_');
+    const esc = en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`\\b${esc}\\b`, 'i');
+    const pool = []
+      .concat(Array.isArray(topic.practiceSentences) ? topic.practiceSentences : [])
+      .concat(typeof lkSentences === 'function' ? lkSentences(topic) : [])
+      .concat(topic.readingTime && topic.readingTime.text ? String(topic.readingTime.text).split('\n') : []);
+    const line = pool
+      .map(x => String(x).replace(/^[A-Z][a-z]+:\s*/, '').trim())
+      .find(x => re.test(x) && x.toLowerCase() !== en.toLowerCase() && x.split(/\s+/).length >= 3);
+    const letters = en.replace(/[^A-Za-z]/g, '').length;
+    const shape = `It starts with "${en.charAt(0).toUpperCase()}" and has ${letters} letters.`;
+    // A real clue first (what the word is), then a sentence it fits in,
+    // then the first letter and the length.
+    const meaning = HANGMAN_CLUES[en.toLowerCase().replace(/[.?!…]+$/, '')] || hangmanCategoryClue(topic, word);
+    const context = line ? `${line.replace(re, blank)}${/[.?!]$/.test(line) ? '' : '.'}` : '';
+    const enHint = [meaning, context, shape].filter(Boolean).join(' ');
+    const pt = word.pt
+      ? `significa "${word.pt}" — começa com "${en.charAt(0).toUpperCase()}" (${letters} letras).`
+      : `começa com "${en.charAt(0).toUpperCase()}" e tem ${letters} letras.`;
+    return { en: enHint, pt };
   }
 
   // -------------------------------------------------------------------------
@@ -1076,13 +1163,17 @@ const GameEngine = (() => {
 
         <div class="sort-board">
           <p class="sort-prompt">${igEscapeHtml(board.prompt)}</p>
-          <div class="sort-card ${lastWrong ? 'shake' : ''}">${igEscapeHtml(item.text)}</div>
+          <div class="sort-card ${lastWrong ? 'shake' : ''}">
+            <button type="button" class="sort-say" data-action="say-card" aria-label="Ouvir" title="Ouvir">🔊</button>
+            ${sortCardPicture(item.text)}
+            <span class="sort-card-text">${igEscapeHtml(sortCardText(item.text))}</span>
+          </div>
           ${lastWrong ? `<p class="sort-hint">That one takes <strong>${igEscapeHtml(lastWrong)}</strong>.</p>` : ''}
 
           <div class="sort-buckets">
             ${board.buckets.map(b => `
               <div class="sort-bucket">
-                <button class="sort-bucket-btn" data-bucket="${igEscapeHtml(b)}">${igEscapeHtml(b)}</button>
+                <button class="sort-bucket-btn${sortPic(b) ? ' has-visual' : ''}" data-bucket="${igEscapeHtml(b)}">${sortPic(b)}<span>${igEscapeHtml(b)}</span></button>
                 <ul class="sort-bucket-list">
                   ${sorted[b].map(t => '<li>' + igEscapeHtml(t) + '</li>').join('')}
                 </ul>
@@ -1115,6 +1206,37 @@ const GameEngine = (() => {
 
       const restart = container.querySelector('[data-action="restart"]');
       if (restart) restart.addEventListener('click', () => renderSortIt(container, topic));
+      const say = container.querySelector('[data-action="say-card"]');
+      if (say) say.addEventListener('click', () => ttsSay(item.text.replace(/____/g, '').replace(/[^\p{L}\p{N}'’ ,.?!-]/gu, '').trim()));
+    }
+
+    // The card's picture, BIG: the emoji written in the item ("cooking 🧑‍🍳")
+    // or, when there is none, the topic word the item names.
+    const SORT_PICTO = /\p{Extended_Pictographic}/u;
+    function sortCardEmojis(text) {
+      if (typeof Intl === 'undefined' || !Intl.Segmenter) return [];
+      return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(String(text))]
+        .map(s => s.segment).filter(s => SORT_PICTO.test(s));
+    }
+    function sortCardText(text) {
+      const emojis = sortCardEmojis(text);
+      let t = String(text);
+      emojis.forEach(e => { t = t.split(e).join(''); });
+      return t.replace(/\s{2,}/g, ' ').trim();
+    }
+    function sortCardPicture(text) {
+      const emojis = sortCardEmojis(text);
+      if (emojis.length) {
+        return `<span class="sort-card-pic">${emojis.slice(0, 3).map(e => igEmojiImgHTML(e, 'ig-emoji sort-card-emoji')).join('')}</span>`;
+      }
+      const pic = typeof igOptionVisualHTML === 'function' ? igOptionVisualHTML(sortCardText(text), topic) : '';
+      return pic ? `<span class="sort-card-pic">${pic}</span>` : '';
+    }
+
+    // A bucket that names a topic word ("kitchen") shows its picture, so a
+    // child who cannot read still knows which room is which.
+    function sortPic(bucket) {
+      return typeof igOptionVisualHTML === 'function' ? igOptionVisualHTML(bucket, topic) : '';
     }
 
     function finish() {

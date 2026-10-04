@@ -473,9 +473,14 @@ function renderSkillsPane(mountEl, level, topic) {
     help: (topic.words || []).slice(0, 4).map(w => w.en),
     words: 30,
   };
+  // A child who cannot write yet listens and TAPS the picture; dictation is
+  // for those who already write.
+  const prof = student && typeof studentProfile === 'function' ? studentProfile(student) : null;
+  const young = prof ? (prof === 'prereader' || prof === 'reader')
+    : (level.tier === 'kids' && topic.audience !== 'adult');
   const SKILLS = [
-    ['speaking', '🗣️', 'Speaking', 'Ler em voz alta — o microfone confere as palavras'],
-    ['dictation', '🎧', 'Listening', 'Ouvir a frase e escrever (ditado)'],
+    ['speaking', '🗣️', 'Speaking', young ? 'Repetir em voz alta — o microfone confere as palavras' : 'Ler em voz alta — o microfone confere as palavras'],
+    ['dictation', '🎧', 'Listening', young ? 'Ouvir e tocar na figura certa' : 'Ouvir a frase e escrever (ditado)'],
     ['writing', '✍️', 'Writing', igEscapeHtml(task.prompt)],
   ];
   let active = 'speaking';
@@ -498,6 +503,7 @@ function renderSkillsPane(mountEl, level, topic) {
     const el = document.getElementById('skillsPaneMount');
     const base = { topic, studentId: student ? student.id : null, source: 'class' };
     if (active === 'speaking') SkillsModules.speaking(el, base);
+    else if (active === 'dictation' && young) renderListenAndChoose(el, topic);
     else if (active === 'dictation') SkillsModules.dictation(el, base);
     else SkillsModules.writing(el, { ...base, promptId: `topic-${topic.id}`, promptText: task.prompt, help: task.help, words: task.words });
   };
@@ -507,6 +513,76 @@ function renderSkillsPane(mountEl, level, topic) {
     mount();
   }));
   mount();
+}
+
+// LISTEN & TAP — listening for children who cannot write yet: hear the word,
+// tap its picture among three. Ten rounds over the topic's words.
+function renderListenAndChoose(mount, topic) {
+  const words = (topic.words || []).filter(w => w.en);
+  if (words.length < 3) { mount.innerHTML = '<p class="quiz-empty">Este tópico precisa de pelo menos 3 palavras.</p>'; return; }
+  const shuffle = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
+  const say = (t, rate) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = rate || 0.8;
+    window.speechSynthesis.speak(u);
+  };
+  const rounds = shuffle(words).slice(0, Math.min(10, words.length));
+  let i = 0, right = 0, answered = false;
+
+  function paint() {
+    if (i >= rounds.length) {
+      mount.innerHTML = `<div class="game-end-banner win">🎧 ${right} / ${rounds.length}!
+        <div class="game-btn-row" style="justify-content:center;margin-top:10px"><button class="btn btn-primary" id="ltAgain">🔄 Again</button></div></div>`;
+      if (right === rounds.length) IGSound.win(); else IGSound.bell();
+      mount.querySelector('#ltAgain').addEventListener('click', () => renderListenAndChoose(mount, topic));
+      return;
+    }
+    const target = rounds[i];
+    // Never two look-alikes in one round ("bathroom" 🛁 next to "taking a bath" 🛀).
+    const stem = w => String(w.en).toLowerCase().replace(/^(taking|a|an|the)\s+/, '').slice(0, 4);
+    const others = shuffle(words.filter(w => w !== target && stem(w) !== stem(target) && w.emoji !== target.emoji));
+    const options = shuffle([target].concat(others.slice(0, 2)));
+    answered = false;
+    mount.innerHTML = `
+      <div class="lt-shell">
+        <div class="lt-head"><span class="game-status-pill">${i + 1} / ${rounds.length} · ⭐ ${right}</span></div>
+        <div class="lt-listen">
+          <button type="button" class="lt-speaker" id="ltSay" aria-label="Ouvir de novo">🔊</button>
+          <button type="button" class="game-btn secondary" id="ltSlow">🐢 Devagar</button>
+        </div>
+        <p class="lt-hint">Listen and touch the picture! · Ouça e toque na figura</p>
+        <div class="lt-options">
+          ${options.map((w, k) => `<button type="button" class="lt-option" data-k="${k}" aria-label="option ${k + 1}">${igWordVisualHTML(w, 'lt-visual')}</button>`).join('')}
+        </div>
+        <p class="lt-feedback" aria-live="polite">&nbsp;</p>
+      </div>`;
+    mount.querySelector('#ltSay').addEventListener('click', () => say(target.en, 0.8));
+    mount.querySelector('#ltSlow').addEventListener('click', () => say(target.en, 0.5));
+    mount.querySelectorAll('.lt-option').forEach(btn => btn.addEventListener('click', () => {
+      if (answered) return;
+      const w = options[Number(btn.dataset.k)];
+      const fb = mount.querySelector('.lt-feedback');
+      if (w === target) {
+        answered = true;
+        right++;
+        btn.classList.add('correct');
+        IGSound.correct();
+        fb.textContent = `⭐ Yes! ${target.en}`;
+        say(target.en, 0.8);
+        if (typeof awardProgress === 'function') awardProgress(5, 0);
+        setTimeout(() => { if (mount.isConnected) { i++; paint(); } }, 1400);
+      } else {
+        btn.classList.add('wrong', 'shake');
+        IGSound.wrong();
+        fb.textContent = '🔁 Listen again! · Ouça de novo';
+        if (typeof igMiss === 'function') igMiss(target, false, 'Listen & tap');
+        setTimeout(() => say(target.en, 0.7), 500);
+      }
+    }));
+    setTimeout(() => say(target.en, 0.8), 250);
+  }
+  paint();
 }
 
 // ---------------------------------------------------------------------------

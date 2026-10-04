@@ -130,7 +130,7 @@ BOOK_UNITS.a1 = [
       { id: 'infrontof', en: 'in front of', pt: 'na frente de', emoji: '👀' },
       { id: 'fast', en: 'fast', pt: 'rápido', emoji: '🐆' },
       { id: 'slow', en: 'slow', pt: 'lento', emoji: '🐢' },
-      { id: 'clever', en: 'clever', pt: 'esperto', emoji: '🧠' },
+      { id: 'clever', en: 'clever', pt: 'esperto', emoji: '🤓' },
       { id: 'dangerous', en: 'dangerous', pt: 'perigoso', emoji: '⚠️' },
       { id: 'noisy', en: 'noisy', pt: 'barulhento', emoji: '📢' },
       { id: 'quiet', en: 'quiet', pt: 'quieto', emoji: '🤫' },

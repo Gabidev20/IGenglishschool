@@ -838,22 +838,98 @@ function renderSpellingExercise(container, ex, onAnswered) {
    3) PHONICS & BLENDING STATION (Kids / Juniors tiers)
    ========================================================================== */
 
-// Three-letter words a young learner already knows (no log, mud, jam…).
-const CVC_WORDS = ['cat', 'dog', 'sun', 'hat', 'pig', 'bed', 'bus', 'box', 'cup', 'pen'];
+// Three-letter words a young learner already knows (no log, mud, jam…),
+// used only when the topic itself has too few short words to blend.
+const CVC_WORDS = [
+  { en: 'cat', emoji: '🐱' }, { en: 'dog', emoji: '🐶' }, { en: 'sun', emoji: '☀️' }, { en: 'hat', emoji: '👒' },
+  { en: 'pig', emoji: '🐷' }, { en: 'bed', emoji: '🛏️' }, { en: 'bus', emoji: '🚌' }, { en: 'box', emoji: '📦' },
+  { en: 'cup', emoji: '🥤' }, { en: 'pen', emoji: '🖊️' },
+];
 const phonicsDecks = {};
 
-function drawPhonicsWord(topicId) {
-  if (!phonicsDecks[topicId] || phonicsDecks[topicId].length === 0) {
-    phonicsDecks[topicId] = lmShuffle(CVC_WORDS);
+// ---------------------------------------------------------------------------
+// LETTER SOUNDS — what a child blends is the SOUND of each letter, not its
+// name: "h-a-t" said as "aitch, ay, tee" can never become "hat". Speech
+// synthesis has no phoneme mode, so each sound is spelt the way the voice
+// says it best: stretched sounds for letters that can be held (mmm, sss),
+// a short "uh" after the ones that cannot (buh, tuh), short vowels.
+// ---------------------------------------------------------------------------
+const PHONICS_SOUNDS = {
+  a: 'ah', b: 'buh', c: 'kuh', d: 'duh', e: 'eh', f: 'fff', g: 'guh', h: 'huh', i: 'ih', j: 'juh',
+  k: 'kuh', l: 'lll', m: 'mmm', n: 'nnn', o: 'aw', p: 'puh', q: 'kwuh', r: 'rrr', s: 'sss', t: 'tuh',
+  u: 'uh', v: 'vvv', w: 'wuh', x: 'ks', y: 'yuh', z: 'zzz',
+  sh: 'shhh', ch: 'chuh', th: 'thh', ck: 'kuh', ng: 'ng', ll: 'lll', ss: 'sss', ff: 'fff', zz: 'zzz',
+};
+const PHONICS_DIGRAPHS = ['sh', 'ch', 'th', 'ck', 'ng', 'll', 'ss', 'ff', 'zz'];
+
+// "lamp" → ['l','a','m','p'] · "fish" → ['f','i','sh'] · "duck" → ['d','u','ck']
+function phonicsUnits(word) {
+  const w = String(word).toLowerCase();
+  const out = [];
+  for (let i = 0; i < w.length;) {
+    const two = w.slice(i, i + 2);
+    if (PHONICS_DIGRAPHS.includes(two)) { out.push(two); i += 2; } else { out.push(w[i]); i += 1; }
   }
-  return phonicsDecks[topicId].shift();
+  return out;
+}
+
+// Can a child sound it out letter by letter? One short vowel between
+// consonants, no silent e: cat, lamp, frog, fish — not sofa, house or cake,
+// whose letters do not say their short sound.
+function phonicsIsDecodable(word) {
+  const w = String(word || '').toLowerCase().trim();
+  if (!/^[a-z]{3,5}$/.test(w) || /e$/.test(w) || /[qxyw]/.test(w)) return false;
+  const units = phonicsUnits(w);
+  const vi = units.map((u, i) => (/^[aeiou]$/.test(u) ? i : -1)).filter(i => i >= 0);
+  return vi.length === 1 && vi[0] > 0 && vi[0] < units.length - 1;
+}
+
+// Speak chunks one after another, each waiting for the previous to finish.
+// `onStart(i)` lets the screen light up what is being said.
+function phonicsSay(chunks, onStart, onDone) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  let i = 0;
+  const next = () => {
+    if (i >= chunks.length) { if (onDone) onDone(); return; }
+    const idx = i++;
+    const c = chunks[idx];
+    const u = new SpeechSynthesisUtterance(c.text);
+    u.lang = 'en-US';
+    u.rate = c.rate || 0.7;
+    u.onstart = () => { if (onStart) onStart(idx); };
+    u.onend = () => setTimeout(next, c.pause != null ? c.pause : 350);
+    u.onerror = () => setTimeout(next, 200);
+    window.speechSynthesis.speak(u);
+  };
+  next();
+}
+
+// The words to blend come from the topic being studied: in "My House" the
+// child blends l-a-m-p, not a hat out of nowhere — as long as the topic word
+// can really be sounded out. Topped up with simple CVC words.
+function phonicsWordsFor(topic) {
+  const own = (topic.words || [])
+    .filter(w => phonicsIsDecodable(w.en))
+    .map(w => ({ ...w, en: String(w.en).trim().toLowerCase() }));
+  const seen = new Set(own.map(w => w.en));
+  const filler = own.length >= 4 ? [] : CVC_WORDS.filter(w => !seen.has(w.en)).slice(0, 6 - own.length);
+  return own.concat(filler);
+}
+
+function drawPhonicsWord(topic) {
+  if (!phonicsDecks[topic.id] || phonicsDecks[topic.id].length === 0) {
+    phonicsDecks[topic.id] = lmShuffle(phonicsWordsFor(topic));
+  }
+  return phonicsDecks[topic.id].shift();
 }
 
 function renderPhonicsStation(container, level, topic) {
-  let word = drawPhonicsWord(topic.id);
+  let current = drawPhonicsWord(topic);
+  let word = current.en;
   // Tiles are tracked by uid, not by letter: a word with a repeated letter
   // ("egg") would otherwise disable every copy of it as soon as one is used.
-  let placed = [null, null, null];
+  let placed = new Array(word.length).fill(null);
   let tiles = [];
 
   function makeTiles(w) {
@@ -861,8 +937,9 @@ function renderPhonicsStation(container, level, topic) {
   }
 
   function newWord() {
-    word = drawPhonicsWord(topic.id);
-    placed = [null, null, null];
+    current = drawPhonicsWord(topic);
+    word = current.en;
+    placed = new Array(word.length).fill(null);
     tiles = makeTiles(word);
     paint();
   }
@@ -878,9 +955,13 @@ function renderPhonicsStation(container, level, topic) {
       </div>
       <div class="phonics-section">
         <h4>🧪 Blending Machine</h4>
-        <p class="practice-instruction">Place the letters in order, then blend them into a word!</p>
+        <p class="practice-instruction">Look at the picture, put the letters in order, then blend them into the word!</p>
+        <div class="blend-clue">
+          ${lmWordVisual(current, 'blend-clue-visual')}
+          <button type="button" class="game-btn secondary" id="blendHearBtn">🔊 Hear the word</button>
+        </div>
         <div class="blend-slots" id="blendSlots">
-          ${[0, 1, 2].map(i => `<button class="blend-slot" data-slot="${i}">${placed[i] ? placed[i].letter : '_'}</button>`).join('')}
+          ${placed.map((p, i) => `<button class="blend-slot" data-slot="${i}">${p ? p.letter : '_'}</button>`).join('')}
         </div>
         <div class="sentence-tray" id="blendTray">
           ${tiles.map(t => `<button class="word-tile letter-tile" data-uid="${t.uid}" ${placed.some(p => p && p.uid === t.uid) ? 'disabled' : ''}>${t.letter}</button>`).join('')}
@@ -893,8 +974,12 @@ function renderPhonicsStation(container, level, topic) {
       </div>
     `;
 
+    // A key says the letter's name, then its sound: "B … buh".
     container.querySelectorAll('.phonics-key').forEach(btn => {
-      btn.addEventListener('click', () => lmSpeak(btn.dataset.letter, 0.7));
+      btn.addEventListener('click', () => {
+        const l = btn.dataset.letter;
+        phonicsSay([{ text: l, rate: 0.8, pause: 250 }, { text: PHONICS_SOUNDS[l.toLowerCase()] || l, rate: 0.6 }]);
+      });
     });
 
     container.querySelectorAll('#blendTray .word-tile').forEach(btn => {
@@ -919,16 +1004,44 @@ function renderPhonicsStation(container, level, topic) {
       });
     });
 
+    // Blend the way a teacher models it: each sound on its own (its tile
+    // lights up), then the first sound joined to the rest ("huh … at"),
+    // then the word slowly, then the word.
     document.getElementById('blendPlayBtn').addEventListener('click', () => {
-      const spelled = placed.map(p => (p ? p.letter : ''));
-      let i = 0;
-      const speakNext = () => {
-        if (i < spelled.length) { lmSpeak(spelled[i], 0.6); i++; setTimeout(speakNext, 550); }
-        else setTimeout(() => lmSpeak(spelled.join(''), 0.8), 300);
-      };
-      speakNext();
+      const spelled = placed.map(p => (p ? p.letter : '')).join('').toLowerCase();
+      const units = phonicsUnits(spelled);
+      const slots = [...container.querySelectorAll('.blend-slot')];
+      const chunks = [];
+      let at = 0;
+      units.forEach(u => {
+        chunks.push({ text: PHONICS_SOUNDS[u] || u, rate: 0.6, pause: 450, light: [at, at + u.length] });
+        at += u.length;
+      });
+      if (spelled !== word) {
+        // Wrong order: the child hears what they built, sound by sound, and
+        // is asked to look at the picture again — never a wrong word read out.
+        chunks.push({ text: 'Hmm… try again!', rate: 0.85, pause: 0 });
+      } else {
+        // First sound + the rest ("kuh … at") when the rest starts with the vowel.
+        if (units.length > 2 && !/^[aeiou]$/.test(units[0]) && /^[aeiou]/.test(units[1])) {
+          chunks.push({ text: `${PHONICS_SOUNDS[units[0]] || units[0]} … ${units.slice(1).join('')}`, rate: 0.55, pause: 500, light: [0, at] });
+        }
+        chunks.push({ text: spelled, rate: 0.45, pause: 400, light: [0, at] });
+        chunks.push({ text: spelled, rate: 0.85, pause: 0, light: [0, at] });
+      }
+      const light = (range) => slots.forEach((el, i) => el.classList.toggle('is-sounding', Boolean(range) && i >= range[0] && i < range[1]));
+      phonicsSay(chunks, i => light(chunks[i].light), () => {
+        light(null);
+        if (spelled === word) { IGSound.correct(); if (typeof awardProgress === 'function') awardProgress(5, 0); }
+      });
     });
-    document.getElementById('blendResetBtn').addEventListener('click', () => { placed = [null, null, null]; paint(); });
+    document.getElementById('blendResetBtn').addEventListener('click', () => { placed = new Array(word.length).fill(null); paint(); });
+    // "Hear the word" also models the sounds, so the child knows what to build.
+    document.getElementById('blendHearBtn').addEventListener('click', () => phonicsSay([
+      { text: word, rate: 0.75, pause: 500 },
+      ...phonicsUnits(word).map(u => ({ text: PHONICS_SOUNDS[u] || u, rate: 0.6, pause: 400 })),
+      { text: word, rate: 0.75 },
+    ]));
     document.getElementById('blendNextBtn').addEventListener('click', newWord);
   }
 

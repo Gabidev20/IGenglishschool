@@ -8103,3 +8103,68 @@ img.ig-emoji { width: 1.15em; height: 1.15em; vertical-align: -0.22em; display: 
   .header-actions .header-desktop-only { display: none; }
   .nav-more { display: none !important; }
 }
+
+/* Two-drawing scenes for phrases ("good night" = 😴🌙) */
+.ig-emoji-scene { display: flex; align-items: center; justify-content: center; gap: 4%; width: 92%; height: 92%; }
+.word-visual .ig-emoji-scene img.ig-emoji--part { width: 46%; height: auto; max-height: 100%; object-fit: contain; margin: 0; vertical-align: middle; }
+
+/* Sort It — pictures on the bucket buttons, a speaker on the card */
+.sort-bucket-btn.has-visual { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sort-bucket-btn .option-visual { width: 64px; height: 64px; border-radius: 12px; background: var(--bg); display: grid; place-items: center; font-size: 2.4rem; overflow: hidden; }
+.sort-card { position: relative; }
+.sort-say {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface); cursor: pointer; font-size: 1rem;
+}
+.sort-say:hover { border-color: var(--primary); }
+
+/* Phonics — the picture of the word being blended */
+.blend-clue { display: flex; align-items: center; gap: 14px; margin: 6px 0 12px; }
+.blend-clue .blend-clue-visual { width: 96px; height: 96px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); display: grid; place-items: center; font-size: 3.4rem; overflow: hidden; }
+
+/* Listen & tap */
+.lt-shell { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 6px 0; }
+.lt-head { align-self: stretch; display: flex; justify-content: center; }
+.lt-listen { display: flex; align-items: center; gap: 12px; }
+.lt-speaker {
+  width: 84px; height: 84px; border-radius: 50%; border: none; background: var(--primary); color: #fff;
+  font-size: 2.2rem; cursor: pointer; box-shadow: var(--shadow-md);
+}
+.lt-speaker:hover { background: var(--primary-dark); }
+.lt-hint { margin: 0; font-weight: 700; color: var(--ink-soft); text-align: center; }
+.lt-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; width: min(100%, 560px); }
+.lt-option {
+  aspect-ratio: 1; border: 3px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);
+  cursor: pointer; display: grid; place-items: center; padding: 8px; transition: transform .12s ease, border-color .12s ease;
+}
+.lt-option:hover { transform: translateY(-3px); border-color: var(--primary); }
+.lt-option.correct { border-color: var(--color-secondary-deep); background: var(--a0-soft); }
+.lt-option.wrong { border-color: var(--primary-dark); }
+.lt-option .lt-visual { width: 100%; height: 100%; display: grid; place-items: center; font-size: 4rem; overflow: hidden; }
+.lt-feedback { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; min-height: 1.4em; }
+
+/* ==========================================================================
+   Bigger pictures in the games
+   ========================================================================== */
+/* Sort It: the picture is the card */
+.sort-card { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sort-card-pic { display: flex; gap: 10px; justify-content: center; align-items: center; }
+.sort-card-pic img.sort-card-emoji { width: clamp(72px, 14vh, 120px); height: clamp(72px, 14vh, 120px); margin: 0; }
+.sort-card-pic .option-visual { width: clamp(72px, 14vh, 120px); height: clamp(72px, 14vh, 120px); font-size: 4rem; border-radius: 16px; background: var(--bg); display: grid; place-items: center; overflow: hidden; }
+.sort-card-text { font-size: 1.35rem; }
+.sort-bucket-btn .option-visual { width: clamp(64px, 11vh, 96px); height: clamp(64px, 11vh, 96px); }
+
+/* Match-up and Word Match: pictures large enough to recognise from the
+   back of a shared screen */
+.matchup-item .word-visual,
+.wordmatch-item .word-visual { width: clamp(52px, 9vh, 84px) !important; height: clamp(52px, 9vh, 84px) !important; }
+
+/* Hangman: the picture and the clue */
+.hangman-hint { margin: 8px 0 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.hangman-hint-en { margin: 0; font-size: 1.05rem; color: var(--ink); background: var(--a1-soft); border-radius: var(--radius-md); padding: 8px 14px; }
+.hangman-hint-pt { margin: 0; font-size: 0.95rem; color: var(--ink-soft); }
+.hangman-hint-btn { font-size: 0.82rem; padding: 6px 12px; }
+
+/* Phonics: the tile whose sound is being heard */
+.blend-slot.is-sounding { transform: translateY(-6px) scale(1.08); background: var(--primary); color: #fff; border-color: var(--primary-dark); transition: transform .15s ease, background .15s ease; }
+.word-visual .ig-emoji-scene img.ig-emoji--part { flex: 1 1 0; min-width: 0; width: auto; max-width: 48%; height: auto; }
