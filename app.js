@@ -319,6 +319,7 @@ function closeModal() {
   if (typeof ArcadeGames !== 'undefined') ArcadeGames.stopAll();
   if (typeof ExamGames !== 'undefined') ExamGames.stopAll();
   if (typeof SkillsModules !== 'undefined') SkillsModules.stopAll();
+  if (typeof waiStop === 'function') waiStop();
   modalOverlay.hidden = true;
   modalBody.innerHTML = '';
   modalEl.classList.remove('modal--game', 'modal--fullscreen');
@@ -796,7 +797,8 @@ const arcadeGamesGrid = document.getElementById('arcadeGamesGrid');
 if (arcadeGamesGrid) {
   arcadeGamesGrid.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-arcade]');
-    if (btn) ArcadeGames.open(btn.dataset.arcade);
+    if (btn) { ArcadeGames.open(btn.dataset.arcade); return; }
+    if (e.target.closest('[data-whoami]') && typeof openWhoAmI === 'function') openWhoAmI();
   });
 }
 

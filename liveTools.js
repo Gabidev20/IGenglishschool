@@ -908,6 +908,7 @@ const LiveTools = (() => {
     links: { title: '🔗 Links da Aula', render: renderClassLinks },
     drawing: { title: '🎨 Drawing Challenge',
       render: c => renderDrawingChallenge(c, { tone, playBell, playTick, confettiBurst, track }) },
+    whoami: { title: '🕵️ Who am I?', render: c => renderWhoAmI(c) },
   };
 
   function openTool(toolId) {
