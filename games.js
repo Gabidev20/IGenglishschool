@@ -28,6 +28,7 @@ const GAME_TYPES = [
   { id: 'instruments', label: 'Music', icon: '🎸', needs: 'instruments' },
   { id: 'prepositions', label: 'Where is it?', icon: '📦', needs: 'prepositions' },
   { id: 'weather', label: 'Weather', icon: '🌦️', needs: 'weather' },
+  { id: 'body', label: 'Body Parts', icon: '🧍', needs: 'body' },
 ];
 
 // Words that mark a topic as a wardrobe topic. Three hits is enough: a single
@@ -56,7 +57,7 @@ const WORD_GAME_TYPES = GAME_TYPES.filter(g => g.needs === 'words');
 // Picture-scene games and Balloon Pop are made for children. With a
 // learner of 15+ (or a teacher of grown-ups only, nobody selected) the
 // topic offers the word and sentence games instead.
-const KIDS_ONLY_GAMES = ['balloon', 'dressup', 'backpack', 'house', 'animal', 'feelings', 'instruments', 'prepositions', 'weather'];
+const KIDS_ONLY_GAMES = ['balloon', 'dressup', 'backpack', 'house', 'animal', 'feelings', 'instruments', 'prepositions', 'weather', 'body'];
 
 function gamesForTopic(topic) {
   const grown = typeof igAdultContext === 'function' && igAdultContext();
@@ -91,6 +92,9 @@ function gamesForTopic(topic) {
     }
     if (g.needs === 'weather') {
       return typeof isWeatherTopic === 'function' && isWeatherTopic(topic);
+    }
+    if (g.needs === 'body') {
+      return typeof isBodyTopic === 'function' && isBodyTopic(topic);
     }
     return (topic.words || []).length > 0;
   });
@@ -3512,6 +3516,233 @@ const GameEngine = (() => {
   }
 
 
+  // -------------------------------------------------------------------------
+  // BODY PARTS — one big child. "Teacher says": tap (or drag) a card, or tap
+  // the drawing itself, and that part lights up and wiggles: "These are my
+  // eyes. I can see!" — with a 🎵 "Head, shoulders, knees and toes" button.
+  // "Listen & touch": "Touch your nose!" and the child taps the drawing.
+  // "What's this?": a part lights up and the child picks its word.
+  // -------------------------------------------------------------------------
+  function renderBody(container, topic) {
+    const seen = new Set();
+    const parts = [];
+    (topic.words || []).forEach(w => { const p = bodyPartFor(w); if (p && !seen.has(p.id)) { seen.add(p.id); parts.push(p); } });
+    let mode = 'teacher', shown = null, target = null, score = 0, msg = '', shake = false, choices = [];
+    let stopDrag = null, singing = false;
+    const timers = [];
+    const later = (fn, ms) => timers.push(setTimeout(() => { if (container.isConnected) fn(); }, ms));
+
+    // The traditional song; each sung chunk lights its part.
+    const SONG = [['head', 'Head,'], ['shoulders', 'shoulders,'], ['knees', 'knees'], ['toes', 'and toes,'], ['knees', 'knees'], ['toes', 'and toes.']];
+    const SONG_ALL = [...SONG, ...SONG, ['eyes', 'And eyes'], ['ears', 'and ears'], ['mouth', 'and mouth'], ['nose', 'and nose.'], ...SONG];
+    const canSing = ['head', 'shoulders', 'knees', 'toes', 'eyes', 'ears', 'mouth', 'nose'].every(id => seen.has(id));
+
+    function stopSong() {
+      if (!singing) return;
+      singing = false;
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+
+    // Light a part up without redrawing everything (the song is fast).
+    function light(id) {
+      shown = id;
+      const svg = container.querySelector('.bd-stage svg');
+      if (!svg) return;
+      svg.outerHTML = bodySVG({ on: id, hits: true, cls: 'bd-figure-svg' });
+      bindFigure();
+    }
+
+    function sing() {
+      if (singing) { stopSong(); shown = null; paint(); return; }
+      singing = true; msg = ''; shown = null; paint();
+      const done = () => { if (!singing) return; singing = false; shown = null; if (container.isConnected) paint(); };
+      if (!('speechSynthesis' in window)) {
+        SONG_ALL.forEach(([id], i) => later(() => { if (singing) light(id); }, i * 520));
+        later(done, SONG_ALL.length * 520 + 400);
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        SONG_ALL.forEach(([id, text], i) => {
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'en-US'; u.rate = 1.05; u.pitch = 1.15;
+          u.onstart = () => { if (singing && container.isConnected) light(id); };
+          if (i === SONG_ALL.length - 1) { u.onend = done; u.onerror = done; }
+          window.speechSynthesis.speak(u);
+        });
+      } catch (e) { done(); }
+    }
+
+    function show(p) {
+      stopSong();
+      shown = p.id;
+      playBodySound(p.id);
+      paint();
+      ttsSay(`${bodySentence(p)} ${p.can}`);
+    }
+
+    function newTarget() {
+      const pool = parts.filter(p => p.id !== target);
+      target = pickN(pool, 1)[0].id;
+      shown = null; msg = '';
+      if (mode === 'what') {
+        // The part to name is lit; four words to choose from.
+        shown = target;
+        choices = shuffle([target, ...pickN(parts.filter(p => p.id !== target).map(p => p.id), Math.min(3, parts.length - 1))]);
+        ttsSay("What's this?");
+      } else {
+        ttsSay(bodyCommand(bodyPartById(target)));
+      }
+    }
+
+    function right(p) {
+      score++;
+      msg = '⭐ Yes!';
+      shown = p.id;
+      playCorrect();
+      playBodySound(p.id);
+      paint();
+      ttsSay(`Yes! ${bodySentence(p)}`);
+      const stage = container.querySelector('.bd-stage');
+      if (stage) confettiFromElement(stage);
+      const was = target, m = mode;
+      later(() => { if (mode === m && target === was) { newTarget(); paint(); } }, 2400);
+    }
+
+    function wrong(p) {
+      const t = bodyPartById(target);
+      playWrong();
+      shake = true;
+      igMiss(igWordOf(topic, t.en), false, 'Body Parts');
+      if (mode === 'listen') {
+        msg = `❌ That's your ${p.en.toLowerCase()}.`;
+        paint();
+        ttsSay(`No, that's your ${p.en.toLowerCase()}. ${bodyCommand(t)}`);
+      } else {
+        msg = `❌ Not ${p.en.toLowerCase()}.`;
+        paint();
+        ttsSay(`No, not ${p.en.toLowerCase()}. What's this?`);
+      }
+    }
+
+    // A tap on the drawing, a card dropped on it, or a word chosen.
+    function pick(p) {
+      if (mode === 'teacher') { msg = ''; show(p); return; }
+      if (msg === '⭐ Yes!') return;   // already right: the next one is on its way
+      if (p.id === target) right(p); else wrong(p);
+    }
+
+    const MODES = [['teacher', '👩‍🏫 Teacher says'], ['listen', '🎧 Listen & touch'], ['what', "❓ What's this?"]];
+
+    function paint() {
+      const t = target && bodyPartById(target);
+      const listen = mode === 'listen', what = mode === 'what';
+      // In "Listen & touch" nothing is lit until the child has touched it.
+      const lit = listen && msg !== '⭐ Yes!' ? null : shown;
+      const p = lit && bodyPartById(lit);
+      container.innerHTML = `
+        <div class="game-toolbar">
+          <div class="bp-modes">${MODES.map(([id, label]) => `<button class="bp-mode${mode === id ? ' active' : ''}" data-mode="${id}">${label}</button>`).join('')}</div>
+          ${mode === 'teacher'
+            ? `${canSing ? `<button class="game-btn secondary" data-action="sing">${singing ? '⏹ Stop' : '🎵 Head, shoulders…'}</button>` : ''}
+               <button class="game-btn secondary" data-action="clear">🔄 Limpar</button>`
+            : `<span class="game-status-pill">⭐ ${score}</span>`}
+        </div>
+        ${listen && t ? `
+          <div class="hs-target fe-target">
+            <button class="bp-list-say" data-action="say-target" aria-label="Listen again">🔊</button>
+            <span>Touch your <b>${igEscapeHtml(t.en.toLowerCase())}</b>!</span>
+          </div>` : ''}
+        ${what && t ? `
+          <div class="hs-target fe-target">
+            <button class="bp-list-say" data-action="say-what" aria-label="Listen again">🔊</button>
+            <span>What's this? <b>${t.plural ? 'These are my…' : 'This is my…'}</b></span>
+          </div>` : ''}
+        <div class="bd-layout${mode === 'teacher' ? '' : ' bd-layout--solo'}">
+          <div class="bd-main${what ? ' bd-main--what' : ''}">
+            <div class="bd-stage${shake ? ' bp-shake' : ''}">
+              ${bodySVG({ on: lit, hits: true, cls: 'bd-figure-svg' })}
+              <span class="bp-drop-hint">Drop it on the body! 🧍</span>
+            </div>
+            <div class="bd-under">
+              ${p && (!what || msg === '⭐ Yes!')
+                ? `<button class="fe-sentence" data-action="say-shown">🔊 ${igEscapeHtml(bodySentence(p))}</button>
+                   <span class="wx-extra">${igEscapeHtml(p.can)}</span>`
+                : singing ? `<p class="fe-hint">🎵 Sing and touch! 🎵</p>`
+                : what ? ''
+                : `<p class="fe-hint">👆 ${listen ? 'Listen and touch the body!' : 'Touch the body — or drag a card to it!'}</p>`}
+            </div>
+            ${what ? `
+              <div class="bd-choices">
+                ${choices.map(id => { const c = bodyPartById(id); return `
+                  <button class="bd-choice${msg === '⭐ Yes!' && id === target ? ' ok' : ''}" data-choice="${id}">
+                    <b>${igEscapeHtml(c.en)}</b><small>${igEscapeHtml(c.pt)}</small>
+                  </button>`; }).join('')}
+              </div>` : ''}
+            <p class="bp-msg" aria-live="polite">${igEscapeHtml(msg) || '&nbsp;'}</p>
+          </div>
+          ${mode === 'teacher' ? `
+            <div class="bd-cards">
+              ${parts.map(x => `
+                <button class="fe-card bd-card${shown === x.id ? ' on' : ''}" data-body="${x.id}" aria-label="${igEscapeHtml(x.en)}">
+                  ${bodyPartThumbSVG(x.id, 'bd-thumb')}
+                  <span class="bp-card-en">${igEscapeHtml(x.en)}</span><span class="bp-card-pt">${igEscapeHtml(x.pt)}</span>
+                </button>`).join('')}
+            </div>` : ''}
+        </div>`;
+      shake = false;
+      bind();
+    }
+
+    // Taps on the drawing itself (light() redraws it, so this is separate).
+    function bindFigure() {
+      const svg = container.querySelector('.bd-stage svg');
+      if (!svg) return;
+      svg.addEventListener('click', ev => {
+        if (mode === 'what') return;
+        const el = ev.target.closest && ev.target.closest('[data-part]');
+        if (el) pick(bodyPartById(el.dataset.part));
+      });
+    }
+
+    function bind() {
+      const act = n => container.querySelector(`[data-action="${n}"]`);
+      container.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.mode === mode) return;
+        stopSong();
+        mode = b.dataset.mode; shown = null; msg = ''; target = null; score = 0;
+        if (mode !== 'teacher') newTarget();
+        paint();
+      }));
+      bindFigure();
+      const stage = container.querySelector('.bd-stage');
+      container.querySelectorAll('[data-body]').forEach(card => card.addEventListener('pointerdown', ev => {
+        if (ev.button != null && ev.button !== 0) return;
+        const p = bodyPartById(card.dataset.body);
+        stopDrag = ghostDrag(ev, bodyPartThumbSVG(p.id), [stage], (hit, e, moved) => {
+          stopDrag = null;
+          if (hit || !moved) pick(p);
+        });
+      }));
+      container.querySelectorAll('[data-choice]').forEach(b => b.addEventListener('click', () => pick(bodyPartById(b.dataset.choice))));
+      const singBtn = act('sing');
+      if (singBtn) singBtn.addEventListener('click', sing);
+      const clear = act('clear');
+      if (clear) clear.addEventListener('click', () => { stopSong(); shown = null; msg = ''; paint(); });
+      const st = act('say-target');
+      if (st) st.addEventListener('click', () => ttsSay(bodyCommand(bodyPartById(target))));
+      const sw = act('say-what');
+      if (sw) sw.addEventListener('click', () => ttsSay("What's this?"));
+      const ss = act('say-shown');
+      if (ss) ss.addEventListener('click', () => { const p = bodyPartById(shown); playBodySound(p.id); ttsSay(`${bodySentence(p)} ${p.can}`); });
+    }
+
+    if (!parts.length) { container.innerHTML = `<div class="game-end-banner lose">This topic has no body parts.</div>`; return () => {}; }
+    paint();
+    return () => { stopSong(); if (stopDrag) stopDrag(); timers.forEach(clearTimeout); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }
+
+
   function stopAll() {
     clearAllTimers();
     if (activeCleanup) { try { activeCleanup(); } catch (e) {} activeCleanup = null; }
@@ -3545,6 +3776,7 @@ const GameEngine = (() => {
       case 'instruments': activeCleanup = renderInstruments(container, topic); break;
       case 'prepositions': activeCleanup = renderPrepositions(container, topic); break;
       case 'weather': activeCleanup = renderWeather(container, topic); break;
+      case 'body': activeCleanup = renderBody(container, topic); break;
       default: activeCleanup = renderHangman(container, topic);
     }
   }

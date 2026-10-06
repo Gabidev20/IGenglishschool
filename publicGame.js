@@ -36,6 +36,7 @@ const PUBLIC_GAMES = {
   music:    { emoji: '🎸', title: 'Music',         pt: 'Instrumentos musicais', open: () => openInstrumentsGame() },
   where:    { emoji: '📦', title: 'Where is it?',  pt: 'Onde está?',            open: () => openPrepositionsGame() },
   weather:  { emoji: '🌦️', title: 'Weather',       pt: 'O tempo',               open: () => openWeatherGame() },
+  body:     { emoji: '🧍', title: 'Body Parts',    pt: 'Partes do corpo',       open: () => openBodyGame() },
 };
 
 const PublicGame = (() => {

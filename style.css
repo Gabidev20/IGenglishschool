@@ -8435,3 +8435,59 @@ html.ig-public-game body > #studentShell { display: none !important; }
 .tb-icon.is-guide { background: #8e6d86; }
 .tb-name { flex: 1; font-weight: 600; }
 .tb-open { color: #c9435c; font-size: .9rem; white-space: nowrap; }
+
+/* ==========================================================================
+   Body Parts — the child beside the cards, sized by the window's height
+   ========================================================================== */
+.bd-layout { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 6px; }
+.bd-main { display: flex; flex-direction: column; align-items: center; width: 100%; min-width: 0; }
+.bd-stage {
+  position: relative; flex-shrink: 0; border-radius: var(--radius-lg); padding: 6px;
+  width: min(100%, max(220px, calc((100vh - 420px) * .714)));
+  background: radial-gradient(ellipse at 50% 92%, var(--a0-soft), transparent 70%), #eaf4fb;
+  border: 3px dashed transparent; transition: border-color .15s ease;
+}
+.bd-stage.is-target { border-color: var(--primary); }
+.bd-stage.is-target .bp-drop-hint { opacity: 1; }
+.bd-stage .bp-drop-hint { top: 10px; bottom: auto; }
+.bd-figure-svg { width: 100%; height: auto; display: block; }
+.bd-figure-svg [data-part] { cursor: pointer; }
+.bd-figure-svg .bd-on { animation: bd-wiggle .6s ease-in-out 2; transform-box: fill-box; transform-origin: center; }
+@keyframes bd-wiggle { 25% { transform: rotate(-6deg) scale(1.06); } 75% { transform: rotate(6deg) scale(1.06); } }
+.bd-rings { pointer-events: none; animation: bd-ring 1s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+@keyframes bd-ring { from { opacity: .65; } to { opacity: 1; } }
+.bd-under { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 6px; min-height: 2.6em; }
+.bd-under .fe-sentence { font-size: 1.25rem; padding: 6px 18px; }
+.bd-layout .bp-msg { min-height: 1.2em; }
+.bd-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 760px; }
+@media (max-width: 640px) { .bd-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.bd-thumb { width: 58px; height: 58px; border-radius: 10px; pointer-events: none; }
+.bd-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 420px; margin-top: 4px; }
+.bd-choice {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 8px;
+  background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-md);
+  font-family: var(--font-display); color: var(--ink); cursor: pointer; transition: transform .12s ease, border-color .12s ease;
+}
+.bd-choice b { font-size: 1.35rem; }
+.bd-choice small { font-family: inherit; font-size: .8rem; color: var(--ink-faint); }
+.bd-choice:hover { transform: translateY(-2px); border-color: var(--primary); }
+.bd-choice.ok { border-color: var(--color-secondary-deep); background: var(--a0-soft); }
+@media (min-width: 900px) {
+  .bd-layout { flex-direction: row; align-items: flex-start; justify-content: center; gap: 22px; }
+  .bd-layout--solo { flex-direction: column; align-items: center; }
+  .bd-main { width: auto; flex: 0 1 auto; }
+  .bd-stage { width: max(240px, calc((100vh - 330px) * .714)); }
+  .bd-layout .bd-cards { width: 360px; flex: 0 0 360px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.modal--fullscreen .bd-stage { width: min(100%, max(240px, calc((100vh - 340px) * .714))); }
+@media (min-width: 900px) { .modal--fullscreen .bd-stage { width: max(260px, calc((100vh - 270px) * .714)); } }
+@media (prefers-reduced-motion: reduce) { .bd-figure-svg .bd-on, .bd-rings { animation: none; } }
+.gamemaker-ready-art svg.bd-art { width: auto; height: 120px; margin: 0 auto; }
+@media (min-width: 900px) {
+  /* "What's this?": the words beside the child, not under it. */
+  .bd-main--what { display: grid; grid-template-columns: auto 380px; grid-template-rows: 1fr auto auto 1fr; column-gap: 26px; align-items: center; }
+  .bd-main--what .bd-stage { grid-column: 1; grid-row: 1 / 5; }
+  .bd-main--what .bd-choices { grid-column: 2; grid-row: 2; }
+  .bd-main--what .bd-under { grid-column: 2; grid-row: 3; }
+  .bd-main--what .bp-msg { grid-column: 2; grid-row: 4; align-self: start; text-align: center; }
+}

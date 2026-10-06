@@ -28,6 +28,7 @@ const SA_READY_GAMES = [
   { id: 'colors', icon: '🎨', label: 'Colors' },
   { id: 'feelings', icon: '😊', label: 'Feelings' },
   { id: 'weather', icon: '🌦️', label: 'Weather' },
+  { id: 'body', icon: '🧍', label: 'Body Parts' },
   { id: 'animals', icon: '🦁', label: 'Animals' },
   { id: 'music', icon: '🎸', label: 'Music' },
   { id: 'house', icon: '🏠', label: 'House' },

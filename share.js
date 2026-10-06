@@ -410,6 +410,7 @@ function renderStudentHome(shell, studentId) {
     music: () => tile('instruments', '🎸', 'Music', 'Música — instrumentos'),
     where: () => tile('prepositions', '📦', 'Where is it?', 'Onde está? — preposições'),
     weather: () => tile('weather', '🌦️', 'Weather', 'Clima'),
+    body: () => tile('body', '🧍', 'My body', 'Partes do corpo'),
     practice: () => (practiceTopics && !practiceTopics.length ? '' : tile('practice', '⚡', 'Practice',
       `Treinar — ${shareEsc((practiceTopics || []).slice(0, 3).map(t => t.label.split(' (')[0]).join(', ') || 'exercícios do meu nível')}${practiceTopics && practiceTopics.length > 3 ? '…' : ''}`)),
     writingPractice: () => (practiceTopics && !practiceTopics.length ? '' : tile('writing-practice', '📝', 'Writing practice', 'Treinar a escrita — completar e montar frases')),
@@ -421,7 +422,7 @@ function renderStudentHome(shell, studentId) {
   };
   // The picture games are tiles of their own; the teacher can switch each
   // one off in the link window.
-  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack' };
+  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body' };
   // A grown-up's page leads with the skill their teacher said matters most.
   const adultSkills = () => {
     const order = { speaking: ['speaking', 'audio'], listening: ['dictation'], writing: ['write', 'writingPractice'], reading: ['games'], grammar: ['practice'] };
@@ -432,8 +433,8 @@ function renderStudentHome(shell, studentId) {
   };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
-    prereader: ['review', 'colors', 'feelings', 'weather', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
-    reader: ['progress', 'homework', 'review', 'games', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
+    prereader: ['review', 'colors', 'feelings', 'weather', 'body', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
+    reader: ['progress', 'homework', 'review', 'games', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
     writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'games', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
@@ -496,6 +497,7 @@ function renderStudentHome(shell, studentId) {
     instruments: () => openInstrumentsGame(),
     prepositions: () => openPrepositionsGame(),
     weather: () => openWeatherGame(),
+    body: () => openBodyGame(),
     colors: () => openColorsGame(),
     audio: () => openAudioMessage(student),
     'writing-practice': () => openWritingPractice(student.id, practiceTopics),

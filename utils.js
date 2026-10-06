@@ -265,7 +265,7 @@ function igPictures() {
   const lib = {};
   // Animals are left out on purpose: the drawn emoji animals are clearer
   // and match the rest of a mixed word list.
-  ['HOUSE_TOPIC', 'SCHOOL_OBJECTS_TOPIC', 'FEELINGS_TOPIC', 'INSTRUMENTS_TOPIC']
+  ['HOUSE_TOPIC', 'SCHOOL_OBJECTS_TOPIC', 'FEELINGS_TOPIC', 'INSTRUMENTS_TOPIC', 'BODY_TOPIC']
     .forEach(name => {
       let topic = null;
       try { topic = (0, eval)(name); } catch (e) { topic = null; }
