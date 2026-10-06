@@ -205,6 +205,7 @@ const IGAuth = (() => {
       </button>
       <div class="teacher-menu" id="teacherMenu" hidden>
         <p class="teacher-menu-email">${igEscapeHtml(t.email)}</p>
+        <button class="teacher-menu-btn" id="teacherBooks" type="button">📚 Livros IG</button>
         <button class="teacher-menu-btn" id="teacherSetupMenu" type="button">🎯 Perfil das minhas turmas</button>
         <button class="teacher-menu-btn" id="teacherSyncNow" type="button">🔄 Sync now</button>
         <button class="teacher-menu-btn" id="teacherRecover" type="button">📦 Trazer dados deste computador</button>
@@ -224,6 +225,10 @@ const IGAuth = (() => {
     if (recoverBtn) recoverBtn.addEventListener('click', () => {
       menu.hidden = true;
       if (typeof openDataRecovery === 'function') openDataRecovery(false);
+    });
+    slot.querySelector('#teacherBooks').addEventListener('click', () => {
+      menu.hidden = true;
+      if (typeof TeacherBooks !== 'undefined') TeacherBooks.open();
     });
     slot.querySelector('#teacherSetupMenu').addEventListener('click', () => {
       menu.hidden = true;
@@ -272,6 +277,9 @@ const IGAuth = (() => {
     // is already showing their screen, and a login gate over it would be a
     // dead end for a family with no account.
     if (window.IG_SHARE_MODE) return;
+    // A textbook QR code (#jogo=…, publicGame.js) opens one game for anybody:
+    // no gate, no session check, no Supabase at all.
+    if (window.IG_PUBLIC_GAME) return;
     if (window.IG_SUPABASE && window.IG_SUPABASE.secretKeyPasted) {
       showSecretKeyWarning();
       return;                                    // refuse to run on a secret key

@@ -588,7 +588,8 @@ function openStudentGames(shell, student, topics) {
 // ---------------------------------------------------------------------------
 // BOOT — claimed synchronously so the teacher's page never flashes
 // ---------------------------------------------------------------------------
-if (typeof ShareMode !== 'undefined' && ShareMode.claim()) {
+// A public game link (#jogo=…, publicGame.js) is never a student's link.
+if (typeof ShareMode !== 'undefined' && !window.IG_PUBLIC_GAME && ShareMode.claim()) {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => ShareMode.start());
   } else {

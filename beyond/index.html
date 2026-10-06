@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>IG Beyond · Audios — IG English School</title>
+<meta name="description" content="Audios do livro IG Beyond — IG English School." />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#8e6d86" />
+<!--
+  Página de áudios do livro IG Beyond — totalmente independente do site
+  (não carrega nenhum script do app e não tem links para ele).
+
+  As faixas vêm de tracks.json, nesta mesma pasta. Para acrescentar um áudio:
+  coloque o .mp3 nesta pasta e acrescente um item em "tracks" no tracks.json.
+  Não é preciso mexer neste HTML.
+
+  Link direto para uma faixa (para o QR code do livro):
+    https://ig-englishschool.vercel.app/audios/beyond/#t=<id-da-faixa>
+-->
+<style>
+  :root {
+    --mauve: #8e6d86;
+    --mauve-dark: #6f5268;
+    --sage: #a9b4a4;
+    --sage-soft: #e9ede7;
+    --vanilla: #faefc2;
+    --coral: #f05d77;
+    --coral-dark: #c8435b;
+    --ink: #3a2f38;
+    --ink-soft: #6b5f68;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Baloo 2", "Nunito", "Segoe UI Rounded", "Arial Rounded MT Bold", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--vanilla) 0%, #fffdf4 260px, #f6f4ee 100%);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+
+  header.top {
+    text-align: center;
+    padding: 22px 16px 20px;
+    border-radius: 28px;
+    background: var(--mauve);
+    color: #fff;
+    box-shadow: 0 8px 0 var(--mauve-dark);
+    margin-bottom: 26px;
+  }
+  .school { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .04em; opacity: .92; }
+  .book { margin: 2px 0 0; font-size: clamp(1.9rem, 8vw, 2.6rem); line-height: 1.1; }
+  .sub { margin: 6px 0 0; font-size: 1rem; opacity: .92; }
+
+  .notice {
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 3px dashed var(--sage);
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .notice small { display: block; color: var(--ink-soft); font-size: .95rem; font-weight: 500; }
+
+  section.unit {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 16px 12px 8px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 0 var(--sage-soft), 0 10px 24px rgba(58, 47, 56, .06);
+  }
+  section.unit h2 { margin: 0 6px 10px; font-size: 1.35rem; color: var(--mauve); }
+  section.unit h2 .dot { color: var(--coral); }
+
+  .track {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 6px 12px;
+    align-items: center;
+    padding: 12px 10px;
+    margin-bottom: 8px;
+    border-radius: 18px;
+    background: var(--sage-soft);
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+  .track.is-target {
+    background: var(--vanilla);
+    box-shadow: 0 0 0 4px var(--coral);
+    animation: pop .6s ease 2;
+  }
+  @keyframes pop { 50% { transform: scale(1.02); } }
+  @media (prefers-reduced-motion: reduce) { .track.is-target { animation: none; } }
+
+  .play {
+    grid-row: span 2;
+    width: 64px; height: 64px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--coral);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--coral-dark);
+    touch-action: manipulation;
+  }
+  .play:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--coral-dark); }
+  .play:focus-visible { outline: 4px solid var(--mauve); outline-offset: 3px; }
+  .track.is-playing .play { background: var(--mauve); box-shadow: 0 5px 0 var(--mauve-dark); }
+
+  .t-title { margin: 0; font-size: 1.15rem; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+  .t-title small { display: block; font-weight: 600; font-size: .85rem; color: var(--ink-soft); }
+  audio { width: 100%; min-width: 0; height: 44px; }
+
+  .tap-hint {
+    grid-column: 1 / -1;
+    margin: 4px 0 0;
+    text-align: center;
+    font-weight: 800;
+    color: var(--coral-dark);
+  }
+
+  footer { text-align: center; color: var(--ink-soft); font-size: .9rem; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="school">IG English School</p>
+    <h1 class="book">IG Beyond</h1>
+    <p class="sub">🎧 Audios · Áudios do livro</p>
+  </header>
+
+  <div id="msg"></div>
+  <main id="list"></main>
+
+  <footer>IG English School · IG Beyond</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Works whether the page was opened as /audios/<book>/ or /audios/<book>
+  // (without the slash, relative paths would point at the parent folder).
+  var path = window.location.pathname;
+  var base = /\/$/.test(path) || /\.html?$/i.test(path)
+    ? window.location.href
+    : window.location.origin + path + '/';
+  function url(rel) { return new URL(rel, base).href; }
+
+  var listEl = document.getElementById('list');
+  var msgEl = document.getElementById('msg');
+  var players = [];
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function notice(html) { msgEl.innerHTML = html ? '<div class="notice">' + html + '</div>' : ''; }
+
+  function render(data) {
+    var tracks = (data && Array.isArray(data.tracks) ? data.tracks : [])
+      .filter(function (t) { return t && t.id && t.file; });
+    if (!tracks.length) {
+      notice('🎵 Audios coming soon!<small>Os áudios deste livro vão aparecer aqui em breve.</small>');
+      return;
+    }
+
+    // Grouped by unit, in the order the units first appear in the file.
+    var units = [];
+    var byUnit = {};
+    tracks.forEach(function (t) {
+      var key = String(t.unit == null ? '' : t.unit);
+      if (!byUnit[key]) {
+        byUnit[key] = { unit: t.unit, title: t.unitTitle || '', tracks: [] };
+        units.push(byUnit[key]);
+      }
+      if (!byUnit[key].title && t.unitTitle) byUnit[key].title = t.unitTitle;
+      byUnit[key].tracks.push(t);
+    });
+
+    listEl.innerHTML = units.map(function (u) {
+      var head = (u.unit != null && u.unit !== '' ? 'Unit ' + esc(u.unit) : 'Extras')
+        + (u.title ? ' <span class="dot">·</span> ' + esc(u.title) : '');
+      return '<section class="unit"><h2>' + head + '</h2>' + u.tracks.map(function (t) {
+        return '<div class="track" id="t-' + esc(t.id) + '">'
+          + '<button class="play" type="button" aria-label="Play ' + esc(t.title || t.id) + '">▶</button>'
+          + '<p class="t-title">' + esc(t.title || t.id) + (t.subtitle ? '<small>' + esc(t.subtitle) + '</small>' : '') + '</p>'
+          + '<audio controls preload="none" src="' + esc(url(t.file)) + '"></audio>'
+          + '</div>';
+      }).join('') + '</section>';
+    }).join('');
+
+    Array.prototype.forEach.call(listEl.querySelectorAll('.track'), function (row) {
+      var audio = row.querySelector('audio');
+      var btn = row.querySelector('.play');
+      players.push(audio);
+      btn.addEventListener('click', function () {
+        if (audio.paused) audio.play().catch(function () {}); else audio.pause();
+      });
+      audio.addEventListener('play', function () {
+        // One track at a time.
+        players.forEach(function (p) { if (p !== audio) p.pause(); });
+        row.classList.add('is-playing');
+        btn.textContent = '❚❚';
+        var hint = row.querySelector('.tap-hint'); if (hint) hint.remove();
+      });
+      ['pause', 'ended'].forEach(function (ev) {
+        audio.addEventListener(ev, function () { row.classList.remove('is-playing'); btn.textContent = '▶'; });
+      });
+    });
+
+    goToHash();
+  }
+
+  // #t=<track-id> — the link printed (as a QR code) next to an activity.
+  function goToHash() {
+    Array.prototype.forEach.call(listEl.querySelectorAll('.track.is-target'), function (r) {
+      r.classList.remove('is-target');
+      var old = r.querySelector('.tap-hint'); if (old) old.remove();
+    });
+    var m = /[#&]t=([^&]+)/.exec(window.location.hash || '');
+    if (!m || !listEl.children.length) return;
+    var id;
+    try { id = decodeURIComponent(m[1]); } catch (e) { id = m[1]; }
+    var row = document.getElementById('t-' + id);
+    if (!row) {
+      notice('🔍 Audio not found.<small>Este áudio não foi encontrado — veja a lista abaixo.</small>');
+      return;
+    }
+    notice('');
+    row.classList.add('is-target');
+    var hint = document.createElement('p');
+    hint.className = 'tap-hint';
+    hint.textContent = '👆 Tap ▶ to listen · Toque no ▶ para ouvir';
+    row.appendChild(hint);
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Most phones only allow sound after a tap; if this one allows it, start.
+    row.querySelector('audio').play().catch(function () {});
+  }
+
+  window.addEventListener('hashchange', goToHash);
+
+  fetch(url('tracks.json'), { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(render)
+    .catch(function () {
+      notice('😕 Could not load the audio list.<small>Não consegui abrir a lista de áudios. Tente de novo em instantes.</small>');
+    });
+})();
+</script>
+</body>
+</html>

@@ -227,6 +227,9 @@
 </div>
 
 <script src="utils.js"></script>
+<!-- Right after utils.js: a #jogo= link (textbook QR code) must pick its
+     own empty storage before any other script reads the teacher's. -->
+<script src="publicGame.js"></script>
 <script src="supabaseConfig.js"></script>
 <script src="cloud.js"></script>
 <script src="share.js"></script>
@@ -271,6 +274,7 @@
 <script src="teacherSetup.js"></script>
 <script src="studentAccess.js"></script>
 <script src="tutorial.js"></script>
+<script src="teacherBooks.js"></script>
 <script src="app.js"></script>
 <!-- Last: decides who is signed in, once the app has painted. -->
 <script src="auth.js"></script>

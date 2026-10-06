@@ -1,0 +1,65 @@
+{
+  "book": "IG Little Steps",
+  "_help": "Each item in 'tracks' becomes a player on the page. Put the .mp3 in this folder and add an item: id (used in the link #t=<id>; letters, numbers and dashes), unit (number), unitTitle (optional, shown once per unit), title, subtitle (optional, e.g. 'Page 4'), file (the mp3 name in this folder). The 'example' list is ignored by the page - copy its items into 'tracks' as a model.",
+  "tracks": [
+    {
+      "id": "u1-hello-song",
+      "unit": 1,
+      "unitTitle": "Launch Base",
+      "title": "Hello Song",
+      "subtitle": "Page 3",
+      "file": "u1-hello-song.mp3"
+    },
+    {
+      "id": "u1-meet-the-crew",
+      "unit": 1,
+      "title": "Meet the crew! Listen, point and color.",
+      "subtitle": "Page 4",
+      "file": "u1-meet-the-crew.mp3"
+    },
+    {
+      "id": "u1-yes-or-no",
+      "unit": 1,
+      "title": "Yes or no? Listen and circle.",
+      "subtitle": "Page 5",
+      "file": "u1-yes-or-no.mp3"
+    },
+    {
+      "id": "u2-rainbow-song",
+      "unit": 2,
+      "unitTitle": "Rainbow Planet",
+      "title": "Rainbow Song",
+      "subtitle": "Page 10",
+      "file": "u2-rainbow-song.mp3"
+    },
+    {
+      "id": "u2-colors",
+      "unit": 2,
+      "title": "Colors! Listen, point and color.",
+      "subtitle": "Page 11",
+      "file": "u2-colors.mp3"
+    },
+    {
+      "id": "u2-rainbow-colors",
+      "unit": 2,
+      "title": "Rainbow colors. Listen and color the rainbow.",
+      "subtitle": "Page 12",
+      "file": "u2-rainbow-colors.mp3"
+    },
+    {
+      "id": "u3-countdown-chant",
+      "unit": 3,
+      "unitTitle": "Countdown",
+      "title": "Countdown Chant",
+      "subtitle": "Page 17",
+      "file": "u3-countdown-chant.mp3"
+    },
+    {
+      "id": "u3-numbers",
+      "unit": 3,
+      "title": "Numbers 1 to 10. Listen, point and count.",
+      "subtitle": "Page 18",
+      "file": "u3-numbers.mp3"
+    }
+  ]
+}
