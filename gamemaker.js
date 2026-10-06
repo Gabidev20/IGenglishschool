@@ -110,6 +110,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-body>
+        <span class="gamemaker-ready-art">${bodySVG({ on: 'hands', cls: 'bd-art' })}</span>
+        <span class="gamemaker-ready-text">
+          <b>🧍 Body Parts</b>
+          <small>Head, eyes, ears, nose, mouth, arms, hands, legs, knees, feet, toes… — toque no corpo e a parte acende ("These are my eyes. I can see!"), "Touch your nose!" e a música Head, shoulders, knees and toes.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
     </div>
   `;
   container.querySelectorAll('[data-open-backpack]').forEach(btn => btn.addEventListener('click', openBackpackGame));
@@ -119,6 +127,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-instruments]').forEach(btn => btn.addEventListener('click', openInstrumentsGame));
   container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
   container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
+  container.querySelectorAll('[data-open-body]').forEach(btn => btn.addEventListener('click', openBodyGame));
 }
 
 // ---------------------------------------------------------------------------

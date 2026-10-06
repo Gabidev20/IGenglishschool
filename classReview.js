@@ -106,6 +106,8 @@ const RV_SETS = {
   family: ['mother', 'father', 'mom', 'dad', 'mum', 'sister', 'brother', 'grandma', 'grandpa', 'grandmother', 'grandfather', 'baby', 'aunt', 'uncle', 'cousin', 'family'],
   number: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'],
   place: ['bedroom', 'bathroom', 'kitchen', 'living room', 'dining room', 'yard', 'garden', 'school', 'park', 'beach', 'zoo'],
+  body: ['head', 'hair', 'nose', 'mouth', 'neck', 'tummy', 'face'],
+  bodies: ['eyes', 'ears', 'shoulders', 'arms', 'hands', 'fingers', 'legs', 'knees', 'feet', 'toes'],
 };
 
 function reviewSentences(word) {
@@ -120,6 +122,8 @@ function reviewSentences(word) {
   if (is('family')) return [`This is my ${k}.`, `I love my ${k}.`];
   if (is('number')) return [`${k[0].toUpperCase()}${k.slice(1)}!`, `I can see ${k} stars.`];
   if (is('place')) return [`This is the ${k}.`, `I'm in the ${k}.`];
+  if (is('body')) return [`This is my ${k}.`, `Touch your ${k}!`];
+  if (is('bodies')) return [`These are my ${k}.`, `Touch your ${k}!`];
   // An expression or a verb ("to look forward to", "brush my teeth"): no
   // template fits, so the sentence is the expression itself, to repeat.
   if (/^to\s/i.test(w) || k.split(' ').length >= 3 || (/\s/.test(k) && !reviewLookup(w))) {
