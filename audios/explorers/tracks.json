@@ -1,0 +1,100 @@
+{
+  "book": "IG Explorers",
+  "_help": "Each item in 'tracks' becomes a player on the page. Put the .mp3 in this folder and add an item: id (used in the link #t=<id>; letters, numbers and dashes), unit (number), unitTitle (optional, shown once per unit), title, subtitle (optional, e.g. 'Page 4'), file (the mp3 name in this folder). The 'example' list is ignored by the page - copy its items into 'tracks' as a model.",
+  "tracks": [
+    {
+      "id": "u1-alphabet-chant",
+      "unit": 1,
+      "unitTitle": "Base Camp",
+      "title": "The Alphabet Explorer Chant",
+      "subtitle": "Page 3",
+      "file": "u1-alphabet-chant.mp3"
+    },
+    {
+      "id": "u1-kikos-new-friends",
+      "unit": 1,
+      "title": "Kiko’s New Friends. Listen and read.",
+      "subtitle": "Page 4",
+      "file": "u1-kikos-new-friends.mp3"
+    },
+    {
+      "id": "u1-alphabet-trail",
+      "unit": 1,
+      "title": "The Alphabet Trail. Listen and say.",
+      "subtitle": "Page 5",
+      "file": "u1-alphabet-trail.mp3"
+    },
+    {
+      "id": "u1-how-do-you-spell-it",
+      "unit": 1,
+      "title": "How Do You Spell It? Listen and write the names.",
+      "subtitle": "Page 6",
+      "file": "u1-how-do-you-spell-it.mp3"
+    },
+    {
+      "id": "u2-rainbow-backpack-chant",
+      "unit": 2,
+      "unitTitle": "Explorer’s Backpack",
+      "title": "The Rainbow Backpack Chant",
+      "subtitle": "Page 10",
+      "file": "u2-rainbow-backpack-chant.mp3"
+    },
+    {
+      "id": "u2-colors",
+      "unit": 2,
+      "title": "Colors. Listen, point and say.",
+      "subtitle": "Page 11",
+      "file": "u2-colors.mp3"
+    },
+    {
+      "id": "u2-things",
+      "unit": 2,
+      "title": "Things. Listen, point and say.",
+      "subtitle": "Page 11",
+      "file": "u2-things.mp3"
+    },
+    {
+      "id": "u2-listen-and-color",
+      "unit": 2,
+      "title": "Listen and Color",
+      "subtitle": "Page 12",
+      "file": "u2-listen-and-color.mp3"
+    },
+    {
+      "id": "u3-pirate-counting-chant",
+      "unit": 3,
+      "unitTitle": "Pirate Ship",
+      "title": "The Pirate Counting Chant",
+      "subtitle": "Page 17",
+      "file": "u3-pirate-counting-chant.mp3"
+    },
+    {
+      "id": "u3-numbers-1-20",
+      "unit": 3,
+      "title": "Numbers 1 to 20. Listen, point and say.",
+      "subtitle": "Page 18",
+      "file": "u3-numbers-1-20.mp3"
+    },
+    {
+      "id": "u3-color-the-stones",
+      "unit": 3,
+      "title": "The Treasure Map. Listen and color the stones.",
+      "subtitle": "Page 20",
+      "file": "u3-color-the-stones.mp3"
+    },
+    {
+      "id": "u3-how-old-are-you",
+      "unit": 3,
+      "title": "How Old Are You? Listen and read.",
+      "subtitle": "Page 21",
+      "file": "u3-how-old-are-you.mp3"
+    },
+    {
+      "id": "u3-listen-and-write",
+      "unit": 3,
+      "title": "Review Camp. Listen and write.",
+      "subtitle": "Page 22",
+      "file": "u3-listen-and-write.mp3"
+    }
+  ]
+}

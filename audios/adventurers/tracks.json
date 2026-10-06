@@ -1,0 +1,51 @@
+{
+  "book": "IG Adventurers",
+  "_help": "Each item in 'tracks' becomes a player on the page. Put the .mp3 in this folder and add an item: id (used in the link #t=<id>; letters, numbers and dashes), unit (number), unitTitle (optional, shown once per unit), title, subtitle (optional, e.g. 'Page 4'), file (the mp3 name in this folder). The 'example' list is ignored by the page - copy its items into 'tracks' as a model.",
+  "tracks": [
+    {
+      "id": "u1-club-chant",
+      "unit": 1,
+      "unitTitle": "Join the Club",
+      "title": "Club Chant: Where Are You From?",
+      "subtitle": "Page 3",
+      "file": "u1-club-chant.mp3"
+    },
+    {
+      "id": "u2-club-chant",
+      "unit": 2,
+      "unitTitle": "Secret Codes",
+      "title": "Club Chant: Crack the Code!",
+      "subtitle": "Page 11",
+      "file": "u2-club-chant.mp3"
+    },
+    {
+      "id": "u2-listen-color-write",
+      "unit": 2,
+      "title": "A · Listen, color and write.",
+      "subtitle": "Page 12",
+      "file": "u2-listen-color-write.mp3"
+    },
+    {
+      "id": "u2-listen-and-circle",
+      "unit": 2,
+      "title": "B · Listen and circle.",
+      "subtitle": "Page 12",
+      "file": "u2-listen-and-circle.mp3"
+    },
+    {
+      "id": "u3-club-chant",
+      "unit": 3,
+      "unitTitle": "Family Team",
+      "title": "Club Chant: Family Team!",
+      "subtitle": "Page 19",
+      "file": "u3-club-chant.mp3"
+    },
+    {
+      "id": "u3-sams-family",
+      "unit": 3,
+      "title": "Sam’s Family. A · Listen and write.",
+      "subtitle": "Page 20",
+      "file": "u3-sams-family.mp3"
+    }
+  ]
+}
