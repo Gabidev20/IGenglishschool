@@ -153,6 +153,10 @@ const ShareMode = (() => {
   let cloud = false;
   let pendingLog = 0;          // how much of the log has already been sent
   let flushTimer = null;
+  // What was last sent (or came from the server) for each kind|id: the same
+  // message must not be sent again on every flush — each copy rang the
+  // teacher's bell.
+  const lastSent = new Map();
 
   function active() { return Boolean(code); }
 
@@ -191,6 +195,9 @@ const ShareMode = (() => {
     // Anything this student already sent from another device.
     (data.activity || []).forEach(row => applyActivityLocally(row, student.id));
     pendingLog = (IGStore.getJSON('log_' + student.id, []) || []).length;
+    // All of that is on the server already: nothing to send back yet.
+    lastSent.clear();
+    outgoing().forEach(([kind, id, payload]) => lastSent.set(kind + '|' + id, JSON.stringify(payload)));
   }
 
   function applyActivityLocally(row, sid) {
@@ -237,10 +244,34 @@ const ShareMode = (() => {
   // ---- sending what the student did back -----------------------------------
   async function send(kind, id, payload) {
     if (!cloud) return;
+    const key = kind + '|' + id;
+    const sig = JSON.stringify(payload);
+    if (lastSent.get(key) === sig) return;      // already there, unchanged
     try {
       const sb = await IGCloud.anonClient();
-      await sb.rpc('igenglish_share_write', { p_code: code, p_kind: kind, p_id: id, p_payload: payload });
+      const { error } = await sb.rpc('igenglish_share_write', { p_code: code, p_kind: kind, p_id: id, p_payload: payload });
+      if (!error) lastSent.set(key, sig);       // a failed send is retried next time
     } catch (e) { console.error('share write', e); }
+  }
+
+  // Everything the student's page keeps in step with the teacher (except
+  // the game log, which goes in batches below): [kind, id, payload].
+  function outgoing() {
+    if (!studentId) return [];
+    const out = [['progress', 'state', {
+      progress: IGStore.getJSON('progress_' + studentId, {}),
+      bank: IGStore.getJSON('bank_' + studentId, {}),
+    }]];
+    (IGStore.getJSON('homework', []) || []).forEach(hw => {
+      const tasks = (hw.tasks || [])
+        .map((t, index) => ({ index, result: t.result }))
+        .filter(t => t.result);
+      if (tasks.length) out.push(['homework_result', hw.id, { tasks }]);
+    });
+    (IGStore.getJSON('writing_' + studentId, []) || [])
+      .filter(w => !w.correction)
+      .forEach(w => out.push(['writing', w.id, { submission: w }]));
+    return out;
   }
 
   function scheduleFlush() {
@@ -256,19 +287,7 @@ const ShareMode = (() => {
       pendingLog = log.length;
       await send('attempt', 'b' + Date.now().toString(36), { entries: batch });
     }
-    await send('progress', 'state', {
-      progress: IGStore.getJSON('progress_' + studentId, {}),
-      bank: IGStore.getJSON('bank_' + studentId, {}),
-    });
-    (IGStore.getJSON('homework', []) || []).forEach(hw => {
-      const tasks = hw.tasks
-        .map((t, index) => ({ index, result: t.result }))
-        .filter(t => t.result);
-      if (tasks.length) send('homework_result', hw.id, { tasks });
-    });
-    (IGStore.getJSON('writing_' + studentId, []) || [])
-      .filter(w => !w.correction)
-      .forEach(w => send('writing', w.id, { submission: w }));
+    await Promise.all(outgoing().map(([kind, id, payload]) => send(kind, id, payload)));
   }
 
   // One listener instead of touching every feature: anything the student's

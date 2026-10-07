@@ -223,6 +223,24 @@ const IGCloud = (() => {
       .select('*').eq('teacher_id', teacher.id).order('created_at');
     if (error || !data || !data.length) return 0;
 
+    // A student's page used to send the same message (and the same homework)
+    // again every time the student did anything, so the bell rang for work
+    // the teacher had already read. Only what this copy does not have yet
+    // counts as new.
+    const isNew = row => {
+      const p = row.payload || {};
+      if (row.kind === 'writing') {
+        const id = p.submission && p.submission.id;
+        return Boolean(id) && !(IGStore.getJSON('writing_' + row.student_id, []) || []).some(w => w.id === id);
+      }
+      if (row.kind === 'homework_result') {
+        const hw = (IGStore.getJSON('homework', []) || []).find(h => h.id === row.id);
+        return Boolean(hw) && (p.tasks || []).some(t => hw.tasks[t.index] && !hw.tasks[t.index].result);
+      }
+      return false;
+    };
+    const fresh = new Set(data.filter(isNew));
+
     IGStore.silently(() => {
       data.forEach(row => {
         if (typeof ShareMode !== 'undefined' && ShareMode.applyActivityLocally) {
@@ -251,7 +269,7 @@ const IGCloud = (() => {
     // Tell the page — the inbox badge and toast listen for this.
     try {
       window.dispatchEvent(new CustomEvent('ig:student-activity', {
-        detail: { rows: data.map(r => ({ kind: r.kind, studentId: r.student_id })) },
+        detail: { rows: data.map(r => ({ kind: r.kind, studentId: r.student_id, isNew: fresh.has(r) })) },
       }));
     } catch (e) { /* old browser */ }
     return data.length;

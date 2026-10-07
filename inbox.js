@@ -46,8 +46,10 @@ function inboxToast(text, onClick) {
     const rows = (e.detail && e.detail.rows) || [];
     const students = typeof loadStudents === 'function' ? loadStudents() : [];
     const nameOf = id => (students.find(s => s.id === id) || {}).name || 'um aluno';
-    const writers = [...new Set(rows.filter(r => r.kind === 'writing').map(r => nameOf(r.studentId)))];
-    const homework = [...new Set(rows.filter(r => r.kind === 'homework_result').map(r => nameOf(r.studentId)))];
+    // Rows sent again (a message already here) don't ring: `isNew` is false.
+    const isNew = r => r.isNew !== false;
+    const writers = [...new Set(rows.filter(r => r.kind === 'writing' && isNew(r)).map(r => nameOf(r.studentId)))];
+    const homework = [...new Set(rows.filter(r => r.kind === 'homework_result' && isNew(r)).map(r => nameOf(r.studentId)))];
     refreshInboxBadge();
     if (writers.length) {
       if (typeof IGSound !== 'undefined') IGSound.bell();
