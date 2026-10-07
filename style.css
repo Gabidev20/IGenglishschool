@@ -8491,3 +8491,13 @@ html.ig-public-game body > #studentShell { display: none !important; }
   .bd-main--what .bd-under { grid-column: 2; grid-row: 3; }
   .bd-main--what .bp-msg { grid-column: 2; grid-row: 4; align-self: start; text-align: center; }
 }
+/* Body Parts — building the child part by part */
+.bd-kids .bp-mode { padding: 7px 12px; }
+.bd-figure-svg .bd-pop { animation: bd-pop .5s cubic-bezier(.3,1.6,.6,1); transform-box: fill-box; transform-origin: center; }
+@keyframes bd-pop { from { transform: scale(.2); opacity: 0; } to { transform: none; opacity: 1; } }
+.bd-ghost { opacity: .9; }
+.bd-word { font-size: 1.6rem !important; padding: 6px 26px !important; }
+.bd-count { font-family: var(--font-display); font-weight: 800; font-size: .9rem; color: var(--ink-faint); }
+.bd-card.on { position: relative; }
+.bd-card.on::after { content: '✓'; position: absolute; top: 4px; right: 7px; font-weight: 900; color: var(--color-secondary-deep); }
+@media (prefers-reduced-motion: reduce) { .bd-figure-svg .bd-pop { animation: none; } }
