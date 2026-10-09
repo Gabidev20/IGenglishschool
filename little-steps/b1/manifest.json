@@ -1,0 +1,628 @@
+{
+ "v": 1,
+ "book": "little-steps",
+ "bimester": 1,
+ "id": "little-steps:b1",
+ "title": "IG Little Steps",
+ "ages": "3–6",
+ "color": "#f05d77",
+ "pageCount": 25,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Capa e mapa"
+  },
+  {
+   "n": 1,
+   "title": "Mission 1 · Launch Base"
+  },
+  {
+   "n": 2,
+   "title": "Mission 2 · Rainbow Planet"
+  },
+  {
+   "n": 3,
+   "title": "Mission 3 · Countdown"
+  }
+ ],
+ "stickerSheet": 25,
+ "pages": [
+  {
+   "n": 1,
+   "id": "p01",
+   "img": "p01.webp",
+   "thumb": "t01.webp",
+   "unit": 0,
+   "title": "Cover",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 2,
+   "id": "p02",
+   "img": "p02.webp",
+   "thumb": "t02.webp",
+   "unit": 0,
+   "title": "My Galaxy Map",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 3,
+   "id": "p03",
+   "img": "p03.webp",
+   "thumb": "t03.webp",
+   "unit": 1,
+   "title": "Mission 1 · Launch Base",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u1-hello-song",
+     "file": "u1-hello-song.mp3",
+     "title": "Hello Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 4,
+   "id": "p04",
+   "img": "p04.webp",
+   "thumb": "t04.webp",
+   "unit": 1,
+   "title": "Meet the crew!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u1-meet-the-crew",
+     "file": "u1-meet-the-crew.mp3",
+     "title": "Meet the crew! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 5,
+   "id": "p05",
+   "img": "p05.webp",
+   "thumb": "t05.webp",
+   "unit": 1,
+   "title": "Yes or no?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u1-yes-or-no",
+     "file": "u1-yes-or-no.mp3",
+     "title": "Yes or no? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 6,
+   "id": "p06",
+   "img": "p06.webp",
+   "thumb": "t06.webp",
+   "unit": 1,
+   "title": "Fly, rocket, fly!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 7,
+   "id": "p07",
+   "img": "p07.webp",
+   "thumb": "t07.webp",
+   "unit": 1,
+   "title": "This is me!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 8,
+   "id": "p08",
+   "img": "p08.webp",
+   "thumb": "t08.webp",
+   "unit": 1,
+   "title": "Letter A",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 9,
+   "id": "p09",
+   "img": "p09.webp",
+   "thumb": "t09.webp",
+   "unit": 1,
+   "title": "Crew badge",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 10,
+   "id": "p10",
+   "img": "p10.webp",
+   "thumb": "t10.webp",
+   "unit": 2,
+   "title": "Mission 2 · Rainbow Planet",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u2-rainbow-song",
+     "file": "u2-rainbow-song.mp3",
+     "title": "Rainbow Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 11,
+   "id": "p11",
+   "img": "p11.webp",
+   "thumb": "t11.webp",
+   "unit": 2,
+   "title": "Colors!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u2-colors",
+     "file": "u2-colors.mp3",
+     "title": "Colors! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 12,
+   "id": "p12",
+   "img": "p12.webp",
+   "thumb": "t12.webp",
+   "unit": 2,
+   "title": "Rainbow colors",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u2-rainbow-colors",
+     "file": "u2-rainbow-colors.mp3",
+     "title": "Rainbow colors",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 13,
+   "id": "p13",
+   "img": "p13.webp",
+   "thumb": "t13.webp",
+   "unit": 2,
+   "title": "Curvy lines",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 14,
+   "id": "p14",
+   "img": "p14.webp",
+   "thumb": "t14.webp",
+   "unit": 2,
+   "title": "Show me red!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 15,
+   "id": "p15",
+   "img": "p15.webp",
+   "thumb": "t15.webp",
+   "unit": 2,
+   "title": "Letter B",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 16,
+   "id": "p16",
+   "img": "p16.webp",
+   "thumb": "t16.webp",
+   "unit": 2,
+   "title": "My color planet",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 17,
+   "id": "p17",
+   "img": "p17.webp",
+   "thumb": "t17.webp",
+   "unit": 3,
+   "title": "Mission 3 · Countdown",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u3-countdown-chant",
+     "file": "u3-countdown-chant.mp3",
+     "title": "Countdown Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 18,
+   "id": "p18",
+   "img": "p18.webp",
+   "thumb": "t18.webp",
+   "unit": 3,
+   "title": "Numbers 1 to 10",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-numbers",
+     "file": "u3-numbers.mp3",
+     "title": "Numbers 1 to 10",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 19,
+   "id": "p19",
+   "img": "p19.webp",
+   "thumb": "t19.webp",
+   "unit": 3,
+   "title": "How many?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 20,
+   "id": "p20",
+   "img": "p20.webp",
+   "thumb": "t20.webp",
+   "unit": 3,
+   "title": "Trace and count",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 21,
+   "id": "p21",
+   "img": "p21.webp",
+   "thumb": "t21.webp",
+   "unit": 3,
+   "title": "My age",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 22,
+   "id": "p22",
+   "img": "p22.webp",
+   "thumb": "t22.webp",
+   "unit": 3,
+   "title": "Letter C",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 23,
+   "id": "p23",
+   "img": "p23.webp",
+   "thumb": "t23.webp",
+   "unit": 3,
+   "title": "Review game",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 24,
+   "id": "p24",
+   "img": "p24.webp",
+   "thumb": "t24.webp",
+   "unit": 3,
+   "title": "I can do it!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 25,
+   "id": "p25",
+   "img": "p25.webp",
+   "thumb": "t25.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "m1-map",
+   "img": "stickers/m1-map.webp",
+   "kind": "m1-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.3752,
+     "y": 0.3434
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "m1-reward",
+   "img": "stickers/m1-reward.webp",
+   "kind": "m1-reward",
+   "w": 0.1337,
+   "h": 0.0946,
+   "wmm": 28.1,
+   "hmm": 28.1,
+   "pages": [
+    9
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 9"
+  },
+  {
+   "id": "m1-badge",
+   "img": "stickers/m1-badge.webp",
+   "kind": "m1-badge",
+   "w": 0.0956,
+   "h": 0.0676,
+   "wmm": 20.1,
+   "hmm": 20.1,
+   "pages": [
+    9
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.2667,
+     "y": 0.4141
+    }
+   ],
+   "label": "p. 9"
+  },
+  {
+   "id": "m2-map",
+   "img": "stickers/m2-map.webp",
+   "kind": "m2-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.569,
+     "y": 0.3434
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "m2-reward",
+   "img": "stickers/m2-reward.webp",
+   "kind": "m2-reward",
+   "w": 0.1337,
+   "h": 0.0948,
+   "wmm": 28.1,
+   "hmm": 28.2,
+   "pages": [
+    16
+   ],
+   "targets": [
+    {
+     "page": 16,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 16"
+  },
+  {
+   "id": "m2-apple",
+   "img": "stickers/m2-apple.webp",
+   "kind": "m2-apple",
+   "w": 0.0956,
+   "h": 0.0676,
+   "wmm": 20.1,
+   "hmm": 20.1,
+   "pages": [
+    12
+   ],
+   "targets": [
+    {
+     "page": 12,
+     "x": 0.119,
+     "y": 0.9024
+    }
+   ],
+   "label": "p. 12"
+  },
+  {
+   "id": "m2-drop",
+   "img": "stickers/m2-drop.webp",
+   "kind": "m2-drop",
+   "w": 0.0766,
+   "h": 0.0786,
+   "wmm": 16.1,
+   "hmm": 23.3,
+   "pages": [
+    12
+   ],
+   "targets": [
+    {
+     "page": 12,
+     "x": 0.2286,
+     "y": 0.9024
+    }
+   ],
+   "label": "p. 12"
+  },
+  {
+   "id": "m2-leaf",
+   "img": "stickers/m2-leaf.webp",
+   "kind": "m2-leaf",
+   "w": 0.1016,
+   "h": 0.0718,
+   "wmm": 21.3,
+   "hmm": 21.3,
+   "pages": [
+    12
+   ],
+   "targets": [
+    {
+     "page": 12,
+     "x": 0.3381,
+     "y": 0.9024
+    }
+   ],
+   "label": "p. 12"
+  },
+  {
+   "id": "m3-map",
+   "img": "stickers/m3-map.webp",
+   "kind": "m3-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.7629,
+     "y": 0.3434
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "m3-reward",
+   "img": "stickers/m3-reward.webp",
+   "kind": "m3-reward",
+   "w": 0.1337,
+   "h": 0.0946,
+   "wmm": 28.1,
+   "hmm": 28.1,
+   "pages": [
+    24
+   ],
+   "targets": [
+    {
+     "page": 24,
+     "x": 0.1905,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 24"
+  },
+  {
+   "id": "m3-star1",
+   "img": "stickers/m3-star1.webp",
+   "kind": "m3-star1",
+   "w": 0.0837,
+   "h": 0.0561,
+   "wmm": 17.6,
+   "hmm": 16.7,
+   "pages": [
+    20
+   ],
+   "targets": [
+    {
+     "page": 20,
+     "x": 0.1214,
+     "y": 0.8754
+    }
+   ],
+   "label": "p. 20"
+  },
+  {
+   "id": "m3-star2",
+   "img": "stickers/m3-star2.webp",
+   "kind": "m3-star2",
+   "w": 0.0833,
+   "h": 0.0561,
+   "wmm": 17.5,
+   "hmm": 16.7,
+   "pages": [
+    20
+   ],
+   "targets": [
+    {
+     "page": 20,
+     "x": 0.2262,
+     "y": 0.8754
+    }
+   ],
+   "label": "p. 20"
+  },
+  {
+   "id": "m3-star3",
+   "img": "stickers/m3-star3.webp",
+   "kind": "m3-star3",
+   "w": 0.0833,
+   "h": 0.0561,
+   "wmm": 17.5,
+   "hmm": 16.7,
+   "pages": [
+    20
+   ],
+   "targets": [
+    {
+     "page": 20,
+     "x": 0.331,
+     "y": 0.8754
+    }
+   ],
+   "label": "p. 20"
+  }
+ ]
+}

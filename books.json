@@ -1,0 +1,57 @@
+{
+ "v": 1,
+ "books": [
+  {
+   "id": "little-steps",
+   "title": "IG Little Steps",
+   "ages": "3–6",
+   "color": "#f05d77",
+   "bimesters": [
+    {
+     "n": 1,
+     "path": "little-steps/b1/manifest.json",
+     "pages": 25
+    }
+   ]
+  },
+  {
+   "id": "explorers",
+   "title": "IG Explorers",
+   "ages": "7–8",
+   "color": "#6f7d68",
+   "bimesters": [
+    {
+     "n": 1,
+     "path": "explorers/b1/manifest.json",
+     "pages": 24
+    }
+   ]
+  },
+  {
+   "id": "adventurers",
+   "title": "IG Adventurers",
+   "ages": "9–11",
+   "color": "#8e6d86",
+   "bimesters": [
+    {
+     "n": 1,
+     "path": "adventurers/b1/manifest.json",
+     "pages": 27
+    }
+   ]
+  },
+  {
+   "id": "beyond",
+   "title": "IG Beyond",
+   "ages": "12–14",
+   "color": "#c9435c",
+   "bimesters": [
+    {
+     "n": 1,
+     "path": "beyond/b1/manifest.json",
+     "pages": 29
+    }
+   ]
+  }
+ ]
+}
