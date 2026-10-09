@@ -173,6 +173,7 @@ function refreshLiveClassCockpit() {
       <button class="btn btn-primary" id="openSessionDrawerBtn">📋 Today's Class</button>
       <button class="btn btn-ghost" id="openReportsBtn">📊 Reports &amp; Progress</button>
       <button class="btn btn-ghost" id="openClassReviewBtn">🧠 Class review</button>
+      <button class="btn btn-ghost" id="openStudentBookBtn">📖 Livro da aula</button>
     </div>
 
     <div class="cockpit-links" id="cockpitLinks"></div>
@@ -191,6 +192,11 @@ function refreshLiveClassCockpit() {
   document.getElementById('openSessionDrawerBtn').addEventListener('click', openSessionDrawer);
   document.getElementById('openReportsBtn').addEventListener('click', openReportsModal);
   document.getElementById('openClassReviewBtn').addEventListener('click', openLatestClassReview);
+  // The student's online book (livroOnline.js), done together in class:
+  // opens at the page they stopped on and saves to this student.
+  document.getElementById('openStudentBookBtn').addEventListener('click', () => {
+    if (typeof LivroOnline !== 'undefined') LivroOnline.openClass(student.id);
+  });
   wireCockpitContext(root, student);
   renderCockpitLinks(student);
 }

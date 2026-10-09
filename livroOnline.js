@@ -1281,6 +1281,7 @@ const LivroOnline = (() => {
             <div class="lo-home-actions">
               <button type="button" class="btn btn-primary" data-a="resume">▶ Continuar na p. ${resume}</button>
               <button type="button" class="btn btn-ghost" data-a="switch">🔄 Trocar aluno</button>
+              <label class="lo-home-book">📚 Livro: ${bookSelectHTML(student, 'lo-home-booksel')}</label>
             </div>` : ''}
           <div class="lo-progress">
             <div class="lo-bar"><i style="width:${pr.total ? Math.round(pr.done / pr.total * 100) : 0}%"></i></div>
@@ -1298,6 +1299,13 @@ const LivroOnline = (() => {
       if (rs) rs.addEventListener('click', () => openAt(resume));
       const sw = root.querySelector('[data-a="switch"]');
       if (sw) sw.addEventListener('click', () => { sync.flush(); closeAllViews(); openClassPicker(); });
+      const bs = root.querySelector('select[data-book-for]');
+      if (bs) bs.addEventListener('change', () => {
+        sync.flush();
+        setBook(student.id, bs.value || null);
+        closeAllViews();
+        openBookHome(student, ctx);   // reopen with the new book (or the choice panel if none)
+      });
       root.querySelectorAll('[data-n]').forEach(btn => btn.addEventListener('click', () => openAt(Number(btn.dataset.n))));
     };
     paint();
@@ -1343,27 +1351,48 @@ const LivroOnline = (() => {
         <input type="search" id="loPickSearch" class="lo-pick-search" placeholder="🔍 Buscar aluno…" autocomplete="off" />
         <div class="lo-pick-list" id="loPickList">
           ${rows.map(({ s, t, book }) => `
-            <button type="button" class="lo-pick-row" data-sid="${esc(s.id)}" data-q="${esc(norm(s.name))}" style="--who:${esc(s.color || '#8e6d86')}">
-              <span class="lo-pick-av">${esc(s.avatar || '🙂')}</span>
-              <span class="lo-pick-txt"><b>${esc(s.name)}</b>
-                <small>${book ? esc(bookInfo(book).title) : 'sem livro — escolher'}${s.id === active ? ' · aula atual' : t ? ' · ' + esc(fmt(t)) : ''}</small></span>
-              <span class="lo-pick-go">▶</span>
-            </button>`).join('')}
+            <div class="lo-pick-item" data-q="${esc(norm(s.name))}">
+              <button type="button" class="lo-pick-row" data-sid="${esc(s.id)}" style="--who:${esc(s.color || '#8e6d86')}">
+                <span class="lo-pick-av">${esc(s.avatar || '🙂')}</span>
+                <span class="lo-pick-txt"><b>${esc(s.name)}</b>
+                  <small>${book ? esc(bookInfo(book).title) : 'sem livro — escolha ao lado'}${s.id === active ? ' · aula atual' : t ? ' · ' + esc(fmt(t)) : ''}</small></span>
+                <span class="lo-pick-go">▶</span>
+              </button>
+              ${bookSelectHTML(s, 'lo-pick-book')}
+            </div>`).join('')}
         </div>
       </div>`, false);
 
     const search = document.getElementById('loPickSearch');
     search.addEventListener('input', () => {
       const q = norm(search.value);
-      document.querySelectorAll('#loPickList .lo-pick-row').forEach(r => { r.hidden = Boolean(q) && !r.dataset.q.includes(q); });
+      document.querySelectorAll('#loPickList .lo-pick-item').forEach(r => { r.hidden = Boolean(q) && !r.dataset.q.includes(q); });
     });
     search.addEventListener('keydown', e => {
       if (e.key !== 'Enter') return;
-      const first = [...document.querySelectorAll('#loPickList .lo-pick-row')].find(r => !r.hidden);
-      if (first) first.click();
+      const first = [...document.querySelectorAll('#loPickList .lo-pick-item')].find(r => !r.hidden);
+      if (first) first.querySelector('.lo-pick-row').click();
     });
     document.querySelectorAll('#loPickList .lo-pick-row').forEach(btn => btn.addEventListener('click', () => openClass(btn.dataset.sid)));
+    document.querySelectorAll('#loPickList select[data-book-for]').forEach(sel => sel.addEventListener('change', () => {
+      setBook(sel.dataset.bookFor, sel.value || null);
+      const st = students.find(x => x.id === sel.dataset.bookFor);
+      const b = st ? bookFor(st) : null;
+      const small = sel.closest('.lo-pick-item').querySelector('.lo-pick-txt small');
+      if (small) small.textContent = (b ? bookInfo(b).title : 'sem livro') + ' · livro salvo ✓';
+    }));
     setTimeout(() => { try { search.focus({ preventScroll: true }); } catch (e) { /* old browser */ } }, 50);
+  }
+
+  // The same "which book" choice everywhere the teacher meets a student.
+  function bookSelectHTML(student, cls) {
+    const raw = assignedRaw(student.id);
+    const auto = bookByAge(student.age);
+    return `<select class="${cls}" data-book-for="${esc(student.id)}" aria-label="Livro de ${esc(student.name)}">
+      <option value="">⚙️ Pela idade${auto ? ' — ' + esc(bookInfo(auto).title) : ' — nenhum'}</option>
+      ${BOOKS.map(b => `<option value="${b.id}" ${raw === b.id ? 'selected' : ''}>📘 ${esc(b.title)} (${b.ages})</option>`).join('')}
+      <option value="none" ${raw === 'none' ? 'selected' : ''}>🚫 Sem livro</option>
+    </select>`;
   }
 
   // Straight into the student's book at the page they stopped on; the student
