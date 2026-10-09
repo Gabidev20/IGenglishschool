@@ -1,0 +1,1016 @@
+{
+ "v": 1,
+ "book": "beyond",
+ "bimester": 1,
+ "id": "beyond:b1",
+ "title": "IG Beyond",
+ "ages": "12–14",
+ "color": "#c9435c",
+ "pageCount": 29,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Capa e mapa"
+  },
+  {
+   "n": 1,
+   "title": "Unit 1 · Who Am I?"
+  },
+  {
+   "n": 2,
+   "title": "Unit 2 · My World"
+  },
+  {
+   "n": 3,
+   "title": "Unit 3 · Daily Life"
+  }
+ ],
+ "stickerSheet": 29,
+ "pages": [
+  {
+   "n": 1,
+   "id": "p01",
+   "img": "p01.webp",
+   "thumb": "t01.webp",
+   "unit": 0,
+   "title": "Cover",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 2,
+   "id": "p02",
+   "img": "p02.webp",
+   "thumb": "t02.webp",
+   "unit": 0,
+   "title": "My Year in 12 Tracks",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 3,
+   "id": "p03",
+   "img": "p03.webp",
+   "thumb": "t03.webp",
+   "unit": 1,
+   "title": "Unit 1 · Who Am I?",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u1-warm-up",
+     "file": "u1-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 4,
+   "id": "p04",
+   "img": "p04.webp",
+   "thumb": "t04.webp",
+   "unit": 1,
+   "title": "Who’s Who Online?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 5,
+   "id": "p05",
+   "img": "p05.webp",
+   "thumb": "t05.webp",
+   "unit": 1,
+   "title": "I’m, You’re, She’s…",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 6,
+   "id": "p06",
+   "img": "p06.webp",
+   "thumb": "t06.webp",
+   "unit": 1,
+   "title": "What? Where? Who?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 7,
+   "id": "p07",
+   "img": "p07.webp",
+   "thumb": "t07.webp",
+   "unit": 1,
+   "title": "Interview Your Teacher",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 8,
+   "id": "p08",
+   "img": "p08.webp",
+   "thumb": "t08.webp",
+   "unit": 1,
+   "title": "Write Your Bio",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 9,
+   "id": "p09",
+   "img": "p09.webp",
+   "thumb": "t09.webp",
+   "unit": 1,
+   "title": "10 Things About Me",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 10,
+   "id": "p10",
+   "img": "p10.webp",
+   "thumb": "t10.webp",
+   "unit": 1,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 11,
+   "id": "p11",
+   "img": "p11.webp",
+   "thumb": "t11.webp",
+   "unit": 2,
+   "title": "Unit 2 · My World",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u2-warm-up",
+     "file": "u2-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 12,
+   "id": "p12",
+   "img": "p12.webp",
+   "thumb": "t12.webp",
+   "unit": 2,
+   "title": "Room Tour!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u2-room-tour",
+     "file": "u2-room-tour.mp3",
+     "title": "Room Tour! Read the room tour.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 13,
+   "id": "p13",
+   "img": "p13.webp",
+   "thumb": "t13.webp",
+   "unit": 2,
+   "title": "There’s… There Are…",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 14,
+   "id": "p14",
+   "img": "p14.webp",
+   "thumb": "t14.webp",
+   "unit": 2,
+   "title": "I’ve Got Two Cameras!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 15,
+   "id": "p15",
+   "img": "p15.webp",
+   "thumb": "t15.webp",
+   "unit": 2,
+   "title": "Picture This!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 16,
+   "id": "p16",
+   "img": "p16.webp",
+   "thumb": "t16.webp",
+   "unit": 2,
+   "title": "My Room, My City",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 17,
+   "id": "p17",
+   "img": "p17.webp",
+   "thumb": "t17.webp",
+   "unit": 2,
+   "title": "My Vibe",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 18,
+   "id": "p18",
+   "img": "p18.webp",
+   "thumb": "t18.webp",
+   "unit": 2,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 19,
+   "id": "p19",
+   "img": "p19.webp",
+   "thumb": "t19.webp",
+   "unit": 3,
+   "title": "Unit 3 · Daily Life",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u3-warm-up",
+     "file": "u3-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 20,
+   "id": "p20",
+   "img": "p20.webp",
+   "thumb": "t20.webp",
+   "unit": 3,
+   "title": "A Day in the Life",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 21,
+   "id": "p21",
+   "img": "p21.webp",
+   "thumb": "t21.webp",
+   "unit": 3,
+   "title": "I Play, She Plays",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 22,
+   "id": "p22",
+   "img": "p22.webp",
+   "thumb": "t22.webp",
+   "unit": 3,
+   "title": "How Often?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-listen-to-maria",
+     "file": "u3-listen-to-maria.mp3",
+     "title": "How Often? Listen to Maria.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 23,
+   "id": "p23",
+   "img": "p23.webp",
+   "thumb": "t23.webp",
+   "unit": 3,
+   "title": "The Routine Survey",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 24,
+   "id": "p24",
+   "img": "p24.webp",
+   "thumb": "t24.webp",
+   "unit": 3,
+   "title": "My Ideal Routine",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 25,
+   "id": "p25",
+   "img": "p25.webp",
+   "thumb": "t25.webp",
+   "unit": 3,
+   "title": "My Perfect Weekend",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 26,
+   "id": "p26",
+   "img": "p26.webp",
+   "thumb": "t26.webp",
+   "unit": 3,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 27,
+   "id": "p27",
+   "img": "p27.webp",
+   "thumb": "t27.webp",
+   "unit": 3,
+   "title": "The Review Tour",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 28,
+   "id": "p28",
+   "img": "p28.webp",
+   "thumb": "t28.webp",
+   "unit": 3,
+   "title": "Review Mix",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 29,
+   "id": "p29",
+   "img": "p29.webp",
+   "thumb": "t29.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "reward1",
+   "img": "stickers/reward1.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    10,
+    18,
+    26
+   ],
+   "targets": [
+    {
+     "page": 10,
+     "x": 0.8476,
+     "y": 0.6734
+    },
+    {
+     "page": 18,
+     "x": 0.8476,
+     "y": 0.6886
+    },
+    {
+     "page": 26,
+     "x": 0.8381,
+     "y": 0.6397
+    }
+   ],
+   "label": "p. 10, 18, 26"
+  },
+  {
+   "id": "track1",
+   "img": "stickers/track1.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.034,
+   "wmm": 14.0,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3185
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3576
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3966
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4653
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5044
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5434
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6391
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6781
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7172
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7859
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8249
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.864
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "bubble1",
+   "img": "stickers/bubble1.webp",
+   "kind": "bubble",
+   "w": 0.1718,
+   "h": 0.0494,
+   "wmm": 36.1,
+   "hmm": 14.7,
+   "pages": [
+    9,
+    17
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.1619,
+     "y": 0.9253
+    },
+    {
+     "page": 17,
+     "x": 0.8048,
+     "y": 0.7232
+    }
+   ],
+   "label": "p. 9, 17"
+  },
+  {
+   "id": "reward2",
+   "img": "stickers/reward2.webp",
+   "kind": "reward",
+   "w": 0.1147,
+   "h": 0.0814,
+   "wmm": 24.1,
+   "hmm": 24.2,
+   "pages": [
+    10,
+    18,
+    26
+   ],
+   "targets": [
+    {
+     "page": 10,
+     "x": 0.8476,
+     "y": 0.6734
+    },
+    {
+     "page": 18,
+     "x": 0.8476,
+     "y": 0.6886
+    },
+    {
+     "page": 26,
+     "x": 0.8381,
+     "y": 0.6397
+    }
+   ],
+   "label": "p. 10, 18, 26"
+  },
+  {
+   "id": "track2",
+   "img": "stickers/track2.webp",
+   "kind": "track",
+   "w": 0.0671,
+   "h": 0.034,
+   "wmm": 14.1,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3185
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3576
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3966
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4653
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5044
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5434
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6391
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6781
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7172
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7859
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8249
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.864
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "bubble2",
+   "img": "stickers/bubble2.webp",
+   "kind": "bubble",
+   "w": 0.1619,
+   "h": 0.0497,
+   "wmm": 34.0,
+   "hmm": 14.8,
+   "pages": [
+    9,
+    17
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.1619,
+     "y": 0.9253
+    },
+    {
+     "page": 17,
+     "x": 0.8048,
+     "y": 0.7232
+    }
+   ],
+   "label": "p. 9, 17"
+  },
+  {
+   "id": "reward3",
+   "img": "stickers/reward3.webp",
+   "kind": "reward",
+   "w": 0.1147,
+   "h": 0.0814,
+   "wmm": 24.1,
+   "hmm": 24.2,
+   "pages": [
+    10,
+    18,
+    26
+   ],
+   "targets": [
+    {
+     "page": 10,
+     "x": 0.8476,
+     "y": 0.6734
+    },
+    {
+     "page": 18,
+     "x": 0.8476,
+     "y": 0.6886
+    },
+    {
+     "page": 26,
+     "x": 0.8381,
+     "y": 0.6397
+    }
+   ],
+   "label": "p. 10, 18, 26"
+  },
+  {
+   "id": "track3",
+   "img": "stickers/track3.webp",
+   "kind": "track",
+   "w": 0.0671,
+   "h": 0.034,
+   "wmm": 14.1,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3185
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3576
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3966
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4653
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5044
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5434
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6391
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6781
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7172
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7859
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8249
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.864
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "toggle1",
+   "img": "stickers/toggle1.webp",
+   "kind": "toggle",
+   "w": 0.2099,
+   "h": 0.0373,
+   "wmm": 44.1,
+   "hmm": 11.1,
+   "pages": [
+    25
+   ],
+   "targets": [
+    {
+     "page": 25,
+     "x": 0.819,
+     "y": 0.17
+    }
+   ],
+   "label": "p. 25"
+  },
+  {
+   "id": "bonus1",
+   "img": "stickers/bonus1.webp",
+   "kind": "bonus",
+   "w": 0.1052,
+   "h": 0.0746,
+   "wmm": 22.1,
+   "hmm": 22.2,
+   "pages": [
+    28
+   ],
+   "targets": [
+    {
+     "page": 28,
+     "x": 0.8238,
+     "y": 0.7778
+    }
+   ],
+   "label": "p. 28"
+  },
+  {
+   "id": "washi1",
+   "img": "stickers/washi1.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi2",
+   "img": "stickers/washi2.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi3",
+   "img": "stickers/washi3.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble3",
+   "img": "stickers/bubble3.webp",
+   "kind": "bubble",
+   "w": 0.1476,
+   "h": 0.0497,
+   "wmm": 31.0,
+   "hmm": 14.8,
+   "pages": [
+    9,
+    17
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.1619,
+     "y": 0.9253
+    },
+    {
+     "page": 17,
+     "x": 0.8048,
+     "y": 0.7232
+    }
+   ],
+   "label": "p. 9, 17"
+  },
+  {
+   "id": "bubble4",
+   "img": "stickers/bubble4.webp",
+   "kind": "bubble",
+   "w": 0.1381,
+   "h": 0.0497,
+   "wmm": 29.0,
+   "hmm": 14.8,
+   "pages": [
+    9,
+    17
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.1619,
+     "y": 0.9253
+    },
+    {
+     "page": 17,
+     "x": 0.8048,
+     "y": 0.7232
+    }
+   ],
+   "label": "p. 9, 17"
+  },
+  {
+   "id": "bubble5",
+   "img": "stickers/bubble5.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0497,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [
+    9,
+    17
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.1619,
+     "y": 0.9253
+    },
+    {
+     "page": 17,
+     "x": 0.8048,
+     "y": 0.7232
+    }
+   ],
+   "label": "p. 9, 17"
+  },
+  {
+   "id": "bubble6",
+   "img": "stickers/bubble6.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0497,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [
+    9,
+    17
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.1619,
+     "y": 0.9253
+    },
+    {
+     "page": 17,
+     "x": 0.8048,
+     "y": 0.7232
+    }
+   ],
+   "label": "p. 9, 17"
+  },
+  {
+   "id": "badge1",
+   "img": "stickers/badge1.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge2",
+   "img": "stickers/badge2.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge3",
+   "img": "stickers/badge3.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge4",
+   "img": "stickers/badge4.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge5",
+   "img": "stickers/badge5.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge6",
+   "img": "stickers/badge6.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  }
+ ]
+}
