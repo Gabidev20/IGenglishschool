@@ -110,6 +110,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-alphabet>
+        <span class="gamemaker-ready-art ab-art"><b style="color:#e5484d">A</b><b style="color:#3d7bd9">B</b><b style="color:#3fae5a">C</b></span>
+        <span class="gamemaker-ready-text">
+          <b>🔤 ABC — The Alphabet</b>
+          <small>Toque na letra e ouça o nome dela em inglês (A "ay", B "bee", H "aitch"…), o A–Z inteiro em sequência, "ache a letra que ouviu" e "fale a letra" com o microfone.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-body>
         <span class="gamemaker-ready-art">${bodySVG({ on: 'hands', cls: 'bd-art' })}</span>
         <span class="gamemaker-ready-text">
@@ -128,6 +136,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
   container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
   container.querySelectorAll('[data-open-body]').forEach(btn => btn.addEventListener('click', openBodyGame));
+  container.querySelectorAll('[data-open-alphabet]').forEach(btn => btn.addEventListener('click', openAlphabetGame));
 }
 
 // ---------------------------------------------------------------------------

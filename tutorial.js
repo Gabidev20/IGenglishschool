@@ -232,10 +232,10 @@ const StudentTour = (() => {
       target: T('review-class'), icon: '🧠', title: 'Revisão da aula',
       html: '<p>Depois de cada aula, a teacher pode deixar aqui uma <b>revisão com cartões</b> do que foi visto. É ótimo fazer no dia seguinte, rapidinho.</p>',
     });
-    const pictures = ['colors', 'feelings', 'weather', 'body', 'animals', 'instruments', 'house', 'prepositions', 'backpack'].filter(g => has(T(g)));
+    const pictures = ['colors', 'alphabet', 'feelings', 'weather', 'body', 'animals', 'instruments', 'house', 'prepositions', 'backpack'].filter(g => has(T(g)));
     if (pictures.length) list.push({
       target: { all: pictures.map(T).join(', ') }, icon: '🎨', title: 'Jogos com figuras',
-      html: `<p>Jogos de <b>tocar, arrastar e ouvir</b>: cores, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler.</p>
+      html: `<p>Jogos de <b>tocar, arrastar e ouvir</b>: cores, alfabeto, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler.</p>
              ${prof === 'prereader' ? '<p class="tour-parent">👨‍👩‍👧 Ao tocar em um botão a criança <b>ouve o nome</b> dele. Deixe o som ligado. 🔊</p>' : ''}`,
     });
     if (has(T('games'))) list.push({

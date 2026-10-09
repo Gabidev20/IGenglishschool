@@ -8501,3 +8501,34 @@ html.ig-public-game body > #studentShell { display: none !important; }
 .bd-card.on { position: relative; }
 .bd-card.on::after { content: '✓'; position: absolute; top: 4px; right: 7px; font-weight: 900; color: var(--color-secondary-deep); }
 @media (prefers-reduced-motion: reduce) { .bd-figure-svg .bd-pop { animation: none; } }
+
+/* ==========================================================================
+   ABC — the alphabet (alphabet.js)
+   ========================================================================== */
+.ab-title { text-align: center; margin: 0 0 8px; }
+.ab-show { display: flex; justify-content: center; align-items: center; min-height: 120px; }
+.ab-hint { font-size: 3rem; animation: an-bounce 1.6s ease-in-out infinite; }
+.ab-big {
+  font-family: var(--font-display); font-weight: 900; font-size: 6rem; line-height: 1; color: var(--ab);
+  display: inline-flex; align-items: baseline; gap: 10px; animation: fe-pop .4s cubic-bezier(.3,1.6,.6,1);
+}
+.ab-big small { font-size: .6em; opacity: .8; }
+.ab-bar { display: flex; justify-content: center; margin: 6px 0 12px; }
+.ab-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; max-width: 720px; margin: 0 auto; }
+@media (max-width: 560px) { .ab-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; } }
+.ab-tile {
+  display: flex; align-items: baseline; justify-content: center; gap: 3px; padding: 10px 4px;
+  border: 3px solid var(--border); border-bottom-width: 5px; border-radius: var(--radius-md);
+  background: var(--surface); cursor: pointer; font-family: var(--font-display); color: var(--ab);
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.ab-tile b { font-size: 2rem; font-weight: 900; line-height: 1; }
+.ab-tile small { font-size: 1.2rem; font-weight: 800; opacity: .75; }
+.ab-tile:hover { transform: translateY(-3px); border-color: var(--ab); }
+.ab-tile.on { border-color: var(--ab); background: color-mix(in srgb, var(--ab) 14%, var(--surface)); transform: scale(1.08); }
+.ab-tile--big { padding: 18px 6px; }
+.ab-tile--big b { font-size: 3.4rem; }
+.ab-tile--big small { font-size: 2rem; }
+.ab-tile.popped { animation: cg-pop .5s ease forwards; }
+.ab-tile.shake { animation: shakeItem 0.4s ease; }
+.gamemaker-ready-art.ab-art { display: flex; align-items: center; justify-content: center; gap: 2px; font-family: var(--font-display); font-size: 2.8rem; font-weight: 900; }

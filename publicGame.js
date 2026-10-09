@@ -29,6 +29,7 @@ const PUBLIC_GAME_WORKSPACE = 'public_game';
 // after every script has loaded, so the openers may live in later files.
 const PUBLIC_GAMES = {
   colors:   { emoji: '🎨', title: 'Colors',        pt: 'Cores',                 open: () => openColorsGame() },
+  abc:      { emoji: '🔤', title: 'ABC',           pt: 'O alfabeto',            open: () => openAlphabetGame() },
   backpack: { emoji: '🎒', title: 'School Objects', pt: 'Objetos da escola',     open: () => openBackpackGame() },
   house:    { emoji: '🏠', title: 'My House',      pt: 'As partes da casa',     open: () => openHouseGame() },
   animals:  { emoji: '🦁', title: 'Animals',       pt: 'Animais',               open: () => openAnimalGame() },
