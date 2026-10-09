@@ -1,0 +1,575 @@
+{
+ "v": 1,
+ "book": "adventurers",
+ "bimester": 1,
+ "id": "adventurers:b1",
+ "title": "IG Adventurers",
+ "ages": "9–11",
+ "color": "#8e6d86",
+ "pageCount": 27,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Capa e mapa"
+  },
+  {
+   "n": 1,
+   "title": "Level 1 · Join the Club"
+  },
+  {
+   "n": 2,
+   "title": "Level 2 · Secret Codes"
+  },
+  {
+   "n": 3,
+   "title": "Level 3 · Family Team"
+  }
+ ],
+ "stickerSheet": 27,
+ "pages": [
+  {
+   "n": 1,
+   "id": "p01",
+   "img": "p01.webp",
+   "thumb": "t01.webp",
+   "unit": 0,
+   "title": "Cover",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 2,
+   "id": "p02",
+   "img": "p02.webp",
+   "thumb": "t02.webp",
+   "unit": 0,
+   "title": "My Adventure Map",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 3,
+   "id": "p03",
+   "img": "p03.webp",
+   "thumb": "t03.webp",
+   "unit": 1,
+   "title": "Level 1 · Join the Club",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u1-club-chant",
+     "file": "u1-club-chant.mp3",
+     "title": "Club Chant: Where Are You From?",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 4,
+   "id": "p04",
+   "img": "p04.webp",
+   "thumb": "t04.webp",
+   "unit": 1,
+   "title": "Discover: Meet the Club",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 5,
+   "id": "p05",
+   "img": "p05.webp",
+   "thumb": "t05.webp",
+   "unit": 1,
+   "title": "Practice: verb to be",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 6,
+   "id": "p06",
+   "img": "p06.webp",
+   "thumb": "t06.webp",
+   "unit": 1,
+   "title": "Practice: negatives and secret code",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 7,
+   "id": "p07",
+   "img": "p07.webp",
+   "thumb": "t07.webp",
+   "unit": 1,
+   "title": "Use: questions and short answers",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 8,
+   "id": "p08",
+   "img": "p08.webp",
+   "thumb": "t08.webp",
+   "unit": 1,
+   "title": "Use: Boss Challenge, My Agent Profile",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 9,
+   "id": "p09",
+   "img": "p09.webp",
+   "thumb": "t09.webp",
+   "unit": 1,
+   "title": "Play: Club Race board game",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 10,
+   "id": "p10",
+   "img": "p10.webp",
+   "thumb": "t10.webp",
+   "unit": 1,
+   "title": "Review: Level Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 11,
+   "id": "p11",
+   "img": "p11.webp",
+   "thumb": "t11.webp",
+   "unit": 2,
+   "title": "Level 2 · Secret Codes",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u2-club-chant",
+     "file": "u2-club-chant.mp3",
+     "title": "Club Chant: Crack the Code!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 12,
+   "id": "p12",
+   "img": "p12.webp",
+   "thumb": "t12.webp",
+   "unit": 2,
+   "title": "Discover: Colors and Numbers",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u2-listen-color-write",
+     "file": "u2-listen-color-write.mp3",
+     "title": "A · Listen, color and write.",
+     "available": true
+    },
+    {
+     "track": "u2-listen-and-circle",
+     "file": "u2-listen-and-circle.mp3",
+     "title": "B · Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 13,
+   "id": "p13",
+   "img": "p13.webp",
+   "thumb": "t13.webp",
+   "unit": 2,
+   "title": "Practice: How old, How many, What's your",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 14,
+   "id": "p14",
+   "img": "p14.webp",
+   "thumb": "t14.webp",
+   "unit": 2,
+   "title": "Practice: Code Breakers",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 15,
+   "id": "p15",
+   "img": "p15.webp",
+   "thumb": "t15.webp",
+   "unit": 2,
+   "title": "Use: Club registration forms",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 16,
+   "id": "p16",
+   "img": "p16.webp",
+   "thumb": "t16.webp",
+   "unit": 2,
+   "title": "Use: Boss Challenge, registration form and…",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 17,
+   "id": "p17",
+   "img": "p17.webp",
+   "thumb": "t17.webp",
+   "unit": 2,
+   "title": "Play: Number Bingo and Higher or Lower",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 18,
+   "id": "p18",
+   "img": "p18.webp",
+   "thumb": "t18.webp",
+   "unit": 2,
+   "title": "Review: Level 2 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 19,
+   "id": "p19",
+   "img": "p19.webp",
+   "thumb": "t19.webp",
+   "unit": 3,
+   "title": "Level 3 · Family Team",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u3-club-chant",
+     "file": "u3-club-chant.mp3",
+     "title": "Club Chant: Family Team!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 20,
+   "id": "p20",
+   "img": "p20.webp",
+   "thumb": "t20.webp",
+   "unit": 3,
+   "title": "Discover: Sam's family",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-sams-family",
+     "file": "u3-sams-family.mp3",
+     "title": "Sam’s Family",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 21,
+   "id": "p21",
+   "img": "p21.webp",
+   "thumb": "t21.webp",
+   "unit": 3,
+   "title": "Practice: possessive adjectives",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 22,
+   "id": "p22",
+   "img": "p22.webp",
+   "thumb": "t22.webp",
+   "unit": 3,
+   "title": "Practice: possessive 's and personality words",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 23,
+   "id": "p23",
+   "img": "p23.webp",
+   "thumb": "t23.webp",
+   "unit": 3,
+   "title": "Use: Family cards",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 24,
+   "id": "p24",
+   "img": "p24.webp",
+   "thumb": "t24.webp",
+   "unit": 3,
+   "title": "Use: Boss Challenge, my family card",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 25,
+   "id": "p25",
+   "img": "p25.webp",
+   "thumb": "t25.webp",
+   "unit": 3,
+   "title": "Play: Save Point Quiz Show",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 26,
+   "id": "p26",
+   "img": "p26.webp",
+   "thumb": "t26.webp",
+   "unit": 3,
+   "title": "Review: Level 3 complete and Save Point",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 27,
+   "id": "p27",
+   "img": "p27.webp",
+   "thumb": "t27.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "L1map",
+   "img": "stickers/L1map.webp",
+   "kind": "L1map",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.175,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "L1seal",
+   "img": "stickers/L1seal.webp",
+   "kind": "L1seal",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    8
+   ],
+   "targets": [
+    {
+     "page": 8,
+     "x": 0.8286,
+     "y": 0.3468
+    }
+   ],
+   "label": "p. 8"
+  },
+  {
+   "id": "L1medal",
+   "img": "stickers/L1medal.webp",
+   "kind": "L1medal",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    10
+   ],
+   "targets": [
+    {
+     "page": 10,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 10"
+  },
+  {
+   "id": "L2map",
+   "img": "stickers/L2map.webp",
+   "kind": "L2map",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.3917,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "L2bingo",
+   "img": "stickers/L2bingo.webp",
+   "kind": "L2bingo",
+   "w": 0.1524,
+   "h": 0.0744,
+   "wmm": 32.0,
+   "hmm": 22.1,
+   "pages": [
+    17
+   ],
+   "targets": [
+    {
+     "page": 17,
+     "x": 0.5,
+     "y": 0.4478
+    }
+   ],
+   "label": "p. 17"
+  },
+  {
+   "id": "L2medal",
+   "img": "stickers/L2medal.webp",
+   "kind": "L2medal",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    18
+   ],
+   "targets": [
+    {
+     "page": 18,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 18"
+  },
+  {
+   "id": "L3map",
+   "img": "stickers/L3map.webp",
+   "kind": "L3map",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6083,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "L3seal",
+   "img": "stickers/L3seal.webp",
+   "kind": "L3seal",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    24
+   ],
+   "targets": [
+    {
+     "page": 24,
+     "x": 0.8286,
+     "y": 0.3434
+    }
+   ],
+   "label": "p. 24"
+  },
+  {
+   "id": "L3medal",
+   "img": "stickers/L3medal.webp",
+   "kind": "L3medal",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    26
+   ],
+   "targets": [
+    {
+     "page": 26,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 26"
+  },
+  {
+   "id": "L3save",
+   "img": "stickers/L3save.webp",
+   "kind": "L3save",
+   "w": 0.1183,
+   "h": 0.0839,
+   "wmm": 24.8,
+   "hmm": 24.9,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.825,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  }
+ ]
+}
