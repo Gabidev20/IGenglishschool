@@ -50,7 +50,9 @@
 const LO_INTERACTIVE = {};
 
 const LivroOnline = (() => {
-  const BASE = 'livro-online/';
+  // Pages live in livro-online/; an upload through GitHub's web page can drop
+  // that folder level and put the books at the site root, so fall back there.
+  let BASE = 'livro-online/';
   const W = 10000;
   const H = 14143;
   const BOOKS = [
@@ -87,8 +89,13 @@ const LivroOnline = (() => {
   const manifestCache = {};
   function loadManifest(book) {
     if (!manifestCache[book]) {
-      manifestCache[book] = fetch(`${BASE}${book}/b1/manifest.json`, { cache: 'no-cache' })
-        .then(r => { if (!r.ok) throw new Error('manifest ' + r.status); return r.json(); })
+      const get = base => fetch(`${base}${book}/b1/manifest.json`, { cache: 'no-cache' })
+        .then(r => { if (!r.ok) throw new Error('manifest ' + r.status); return r.json(); });
+      manifestCache[book] = get(BASE)
+        .catch(e => {
+          const other = BASE ? '' : 'livro-online/';
+          return get(other).then(j => { BASE = other; return j; }, () => { throw e; });
+        })
         .catch(e => { delete manifestCache[book]; throw e; });
     }
     return manifestCache[book];
