@@ -1,0 +1,591 @@
+{
+ "v": 1,
+ "book": "explorers",
+ "bimester": 1,
+ "id": "explorers:b1",
+ "title": "IG Explorers",
+ "ages": "7–8",
+ "color": "#6f7d68",
+ "pageCount": 24,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Capa e mapa"
+  },
+  {
+   "n": 1,
+   "title": "Unit 1 · Base Camp"
+  },
+  {
+   "n": 2,
+   "title": "Unit 2 · Explorer’s Backpack"
+  },
+  {
+   "n": 3,
+   "title": "Unit 3 · Pirate Ship"
+  }
+ ],
+ "stickerSheet": 24,
+ "pages": [
+  {
+   "n": 1,
+   "id": "p01",
+   "img": "p01.webp",
+   "thumb": "t01.webp",
+   "unit": 0,
+   "title": "Cover",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 2,
+   "id": "p02",
+   "img": "p02.webp",
+   "thumb": "t02.webp",
+   "unit": 0,
+   "title": "My Expedition Map",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 3,
+   "id": "p03",
+   "img": "p03.webp",
+   "thumb": "t03.webp",
+   "unit": 1,
+   "title": "Unit 1 · Base Camp",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u1-alphabet-chant",
+     "file": "u1-alphabet-chant.mp3",
+     "title": "The Alphabet Explorer Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 4,
+   "id": "p04",
+   "img": "p04.webp",
+   "thumb": "t04.webp",
+   "unit": 1,
+   "title": "Discover",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u1-kikos-new-friends",
+     "file": "u1-kikos-new-friends.mp3",
+     "title": "Kiko’s New Friends",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 5,
+   "id": "p05",
+   "img": "p05.webp",
+   "thumb": "t05.webp",
+   "unit": 1,
+   "title": "Practice: alphabet",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u1-alphabet-trail",
+     "file": "u1-alphabet-trail.mp3",
+     "title": "The Alphabet Trail",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 6,
+   "id": "p06",
+   "img": "p06.webp",
+   "thumb": "t06.webp",
+   "unit": 1,
+   "title": "Practice: spelling",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u1-how-do-you-spell-it",
+     "file": "u1-how-do-you-spell-it.mp3",
+     "title": "How Do You Spell It? Listen and write the names.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 7,
+   "id": "p07",
+   "img": "p07.webp",
+   "thumb": "t07.webp",
+   "unit": 1,
+   "title": "Use: passport",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 8,
+   "id": "p08",
+   "img": "p08.webp",
+   "thumb": "t08.webp",
+   "unit": 1,
+   "title": "Play",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 9,
+   "id": "p09",
+   "img": "p09.webp",
+   "thumb": "t09.webp",
+   "unit": 1,
+   "title": "Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 10,
+   "id": "p10",
+   "img": "p10.webp",
+   "thumb": "t10.webp",
+   "unit": 2,
+   "title": "Unit 2 · Explorer’s Backpack",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u2-rainbow-backpack-chant",
+     "file": "u2-rainbow-backpack-chant.mp3",
+     "title": "The Rainbow Backpack Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 11,
+   "id": "p11",
+   "img": "p11.webp",
+   "thumb": "t11.webp",
+   "unit": 2,
+   "title": "Discover: colors and things",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u2-colors",
+     "file": "u2-colors.mp3",
+     "title": "Colors",
+     "available": true
+    },
+    {
+     "track": "u2-things",
+     "file": "u2-things.mp3",
+     "title": "Things",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 12,
+   "id": "p12",
+   "img": "p12.webp",
+   "thumb": "t12.webp",
+   "unit": 2,
+   "title": "Practice: listen and color",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u2-listen-and-color",
+     "file": "u2-listen-and-color.mp3",
+     "title": "Listen and Color",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 13,
+   "id": "p13",
+   "img": "p13.webp",
+   "thumb": "t13.webp",
+   "unit": 2,
+   "title": "Practice: a or an",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 14,
+   "id": "p14",
+   "img": "p14.webp",
+   "thumb": "t14.webp",
+   "unit": 2,
+   "title": "Use: pack the backpack",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 15,
+   "id": "p15",
+   "img": "p15.webp",
+   "thumb": "t15.webp",
+   "unit": 2,
+   "title": "Play: color games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 16,
+   "id": "p16",
+   "img": "p16.webp",
+   "thumb": "t16.webp",
+   "unit": 2,
+   "title": "Review: backpack check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 17,
+   "id": "p17",
+   "img": "p17.webp",
+   "thumb": "t17.webp",
+   "unit": 3,
+   "title": "Unit 3 · Pirate Ship",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u3-pirate-counting-chant",
+     "file": "u3-pirate-counting-chant.mp3",
+     "title": "The Pirate Counting Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 18,
+   "id": "p18",
+   "img": "p18.webp",
+   "thumb": "t18.webp",
+   "unit": 3,
+   "title": "Discover: numbers 1 to 20",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-numbers-1-20",
+     "file": "u3-numbers-1-20.mp3",
+     "title": "Numbers 1 to 20",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 19,
+   "id": "p19",
+   "img": "p19.webp",
+   "thumb": "t19.webp",
+   "unit": 3,
+   "title": "Practice: how many?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 20,
+   "id": "p20",
+   "img": "p20.webp",
+   "thumb": "t20.webp",
+   "unit": 3,
+   "title": "Use: the treasure map",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-color-the-stones",
+     "file": "u3-color-the-stones.mp3",
+     "title": "The Treasure Map",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 21,
+   "id": "p21",
+   "img": "p21.webp",
+   "thumb": "t21.webp",
+   "unit": 3,
+   "title": "Use: how old are you?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-how-old-are-you",
+     "file": "u3-how-old-are-you.mp3",
+     "title": "How Old Are You? Listen and read.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 22,
+   "id": "p22",
+   "img": "p22.webp",
+   "thumb": "t22.webp",
+   "unit": 3,
+   "title": "Review Camp: board game",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u3-listen-and-write",
+     "file": "u3-listen-and-write.mp3",
+     "title": "Review Camp",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 23,
+   "id": "p23",
+   "img": "p23.webp",
+   "thumb": "t23.webp",
+   "unit": 3,
+   "title": "Review Camp: check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 24,
+   "id": "p24",
+   "img": "p24.webp",
+   "thumb": "t24.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "map1",
+   "img": "stickers/map1.webp",
+   "kind": "map1",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.35,
+     "y": 0.2879
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "seal1",
+   "img": "stickers/seal1.webp",
+   "kind": "seal1",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    7
+   ],
+   "targets": [
+    {
+     "page": 7,
+     "x": 0.5905,
+     "y": 0.6431
+    }
+   ],
+   "label": "p. 7"
+  },
+  {
+   "id": "reward1",
+   "img": "stickers/reward1.webp",
+   "kind": "reward1",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    9
+   ],
+   "targets": [
+    {
+     "page": 9,
+     "x": 0.8476,
+     "y": 0.8485
+    }
+   ],
+   "label": "p. 9"
+  },
+  {
+   "id": "map2",
+   "img": "stickers/map2.webp",
+   "kind": "map2",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6119,
+     "y": 0.2879
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "heart2",
+   "img": "stickers/heart2.webp",
+   "kind": "heart2",
+   "w": 0.0667,
+   "h": 0.0474,
+   "wmm": 14.0,
+   "hmm": 14.1,
+   "pages": [
+    14
+   ],
+   "targets": [
+    {
+     "page": 14,
+     "x": 0.619,
+     "y": 0.303
+    }
+   ],
+   "label": "p. 14"
+  },
+  {
+   "id": "star2",
+   "img": "stickers/star2.webp",
+   "kind": "star2",
+   "w": 0.0667,
+   "h": 0.0474,
+   "wmm": 14.0,
+   "hmm": 14.1,
+   "pages": [
+    14
+   ],
+   "targets": [
+    {
+     "page": 14,
+     "x": 0.819,
+     "y": 0.303
+    }
+   ],
+   "label": "p. 14"
+  },
+  {
+   "id": "reward2",
+   "img": "stickers/reward2.webp",
+   "kind": "reward2",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    16
+   ],
+   "targets": [
+    {
+     "page": 16,
+     "x": 0.5571,
+     "y": 0.7896
+    }
+   ],
+   "label": "p. 16"
+  },
+  {
+   "id": "map3",
+   "img": "stickers/map3.webp",
+   "kind": "map3",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.8738,
+     "y": 0.2879
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "chest3",
+   "img": "stickers/chest3.webp",
+   "kind": "chest3",
+   "w": 0.1048,
+   "h": 0.0609,
+   "wmm": 22.0,
+   "hmm": 18.1,
+   "pages": [
+    20
+   ],
+   "targets": [
+    {
+     "page": 20,
+     "x": 0.8476,
+     "y": 0.4579
+    }
+   ],
+   "label": "p. 20"
+  },
+  {
+   "id": "reward3",
+   "img": "stickers/reward3.webp",
+   "kind": "reward3",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    23
+   ],
+   "targets": [
+    {
+     "page": 23,
+     "x": 0.8476,
+     "y": 0.8788
+    }
+   ],
+   "label": "p. 23"
+  }
+ ]
+}
