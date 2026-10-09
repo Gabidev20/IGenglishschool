@@ -476,6 +476,13 @@ const LivroOnline = (() => {
     let selected = null;            // sticker instance id
     let penSeen = false;
     let z = 1, tx = 0, ty = 0, bw = 300, bh = 424;
+    // SLIDES MODE (computers / landscape): the page is a slide inside a 16:9
+    // frame; "Meia página" shows each page as two slides (top / bottom half).
+    // Coordinates never change — only the part of the page on screen does.
+    let slides = false;
+    let view = pf.view === 'half' ? 'half' : 'full';
+    let part = 'full';                       // 'full' | 'top' | 'bottom'
+    let frame = { x: 0, y: 0, w: 300, h: 424, pad: 6 };
     const audio = new Audio();
     let audioBtn = null;
 
@@ -485,6 +492,12 @@ const LivroOnline = (() => {
       <div class="lo-top">
         <button class="lo-ico" data-a="back" type="button" aria-label="Voltar" title="Voltar">←</button>
         <div class="lo-top-title"><b data-ref="pnum"></b><span data-ref="ptitle"></span></div>
+        <div class="lo-viewtog lo-only-slides" role="group" aria-label="Como mostrar a página">
+          <button type="button" data-a="view-full" title="Página inteira">📄<span class="lo-vt-l"> Página inteira</span></button>
+          <button type="button" data-a="view-half" title="Meia página — letra maior">🔍<span class="lo-vt-l"> Meia página</span></button>
+        </div>
+        <button class="lo-ico lo-only-slides" data-a="fs" type="button" aria-label="Tela cheia" title="Tela cheia (F)">⛶</button>
+        <button class="lo-ico lo-only-wide" data-a="slides" type="button" aria-label="Modo slides" title="Modo slides (página do tamanho da tela)">🎞️</button>
         ${ro ? `<span class="lo-badge" data-ref="rodone"></span>` : `
           <span class="lo-status" data-ref="status"></span>
           <button class="lo-ico" data-a="undo" type="button" aria-label="Desfazer" title="Desfazer (Ctrl+Z)">↶</button>
@@ -500,6 +513,7 @@ const LivroOnline = (() => {
         </div>` : ''}
       <div class="lo-audio" data-ref="audio" hidden></div>
       <div class="lo-stage" data-ref="stage">
+        <div class="lo-slidebox" data-ref="slidebox" aria-hidden="true"></div>
         <div class="lo-page" data-ref="page">
           <img data-ref="img" alt="" draggable="false" />
           <svg class="lo-ink" data-ref="ink" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><g data-ref="strokes"></g><path data-ref="live" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -528,9 +542,11 @@ const LivroOnline = (() => {
           ${TOOLS.map(t => `<button type="button" class="lo-tool" data-tool="${t.id}" aria-pressed="false"><span>${t.icon}</span><small>${t.label}</small></button>`).join('')}
         </div>`}
       <div class="lo-nav">
-        <button type="button" class="lo-navbtn" data-a="prev" aria-label="Página anterior">◀</button>
+        <button type="button" class="lo-navbtn" data-a="prev" aria-label="Anterior">◀</button>
+        <div class="lo-strip" data-ref="strip"></div>
+        <span class="lo-slide-label" data-ref="slabel"></span>
         ${ro ? '<span class="lo-nav-mid" data-ref="navmid"></span>' : '<button type="button" class="lo-done" data-a="done"></button>'}
-        <button type="button" class="lo-navbtn" data-a="next" aria-label="Próxima página">▶</button>
+        <button type="button" class="lo-navbtn" data-a="next" aria-label="Próxima">▶</button>
       </div>`;
 
     const $ = name => root.querySelector(`[data-ref="${name}"]`);
@@ -542,6 +558,10 @@ const LivroOnline = (() => {
       leavePage();
       audio.pause();
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', applyMode);
+      document.removeEventListener('fullscreenchange', onFs);
+      document.removeEventListener('webkitfullscreenchange', onFs);
+      if (fsElement() === root) exitFs();
       resizeObs.disconnect();
       if (unStatus) unStatus();
       if (o.onLeave) o.onLeave();
@@ -550,24 +570,130 @@ const LivroOnline = (() => {
 
     // ---- view: fit, zoom, pan ---------------------------------------------
     function stageRect() { return stage.getBoundingClientRect(); }
-    function computeBase() {
+    // The band of the page on screen, as fractions of its height.
+    const band = () => (part === 'top' ? [0, 0.5] : part === 'bottom' ? [0.5, 1] : [0, 1]);
+    // Where the page may sit: the whole stage, or (slides) a 16:9 frame in it.
+    function frameRect() {
       const r = stageRect();
-      const pad = 6;
-      bw = Math.max(100, Math.min(r.width - 2 * pad, (r.height - 2 * pad) * W / H));
+      if (!slides) return { x: 0, y: 0, w: r.width, h: r.height, pad: 6 };
+      const fw = Math.max(100, Math.min(r.width - 20, (r.height - 20) * 16 / 9));
+      const fh = fw * 9 / 16;
+      return { x: (r.width - fw) / 2, y: (r.height - fh) / 2, w: fw, h: fh, pad: 10 };
+    }
+    function computeBase() {
+      frame = frameRect();
+      const [b0, b1] = band();
+      const frac = b1 - b0;
+      bw = Math.max(100, Math.min(frame.w - 2 * frame.pad, (frame.h - 2 * frame.pad) * W / (H * frac)));
       bh = bw * H / W;
+      const box = $('slidebox');
+      if (box) {
+        box.style.left = `${frame.x}px`; box.style.top = `${frame.y}px`;
+        box.style.width = `${frame.w}px`; box.style.height = `${frame.h}px`;
+      }
     }
     function clampView() {
-      const r = stageRect();
-      const pw = bw * z, ph = bh * z, mrg = 40;
-      tx = pw <= r.width ? (r.width - pw) / 2 : clamp(tx, r.width - pw - mrg, mrg);
-      ty = ph <= r.height ? (r.height - ph) / 2 : clamp(ty, r.height - ph - mrg, mrg);
+      const f = frame;
+      const [b0, b1] = band();
+      const pw = bw * z, bandTop = b0 * bh * z, bandH = (b1 - b0) * bh * z;
+      const mrg = slides ? 0 : 40;
+      tx = pw <= f.w ? f.x + (f.w - pw) / 2 : clamp(tx, f.x + f.w - pw - mrg, f.x + mrg);
+      const top = ty + bandTop;
+      ty = (bandH <= f.h ? f.y + (f.h - bandH) / 2 : clamp(top, f.y + f.h - bandH - mrg, f.y + mrg)) - bandTop;
     }
     function applyView() {
       clampView();
       pageEl.style.width = `${bw * z}px`;
       pageEl.style.height = `${bh * z}px`;
       pageEl.style.transform = `translate(${tx}px, ${ty}px)`;
+      pageEl.style.clipPath = part === 'top' ? 'inset(0 0 50% 0)' : part === 'bottom' ? 'inset(50% 0 0 0)' : '';
       if (selected) renderOver();
+    }
+    // A short fade between slides (opacity only, so drawing is never blocked).
+    function fadeIn() {
+      if (!slides) return;
+      pageEl.classList.remove('lo-fade');
+      void pageEl.offsetWidth;
+      pageEl.classList.add('lo-fade');
+    }
+    const halfView = () => slides && view === 'half';
+    function showPart(p) {
+      closeSheet();
+      part = p;
+      computeBase(); z = 1; applyView();
+      fadeIn();
+      paintChrome();
+    }
+    function next() {
+      if (halfView() && part === 'top') showPart('bottom');
+      else if (idx < o.pages.length - 1) goto(idx + 1);
+    }
+    function prev() {
+      if (halfView() && part === 'bottom') showPart('top');
+      else if (idx > 0) goto(idx - 1, halfView() ? 'bottom' : 'full');
+    }
+    const autoSlides = () => window.innerWidth >= 900 && window.innerWidth > window.innerHeight;
+    function wantSlides() {
+      const p = prefs().slides;
+      return p === 'on' ? true : p === 'off' ? false : autoSlides();
+    }
+    function applyMode(force) {
+      const want = wantSlides();
+      if (want === slides && force !== true) return;
+      slides = want;
+      root.classList.toggle('is-slides', slides);
+      root.classList.remove('opts-open');
+      part = halfView() ? 'top' : 'full';
+      paintStrip();
+      computeBase(); z = 1; applyView();
+      paintChrome();
+    }
+    function setView(v) {
+      view = v === 'half' ? 'half' : 'full';
+      savePrefs({ ...prefs(), view });
+      showPart(halfView() ? (part === 'bottom' ? 'bottom' : 'top') : 'full');
+    }
+    // ---- fullscreen (the editor itself, so every tool keeps working) --------
+    const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+    function exitFs() {
+      try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { /* not in fullscreen */ }
+    }
+    function toggleFs() {
+      if (fsElement()) { exitFs(); return; }
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (!req) { toast('Tela cheia não disponível neste navegador.'); return; }
+      try {
+        const r = req.call(root);
+        if (r && r.catch) r.catch(() => toast('Tela cheia não disponível agora.'));
+      } catch (e) { toast('Tela cheia não disponível agora.'); }
+    }
+    function onFs() { root.classList.toggle('is-fs', fsElement() === root); }
+
+    // ---- the thumbnail strip (slides) -----------------------------------------
+    function paintStrip() {
+      const strip = $('strip');
+      if (!strip) return;
+      if (!slides) { strip.innerHTML = ''; return; }
+      strip.innerHTML = o.pages.map((p, i) => {
+        const d = normalize(o.load(p)).done;
+        return `<button type="button" class="lo-sthumb${i === idx ? ' is-on' : ''}${d ? ' is-done' : ''}" data-goto="${i}" title="p. ${p.n}${p.title ? ' · ' + esc(p.title) : ''}">
+          <img src="${esc(BASE + book + '/b1/' + p.thumb)}" alt="" loading="lazy" draggable="false" /><small>${p.n}</small></button>`;
+      }).join('');
+      markStrip();
+    }
+    function markStrip() {
+      const strip = $('strip');
+      if (!strip || !slides) return;
+      strip.querySelectorAll('.lo-sthumb').forEach(b => {
+        const i = Number(b.dataset.goto);
+        b.classList.toggle('is-on', i === idx);
+        if (i === idx) b.classList.toggle('is-done', Boolean(data.done));
+      });
+      const cur = strip.querySelector('.lo-sthumb.is-on');
+      if (cur) {
+        const sr = strip.getBoundingClientRect(), cr = cur.getBoundingClientRect();
+        if (cr.left < sr.left || cr.right > sr.right) strip.scrollLeft += (cr.left - sr.left) - (sr.width - cr.width) / 2;
+      }
     }
     function fit() { computeBase(); z = 1; tx = 0; ty = 0; applyView(); }
     function zoomAt(cx, cy, nz) {
@@ -608,10 +734,16 @@ const LivroOnline = (() => {
     function render() { renderInk(); renderOver(); paintChrome(); }
 
     function paintChrome() {
-      $('pnum').textContent = `p. ${pg.n}`;
+      const partLabel = part === 'top' ? ' · parte de cima' : part === 'bottom' ? ' · parte de baixo' : '';
+      $('pnum').textContent = `p. ${pg.n}${partLabel}`;
       $('ptitle').textContent = pg.title || '';
-      root.querySelector('[data-a="prev"]').disabled = idx <= 0;
-      root.querySelector('[data-a="next"]').disabled = idx >= o.pages.length - 1;
+      $('slabel').textContent = `p. ${pg.n} / ${o.pages[o.pages.length - 1].n}${partLabel}`;
+      root.querySelector('[data-a="prev"]').disabled = idx <= 0 && part !== 'bottom';
+      root.querySelector('[data-a="next"]').disabled = idx >= o.pages.length - 1 && part !== 'top';
+      root.querySelector('[data-a="view-full"]').classList.toggle('is-on', view === 'full');
+      root.querySelector('[data-a="view-half"]').classList.toggle('is-on', view === 'half');
+      root.querySelector('[data-a="slides"]').classList.toggle('is-on', slides);
+      markStrip();
       if (ro) {
         $('rodone').textContent = data.done ? '✓ Feita' : (hasWork(data) ? '✏️ Em andamento' : '— Em branco');
         $('rodone').className = 'lo-badge' + (data.done ? ' is-done' : '');
@@ -671,11 +803,12 @@ const LivroOnline = (() => {
       closeSheet();
       if (!ro && o.sync) o.sync.flush();
     }
-    function goto(i) {
+    function goto(i, wantPart) {
       if (i < 0 || i >= o.pages.length) return;
       leavePage();
       audio.pause();
       idx = i; pg = o.pages[idx];
+      part = halfView() ? (wantPart === 'bottom' ? 'bottom' : 'top') : 'full';
       data = normalize(o.load(pg));
       hist = []; redoStack = []; selected = null;
       img.src = `${BASE}${book}/b1/${pg.img}`;
@@ -683,6 +816,7 @@ const LivroOnline = (() => {
       const nxt = o.pages[idx + 1];
       if (nxt) { const pre = new Image(); pre.src = `${BASE}${book}/b1/${nxt.img}`; }
       computeBase(); z = 1; applyView();
+      fadeIn();
       render();
       paintOpts();
       paintAudio();
@@ -934,7 +1068,9 @@ const LivroOnline = (() => {
 
     function startAction(e) {
       const u = toUnits(e.clientX, e.clientY);
-      const pan = ro || tool === 'hand' || e.button === 1 || (penSeen && e.pointerType === 'touch' && drawTool());
+      const [b0, b1] = band();
+      const offBand = part !== 'full' && (u.y < b0 * H || u.y > b1 * H);
+      const pan = ro || tool === 'hand' || e.button === 1 || offBand || (penSeen && e.pointerType === 'touch' && drawTool());
       if (!pan && tool === 'sticker') {
         if (hitHandle(u, 'del')) {
           remember();
@@ -1038,6 +1174,7 @@ const LivroOnline = (() => {
     stage.addEventListener('pointerdown', e => {
       if (e.target.closest('.lo-zoom, .lo-textsheet, .lo-toast')) return;
       if (e.pointerType === 'mouse' && e.button === 2) return;
+      root.classList.remove('opts-open');
       if (e.pointerType === 'pen') penSeen = true;
       if (editing) closeSheet();
       try { stage.setPointerCapture(e.pointerId); } catch (err) { /* old browser */ }
@@ -1087,6 +1224,10 @@ const LivroOnline = (() => {
       const t = e.target.closest('[data-tool]');
       if (t) {
         closeSheet();
+        // Slides: colours/sizes live in a popover — tapping the active tool
+        // again shows/hides it.
+        const withOpts = ['pen', 'hl', 'text', 'sticker'].includes(t.dataset.tool);
+        if (slides) root.classList.toggle('opts-open', withOpts && (t.dataset.tool !== tool || !root.classList.contains('opts-open')));
         tool = t.dataset.tool;
         if (tool !== 'sticker') selected = null;
         savePrefs({ ...prefs(), tool });
@@ -1097,19 +1238,33 @@ const LivroOnline = (() => {
       if (sw) { color = sw.dataset.color; savePrefs({ ...prefs(), color }); paintOpts(); return; }
       const sz = e.target.closest('[data-size]');
       if (sz) { const [k, i] = sz.dataset.size.split(':'); size[k] = Number(i); savePrefs({ ...prefs(), [k]: size[k] }); paintOpts(); return; }
+      const g = e.target.closest('[data-goto]');
+      if (g) { goto(Number(g.dataset.goto)); return; }
       const a = e.target.closest('[data-a]');
       if (!a) return;
       const r = stageRect();
       switch (a.dataset.a) {
         case 'back': back(); break;
         case 'present': root.classList.toggle('is-present'); computeBase(); applyView(); break;
+        case 'view-full': setView('full'); break;
+        case 'view-half': setView('half'); break;
+        case 'fs': toggleFs(); break;
+        case 'slides':
+          {
+            // A choice equal to the automatic one goes back to automatic.
+            const pr = { ...prefs() };
+            if (!slides === autoSlides()) delete pr.slides; else pr.slides = slides ? 'off' : 'on';
+            savePrefs(pr);
+            applyMode(true);
+          }
+          break;
         case 'switch':
           closeSheet();
           if (o.sync) o.sync.flush();
           o.onSwitch();
           break;
-        case 'prev': goto(idx - 1); break;
-        case 'next': goto(idx + 1); break;
+        case 'prev': prev(); break;
+        case 'next': next(); break;
         case 'zin': zoomAt(r.width / 2, r.height / 2, z * 1.4); break;
         case 'zout': zoomAt(r.width / 2, r.height / 2, z / 1.4); break;
         case 'fit': fit(); break;
@@ -1139,15 +1294,22 @@ const LivroOnline = (() => {
       const mod = e.ctrlKey || e.metaKey;
       if (!ro && mod && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
       else if (!ro && mod && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
-      else if (e.key === 'ArrowRight' && !mod) goto(idx + 1);
-      else if (e.key === 'ArrowLeft' && !mod) goto(idx - 1);
-      else if (e.key === 'Escape') back();
+      else if (!mod && (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ')) { e.preventDefault(); next(); }
+      else if (!mod && (e.key === 'ArrowLeft' || e.key === 'PageUp')) { e.preventDefault(); prev(); }
+      else if (!mod && e.key === 'Home') { e.preventDefault(); goto(0); }
+      else if (!mod && e.key === 'End') { e.preventDefault(); goto(o.pages.length - 1, halfView() ? 'bottom' : 'full'); }
+      else if (!mod && !e.altKey && (e.key === 'f' || e.key === 'F')) { e.preventDefault(); toggleFs(); }
+      else if (e.key === 'Escape') { if (!fsElement()) back(); }
       else if (!ro && (e.key === 'Delete' || e.key === 'Backspace') && selected) {
         remember(); data.stickers = data.stickers.filter(s => s.id !== selected); selected = null; changed();
       }
     }
     window.addEventListener('keydown', onKey);
+    window.addEventListener('resize', applyMode);
+    document.addEventListener('fullscreenchange', onFs);
+    document.addEventListener('webkitfullscreenchange', onFs);
 
+    applyMode(true);
     setTimeout(() => goto(idx), 0);
     return { root };
   }

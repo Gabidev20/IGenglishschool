@@ -8805,3 +8805,109 @@ html.lo-open, html.lo-open body { overflow: hidden; }
   .lo-home-book { width: 100%; }
   .lo-home-booksel { max-width: none; flex: 1; }
 }
+
+/* ---- SLIDES MODE (computers / landscape) --------------------------------
+   The editor turns into a slide deck: 16:9 frame, tool rail on the left,
+   thumbnail strip at the bottom. Phones/portrait keep the layout above. */
+.lo-only-slides, .lo-slidebox, .lo-strip, .lo-slide-label { display: none; }
+.lo-only-wide { display: none; }
+@media (min-width: 700px) { .lo-only-wide { display: inline-flex; } }
+.lo-ico.is-on { border-color: var(--color-accent-pop); background: #ffe8ee; }
+
+.lo-ed.is-slides {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "top top" "sub sub" "bar bar" "rail stage" "nav nav";
+}
+.lo-ed.is-slides > .lo-top { grid-area: top; padding: 4px 10px; }
+.lo-ed.is-slides > .lo-sub { grid-area: sub; }
+.lo-ed.is-slides > .lo-classbar { grid-area: bar; padding: 3px 10px; }
+.lo-ed.is-slides > .lo-stage {
+  grid-area: stage;
+  background: radial-gradient(circle at 50% 40%, #efe9ee 0%, #ded6dc 100%);
+}
+.lo-ed.is-slides > .lo-audio {
+  grid-area: stage; align-self: end; justify-self: start; z-index: 4; margin: 0 0 10px 10px;
+  background: transparent; border: 0; padding: 0; flex-wrap: wrap; max-width: 55%;
+}
+.lo-ed.is-slides > .lo-audio .lo-audio-btn { box-shadow: var(--shadow-sm); }
+.lo-ed.is-slides .lo-only-slides { display: inline-flex; }
+.lo-ed.is-slides .lo-slidebox {
+  display: block; position: absolute; border-radius: 14px; background: #fbfaf9;
+  box-shadow: 0 10px 34px rgba(46, 43, 46, .18);
+}
+.lo-ed.is-slides .lo-page { box-shadow: 0 4px 16px rgba(46, 43, 46, .16); }
+.lo-ed.is-slides .lo-page.lo-fade { animation: lo-fade .13s ease-out; }
+@keyframes lo-fade { from { opacity: .35; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lo-ed.is-slides .lo-page.lo-fade { animation: none; } }
+
+/* view toggle (Página inteira / Meia página) */
+.lo-viewtog { border: 2px solid var(--border); border-radius: 12px; overflow: hidden; flex: 0 0 auto; background: #fff; }
+.lo-viewtog button {
+  border: 0; background: #fff; padding: 7px 10px; font-weight: 700; font-size: .85rem; color: var(--ink);
+  display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
+}
+.lo-viewtog button + button { border-left: 2px solid var(--border); }
+.lo-viewtog button.is-on { background: #ffe8ee; color: var(--color-accent-pop-deep); }
+
+/* tool rail */
+.lo-ed.is-slides > .lo-tools {
+  grid-area: rail; display: flex; flex-direction: column; gap: 6px; padding: 8px 6px;
+  overflow-y: auto; border-right: 1px solid var(--border); background: #fff;
+}
+.lo-ed.is-slides .lo-tool { padding: 6px 2px; flex: 0 0 auto; }
+.lo-ed.is-slides .lo-tool span { font-size: 1.5rem; }
+
+/* colours / sizes / stickers: a popover next to the rail */
+.lo-ed.is-slides > .lo-opts {
+  grid-area: stage; align-self: start; justify-self: start; z-index: 6;
+  display: none; flex-wrap: wrap; align-content: flex-start; gap: 8px;
+  margin: 10px; padding: 10px; max-width: min(400px, calc(100% - 80px)); max-height: calc(100% - 20px);
+  overflow: auto; min-height: 0; border: 1px solid var(--border); border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+.lo-ed.is-slides.opts-open > .lo-opts { display: flex; }
+.lo-ed.is-slides .lo-opts .lo-opt-group { flex-wrap: wrap; }
+.lo-ed.is-slides .lo-opts .lo-hint { white-space: normal; flex: 1 1 100%; }
+.lo-ed.is-slides .lo-opts .lo-tray { flex-wrap: wrap; }
+
+/* bottom strip: ◀ thumbnails p. x / y ✓ ▶ */
+.lo-ed.is-slides > .lo-nav { grid-area: nav; gap: 10px; padding: 6px 10px; }
+.lo-ed.is-slides .lo-navbtn { width: 64px; height: 52px; font-size: 1.4rem; }
+.lo-ed.is-slides .lo-strip {
+  display: flex; flex: 1 1 auto; min-width: 0; gap: 6px; overflow-x: auto; padding: 3px 2px;
+  scrollbar-width: thin;
+}
+.lo-sthumb {
+  position: relative; flex: 0 0 auto; width: 38px; height: 54px; padding: 0; border-radius: 6px;
+  border: 2px solid var(--border); background: #fff; overflow: hidden; cursor: pointer;
+}
+.lo-sthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lo-sthumb small {
+  position: absolute; left: 0; right: 0; bottom: 0; font-size: .6rem; font-weight: 800; line-height: 1.3;
+  background: rgba(255, 255, 255, .85); color: var(--ink);
+}
+.lo-sthumb.is-on { border-color: var(--color-accent-pop); box-shadow: 0 0 0 2px var(--color-accent-pop); }
+.lo-sthumb.is-done::after {
+  content: '✓'; position: absolute; top: 2px; right: 2px; width: 15px; height: 15px; border-radius: 50%;
+  background: #5cad5a; color: #fff; font-size: .62rem; font-weight: 800; line-height: 15px; text-align: center;
+}
+.lo-ed.is-slides .lo-slide-label { display: block; flex: 0 0 auto; font-weight: 800; font-family: var(--font-display); white-space: nowrap; }
+.lo-ed.is-slides .lo-done { flex: 0 0 auto; width: auto; padding: 0 16px; height: 52px; }
+.lo-ed.is-slides .lo-nav-mid { display: none; }
+
+/* Apresentar + slides: only the slide, a minimal rail and the arrows */
+.lo-ed.is-slides.is-present { grid-template-columns: 58px minmax(0, 1fr); }
+.lo-ed.is-slides.is-present > .lo-top,
+.lo-ed.is-slides.is-present > .lo-sub,
+.lo-ed.is-slides.is-present .lo-strip,
+.lo-ed.is-slides.is-present .lo-done,
+.lo-ed.is-slides.is-present .lo-tool small { display: none; }
+.lo-ed.is-slides.is-present > .lo-nav { justify-content: space-between; padding: 4px 10px; }
+.lo-ed.is-slides.is-present .lo-slide-label { opacity: .6; }
+.lo-ed.is-fs { width: 100vw; height: 100vh; }
+
+@media (max-width: 1100px) {
+  .lo-ed.is-slides .lo-vt-l { display: none; }
+}
