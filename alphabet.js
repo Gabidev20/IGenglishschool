@@ -6,7 +6,7 @@
      👂 Find it    the voice says a letter, tap it among four
      🎤 Say it     a letter on screen: say it (microphone, or the grown-up
                    taps ✅); 🔊 lets the child hear it first
-   Every letter is a recording (audios/alphabet/a.wav … z.wav, an American
+   Every letter is a recording (alphabet/a.wav … z.wav, an American
    voice spelling the letter, silence trimmed): the browser's own voice read
    a lone "A" as the article "uh", sounded different on every device and
    often started late. The voice is only a fallback if a file can't play.
@@ -58,7 +58,7 @@ function abSay(text, rate) {
 const AB_AUDIO = {};
 function abAudio(name) {
   if (!AB_AUDIO[name]) {
-    const a = new Audio(`audios/alphabet/${name}.wav`);
+    const a = new Audio(`alphabet/${name}.wav`);
     a.preload = 'auto';
     AB_AUDIO[name] = a;
   }
