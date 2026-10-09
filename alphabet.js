@@ -6,8 +6,10 @@
      👂 Find it    the voice says a letter, tap it among four
      🎤 Say it     a letter on screen: say it (microphone, or the grown-up
                    taps ✅); 🔊 lets the child hear it first
-   Speech engines read a lone "A" as the article "uh", so every letter is
-   spoken through a spelling that sounds like its name.
+   Every letter is a recording (audios/alphabet/a.wav … z.wav, an American
+   voice spelling the letter, silence trimmed): the browser's own voice read
+   a lone "A" as the article "uh", sounded different on every device and
+   often started late. The voice is only a fallback if a file can't play.
    ========================================================================== */
 
 const AB_COLORS_LIST = ['#e5484d', '#f08a24', '#e0a800', '#3fae5a', '#3d7bd9', '#8e5fc2', '#f05d77', '#14a3a3'];
@@ -52,6 +54,39 @@ function abSay(text, rate) {
   } catch (e) {}
 }
 
+// The recordings, loaded once and reused, so a tap sounds at once.
+const AB_AUDIO = {};
+function abAudio(name) {
+  if (!AB_AUDIO[name]) {
+    const a = new Audio(`audios/alphabet/${name}.wav`);
+    a.preload = 'auto';
+    AB_AUDIO[name] = a;
+  }
+  return AB_AUDIO[name];
+}
+let abCurrent = null;
+function abStopAudio() {
+  if (abCurrent) { try { abCurrent.pause(); abCurrent.currentTime = 0; } catch (e) {} abCurrent = null; }
+  if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+}
+// Plays a recording; resolves when it has finished (or failed), so letters
+// can follow each other at the right pace.
+function abPlay(name, fallbackText) {
+  abStopAudio();
+  const a = abAudio(name);
+  abCurrent = a;
+  return new Promise(resolve => {
+    let done = false;
+    const end = () => { if (done) return; done = true; a.removeEventListener('ended', end); resolve(); };
+    a.addEventListener('ended', end);
+    setTimeout(end, 2500);                       // never wait forever
+    try { a.currentTime = 0; } catch (e) {}
+    const p = a.play();
+    if (p && p.catch) p.catch(() => { abSay(fallbackText); setTimeout(end, 900); });
+  });
+}
+const abLetter = l => abPlay(l.letter.toLowerCase(), l.say);
+
 function abTile(l, attrs, cls) {
   return `<button class="ab-tile ${cls || ''}" style="--ab:${l.color}" ${attrs || ''} aria-label="${l.letter}">
     <b>${l.letter}</b><small>${l.letter.toLowerCase()}</small>
@@ -91,7 +126,7 @@ function openAlphabetGame() {
         ${starsRow()}
         <button class="cg-big" data-again aria-label="Play again">🔄</button>
       </div>`;
-    abSay('Great job!', 0.9);
+    abPlay('great-job', 'Great job!');
     mount().querySelector('[data-again]').addEventListener('click', () => start(mode));
   }
 
@@ -108,7 +143,7 @@ function openAlphabetGame() {
       if (box) box.innerHTML = `<span class="ab-big" style="--ab:${l.color}">${l.letter}<small>${l.letter.toLowerCase()}</small></span>`;
       mount().querySelectorAll('[data-letter]').forEach(b => b.classList.toggle('on', b.dataset.letter === l.letter));
     };
-    const tap = l => { show(l); abSay(l.say); };
+    const tap = l => { show(l); return abLetter(l); };
     mount().querySelectorAll('[data-letter]').forEach(b => b.addEventListener('click', () => {
       if (playing) stopTimers();
       tap(byLetter(b.dataset.letter));
@@ -117,8 +152,14 @@ function openAlphabetGame() {
     az.addEventListener('click', () => {
       if (playing) { stopTimers(); az.textContent = '▶ A – Z'; return; }
       playing = true; az.textContent = '⏹ Stop';
-      AB_LETTERS.forEach((l, i) => later(() => { if (playing) tap(l); }, i * 1100));
-      later(() => { playing = false; az.textContent = '▶ A – Z'; }, AB_LETTERS.length * 1100);
+      // Each letter waits for the one before it to finish, then a short pause.
+      let i = 0;
+      const next = () => {
+        if (!playing || !document.getElementById('abMount')) return;
+        if (i >= AB_LETTERS.length) { playing = false; az.textContent = '▶ A – Z'; return; }
+        tap(AB_LETTERS[i++]).then(() => later(next, 450));
+      };
+      next();
     });
   }
 
@@ -132,7 +173,7 @@ function openAlphabetGame() {
       ${starsRow()}
       <button class="cg-listen" data-hear aria-label="Listen again">🔊</button>
       <div class="cg-grid ab-choices">${choices.map((l, i) => abTile(l, `data-pick="${i}"`, 'ab-tile--big')).join('')}</div>`;
-    const hear = () => abSay(target.say);
+    const hear = () => abLetter(target);
     mount().querySelector('[data-hear]').addEventListener('click', hear);
     mount().querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
       if (locked) return;
@@ -142,14 +183,13 @@ function openAlphabetGame() {
         stars++; round++;
         IGSound.pop();
         b.classList.add('popped');
-        abSay(target.say);
+        abLetter(target);
         later(findRound, 1300);
       } else {
         IGSound.wrong();
         b.classList.add('shake');
         setTimeout(() => b.classList.remove('shake'), 500);
-        abSay(l.say);
-        later(hear, 1100);
+        abLetter(l).then(() => later(hear, 400));
       }
     }));
     hear();
@@ -175,10 +215,10 @@ function openAlphabetGame() {
       done = true;
       stars++; round++;
       IGSound.correct();
-      abSay(target.say);
+      abLetter(target);
       later(sayRound, 1400);
     };
-    mount().querySelector('[data-hint]').addEventListener('click', () => abSay(target.say));
+    mount().querySelector('[data-hint]').addEventListener('click', () => abLetter(target));
     mount().querySelector('[data-ok]').addEventListener('click', good);
     const mic = mount().querySelector('[data-mic]');
     if (mic) mic.addEventListener('click', () => {
@@ -193,7 +233,7 @@ function openAlphabetGame() {
         IGSound.wrong();
         const el = document.getElementById('abHeard');
         if (el) el.textContent = `🤔 "${heard[0] || '…'}"`;
-        later(() => abSay(target.say), 400);
+        later(() => abLetter(target), 400);
       };
       rec.onend = () => mic.classList.remove('is-recording');
       rec.onerror = () => mic.classList.remove('is-recording');
@@ -201,8 +241,12 @@ function openAlphabetGame() {
     });
   }
 
+  AB_LETTERS.forEach(l => abAudio(l.letter.toLowerCase()));
+  abAudio('great-job');
+
   function start(m) {
     stopTimers();
+    abStopAudio();
     mode = m; round = 0; stars = 0; target = null;
     document.querySelectorAll('.ab .cg-mode').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
     if (m === 'tap') tapPaint();
