@@ -35,6 +35,7 @@
            sight when the menu runs out of room. -->
       <button class="nav-link nav-link-btn nav-mobile-only" id="editorNavBtn" type="button">🧩 Editor</button>
       <button class="nav-link nav-link-btn nav-mobile-only" id="reportsNavBtn" type="button">📊 Reports</button>
+      <button class="nav-link nav-link-btn nav-mobile-only" id="bookNavBtn" type="button">📖 Livro da aula</button>
     </nav>
     <button class="nav-more" id="navMoreBtn" type="button" aria-label="Mais itens do menu" title="Mais itens do menu" hidden>›</button>
 
@@ -42,6 +43,9 @@
       <!-- Filled in by auth.js only when teacher accounts are switched on. -->
       <div class="teacher-slot" id="teacherSlot" hidden></div>
 
+      <!-- 📖 Livro da aula: pick the student in class and do their online
+           book together (livroOnline.js). -->
+      <button class="inbox-btn header-desktop-only" id="headerBookBtn" type="button" aria-label="Livro da aula" title="📖 Livro da aula — fazer o livro com o aluno desta aula">📖</button>
       <button class="inbox-btn header-desktop-only" id="headerEditorBtn" type="button" aria-label="Editor de conteúdo" title="🧩 Editor — editar os temas, palavras, vídeos e leituras">🧩</button>
       <button class="inbox-btn header-desktop-only" id="headerReportsBtn" type="button" aria-label="Boletim" title="📊 Reports — boletim dos alunos">📊</button>
       <button class="inbox-btn help-btn" id="teacherHelpBtn" type="button" aria-label="Como usar o site" title="Como usar o site (tutorial)">❓</button>
@@ -275,6 +279,9 @@
 <script src="inbox.js"></script>
 <script src="teacherSetup.js"></script>
 <script src="studentAccess.js"></script>
+<!-- Online book (📖 Meu livro): after studentAccess.js (book choice) and
+     cloud.js/share.js (saving); pages and stickers live in livro-online/. -->
+<script src="livroOnline.js"></script>
 <script src="tutorial.js"></script>
 <script src="teacherBooks.js"></script>
 <script src="app.js"></script>

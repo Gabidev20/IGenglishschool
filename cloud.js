@@ -219,8 +219,11 @@ const IGCloud = (() => {
   async function pullStudentActivity() {
     if (!ready || !teacher) return 0;
     const sb = await getClient();
+    // Pages of the online book (kind 'book', livroOnline.js) are NOT merged
+    // and deleted like the rest: they stay in the table as the student's
+    // saved work and are read on demand by pullBookPages().
     const { data, error } = await sb.from(tbl('student_activity'))
-      .select('*').eq('teacher_id', teacher.id).order('created_at');
+      .select('*').eq('teacher_id', teacher.id).neq('kind', 'book').order('created_at');
     if (error || !data || !data.length) return 0;
 
     // A student's page used to send the same message (and the same homework)
@@ -252,6 +255,7 @@ const IGCloud = (() => {
     // Merged: drop them so the same work is not folded in twice.
     await sb.from(tbl('student_activity')).delete()
       .eq('teacher_id', teacher.id)
+      .neq('kind', 'book')
       .in('id', data.map(r => r.id));
 
     // The merged result belongs in the teacher's own rows now.
@@ -273,6 +277,47 @@ const IGCloud = (() => {
       }));
     } catch (e) { /* old browser */ }
     return data.length;
+  }
+
+  // The online book of one student (livroOnline.js): every saved page of
+  // `bookKey` (e.g. 'explorers:b1'), read-only. RLS keeps it to her rows.
+  async function pullBookPages(studentId, bookKey) {
+    if (!ready || !teacher) return null;
+    const sb = await getClient();
+    const { data, error } = await sb.from(tbl('student_activity'))
+      .select('id,payload,created_at')
+      .eq('teacher_id', teacher.id).eq('student_id', studentId).eq('kind', 'book')
+      .like('id', bookKey + ':%');
+    if (error) throw error;
+    return data || [];
+  }
+
+  // One page, for refreshing it the moment it is opened (the student may have
+  // changed it from home a minute ago).
+  async function pullBookPage(studentId, pageId) {
+    if (!ready || !teacher) return null;
+    const sb = await getClient();
+    const { data, error } = await sb.from(tbl('student_activity'))
+      .select('id,payload,created_at')
+      .eq('teacher_id', teacher.id).eq('student_id', studentId).eq('kind', 'book').eq('id', pageId)
+      .maybeSingle();
+    if (error) throw error;
+    return data || null;
+  }
+
+  // The teacher doing the book WITH the student in class: she writes the
+  // same row the student's link writes (kind 'book', id '<book>:b1:pNN'),
+  // straight into her own table — RLS (teacher_id = auth.uid()) allows it.
+  // pullStudentActivity() above never merges or deletes kind 'book'.
+  async function saveBookPage(studentId, pageId, payload) {
+    if (!ready || !teacher) throw new Error('not_signed_in');
+    const sb = await getClient();
+    const { error } = await sb.from(tbl('student_activity')).upsert({
+      id: pageId, teacher_id: teacher.id, student_id: studentId, kind: 'book',
+      payload, created_at: new Date().toISOString(),
+    }, { onConflict: 'teacher_id,student_id,kind,id' });
+    if (error) throw error;
+    return true;
   }
 
   // -------------------------------------------------------------------------
@@ -645,7 +690,7 @@ const IGCloud = (() => {
 
   return {
     enabled, getClient, anonClient, signIn, signUp, signOut, resetPassword, currentSession,
-    start, flush, registerShareLink, revokeShareLink, pullStudentActivity,
+    start, flush, registerShareLink, revokeShareLink, pullStudentActivity, pullBookPages, pullBookPage, saveBookPage,
     pushAll: pushEverything,
     get teacher() { return teacher; },
     get syncing() { return syncing; },

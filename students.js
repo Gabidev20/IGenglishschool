@@ -500,6 +500,7 @@ function paintStudentManagerGrid() {
       </div>
       <div class="student-card-actions">
         <button class="gm-remove-row" data-share-student="${s.id}" aria-label="Link do aluno" title="Link do aluno">🔗</button>
+        <button class="gm-remove-row" data-book-student="${s.id}" aria-label="Livro online" title="Livro online do aluno">📖</button>
         <button class="gm-remove-row" data-edit-student="${s.id}" aria-label="Edit">✏️</button>
         <button class="gm-remove-row" data-delete-student="${s.id}" aria-label="Delete">🗑️</button>
       </div>
@@ -508,6 +509,9 @@ function paintStudentManagerGrid() {
 
   grid.querySelectorAll('[data-share-student]').forEach(btn => {
     btn.addEventListener('click', () => openShareLinkModal(btn.dataset.shareStudent));
+  });
+  grid.querySelectorAll('[data-book-student]').forEach(btn => {
+    btn.addEventListener('click', () => { if (typeof LivroOnline !== 'undefined') LivroOnline.openTeacher(btn.dataset.bookStudent); });
   });
   grid.querySelectorAll('[data-edit-student]').forEach(btn => {
     btn.addEventListener('click', () => openStudentForm(students.find(s => s.id === btn.dataset.editStudent), openStudentManager));

@@ -416,7 +416,10 @@ function renderStudentHome(shell, studentId) {
 
   // What each kind of learner gets (profiles.js).
   const prof = typeof studentProfile === 'function' ? studentProfile(student) : 'writer';
+  // The IG textbook, done on the real pages (livroOnline.js): first tile.
+  const myBook = typeof LivroOnline !== 'undefined' ? LivroOnline.bookFor(student) : null;
   const T = {
+    book: () => (myBook ? tile('book', '📖', 'My book', 'Meu livro — fazer as páginas do livro aqui', 'stu-tile--book') : ''),
     progress: () => tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas'),
     homework: () => tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉'),
     review: () => (review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
@@ -458,6 +461,7 @@ function renderStudentHome(shell, studentId) {
     writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'alphabet', 'games', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
+    .reduce((list, k) => list.concat([k]), myBook ? ['book'] : [])
     .filter(k => !READY_TILE[k] || gameOk(READY_TILE[k]))
     .filter(k => k !== 'games' || topics.length)
     .map(k => T[k]());
@@ -501,6 +505,7 @@ function renderStudentHome(shell, studentId) {
     </div>`;
 
   const go = {
+    book: () => LivroOnline.openStudent(student),
     progress: () => openStudentProgress(student.id),
     homework: () => {
       const hw = pending[0] || homework[0];

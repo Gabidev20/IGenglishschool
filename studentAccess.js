@@ -54,6 +54,9 @@ function saLoadAll() {
 function saRecord(studentId) {
   const r = saLoadAll()[studentId];
   return {
+    // Other per-student settings riding in the same record (e.g. `book`, the
+    // online book chosen in livroOnline.js) must survive every write here.
+    ...(r && typeof r === 'object' ? r : {}),
     custom: r && Array.isArray(r.custom) ? r.custom : null,
     taught: r && Array.isArray(r.taught) ? r.taught : [],
   };
@@ -103,7 +106,7 @@ function saRefreshTaughtAll() {
     const taught = saComputeTaught(s);
     const prev = map[s.id] && Array.isArray(map[s.id].taught) ? map[s.id].taught : [];
     if (taught.join('|') !== prev.join('|')) {
-      map[s.id] = { custom: map[s.id] && Array.isArray(map[s.id].custom) ? map[s.id].custom : null, taught };
+      map[s.id] = { ...(map[s.id] || {}), custom: map[s.id] && Array.isArray(map[s.id].custom) ? map[s.id].custom : null, taught };
       changed = true;
     }
   });
