@@ -6,6 +6,8 @@
  "title": "IG Little Steps",
  "ages": "3–6",
  "color": "#f05d77",
+ "firstPage": 1,
+ "lastPage": 25,
  "pageCount": 25,
  "imgW": 1500,
  "imgH": 2123,
