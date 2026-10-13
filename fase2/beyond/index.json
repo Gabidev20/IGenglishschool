@@ -1,0 +1,17 @@
+{
+ "v": 1,
+ "id": "beyond",
+ "title": "IG Beyond",
+ "ages": "12–14",
+ "color": "#c9435c",
+ "bimesters": [
+  {
+   "n": 1,
+   "path": "beyond/b1/manifest.json",
+   "pages": 29,
+   "first": 1,
+   "last": 29,
+   "interactive": true
+  }
+ ]
+}

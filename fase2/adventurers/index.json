@@ -1,0 +1,17 @@
+{
+ "v": 1,
+ "id": "adventurers",
+ "title": "IG Adventurers",
+ "ages": "9–11",
+ "color": "#8e6d86",
+ "bimesters": [
+  {
+   "n": 1,
+   "path": "adventurers/b1/manifest.json",
+   "pages": 27,
+   "first": 1,
+   "last": 27,
+   "interactive": true
+  }
+ ]
+}
