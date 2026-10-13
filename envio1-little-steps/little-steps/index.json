@@ -1,0 +1,25 @@
+{
+ "v": 1,
+ "id": "little-steps",
+ "title": "IG Little Steps",
+ "ages": "3–6",
+ "color": "#f05d77",
+ "bimesters": [
+  {
+   "n": 1,
+   "path": "little-steps/b1/manifest.json",
+   "pages": 25,
+   "first": 1,
+   "last": 25,
+   "interactive": true
+  },
+  {
+   "n": 2,
+   "path": "little-steps/b2/manifest.json",
+   "pages": 24,
+   "first": 26,
+   "last": 49,
+   "interactive": false
+  }
+ ]
+}
