@@ -29,6 +29,7 @@
 
 const DASH_SCHEDULE_KEY = 'student_schedules';
 const DASH_PREP_KEY = 'lesson_prep';
+const DASH_NOTES_KEY = 'lesson_notes';      // 'studentId|YYYY-MM-DD' -> the teacher's plan for that class
 const DASH_PAYMENTS_KEY = 'finance_payments';
 const DASH_EXPENSES_KEY = 'finance_expenses';
 
@@ -121,6 +122,20 @@ function dashSetPrepped(studentId, dateKey, on) {
   const k = `${studentId}|${dateKey}`;
   if (on) all[k] = true; else delete all[k];
   IGStore.setJSON(DASH_PREP_KEY, all);
+}
+
+// The plan typed straight on a class card in the week view.
+function dashNotes() {
+  const raw = IGStore.getJSON(DASH_NOTES_KEY, null);
+  return (raw && typeof raw === 'object') ? raw : {};
+}
+function dashNoteFor(studentId, dateKey) { return dashNotes()[`${studentId}|${dateKey}`] || ''; }
+function dashSetNote(studentId, dateKey, text) {
+  const all = dashNotes();
+  const k = `${studentId}|${dateKey}`;
+  const clean = String(text || '').replace(/\s+$/, '');
+  if (clean) all[k] = clean; else delete all[k];
+  IGStore.setJSON(DASH_NOTES_KEY, all);
 }
 
 function dashPayments() {
@@ -355,6 +370,8 @@ function dashPaintWeek(pane) {
                       <input type="checkbox" data-prep="${igEscapeHtml(s.id)}" data-date="${c.key}" ${done ? 'checked' : ''} />
                       <span>${done ? '✓ pronta' : 'preparar'}</span>
                     </label>
+                    <textarea class="dash-plan" rows="1" data-note="${igEscapeHtml(s.id)}" data-date="${c.key}"
+                      placeholder="✏️ plano da aula…" aria-label="Plano da aula de ${igEscapeHtml(s.name)}">${igEscapeHtml(dashNoteFor(s.id, c.key))}</textarea>
                   </div>
                 `;
               }).join('')}
@@ -383,6 +400,17 @@ function dashPaintWeek(pane) {
       dashPaintWeek(pane);
       renderDashboardStatsOnly();
     });
+  });
+
+  // The plan saves as it is typed (a short pause) and when the box is left;
+  // the box grows with the text, so the whole plan stays readable.
+  const grow = el => { el.style.height = 'auto'; el.style.height = `${el.scrollHeight}px`; };
+  pane.querySelectorAll('[data-note]').forEach(box => {
+    grow(box);
+    let t = null;
+    const save = () => { clearTimeout(t); dashSetNote(box.dataset.note, box.dataset.date, box.value); };
+    box.addEventListener('input', () => { grow(box); clearTimeout(t); t = setTimeout(save, 600); });
+    box.addEventListener('blur', save);
   });
 
   pane.querySelectorAll('[data-open-student]').forEach(btn => {

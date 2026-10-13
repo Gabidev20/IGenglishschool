@@ -7,11 +7,14 @@
 
    WHERE THINGS LIVE
      livro-online/books.json                   the books the site offers
-     livro-online/<book>/b1/manifest.json      pages, units, audio, stickers
-     livro-online/<book>/b1/p01.webp …         page images (t01.webp: thumbnails)
+     livro-online/<book>/index.json            the bimesters published (b1, b2…)
+     livro-online/<book>/b<N>/manifest.json    pages, units, audio, stickers
+     livro-online/<book>/b<N>/interactive.json auto-checked exercises (phase 2)
+     livro-online/<book>/b<N>/p01.webp …       page images (t01.webp: thumbnails)
+     (the same folders may also sit at the site root — both places are tried)
      (all made by livros/_geradores/build_livro_online.py)
 
-   ONE PAGE OF WORK  (kind 'book', id '<book>:b1:p<NN>')
+   ONE PAGE OF WORK  (kind 'book', id '<book>:b<N>:p<NN>' — b1 ids unchanged)
      { v: 1,
        strokes:  [{ t: 'pen'|'hl', c: '#rrggbb', w: width, p: [x, y, x, y, …] }],
        texts:    [{ id, x, y, s: size, c: color, v: 'text' }],
@@ -40,10 +43,12 @@
      Supabase it uses the same local cache the student link reads. A page is
      re-read from the cloud when opened; per page, the newer updatedAt wins.
 
-   PHASE 2 (not built yet)
-     manifest.pages[i].interactive is reserved for an auto-checked exercise
-     on that page. A renderer registered in LO_INTERACTIVE[type] will get
-     mount(stageEl, page, work) and may keep its answers in work.answers.
+   PHASE 2 — auto-checked exercises
+     interactive.json (made by livros/_geradores/build_interactive.py) gives
+     pages choice / fill / match items in page millimetres; the 👆 Responder
+     tool answers them, the page keeps { answers, score } in the same record
+     (+ ixDone, xp). The teacher has 🔑 "Mostrar respostas". Other exercise
+     types can still be plugged in through LO_INTERACTIVE[type].mount().
    ========================================================================== */
 
 // Phase 2: { [type]: { mount(stage, page, work, api) } }. Empty on purpose.
@@ -654,7 +659,27 @@ const LivroOnline = (() => {
     // ---- view: fit, zoom, pan ---------------------------------------------
     function stageRect() { return stage.getBoundingClientRect(); }
     // The band of the page on screen, as fractions of its height.
-    const band = () => (part === 'top' ? [0, 0.5] : part === 'bottom' ? [0.5, 1] : [0, 1]);
+    // Where "Meia página" cuts the page: the middle, unless an exercise sits
+    // across it — then the nearest gap that keeps every exercise in one half.
+    let split = 0.5;
+    function splitFor(p) {
+      const items = (p && p.interactive && p.interactive.items) || [];
+      if (!items.length) return 0.5;
+      const spans = items.map(it => {
+        const ys = [];
+        (it.options || []).forEach(o => { ys.push(o.y, o.y + o.h); });
+        if (it.type === 'fill') ys.push(it.y, it.y + it.h);
+        (it.left || []).concat(it.right || []).forEach(d => { ys.push(d.y - 4, d.y + 4); });
+        return ys.length ? [Math.min(...ys) - 1.5, Math.max(...ys) + 1.5] : null;
+      }).filter(Boolean);
+      const mid = 148.5;
+      const inside = y => spans.some(([a, b]) => y > a && y < b);
+      if (!inside(mid)) return 0.5;
+      const cands = spans.flatMap(([a, b]) => [a, b]).filter(y => y >= 100 && y <= 200 && !inside(y))
+        .sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid));
+      return cands.length ? cands[0] / 297 : 0.5;
+    }
+    const band = () => (part === 'top' ? [0, split] : part === 'bottom' ? [split, 1] : [0, 1]);
     // Where the page may sit: the whole stage, or (slides) a 16:9 frame in it.
     function frameRect() {
       const r = stageRect();
@@ -689,7 +714,7 @@ const LivroOnline = (() => {
       pageEl.style.width = `${bw * z}px`;
       pageEl.style.height = `${bh * z}px`;
       pageEl.style.transform = `translate(${tx}px, ${ty}px)`;
-      pageEl.style.clipPath = part === 'top' ? 'inset(0 0 50% 0)' : part === 'bottom' ? 'inset(50% 0 0 0)' : '';
+      pageEl.style.clipPath = part === 'top' ? `inset(0 0 ${((1 - split) * 100).toFixed(2)}% 0)` : part === 'bottom' ? `inset(${(split * 100).toFixed(2)}% 0 0 0)` : '';
       if (selected) renderOver();
     }
     // A short fade between slides (opacity only, so drawing is never blocked).
@@ -1126,6 +1151,7 @@ const LivroOnline = (() => {
       audio.pause();
       idx = i; pg = o.pages[idx];
       part = halfView() ? (wantPart === 'bottom' ? 'bottom' : 'top') : 'full';
+      split = splitFor(pg);
       data = normalize(o.load(pg));
       hist = []; redoStack = []; selected = null;
       ixOnPage();
@@ -1775,7 +1801,19 @@ const LivroOnline = (() => {
     root.className = 'lo-root lo-home' + (teacher ? ' is-teacher' : '');
     root.innerHTML = '<div class="lo-loading"><span>📖</span><p>Abrindo o livro…</p></div>';
     let unStatus = null;
-    pushView(root, () => { sync.flush(); if (unStatus) unStatus(); });
+    // Homework (ctx.homework): when the book closes, say how many of the
+    // homework's pages are marked done.
+    let hwManifest = null;
+    pushView(root, () => {
+      sync.flush(); if (unStatus) unStatus();
+      const hwk = ctx.homework;
+      if (hwk && hwk.onClose && hwManifest) {
+        const done = hwk.pages.filter(n => (readLocal(student.id, pid(hwManifest, n)) || {}).done).length;
+        try { hwk.onClose({ done, total: hwk.pages.length }); } catch (e) { console.error(e); }
+      } else if (hwk && hwk.onClose) {
+        try { hwk.onClose({ done: 0, total: hwk.pages.length }); } catch (e) { console.error(e); }
+      }
+    });
 
     let ms;
     try { ms = await loadBook(book); } catch (e) {
@@ -1789,16 +1827,20 @@ const LivroOnline = (() => {
     let cur = resumeBimester(sid, ms);
     const who = { name: student.name, book: cur.title || info.title };
 
-    const openAt = (m, n) => {
+    const openAt = (m, n, extra) => {
       const pages = contentPages(m);
       const getPage = getPageFor(m);
+      const x = extra || {};
       openEditor({
         manifest: m, pages, sync, teacher, studentId: sid,
         index: Math.max(0, pages.findIndex(p => p.n === n)),
+        subtitle: x.subtitle,
         load: p => getPage(p),
         save: (p, work) => { const id = pid(m, p.n); writeLocal(sid, id, work); sync.mark(id); },
         onPage: p => rememberPage(sid, m, p.n),
-        onLeave: () => setTimeout(paint, 0),
+        // From homework the book was only a way to the page: closing the
+        // page closes the book too, straight back to the homework.
+        onLeave: () => setTimeout(x.leave || paint, 0),
         who: teacher ? { name: student.name, book: `${m.title || info.title}${ms.length > 1 ? ' · B' + m.bimester : ''}` } : null,
         onSwitch: teacher ? () => { closeAllViews(); openClassPicker(); } : null,
       });
@@ -1867,6 +1909,25 @@ const LivroOnline = (() => {
       if (changed) cur = resumeBimester(sid, ms);
       if (changed && stack.length && stack[stack.length - 1].el === root) paint();
     });
+    if (ctx.homework) {
+      await opened;
+      const hwk = ctx.homework;
+      const m = ms.find(x => x.bimester === Number(hwk.bim)) || resumeBimester(sid, ms);
+      hwManifest = m;
+      const pages = contentPages(m);
+      const first = hwk.pages.find(n => pages.some(p => p.n === n));
+      if (!root.isConnected || stack[stack.length - 1].el !== root) return;
+      if (first == null) {
+        alert(`Não encontrei a página ${hwk.pages.join(', ')} no seu livro. 📖`);
+        paint();
+        return;
+      }
+      openAt(m, first, {
+        subtitle: `📚 Lição de casa: ${esc(hwk.label)} — faça e toque em “Terminei esta página ✓”`,
+        leave: () => { if (root.isConnected && stack[stack.length - 1].el === root) back(); },
+      });
+      return;
+    }
     if (ctx.resume) {
       await opened;
       cur = resumeBimester(sid, ms);
@@ -2075,6 +2136,9 @@ const LivroOnline = (() => {
 
   return {
     BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest,
+    // Homework: open the student's book right on the pages the teacher set.
+    // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }
+    openHomeworkPages: (student, hw) => openBookHome(student, { teacher: !window.IG_SHARE_MODE, homework: hw }),
     // exposed for tests / phase 2
     _pageId: pageId, _readLocal: readLocal, _normalize: normalize, _simplify: simplify,
   };

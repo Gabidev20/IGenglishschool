@@ -15,7 +15,28 @@ const HW_TASK_TYPES = [
   { id: 'speaking', icon: '🎤', label: 'Speaking', hint: 'Ler frases em voz alta' },
   { id: 'writing', icon: '✍️', label: 'Writing', hint: 'Escrever um texto para a professora corrigir' },
   { id: 'study', icon: '📚', label: 'Estudar um tópico', hint: 'Vídeo, leitura e flashcards do tópico' },
+  { id: 'book', icon: '📖', label: 'Páginas do livro', hint: 'Abre o livro do aluno direto na página' },
 ];
+
+// "8-9, 12" / "pág 8 a 10" -> [8, 9, 12] / [8, 9, 10]
+function hwParsePages(text) {
+  const out = [];
+  String(text || '').toLowerCase().replace(/p[aá]g(inas?)?\.?|p\./g, ' ').split(/[,;]|\se\s/).forEach(part => {
+    const m = part.match(/(\d+)\s*(?:-|–|a|até|to)\s*(\d+)/);
+    if (m) {
+      const a = Number(m[1]), b = Number(m[2]);
+      for (let n = Math.min(a, b); n <= Math.max(a, b) && n - Math.min(a, b) < 40; n++) out.push(n);
+    } else {
+      (part.match(/\d+/g) || []).forEach(n => out.push(Number(n)));
+    }
+  });
+  return [...new Set(out)];
+}
+const hwPagesLabel = pages => {
+  if (!pages.length) return '';
+  const consecutive = pages.every((n, i) => i === 0 || n === pages[i - 1] + 1);
+  return pages.length > 1 && consecutive ? `p. ${pages[0]}–${pages[pages.length - 1]}` : `p. ${pages.join(', ')}`;
+};
 const hwTaskMeta = id => HW_TASK_TYPES.find(t => t.id === id) || HW_TASK_TYPES[0];
 
 // ---------------------------------------------------------------------------
@@ -272,6 +293,12 @@ function openHomeworkBuilder(existing, onSaved) {
               <span class="hw-task-icon">${hwTaskMeta(t.type).icon}</span>
               <input type="text" class="hw-task-label" data-label="${i}" value="${igEscapeHtml(t.label || hwTaskMeta(t.type).label)}" />
               ${t.type === 'exam' ? `<input type="number" class="hw-task-n-input" data-count="${i}" min="4" max="20" value="${t.count || 8}" title="Quantas questões" />` : ''}
+              ${t.type === 'book' ? `
+                <input type="text" class="hw-task-pages" data-pages="${i}" value="${igEscapeHtml(t.pagesText || '')}" placeholder="pág 8-9" title="Páginas do livro — ex.: 8-9 ou 8, 10" />
+                <select class="hw-select hw-task-bim" data-bim="${i}" title="Bimestre do livro">
+                  <option value="">Bimestre atual</option>
+                  ${[1, 2, 3, 4].map(b => `<option value="${b}" ${Number(t.bim) === b ? 'selected' : ''}>Bimestre ${b}</option>`).join('')}
+                </select>` : ''}
               ${t.type === 'writing' ? `<select class="hw-select" data-prompt="${i}">
                   ${SkillsModules.prompts.map(p => `<option value="${p.id}" ${p.id === t.promptId ? 'selected' : ''}>${igEscapeHtml(p.prompt)}</option>`).join('')}
                 </select>` : ''}
@@ -349,9 +376,37 @@ function openHomeworkBuilder(existing, onSaved) {
     mount.querySelectorAll('[data-count]').forEach(input => {
       input.addEventListener('input', () => { state.tasks[Number(input.dataset.count)].count = Number(input.value) || 8; });
     });
+    mount.querySelectorAll('[data-pages]').forEach(input => {
+      input.addEventListener('input', () => {
+        const t = state.tasks[Number(input.dataset.pages)];
+        t.pagesText = input.value;
+        t.pages = hwParsePages(input.value);
+        // The task's name follows the pages until the teacher renames it.
+        const row = input.closest('.hw-task-row');
+        const label = row && row.querySelector('[data-label]');
+        if (label && (!t.label || /^(Páginas do livro|Livro p\. .*)$/.test(t.label))) {
+          t.label = t.pages.length ? `Livro ${hwPagesLabel(t.pages)}` : 'Páginas do livro';
+          label.value = t.label;
+        }
+        paintSaveState();
+      });
+    });
+    mount.querySelectorAll('[data-bim]').forEach(input => {
+      input.addEventListener('change', () => { state.tasks[Number(input.dataset.bim)].bim = input.value ? Number(input.value) : null; });
+    });
     mount.querySelectorAll('[data-prompt]').forEach(input => {
       input.addEventListener('change', () => { state.tasks[Number(input.dataset.prompt)].promptId = input.value; });
     });
+
+    function paintSaveState() {
+      const btn = mount.querySelector('#hwSave');
+      const missingPages = state.tasks.some(t => t.type === 'book' && !(t.pages || []).length);
+      if (btn) {
+        btn.disabled = !(state.tasks.length && state.studentId) || missingPages;
+        btn.title = missingPages ? 'Escreva as páginas do livro (ex.: 8-9)' : '';
+      }
+    }
+    paintSaveState();
 
     mount.querySelector('#hwCancel').addEventListener('click', closeModal);
     mount.querySelector('#hwSave').addEventListener('click', () => {
@@ -416,7 +471,9 @@ function openHomeworkRunner(hw, onChanged) {
               <span class="hw-run-icon">${meta.icon}</span>
               <div class="hw-run-text">
                 <b>${igEscapeHtml(t.label || meta.label)}</b>
-                <small>${r ? (typeof r.pct === 'number' ? `feito · ${r.pct}%` : 'feito ✅') : meta.hint}</small>
+                <small>${r ? (typeof r.pct === 'number' ? `feito · ${r.pct}%` : 'feito ✅')
+                  : t.type === 'book' ? `${hwPagesLabel(t.pages || hwParsePages(t.pagesText))} · ${t.pagesDone ? `${t.pagesDone} de ${(t.pages || []).length} feita(s) · ` : ''}toque em “Terminei esta página ✓” em cada uma`
+                  : meta.hint}</small>
               </div>
               <button class="game-btn ${r ? 'secondary' : ''}" data-run="${i}">${r ? '🔁 Refazer' : '▶️ Começar'}</button>
             </div>`;
@@ -474,6 +531,26 @@ function openHomeworkRunner(hw, onChanged) {
     }
     if (task.type === 'writing') {
       openWritingModal({ studentId, promptId: task.promptId, onDone: r => done({ pct: null, submitted: true, text: r.text }) });
+      return;
+    }
+
+    // book — straight to the page in the student's online book. Done when
+    // every page of the task is marked "Terminei esta página ✓" there.
+    if (task.type === 'book') {
+      const pages = task.pages && task.pages.length ? task.pages : hwParsePages(task.pagesText);
+      const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === studentId);
+      if (!pages.length || !student || typeof LivroOnline === 'undefined') { alert('Esta tarefa não tem páginas do livro. 📖'); return; }
+      if (!LivroOnline.bookFor(student)) { alert('A teacher ainda não escolheu um livro para você. 📖'); return; }
+      closeModal();
+      LivroOnline.openHomeworkPages(student, {
+        pages, bim: task.bim, label: hwPagesLabel(pages),
+        onClose: r => {
+          if (r.total && r.done >= r.total) { done({ pct: null, pages: r.done }); return; }
+          task.pagesDone = r.done;
+          save();
+          openHomeworkRunner(hw, onChanged);
+        },
+      });
       return;
     }
 

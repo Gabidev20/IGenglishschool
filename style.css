@@ -9019,3 +9019,23 @@ html.lo-open, html.lo-open body { overflow: hidden; }
 .gs-topic-emoji { font-size: 1.4rem; }
 .gs-topic b { flex: 1; font-size: .92rem; }
 .gs-topic small { font-weight: 800; color: var(--ink-faint); }
+@media (max-width: 420px) {
+  .lo-top .lo-score { font-size: .74rem; padding: 2px 6px; border-width: 1px; }
+  .lo-ed.has-ix .lo-top-title b { white-space: nowrap; }
+  .lo-ed.has-ix .lo-top-title span { display: none; }
+}
+
+/* Week view — the plan typed on each class card (dashboard.js) */
+.dash-plan {
+  display: block; width: 100%; min-height: 28px; resize: none; overflow: hidden;
+  border: none; border-top: 1px dashed var(--border); background: transparent;
+  padding: 6px 9px 8px; font: inherit; font-size: .78rem; line-height: 1.35; color: var(--ink);
+}
+.dash-plan::placeholder { color: var(--ink-faint); }
+.dash-plan:hover { background: color-mix(in srgb, var(--who, #8e6d86) 6%, transparent); }
+.dash-plan:focus { outline: none; background: #fff; box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--who, #8e6d86) 45%, transparent); }
+
+/* Homework — the pages of a book task */
+.hw-task-pages { width: 110px; padding: 6px 10px; border: 2px solid var(--border); border-radius: 10px; font: inherit; }
+.hw-task-pages:focus { outline: none; border-color: var(--primary); }
+.hw-task-bim { max-width: 150px; }
