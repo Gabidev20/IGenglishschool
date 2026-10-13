@@ -586,6 +586,7 @@ const LivroOnline = (() => {
           <span class="lo-who" title="Aluno e livro desta aula">👤 <b>${esc(o.who.name)}</b> · ${esc(o.who.book)}</span>
           ${o.onSwitch ? '<button type="button" class="lo-chip" data-a="switch" title="Trocar aluno">🔄<span class="lo-chip-l"> Trocar aluno</span></button>' : ''}
           <button type="button" class="lo-chip lo-chip--games" data-a="games" title="Jogos: abre um jogo e volta para esta página">🎮<span class="lo-chip-l"> Jogos</span></button>
+          <button type="button" class="lo-chip lo-chip--dice" data-a="dice" title="Virtual dice and coin: how many spaces to move">🎲<span class="lo-chip-l"> Dice</span></button>
           <button type="button" class="lo-chip" data-a="present" title="Apresentar: esconde os botões da professora para compartilhar a tela">🖥️<span class="lo-chip-l"> Apresentar</span></button>
         </div>` : ''}
       <div class="lo-audio" data-ref="audio" hidden></div>
@@ -602,9 +603,26 @@ const LivroOnline = (() => {
           <button type="button" data-a="zout" aria-label="Diminuir">－</button>
           <button type="button" data-a="fit" aria-label="Página inteira" title="Página inteira">⤢</button>
           ${o.who ? '<button type="button" class="lo-games-fab" data-a="games" aria-label="Jogos" title="Jogos">🎮</button>' : ''}
+          ${o.who ? '<button type="button" class="lo-games-fab lo-dice-fab" data-a="dice" aria-label="Dice" title="Dice and coin">🎲</button>' : ''}
           ${o.who ? '<button type="button" class="lo-present-exit" data-a="present" aria-label="Sair da apresentação" title="Sair da apresentação">🖥️</button>' : ''}
         </div>
         <div class="lo-toast" data-ref="toast" hidden></div>
+        ${o.who ? `
+        <div class="lo-dice" data-ref="dice" hidden role="dialog" aria-label="Dice and coin">
+          <div class="lo-dice-head">
+            <div class="lo-dice-tabs">
+              <button type="button" data-dm="die" class="is-on">🎲 Dice</button>
+              <button type="button" data-dm="coin">🪙 Coin</button>
+            </div>
+            <button type="button" class="lo-dice-x" data-a="dice" aria-label="Close">✕</button>
+          </div>
+          <button type="button" class="lo-dice-roll" data-ref="diceroll" aria-label="Roll">
+            <span class="lo-die" data-ref="die"></span>
+            <span class="lo-coin" data-ref="coin" hidden></span>
+          </button>
+          <div class="lo-dice-out" data-ref="diceout">Tap the dice to roll</div>
+          <div class="lo-dice-hist" data-ref="dicehist"></div>
+        </div>` : ''}
         ${ro ? '' : `
         <div class="lo-anssheet" data-ref="ans" hidden>
           <label for="loAnsIn" data-ref="ansq"></label>
@@ -636,6 +654,64 @@ const LivroOnline = (() => {
         ${ro ? '<span class="lo-nav-mid" data-ref="navmid"></span>' : '<button type="button" class="lo-done" data-a="done"></button>'}
         <button type="button" class="lo-navbtn" data-a="next" aria-label="Próxima">▶</button>
       </div>`;
+
+    // ---- virtual dice / coin (teacher class mode) --------------------------
+    const dicePanel = root.querySelector('[data-ref="dice"]');
+    if (dicePanel) {
+      const dieEl = dicePanel.querySelector('[data-ref="die"]');
+      const coinEl = dicePanel.querySelector('[data-ref="coin"]');
+      const outEl = dicePanel.querySelector('[data-ref="diceout"]');
+      const histEl = dicePanel.querySelector('[data-ref="dicehist"]');
+      const rollBtn = dicePanel.querySelector('[data-ref="diceroll"]');
+      const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+      const dieFace = n => `<i class="lo-pips">${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => `<b class="${PIPS[n].includes(i) ? 'on' : ''}"></b>`).join('')}</i>`;
+      let mode = 'die', rolling = false, hist = [];
+      const rnd = n => { const a = new Uint32Array(1); (window.crypto || window.msCrypto).getRandomValues(a); return a[0] % n; };
+      dieEl.innerHTML = dieFace(6);
+      coinEl.textContent = '🪙';
+      const paintHist = () => { histEl.textContent = hist.length ? 'Before: ' + hist.slice(-8).join(' · ') : ''; };
+      const roll = () => {
+        if (rolling) return;
+        rolling = true;
+        outEl.textContent = '…';
+        const target = mode === 'die' ? dieEl : coinEl;
+        target.classList.add('is-rolling');
+        let tick = 0;
+        const iv = setInterval(() => {
+          if (mode === 'die') dieEl.innerHTML = dieFace(1 + rnd(6));
+          else coinEl.textContent = tick % 2 ? '🟡' : '🪙';
+          tick++;
+        }, 90);
+        setTimeout(() => {
+          clearInterval(iv);
+          target.classList.remove('is-rolling');
+          if (mode === 'die') {
+            const n = 1 + rnd(6);
+            dieEl.innerHTML = dieFace(n);
+            outEl.innerHTML = `Move <b>${n}</b> ${n === 1 ? 'space' : 'spaces'}`;
+            hist.push(n);
+          } else {
+            const heads = rnd(2) === 0;
+            coinEl.textContent = heads ? '👑' : '🌟';
+            outEl.innerHTML = heads ? '<b>Heads</b>' : '<b>Tails</b>';
+            hist.push(heads ? 'H' : 'T');
+          }
+          paintHist();
+          rolling = false;
+        }, 750);
+      };
+      rollBtn.addEventListener('click', roll);
+      dicePanel.querySelectorAll('[data-dm]').forEach(b => b.addEventListener('click', () => {
+        mode = b.dataset.dm;
+        dicePanel.querySelectorAll('[data-dm]').forEach(x => x.classList.toggle('is-on', x === b));
+        dieEl.hidden = mode !== 'die';
+        coinEl.hidden = mode !== 'coin';
+        outEl.textContent = mode === 'die' ? 'Tap the dice to roll' : 'Tap the coin to flip';
+        hist = []; paintHist();
+      }));
+      // never let taps on the panel reach the page (drawing / panning)
+      ['pointerdown', 'pointerup', 'click', 'wheel', 'touchstart'].forEach(ev => dicePanel.addEventListener(ev, e => e.stopPropagation(), { passive: true }));
+    }
 
     const $ = name => root.querySelector(`[data-ref="${name}"]`);
     const stage = $('stage'), pageEl = $('page'), img = $('img');
@@ -1604,6 +1680,7 @@ const LivroOnline = (() => {
             openGamesMenu({ pageTitle: t ? t.textContent.trim() : '' });
           }
           break;
+        case 'dice': { const dp = root.querySelector('[data-ref="dice"]'); if (dp) dp.hidden = !dp.hidden; break; }
         case 'showans': showAns = !showAns; renderIx(); paintChrome(); break;
         case 'view-full': setView('full'); break;
         case 'view-half': setView('half'); break;

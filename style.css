@@ -9039,3 +9039,30 @@ html.lo-open, html.lo-open body { overflow: hidden; }
 .hw-task-pages { width: 110px; padding: 6px 10px; border: 2px solid var(--border); border-radius: 10px; font: inherit; }
 .hw-task-pages:focus { outline: none; border-color: var(--primary); }
 .hw-task-bim { max-width: 150px; }
+
+/* Livro online: virtual dice / coin (teacher class mode) */
+.lo-chip--dice { border-color: #f05d77; color: #c9435c; }
+.lo-dice-fab { display: none; }
+.lo-ed.is-present .lo-dice-fab { display: block; }
+.lo-dice { position: absolute; right: 12px; bottom: 12px; z-index: 30; width: 190px; padding: 10px 12px 12px;
+  background: #fff; border: 2px solid #e6dce4; border-radius: 18px; box-shadow: 0 8px 26px rgba(46,43,46,.22);
+  text-align: center; touch-action: manipulation; }
+.lo-dice[hidden] { display: none; }
+.lo-dice-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+.lo-dice-tabs { display: flex; gap: 4px; }
+.lo-dice-tabs button { border: 0; background: #f4eef3; border-radius: 10px; padding: 4px 8px; font: inherit; font-size: .78rem; font-weight: 700; color: #6b6670; cursor: pointer; }
+.lo-dice-tabs button.is-on { background: #8e6d86; color: #fff; }
+.lo-dice-x { border: 0; background: transparent; font-size: 1rem; cursor: pointer; color: #6b6670; }
+.lo-dice-roll { display: grid; place-items: center; width: 100%; padding: 8px 0; border: 0; background: transparent; cursor: pointer; }
+.lo-die { display: grid; place-items: center; width: 96px; height: 96px; border: 4px solid #2e2b2e; border-radius: 20px; background: #fff; box-shadow: 0 4px 0 #c9bfc8; }
+.lo-die[hidden], .lo-coin[hidden] { display: none; }
+.lo-pips { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); width: 70px; height: 70px; font-style: normal; }
+.lo-pips b { place-self: center; width: 15px; height: 15px; border-radius: 50%; background: transparent; }
+.lo-pips b.on { background: #f05d77; }
+.lo-coin { display: grid; place-items: center; width: 96px; height: 96px; font-size: 3.6rem; }
+.lo-die.is-rolling, .lo-coin.is-rolling { animation: lo-shake .18s linear infinite; }
+@keyframes lo-shake { 0% { transform: rotate(-12deg) translateY(0); } 50% { transform: rotate(12deg) translateY(-6px); } 100% { transform: rotate(-12deg) translateY(0); } }
+.lo-dice-out { min-height: 1.6em; font-size: .95rem; color: #2e2b2e; }
+.lo-dice-out b { font-size: 1.5rem; color: #c9435c; }
+.lo-dice-hist { margin-top: 2px; font-size: .75rem; color: #8a828a; min-height: 1em; }
+@media (max-width: 520px) { .lo-dice { right: 6px; bottom: 6px; width: 168px; } }
