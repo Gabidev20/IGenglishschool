@@ -174,6 +174,7 @@ function refreshLiveClassCockpit() {
       <button class="btn btn-ghost" id="openReportsBtn">📊 Reports &amp; Progress</button>
       <button class="btn btn-ghost" id="openClassReviewBtn">🧠 Class review</button>
       <button class="btn btn-ghost" id="openStudentBookBtn">📖 Livro da aula</button>
+      <button class="btn btn-ghost" id="openStudentSlidesBtn">🖼️ Slides da aula</button>
     </div>
 
     <div class="cockpit-links" id="cockpitLinks"></div>
@@ -196,6 +197,11 @@ function refreshLiveClassCockpit() {
   // opens at the page they stopped on and saves to this student.
   document.getElementById('openStudentBookBtn').addEventListener('click', () => {
     if (typeof LivroOnline !== 'undefined') LivroOnline.openClass(student.id);
+  });
+  // The student's decks (slidesAula.js): edit and present on screen-share.
+  const slidesBtn = document.getElementById('openStudentSlidesBtn');
+  if (slidesBtn) slidesBtn.addEventListener('click', () => {
+    if (typeof SlidesAula !== 'undefined') SlidesAula.openForStudent(student.id);
   });
   wireCockpitContext(root, student);
   renderCockpitLinks(student);

@@ -221,9 +221,10 @@ const IGCloud = (() => {
     const sb = await getClient();
     // Pages of the online book (kind 'book', livroOnline.js) are NOT merged
     // and deleted like the rest: they stay in the table as the student's
-    // saved work and are read on demand by pullBookPages().
+    // saved work and are read on demand by pullBookPages(). The same goes for
+    // the class slides (kind 'slides', slidesAula.js): the teacher's own decks.
     const { data, error } = await sb.from(tbl('student_activity'))
-      .select('*').eq('teacher_id', teacher.id).neq('kind', 'book').order('created_at');
+      .select('*').eq('teacher_id', teacher.id).neq('kind', 'book').neq('kind', 'slides').order('created_at');
     if (error || !data || !data.length) return 0;
 
     // A student's page used to send the same message (and the same homework)
@@ -256,6 +257,7 @@ const IGCloud = (() => {
     await sb.from(tbl('student_activity')).delete()
       .eq('teacher_id', teacher.id)
       .neq('kind', 'book')
+      .neq('kind', 'slides')
       .in('id', data.map(r => r.id));
 
     // The merged result belongs in the teacher's own rows now.
@@ -316,6 +318,52 @@ const IGCloud = (() => {
       id: pageId, teacher_id: teacher.id, student_id: studentId, kind: 'book',
       payload, created_at: new Date().toISOString(),
     }, { onConflict: 'teacher_id,student_id,kind,id' });
+    if (error) throw error;
+    return true;
+  }
+
+  // "Slides da aula" (slidesAula.js): kind 'slides', one row per deck meta
+  // ('deck:<deckId>:meta') and one per slide ('deck:<deckId>:s:<slideId>'),
+  // written by the teacher's own login (RLS teacher_id = auth.uid()). The
+  // student's link only reads them, through igenglish_slides_read().
+  // opts: { metaOnly } -> only the deck metas; { deckId } -> that deck's slides.
+  async function pullSlideRows(studentId, opts) {
+    if (!ready || !teacher) return null;
+    opts = opts || {};
+    const sb = await getClient();
+    let q = sb.from(tbl('student_activity'))
+      .select('id,payload,created_at')
+      .eq('teacher_id', teacher.id).eq('student_id', studentId).eq('kind', 'slides');
+    if (opts.metaOnly) q = q.like('id', 'deck:%:meta');
+    else if (opts.deckId) q = q.like('id', 'deck:' + opts.deckId + ':s:%');
+    else q = q.like('id', 'deck:%');
+    const { data, error } = await q;
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function saveSlideRow(studentId, id, payload) {
+    if (!ready || !teacher) throw new Error('not_signed_in');
+    const sb = await getClient();
+    const { error } = await sb.from(tbl('student_activity')).upsert({
+      id, teacher_id: teacher.id, student_id: studentId, kind: 'slides',
+      payload, created_at: new Date().toISOString(),
+    }, { onConflict: 'teacher_id,student_id,kind,id' });
+    if (error) throw error;
+    return true;
+  }
+
+  // opts: { ids: [...] } or { deckId } (every slide row of that deck).
+  async function deleteSlideRows(studentId, opts) {
+    if (!ready || !teacher) throw new Error('not_signed_in');
+    opts = opts || {};
+    const sb = await getClient();
+    let q = sb.from(tbl('student_activity')).delete()
+      .eq('teacher_id', teacher.id).eq('student_id', studentId).eq('kind', 'slides');
+    if (opts.deckId) q = q.like('id', 'deck:' + opts.deckId + ':s:%');
+    else if (Array.isArray(opts.ids) && opts.ids.length) q = q.in('id', opts.ids);
+    else return true;
+    const { error } = await q;
     if (error) throw error;
     return true;
   }
@@ -691,6 +739,7 @@ const IGCloud = (() => {
   return {
     enabled, getClient, anonClient, signIn, signUp, signOut, resetPassword, currentSession,
     start, flush, registerShareLink, revokeShareLink, pullStudentActivity, pullBookPages, pullBookPage, saveBookPage,
+    pullSlideRows, saveSlideRow, deleteSlideRows,
     pushAll: pushEverything,
     get teacher() { return teacher; },
     get syncing() { return syncing; },

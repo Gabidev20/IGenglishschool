@@ -36,6 +36,7 @@
       <button class="nav-link nav-link-btn nav-mobile-only" id="editorNavBtn" type="button">🧩 Editor</button>
       <button class="nav-link nav-link-btn nav-mobile-only" id="reportsNavBtn" type="button">📊 Reports</button>
       <button class="nav-link nav-link-btn nav-mobile-only" id="bookNavBtn" type="button">📖 Livro da aula</button>
+      <button class="nav-link nav-link-btn nav-mobile-only" id="slidesNavBtn" type="button">🖼️ Slides da aula</button>
     </nav>
     <button class="nav-more" id="navMoreBtn" type="button" aria-label="Mais itens do menu" title="Mais itens do menu" hidden>›</button>
 
@@ -46,6 +47,8 @@
       <!-- 📖 Livro da aula: pick the student in class and do their online
            book together (livroOnline.js). -->
       <button class="inbox-btn header-desktop-only" id="headerBookBtn" type="button" aria-label="Livro da aula" title="📖 Livro da aula — fazer o livro com o aluno desta aula">📖</button>
+      <!-- 🖼️ Slides da aula: the student's decks (slidesAula.js). -->
+      <button class="inbox-btn header-desktop-only" id="headerSlidesBtn" type="button" aria-label="Slides da aula" title="🖼️ Slides da aula — criar e apresentar slides para o aluno">🖼️</button>
       <button class="inbox-btn header-desktop-only" id="headerEditorBtn" type="button" aria-label="Editor de conteúdo" title="🧩 Editor — editar os temas, palavras, vídeos e leituras">🧩</button>
       <button class="inbox-btn header-desktop-only" id="headerReportsBtn" type="button" aria-label="Boletim" title="📊 Reports — boletim dos alunos">📊</button>
       <button class="inbox-btn help-btn" id="teacherHelpBtn" type="button" aria-label="Como usar o site" title="Como usar o site (tutorial)">❓</button>
@@ -282,6 +285,9 @@
 <!-- Online book (📖 Meu livro): after studentAccess.js (book choice) and
      cloud.js/share.js (saving); pages and stickers live in livro-online/. -->
 <script src="livroOnline.js"></script>
+<!-- Slides da aula (🖼️ teacher / 📝 student): after livroOnline.js (book pages
+     as backgrounds), studentAccess.js (who sees it) and cloud.js (saving). -->
+<script src="slidesAula.js"></script>
 <script src="gameShortcut.js"></script>
 <script src="tutorial.js"></script>
 <script src="teacherBooks.js"></script>

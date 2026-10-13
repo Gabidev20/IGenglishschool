@@ -519,6 +519,7 @@ const LivroOnline = (() => {
   }
   window.addEventListener('popstate', () => {
     const t = history.state && history.state.lo;
+    if (history.state && history.state.sl) return;       // a slides view (slidesAula.js) sits on top of the book
     const keep = stack.findIndex(v => v.token === t);   // -1: none of ours -> close all
     while (stack.length > keep + 1) closeTop();
   });
@@ -587,6 +588,7 @@ const LivroOnline = (() => {
           ${o.onSwitch ? '<button type="button" class="lo-chip" data-a="switch" title="Trocar aluno">🔄<span class="lo-chip-l"> Trocar aluno</span></button>' : ''}
           <button type="button" class="lo-chip lo-chip--games" data-a="games" title="Jogos: abre um jogo e volta para esta página">🎮<span class="lo-chip-l"> Jogos</span></button>
           <button type="button" class="lo-chip lo-chip--dice" data-a="dice" title="Virtual dice and coin: how many spaces to move">🎲<span class="lo-chip-l"> Dice</span></button>
+          <button type="button" class="lo-chip" data-a="slides" title="Slides da aula: abre as apresentações deste aluno">🖼️<span class="lo-chip-l"> Slides</span></button>
           <button type="button" class="lo-chip" data-a="present" title="Apresentar: esconde os botões da professora para compartilhar a tela">🖥️<span class="lo-chip-l"> Apresentar</span></button>
         </div>` : ''}
       <div class="lo-audio" data-ref="audio" hidden></div>
@@ -1674,6 +1676,10 @@ const LivroOnline = (() => {
       switch (a.dataset.a) {
         case 'back': back(); break;
         case 'present': root.classList.toggle('is-present'); computeBase(); applyView(); break;
+        case 'slides':
+          // The student's own decks (slidesAula.js) open on top of the book.
+          if (typeof SlidesAula !== 'undefined' && o.studentId) { if (o.sync) o.sync.flush(); SlidesAula.openForStudent(o.studentId); }
+          break;
         case 'games':
           if (typeof openGamesMenu === 'function') {
             const t = root.querySelector('[data-ref="ptitle"]');
@@ -1726,6 +1732,7 @@ const LivroOnline = (() => {
 
     function onKey(e) {
       if (stack[stack.length - 1] && stack[stack.length - 1].el !== root) return;
+      if (typeof SlidesAula !== 'undefined' && SlidesAula.isOpen()) return;   // slides are on top
       const typing = e.target.matches && e.target.matches('input, textarea, select');
       if (typing) return;
       const mod = e.ctrlKey || e.metaKey;

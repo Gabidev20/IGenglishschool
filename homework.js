@@ -104,6 +104,7 @@ function renderHomework(container) {
             <button class="game-btn" id="hwMyProgress">📈 Meu progresso</button>
             <button class="game-btn secondary" id="hwShareLink">🔗 Link do aluno</button>
             <button class="game-btn secondary" id="hwStudentBook">📖 Livro</button>
+            <button class="game-btn secondary" id="hwStudentSlides">🖼️ Slides</button>
           </div>
           ${mine.length ? `
             <div class="hw-card-grid">
@@ -137,6 +138,8 @@ function renderHomework(container) {
   if (progBtn) progBtn.addEventListener('click', () => openStudentProgress(activeId));
   const linkBtn = container.querySelector('#hwShareLink');
   if (linkBtn) linkBtn.addEventListener('click', () => openShareLinkModal(activeId));
+  const slidesBtn = container.querySelector('#hwStudentSlides');
+  if (slidesBtn) slidesBtn.addEventListener('click', () => { if (typeof SlidesAula !== 'undefined') SlidesAula.openForStudent(activeId); });
   const bookBtn = container.querySelector('#hwStudentBook');
   if (bookBtn) bookBtn.addEventListener('click', () => { if (typeof LivroOnline !== 'undefined') LivroOnline.openTeacher(activeId); });
 

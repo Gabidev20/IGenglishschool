@@ -112,7 +112,10 @@ function openShareLinkModal(studentId) {
 
       <p class="share-note">🔒 O código é secreto e longo, como um link do Google Drive. Quem tiver o link vê este aluno — e nada mais do site. Dá para revogar quando quiser.</p>
 
+      ${typeof SlidesAula !== 'undefined' ? SlidesAula.visibilityHTML(student) : ''}
+
       ${typeof saEditorHTML === 'function' ? saEditorHTML(student) : ''}`;
+    if (typeof SlidesAula !== 'undefined') SlidesAula.wireVisibility(mount, student);
     if (typeof saWireEditor === 'function') saWireEditor(mount, student);
 
     const urlInput = mount.querySelector('#shareUrl');
@@ -418,7 +421,10 @@ function renderStudentHome(shell, studentId) {
   const prof = typeof studentProfile === 'function' ? studentProfile(student) : 'writer';
   // The IG textbook, done on the real pages (livroOnline.js): first tile.
   const myBook = typeof LivroOnline !== 'undefined' ? LivroOnline.bookFor(student) : null;
+  // "Slides da aula" (slidesAula.js): only when the teacher turned it on for this student.
+  const slidesOn = typeof SlidesAula !== 'undefined' && SlidesAula.visibleFor(student.id);
   const T = {
+    slides: () => tile('slides', '📝', 'Slides da aula', 'Class slides — rever o que vimos na aula', 'stu-tile--slides'),
     book: () => (myBook ? tile('book', '📖', 'My book', 'Meu livro — fazer as páginas do livro aqui', 'stu-tile--book') : ''),
     progress: () => tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas'),
     homework: () => tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉'),
@@ -461,7 +467,7 @@ function renderStudentHome(shell, studentId) {
     writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'alphabet', 'games', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
-    .reduce((list, k) => list.concat([k]), myBook ? ['book'] : [])
+    .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []))
     .filter(k => !READY_TILE[k] || gameOk(READY_TILE[k]))
     .filter(k => k !== 'games' || topics.length)
     .map(k => T[k]());
@@ -506,6 +512,7 @@ function renderStudentHome(shell, studentId) {
 
   const go = {
     book: () => LivroOnline.openStudent(student),
+    slides: () => SlidesAula.openStudent(student),
     progress: () => openStudentProgress(student.id),
     homework: () => {
       const hw = pending[0] || homework[0];
