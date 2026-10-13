@@ -1,0 +1,601 @@
+{
+ "v": 1,
+ "book": "adventurers",
+ "bimester": 2,
+ "id": "adventurers:b2",
+ "title": "IG Adventurers",
+ "ages": "9–11",
+ "color": "#8e6d86",
+ "firstPage": 28,
+ "lastPage": 53,
+ "pageCount": 26,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 2"
+  },
+  {
+   "n": 4,
+   "title": "Level 4 · Science Academy"
+  },
+  {
+   "n": 5,
+   "title": "Level 5 · Detective Case"
+  },
+  {
+   "n": 6,
+   "title": "Level 6 · Animal Rescue"
+  }
+ ],
+ "stickerSheet": 53,
+ "pages": [
+  {
+   "n": 28,
+   "id": "p28",
+   "img": "p28.webp",
+   "thumb": "t28.webp",
+   "unit": 0,
+   "title": "Bimestre 2",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 29,
+   "id": "p29",
+   "img": "p29.webp",
+   "thumb": "t29.webp",
+   "unit": 4,
+   "title": "Level 4 · Science Academy",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u4-club-chant",
+     "file": "u4-club-chant.mp3",
+     "title": "Level 4 opener (Science Academy) – “Club Chant: Science Acad",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 30,
+   "id": "p30",
+   "img": "p30.webp",
+   "thumb": "t30.webp",
+   "unit": 4,
+   "title": "Discover: school subjects",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u4-listen-and-number",
+     "file": "u4-listen-and-number.mp3",
+     "title": "Lesson 1 · Discover – “School Subjects”, exercise A (Listen ",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 31,
+   "id": "p31",
+   "img": "p31.webp",
+   "thumb": "t31.webp",
+   "unit": 4,
+   "title": "Practice: imperatives",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 32,
+   "id": "p32",
+   "img": "p32.webp",
+   "thumb": "t32.webp",
+   "unit": 4,
+   "title": "Practice: there is and there are",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 33,
+   "id": "p33",
+   "img": "p33.webp",
+   "thumb": "t33.webp",
+   "unit": 4,
+   "title": "Use: the lab rules poster",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 34,
+   "id": "p34",
+   "img": "p34.webp",
+   "thumb": "t34.webp",
+   "unit": 4,
+   "title": "Use: Boss Challenge, rules for our online class",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 35,
+   "id": "p35",
+   "img": "p35.webp",
+   "thumb": "t35.webp",
+   "unit": 4,
+   "title": "Play: Teacher Says and spot the difference",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 36,
+   "id": "p36",
+   "img": "p36.webp",
+   "thumb": "t36.webp",
+   "unit": 4,
+   "title": "Review: Level 4 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 37,
+   "id": "p37",
+   "img": "p37.webp",
+   "thumb": "t37.webp",
+   "unit": 5,
+   "title": "Level 5 · Detective Case",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u5-club-chant",
+     "file": "u5-club-chant.mp3",
+     "title": "Level 5 opener (Detective Case) – “Club Chant: Who Is It?” b",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 38,
+   "id": "p38",
+   "img": "p38.webp",
+   "thumb": "t38.webp",
+   "unit": 5,
+   "title": "Discover: looks",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u5-listen-and-number",
+     "file": "u5-listen-and-number.mp3",
+     "title": "Lesson 1 · Discover – “Looks”, exercise A (Listen and number",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 39,
+   "id": "p39",
+   "img": "p39.webp",
+   "thumb": "t39.webp",
+   "unit": 5,
+   "title": "Practice: have got and has got",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 40,
+   "id": "p40",
+   "img": "p40.webp",
+   "thumb": "t40.webp",
+   "unit": 5,
+   "title": "Practice: clothes",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 41,
+   "id": "p41",
+   "img": "p41.webp",
+   "thumb": "t41.webp",
+   "unit": 5,
+   "title": "Use: the detective comic",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u5-comic",
+     "file": "u5-comic.mp3",
+     "title": "Lesson 3 · Use – “The Missing Camera” comic (Listen and read",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 42,
+   "id": "p42",
+   "img": "p42.webp",
+   "thumb": "t42.webp",
+   "unit": 5,
+   "title": "Use: Boss Challenge, describe a suspect",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 43,
+   "id": "p43",
+   "img": "p43.webp",
+   "thumb": "t43.webp",
+   "unit": 5,
+   "title": "Play: Guess Who?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 44,
+   "id": "p44",
+   "img": "p44.webp",
+   "thumb": "t44.webp",
+   "unit": 5,
+   "title": "Review: Level 5 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 45,
+   "id": "p45",
+   "img": "p45.webp",
+   "thumb": "t45.webp",
+   "unit": 6,
+   "title": "Level 6 · Animal Rescue",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u6-club-chant",
+     "file": "u6-club-chant.mp3",
+     "title": "Level 6 opener (Animal Rescue) – “Club Chant: Animal Rescue!",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 46,
+   "id": "p46",
+   "img": "p46.webp",
+   "thumb": "t46.webp",
+   "unit": 6,
+   "title": "Discover: animals and habitats",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-listen-and-number",
+     "file": "u6-listen-and-number.mp3",
+     "title": "Lesson 1 · Discover – “Amazing Animals”, exercise A (Listen ",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 47,
+   "id": "p47",
+   "img": "p47.webp",
+   "thumb": "t47.webp",
+   "unit": 6,
+   "title": "Practice: animal body parts",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 48,
+   "id": "p48",
+   "img": "p48.webp",
+   "thumb": "t48.webp",
+   "unit": 6,
+   "title": "Practice: can and can't",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 49,
+   "id": "p49",
+   "img": "p49.webp",
+   "thumb": "t49.webp",
+   "unit": 6,
+   "title": "Use: animal fact files",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-fact-files",
+     "file": "u6-fact-files.mp3",
+     "title": "Lesson 3 · Use – “Animal Fact Files” (Listen and read the fa",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 50,
+   "id": "p50",
+   "img": "p50.webp",
+   "thumb": "t50.webp",
+   "unit": 6,
+   "title": "Use: Boss Challenge, my animal fact file",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 51,
+   "id": "p51",
+   "img": "p51.webp",
+   "thumb": "t51.webp",
+   "unit": 6,
+   "title": "Play: Save Point Quiz Show, review of Levels…",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 52,
+   "id": "p52",
+   "img": "p52.webp",
+   "thumb": "t52.webp",
+   "unit": 6,
+   "title": "Review: Level 6 complete and Save Point",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 53,
+   "id": "p53",
+   "img": "p53.webp",
+   "thumb": "t53.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "b2s1",
+   "img": "stickers/b2s1.webp",
+   "kind": "b2s1",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.175,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b2s2",
+   "img": "stickers/b2s2.webp",
+   "kind": "b2s2",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    34
+   ],
+   "targets": [
+    {
+     "page": 34,
+     "x": 0.819,
+     "y": 0.4242
+    }
+   ],
+   "label": "p. 34"
+  },
+  {
+   "id": "b2s3",
+   "img": "stickers/b2s3.webp",
+   "kind": "b2s3",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    36
+   ],
+   "targets": [
+    {
+     "page": 36,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 36"
+  },
+  {
+   "id": "b2s4",
+   "img": "stickers/b2s4.webp",
+   "kind": "b2s4",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.3917,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b2s5",
+   "img": "stickers/b2s5.webp",
+   "kind": "b2s5",
+   "w": 0.1333,
+   "h": 0.0878,
+   "wmm": 28.0,
+   "hmm": 26.1,
+   "pages": [
+    41
+   ],
+   "targets": [
+    {
+     "page": 41,
+     "x": 0.8524,
+     "y": 0.6178
+    }
+   ],
+   "label": "p. 41"
+  },
+  {
+   "id": "b2s6",
+   "img": "stickers/b2s6.webp",
+   "kind": "b2s6",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    42
+   ],
+   "targets": [
+    {
+     "page": 42,
+     "x": 0.8286,
+     "y": 0.3333
+    }
+   ],
+   "label": "p. 42"
+  },
+  {
+   "id": "b2s7",
+   "img": "stickers/b2s7.webp",
+   "kind": "b2s7",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    44
+   ],
+   "targets": [
+    {
+     "page": 44,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 44"
+  },
+  {
+   "id": "b2s8",
+   "img": "stickers/b2s8.webp",
+   "kind": "b2s8",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6083,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b2s9",
+   "img": "stickers/b2s9.webp",
+   "kind": "b2s9",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    50
+   ],
+   "targets": [
+    {
+     "page": 50,
+     "x": 0.8286,
+     "y": 0.3333
+    }
+   ],
+   "label": "p. 50"
+  },
+  {
+   "id": "b2s10",
+   "img": "stickers/b2s10.webp",
+   "kind": "b2s10",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    52
+   ],
+   "targets": [
+    {
+     "page": 52,
+     "x": 0.8381,
+     "y": 0.4781
+    }
+   ],
+   "label": "p. 52"
+  },
+  {
+   "id": "b2s11",
+   "img": "stickers/b2s11.webp",
+   "kind": "b2s11",
+   "w": 0.1183,
+   "h": 0.0839,
+   "wmm": 24.8,
+   "hmm": 24.9,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.825,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  }
+ ]
+}

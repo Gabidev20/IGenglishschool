@@ -6,6 +6,8 @@
  "title": "IG Adventurers",
  "ages": "9–11",
  "color": "#8e6d86",
+ "firstPage": 1,
+ "lastPage": 27,
  "pageCount": 27,
  "imgW": 1500,
  "imgH": 2123,
