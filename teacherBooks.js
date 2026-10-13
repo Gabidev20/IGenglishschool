@@ -13,13 +13,27 @@ const TeacherBooks = (() => {
 
   // "IG-Little-Steps_Bimestre1.pdf" -> "IG Little Steps · Bimestre 1"
   function label(name) {
-    return name
+    return baseName(name)
       .replace(/\.pdf$/i, '')
       .replace(/_/g, ' · ')
       .replace(/([A-Za-z])-([A-Za-z])/g, '$1 $2')
       .replace(/(Bimestre|Unidades?)(\d)/gi, '$1 $2')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  // Uploading a book again without replacing it leaves "Book (1).pdf" next
+  // to "Book.pdf": both are the same book, and only the newest counts.
+  const baseName = name => name.replace(/\s*\(\d+\)(?=\.pdf$)/i, '');
+  const stamp = o => Date.parse(o.updated_at || o.created_at || '') || 0;
+  function newestOnly(objects) {
+    const best = new Map();
+    objects.forEach(o => {
+      const key = baseName(o.name).toLowerCase();
+      const cur = best.get(key);
+      if (!cur || stamp(o) > stamp(cur) || (stamp(o) === stamp(cur) && o.name.length > cur.name.length)) best.set(key, o);
+    });
+    return [...best.values()].sort((a, b) => baseName(a.name).localeCompare(baseName(b.name)));
   }
 
   function shell(inner) {
@@ -53,7 +67,7 @@ const TeacherBooks = (() => {
         limit: 200, sortBy: { column: 'name', order: 'asc' },
       });
       if (error) throw error;
-      const names = (data || []).map(o => o.name).filter(n => /\.pdf$/i.test(n));
+      const names = newestOnly((data || []).filter(o => /\.pdf$/i.test(o.name))).map(o => o.name);
       if (!names.length) {
         modalBody.innerHTML = shell(`
           <p class="tb-note">Nenhum livro por aqui ainda.</p>
