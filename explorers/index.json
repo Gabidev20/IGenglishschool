@@ -1,0 +1,25 @@
+{
+ "v": 1,
+ "id": "explorers",
+ "title": "IG Explorers",
+ "ages": "7–8",
+ "color": "#6f7d68",
+ "bimesters": [
+  {
+   "n": 1,
+   "path": "explorers/b1/manifest.json",
+   "pages": 24,
+   "first": 1,
+   "last": 24,
+   "interactive": true
+  },
+  {
+   "n": 2,
+   "path": "explorers/b2/manifest.json",
+   "pages": 23,
+   "first": 25,
+   "last": 47,
+   "interactive": false
+  }
+ ]
+}

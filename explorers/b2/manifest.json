@@ -1,0 +1,543 @@
+{
+ "v": 1,
+ "book": "explorers",
+ "bimester": 2,
+ "id": "explorers:b2",
+ "title": "IG Explorers",
+ "ages": "7–8",
+ "color": "#6f7d68",
+ "firstPage": 25,
+ "lastPage": 47,
+ "pageCount": 23,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 2"
+  },
+  {
+   "n": 4,
+   "title": "Unit 4 · The Airport"
+  },
+  {
+   "n": 5,
+   "title": "Unit 5 · Family Picnic"
+  },
+  {
+   "n": 6,
+   "title": "Unit 6 · Science Lab"
+  }
+ ],
+ "stickerSheet": 47,
+ "pages": [
+  {
+   "n": 25,
+   "id": "p25",
+   "img": "p25.webp",
+   "thumb": "t25.webp",
+   "unit": 0,
+   "title": "Bimestre 2",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 26,
+   "id": "p26",
+   "img": "p26.webp",
+   "thumb": "t26.webp",
+   "unit": 4,
+   "title": "Unit 4 · The Airport",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u4-airport-chant",
+     "file": "u4-airport-chant.mp3",
+     "title": "The Airport Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 27,
+   "id": "p27",
+   "img": "p27.webp",
+   "thumb": "t27.webp",
+   "unit": 4,
+   "title": "Discover: around the world",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u4-countries",
+     "file": "u4-countries.mp3",
+     "title": "Countries",
+     "available": true
+    },
+    {
+     "track": "u4-where-are-you-from",
+     "file": "u4-where-are-you-from.mp3",
+     "title": "Where Are You From? Listen and match.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 28,
+   "id": "p28",
+   "img": "p28.webp",
+   "thumb": "t28.webp",
+   "unit": 4,
+   "title": "Practice: I am, you are",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u4-at-the-airport",
+     "file": "u4-at-the-airport.mp3",
+     "title": "At the Airport",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 29,
+   "id": "p29",
+   "img": "p29.webp",
+   "thumb": "t29.webp",
+   "unit": 4,
+   "title": "Practice: where are you from?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u4-color-the-flags",
+     "file": "u4-color-the-flags.mp3",
+     "title": "Flags",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 30,
+   "id": "p30",
+   "img": "p30.webp",
+   "thumb": "t30.webp",
+   "unit": 4,
+   "title": "Use: my ID card",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 31,
+   "id": "p31",
+   "img": "p31.webp",
+   "thumb": "t31.webp",
+   "unit": 4,
+   "title": "Play: fly around the world",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 32,
+   "id": "p32",
+   "img": "p32.webp",
+   "thumb": "t32.webp",
+   "unit": 4,
+   "title": "Review: airport check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 33,
+   "id": "p33",
+   "img": "p33.webp",
+   "thumb": "t33.webp",
+   "unit": 5,
+   "title": "Unit 5 · Family Picnic",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u5-picnic-family-song",
+     "file": "u5-picnic-family-song.mp3",
+     "title": "The Picnic Family Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 34,
+   "id": "p34",
+   "img": "p34.webp",
+   "thumb": "t34.webp",
+   "unit": 5,
+   "title": "Discover: Lily’s family and pets",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u5-family",
+     "file": "u5-family.mp3",
+     "title": "Family",
+     "available": true
+    },
+    {
+     "track": "u5-pets",
+     "file": "u5-pets.mp3",
+     "title": "Pets",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 35,
+   "id": "p35",
+   "img": "p35.webp",
+   "thumb": "t35.webp",
+   "unit": 5,
+   "title": "Practice: he is, she is",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u5-lilys-family",
+     "file": "u5-lilys-family.mp3",
+     "title": "Lily’s Family",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 36,
+   "id": "p36",
+   "img": "p36.webp",
+   "thumb": "t36.webp",
+   "unit": 5,
+   "title": "Practice: pets at the picnic",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 37,
+   "id": "p37",
+   "img": "p37.webp",
+   "thumb": "t37.webp",
+   "unit": 5,
+   "title": "Use: my family photo",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 38,
+   "id": "p38",
+   "img": "p38.webp",
+   "thumb": "t38.webp",
+   "unit": 5,
+   "title": "Play: picnic games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 39,
+   "id": "p39",
+   "img": "p39.webp",
+   "thumb": "t39.webp",
+   "unit": 5,
+   "title": "Review: picnic check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 40,
+   "id": "p40",
+   "img": "p40.webp",
+   "thumb": "t40.webp",
+   "unit": 6,
+   "title": "Unit 6 · Science Lab",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u6-science-lab-chant",
+     "file": "u6-science-lab-chant.mp3",
+     "title": "The Science Lab Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 41,
+   "id": "p41",
+   "img": "p41.webp",
+   "thumb": "t41.webp",
+   "unit": 6,
+   "title": "Discover: school things",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-school-things",
+     "file": "u6-school-things.mp3",
+     "title": "School things",
+     "available": true
+    },
+    {
+     "track": "u6-lab-things",
+     "file": "u6-lab-things.mp3",
+     "title": "Lab things",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 42,
+   "id": "p42",
+   "img": "p42.webp",
+   "thumb": "t42.webp",
+   "unit": 6,
+   "title": "Practice: this or that?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 43,
+   "id": "p43",
+   "img": "p43.webp",
+   "thumb": "t43.webp",
+   "unit": 6,
+   "title": "Practice: what’s this?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-whats-this",
+     "file": "u6-whats-this.mp3",
+     "title": "What’s This? Listen and number.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 44,
+   "id": "p44",
+   "img": "p44.webp",
+   "thumb": "t44.webp",
+   "unit": 6,
+   "title": "Use: label the lab",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 45,
+   "id": "p45",
+   "img": "p45.webp",
+   "thumb": "t45.webp",
+   "unit": 6,
+   "title": "Review Camp: board game",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-listen-and-write",
+     "file": "u6-listen-and-write.mp3",
+     "title": "Review Camp",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 46,
+   "id": "p46",
+   "img": "p46.webp",
+   "thumb": "t46.webp",
+   "unit": 6,
+   "title": "Review Camp: check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 47,
+   "id": "p47",
+   "img": "p47.webp",
+   "thumb": "t47.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "map4",
+   "img": "stickers/map4.webp",
+   "kind": "map4",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "seal4",
+   "img": "stickers/seal4.webp",
+   "kind": "seal4",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    30
+   ],
+   "targets": [
+    {
+     "page": 30,
+     "x": 0.8476,
+     "y": 0.697
+    }
+   ],
+   "label": "p. 30"
+  },
+  {
+   "id": "reward4",
+   "img": "stickers/reward4.webp",
+   "kind": "reward4",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    32
+   ],
+   "targets": [
+    {
+     "page": 32,
+     "x": 0.5571,
+     "y": 0.7896
+    }
+   ],
+   "label": "p. 32"
+  },
+  {
+   "id": "map5",
+   "img": "stickers/map5.webp",
+   "kind": "map5",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "dog5",
+   "img": "stickers/dog5.webp",
+   "kind": "dog5",
+   "w": 0.0857,
+   "h": 0.0609,
+   "wmm": 18.0,
+   "hmm": 18.1,
+   "pages": [
+    36
+   ],
+   "targets": [
+    {
+     "page": 36,
+     "x": 0.5619,
+     "y": 0.6397
+    }
+   ],
+   "label": "p. 36"
+  },
+  {
+   "id": "reward5",
+   "img": "stickers/reward5.webp",
+   "kind": "reward5",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    39
+   ],
+   "targets": [
+    {
+     "page": 39,
+     "x": 0.5571,
+     "y": 0.7896
+    }
+   ],
+   "label": "p. 39"
+  },
+  {
+   "id": "map6",
+   "img": "stickers/map6.webp",
+   "kind": "map6",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "lab6",
+   "img": "stickers/lab6.webp",
+   "kind": "lab6",
+   "w": 0.1048,
+   "h": 0.0609,
+   "wmm": 22.0,
+   "hmm": 18.1,
+   "pages": [
+    44
+   ],
+   "targets": [
+    {
+     "page": 44,
+     "x": 0.3571,
+     "y": 0.3919
+    }
+   ],
+   "label": "p. 44"
+  },
+  {
+   "id": "reward6",
+   "img": "stickers/reward6.webp",
+   "kind": "reward6",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    46
+   ],
+   "targets": [
+    {
+     "page": 46,
+     "x": 0.4667,
+     "y": 0.8364
+    }
+   ],
+   "label": "p. 46"
+  }
+ ]
+}

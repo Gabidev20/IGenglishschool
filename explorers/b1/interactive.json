@@ -1,0 +1,961 @@
+{
+ "v": 1,
+ "units": "mm",
+ "book": "explorers",
+ "bimester": 1,
+ "note": "Auto-checked exercises (phase 2). Positions from the book sources (ix_extract.py); answers from the teacher's guides.",
+ "pages": {
+  "4": {
+   "items": [
+    {
+     "id": "m1",
+     "type": "match",
+     "left": [
+      {
+       "id": "pic1",
+       "x": 41.0,
+       "y": 237.0
+      },
+      {
+       "id": "pic2",
+       "x": 105.0,
+       "y": 237.0
+      },
+      {
+       "id": "pic3",
+       "x": 169.0,
+       "y": 237.0
+      }
+     ],
+     "right": [
+      {
+       "id": "bye",
+       "x": 41.0,
+       "y": 248.5
+      },
+      {
+       "id": "morning",
+       "x": 105.0,
+       "y": 248.5
+      },
+      {
+       "id": "afternoon",
+       "x": 169.0,
+       "y": 248.5
+      }
+     ],
+     "pairs": {
+      "pic1": "morning",
+      "pic2": "afternoon",
+      "pic3": "bye"
+     }
+    }
+   ]
+  },
+  "5": {
+   "items": [
+    {
+     "id": "abcB",
+     "type": "fill",
+     "x": 29.58,
+     "y": 211.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "B"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcD",
+     "type": "fill",
+     "x": 57.74,
+     "y": 211.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "D"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcG",
+     "type": "fill",
+     "x": 99.98,
+     "y": 211.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "G"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcJ",
+     "type": "fill",
+     "x": 142.22,
+     "y": 211.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "J"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcM",
+     "type": "fill",
+     "x": 184.46,
+     "y": 211.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "M"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcO",
+     "type": "fill",
+     "x": 29.58,
+     "y": 227.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "O"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcR",
+     "type": "fill",
+     "x": 71.82,
+     "y": 227.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "R"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcU",
+     "type": "fill",
+     "x": 114.06,
+     "y": 227.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "U"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcX",
+     "type": "fill",
+     "x": 156.3,
+     "y": 227.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "X"
+     ],
+     "size": 9
+    },
+    {
+     "id": "abcZ",
+     "type": "fill",
+     "x": 184.46,
+     "y": 227.42,
+     "w": 11,
+     "h": 13,
+     "accept": [
+      "Z"
+     ],
+     "size": 9
+    },
+    {
+     "id": "ch1",
+     "type": "fill",
+     "x": 24,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "F"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch2",
+     "type": "fill",
+     "x": 47,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "H"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch3",
+     "type": "fill",
+     "x": 68,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "l"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch4",
+     "type": "fill",
+     "x": 91,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "n"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch5",
+     "type": "fill",
+     "x": 112,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "R"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch6",
+     "type": "fill",
+     "x": 135,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "T"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch7",
+     "type": "fill",
+     "x": 156,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "x"
+     ],
+     "size": 8.5
+    },
+    {
+     "id": "ch8",
+     "type": "fill",
+     "x": 179,
+     "y": 264,
+     "w": 10,
+     "h": 12,
+     "accept": [
+      "z"
+     ],
+     "size": 8.5
+    }
+   ]
+  },
+  "16": {
+   "items": [
+    {
+     "id": "aan1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 44.1,
+       "y": 71.84,
+       "w": 5.6,
+       "h": 6.89,
+       "ok": false
+      },
+      {
+       "x": 53.88,
+       "y": 71.84,
+       "w": 8,
+       "h": 6.89,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "aan2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 106.1,
+       "y": 71.84,
+       "w": 5.6,
+       "h": 6.89,
+       "ok": true
+      },
+      {
+       "x": 115.88,
+       "y": 71.84,
+       "w": 8,
+       "h": 6.89,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "aan3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 168.1,
+       "y": 71.84,
+       "w": 5.6,
+       "h": 6.89,
+       "ok": false
+      },
+      {
+       "x": 177.88,
+       "y": 71.84,
+       "w": 8,
+       "h": 6.89,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "aan4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 44.1,
+       "y": 99.84,
+       "w": 5.6,
+       "h": 6.89,
+       "ok": true
+      },
+      {
+       "x": 53.88,
+       "y": 99.84,
+       "w": 8,
+       "h": 6.89,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "aan5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 106.1,
+       "y": 99.84,
+       "w": 5.6,
+       "h": 6.89,
+       "ok": false
+      },
+      {
+       "x": 115.88,
+       "y": 99.84,
+       "w": 8,
+       "h": 6.89,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "aan6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 168.1,
+       "y": 99.84,
+       "w": 5.6,
+       "h": 6.89,
+       "ok": true
+      },
+      {
+       "x": 177.88,
+       "y": 99.84,
+       "w": 8,
+       "h": 6.89,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "18": {
+   "items": [
+    {
+     "id": "cc1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 78.5,
+       "y": 193.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      },
+      {
+       "x": 86.7,
+       "y": 193.29,
+       "w": 8,
+       "h": 10,
+       "ok": true
+      },
+      {
+       "x": 94.89,
+       "y": 193.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "cc2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 170.49,
+       "y": 193.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      },
+      {
+       "x": 178.69,
+       "y": 193.29,
+       "w": 8,
+       "h": 10,
+       "ok": true
+      },
+      {
+       "x": 186.89,
+       "y": 193.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "cc3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 78.51,
+       "y": 221.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      },
+      {
+       "x": 86.71,
+       "y": 221.29,
+       "w": 8,
+       "h": 10,
+       "ok": true
+      },
+      {
+       "x": 94.89,
+       "y": 221.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "cc4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 170.49,
+       "y": 221.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      },
+      {
+       "x": 178.76,
+       "y": 221.29,
+       "w": 8,
+       "h": 10,
+       "ok": true
+      },
+      {
+       "x": 186.89,
+       "y": 221.29,
+       "w": 8,
+       "h": 10,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "19": {
+   "items": [
+    {
+     "id": "cw1",
+     "type": "fill",
+     "x": 25.2,
+     "y": 191.5,
+     "w": 41.6,
+     "h": 7.0,
+     "accept": [
+      "thirteen",
+      "thirteen coins"
+     ],
+     "size": 5
+    },
+    {
+     "id": "cw2",
+     "type": "fill",
+     "x": 117.2,
+     "y": 191.5,
+     "w": 41.6,
+     "h": 7.0,
+     "accept": [
+      "four",
+      "four maps"
+     ],
+     "size": 5
+    },
+    {
+     "id": "cw3",
+     "type": "fill",
+     "x": 25.2,
+     "y": 212.5,
+     "w": 41.6,
+     "h": 7.0,
+     "accept": [
+      "three",
+      "three ships"
+     ],
+     "size": 5
+    },
+    {
+     "id": "cw4",
+     "type": "fill",
+     "x": 117.2,
+     "y": 212.5,
+     "w": 41.6,
+     "h": 7.0,
+     "accept": [
+      "seven",
+      "seven stars"
+     ],
+     "size": 5
+    },
+    {
+     "id": "more1",
+     "type": "fill",
+     "x": 68.01,
+     "y": 249.7,
+     "w": 23.6,
+     "h": 7.0,
+     "accept": [
+      "pens",
+      "six pens"
+     ],
+     "size": 5
+    },
+    {
+     "id": "more2",
+     "type": "fill",
+     "x": 165.24,
+     "y": 249.7,
+     "w": 23.6,
+     "h": 7.0,
+     "accept": [
+      "apples",
+      "eleven apples"
+     ],
+     "size": 5
+    },
+    {
+     "id": "more3",
+     "type": "fill",
+     "x": 75.43,
+     "y": 262.2,
+     "w": 23.6,
+     "h": 7.0,
+     "accept": [
+      "books",
+      "seven books"
+     ],
+     "size": 5
+    },
+    {
+     "id": "more4",
+     "type": "fill",
+     "x": 166.29,
+     "y": 262.2,
+     "w": 23.6,
+     "h": 7.0,
+     "accept": [
+      "pencils",
+      "twenty pencils"
+     ],
+     "size": 5
+    }
+   ]
+  },
+  "20": {
+   "items": [
+    {
+     "id": "m1",
+     "type": "match",
+     "left": [
+      {
+       "id": "11",
+       "x": 30.0,
+       "y": 231.0
+      },
+      {
+       "id": "12",
+       "x": 60.0,
+       "y": 231.0
+      },
+      {
+       "id": "13",
+       "x": 90.0,
+       "y": 231.0
+      },
+      {
+       "id": "15",
+       "x": 120.0,
+       "y": 231.0
+      },
+      {
+       "id": "17",
+       "x": 150.0,
+       "y": 231.0
+      },
+      {
+       "id": "20",
+       "x": 180.0,
+       "y": 231.0
+      }
+     ],
+     "right": [
+      {
+       "id": "twenty",
+       "x": 30.0,
+       "y": 242.0
+      },
+      {
+       "id": "thirteen",
+       "x": 60.0,
+       "y": 242.0
+      },
+      {
+       "id": "eleven",
+       "x": 90.0,
+       "y": 242.0
+      },
+      {
+       "id": "seventeen",
+       "x": 120.0,
+       "y": 242.0
+      },
+      {
+       "id": "twelve",
+       "x": 150.0,
+       "y": 242.0
+      },
+      {
+       "id": "fifteen",
+       "x": 180.0,
+       "y": 242.0
+      }
+     ],
+     "pairs": {
+      "11": "eleven",
+      "12": "twelve",
+      "13": "thirteen",
+      "15": "fifteen",
+      "17": "seventeen",
+      "20": "twenty"
+     }
+    },
+    {
+     "id": "w1",
+     "type": "fill",
+     "x": 35.2,
+     "y": 272.9,
+     "w": 39.6,
+     "h": 7.0,
+     "accept": [
+      "fourteen"
+     ],
+     "size": 5
+    },
+    {
+     "id": "w2",
+     "type": "fill",
+     "x": 93.2,
+     "y": 272.9,
+     "w": 39.6,
+     "h": 7.0,
+     "accept": [
+      "eighteen"
+     ],
+     "size": 5
+    },
+    {
+     "id": "w3",
+     "type": "fill",
+     "x": 151.2,
+     "y": 272.9,
+     "w": 39.6,
+     "h": 7.0,
+     "accept": [
+      "nineteen"
+     ],
+     "size": 5
+    }
+   ]
+  },
+  "22": {
+   "items": [
+    {
+     "id": "lw1",
+     "type": "fill",
+     "x": 26,
+     "y": 225,
+     "w": 27.2,
+     "h": 9.4,
+     "accept": [
+      "MAP"
+     ],
+     "size": 7
+    },
+    {
+     "id": "lw2",
+     "type": "fill",
+     "x": 118,
+     "y": 225,
+     "w": 36.6,
+     "h": 9.4,
+     "accept": [
+      "BOOK"
+     ],
+     "size": 7
+    },
+    {
+     "id": "lw3",
+     "type": "fill",
+     "x": 26,
+     "y": 238.5,
+     "w": 55.4,
+     "h": 9.4,
+     "accept": [
+      "ORANGE"
+     ],
+     "size": 7
+    },
+    {
+     "id": "lw4",
+     "type": "fill",
+     "x": 118,
+     "y": 238.5,
+     "w": 46.0,
+     "h": 9.4,
+     "accept": [
+      "EIGHT"
+     ],
+     "size": 7
+    },
+    {
+     "id": "w1",
+     "type": "fill",
+     "x": 35.2,
+     "y": 270.9,
+     "w": 39.6,
+     "h": 7.0,
+     "accept": [
+      "eleven"
+     ],
+     "size": 5
+    },
+    {
+     "id": "w2",
+     "type": "fill",
+     "x": 93.2,
+     "y": 270.9,
+     "w": 39.6,
+     "h": 7.0,
+     "accept": [
+      "fifteen"
+     ],
+     "size": 5
+    },
+    {
+     "id": "w3",
+     "type": "fill",
+     "x": 151.2,
+     "y": 270.9,
+     "w": 39.6,
+     "h": 7.0,
+     "accept": [
+      "twenty"
+     ],
+     "size": 5
+    }
+   ],
+   "listen": [
+    {
+     "track": "u3-listen-and-write",
+     "x": 176.55,
+     "y": 225.57,
+     "r": 4.5
+    }
+   ]
+  },
+  "23": {
+   "items": [
+    {
+     "id": "m1",
+     "type": "match",
+     "left": [
+      {
+       "id": "q0",
+       "x": 93.0,
+       "y": 71.1
+      },
+      {
+       "id": "q1",
+       "x": 93.0,
+       "y": 81.1
+      },
+      {
+       "id": "q2",
+       "x": 93.0,
+       "y": 91.1
+      },
+      {
+       "id": "q3",
+       "x": 93.0,
+       "y": 101.1
+      },
+      {
+       "id": "q4",
+       "x": 93.0,
+       "y": 111.1
+      }
+     ],
+     "right": [
+      {
+       "id": "a0",
+       "x": 119.0,
+       "y": 71.1
+      },
+      {
+       "id": "a1",
+       "x": 119.0,
+       "y": 81.1
+      },
+      {
+       "id": "a2",
+       "x": 119.0,
+       "y": 91.1
+      },
+      {
+       "id": "a3",
+       "x": 119.0,
+       "y": 101.1
+      },
+      {
+       "id": "a4",
+       "x": 119.0,
+       "y": 111.1
+      }
+     ],
+     "pairs": {
+      "q0": "a1",
+      "q1": "a4",
+      "q2": "a3",
+      "q3": "a0",
+      "q4": "a2"
+     }
+    },
+    {
+     "id": "lw1",
+     "type": "fill",
+     "x": 17.2,
+     "y": 154.4,
+     "w": 36.6,
+     "h": 7.0,
+     "accept": [
+      "three apples",
+      "3 apples"
+     ],
+     "size": 4.6
+    },
+    {
+     "id": "lw2",
+     "type": "fill",
+     "x": 63.2,
+     "y": 154.4,
+     "w": 36.6,
+     "h": 7.0,
+     "accept": [
+      "an umbrella"
+     ],
+     "size": 4.6
+    },
+    {
+     "id": "lw3",
+     "type": "fill",
+     "x": 109.2,
+     "y": 154.4,
+     "w": 36.6,
+     "h": 7.0,
+     "accept": [
+      "five pencils",
+      "5 pencils"
+     ],
+     "size": 4.6
+    },
+    {
+     "id": "lw4",
+     "type": "fill",
+     "x": 155.2,
+     "y": 154.4,
+     "w": 36.6,
+     "h": 7.0,
+     "accept": [
+      "an eraser"
+     ],
+     "size": 4.6
+    }
+   ]
+  }
+ }
+}
