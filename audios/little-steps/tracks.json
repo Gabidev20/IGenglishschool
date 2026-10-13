@@ -60,6 +60,86 @@
       "title": "Numbers 1 to 10. Listen, point and count.",
       "subtitle": "Page 18",
       "file": "u3-numbers.mp3"
+    },
+    {
+      "id": "u4-shape-song",
+      "unit": 4,
+      "unitTitle": "Star Shapes",
+      "title": "Shape Song",
+      "subtitle": "Page 27",
+      "file": "u4-shape-song.mp3"
+    },
+    {
+      "id": "u4-shapes",
+      "unit": 4,
+      "title": "Shapes! Listen, point and color.",
+      "subtitle": "Page 28",
+      "file": "u4-shapes.mp3"
+    },
+    {
+      "id": "u4-big-or-small",
+      "unit": 4,
+      "title": "Big or small? Listen and circle.",
+      "subtitle": "Page 29",
+      "file": "u4-big-or-small.mp3"
+    },
+    {
+      "id": "u4-color-shapes",
+      "unit": 4,
+      "title": "Listen and color the shapes.",
+      "subtitle": "Page 29",
+      "file": "u4-color-shapes.mp3"
+    },
+    {
+      "id": "u5-robot-song",
+      "unit": 5,
+      "unitTitle": "Robot Planet",
+      "title": "Robot Song",
+      "subtitle": "Page 34",
+      "file": "u5-robot-song.mp3"
+    },
+    {
+      "id": "u5-body",
+      "unit": 5,
+      "title": "My body! Listen, point and color.",
+      "subtitle": "Page 35",
+      "file": "u5-body.mp3"
+    },
+    {
+      "id": "u5-touch-and-move",
+      "unit": 5,
+      "title": "Touch your nose! Listen and do.",
+      "subtitle": "Page 36",
+      "file": "u5-touch-and-move.mp3"
+    },
+    {
+      "id": "u6-family-song",
+      "unit": 6,
+      "unitTitle": "Planet Home",
+      "title": "Family Song",
+      "subtitle": "Page 41",
+      "file": "u6-family-song.mp3"
+    },
+    {
+      "id": "u6-family",
+      "unit": 6,
+      "title": "My family! Listen, point and color.",
+      "subtitle": "Page 42",
+      "file": "u6-family.mp3"
+    },
+    {
+      "id": "u6-who-is-it",
+      "unit": 6,
+      "title": "Who is it? Listen and circle.",
+      "subtitle": "Page 43",
+      "file": "u6-who-is-it.mp3"
+    },
+    {
+      "id": "u6-color-family",
+      "unit": 6,
+      "title": "Listen and color the shirts.",
+      "subtitle": "Page 44",
+      "file": "u6-color-family.mp3"
     }
   ]
 }

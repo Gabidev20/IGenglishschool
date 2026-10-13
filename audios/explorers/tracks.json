@@ -95,6 +95,107 @@
       "title": "Review Camp. Listen and write.",
       "subtitle": "Page 22",
       "file": "u3-listen-and-write.mp3"
+    },
+    {
+      "id": "u4-airport-chant",
+      "unit": 4,
+      "unitTitle": "The Airport",
+      "title": "The Airport Chant",
+      "subtitle": "Page 26",
+      "file": "u4-airport-chant.mp3"
+    },
+    {
+      "id": "u4-countries",
+      "unit": 4,
+      "title": "Countries. Listen, point and say.",
+      "subtitle": "Page 27",
+      "file": "u4-countries.mp3"
+    },
+    {
+      "id": "u4-where-are-you-from",
+      "unit": 4,
+      "title": "Where Are You From? Listen and match.",
+      "subtitle": "Page 27",
+      "file": "u4-where-are-you-from.mp3"
+    },
+    {
+      "id": "u4-at-the-airport",
+      "unit": 4,
+      "title": "At the Airport. Listen and read.",
+      "subtitle": "Page 28",
+      "file": "u4-at-the-airport.mp3"
+    },
+    {
+      "id": "u4-color-the-flags",
+      "unit": 4,
+      "title": "Flags. Listen and color.",
+      "subtitle": "Page 29",
+      "file": "u4-color-the-flags.mp3"
+    },
+    {
+      "id": "u5-picnic-family-song",
+      "unit": 5,
+      "unitTitle": "Family Picnic",
+      "title": "The Picnic Family Chant",
+      "subtitle": "Page 33",
+      "file": "u5-picnic-family-song.mp3"
+    },
+    {
+      "id": "u5-family",
+      "unit": 5,
+      "title": "Family. Listen, point and say.",
+      "subtitle": "Page 34",
+      "file": "u5-family.mp3"
+    },
+    {
+      "id": "u5-pets",
+      "unit": 5,
+      "title": "Pets. Listen, point and say.",
+      "subtitle": "Page 34",
+      "file": "u5-pets.mp3"
+    },
+    {
+      "id": "u5-lilys-family",
+      "unit": 5,
+      "title": "Lily’s Family. Listen and write the numbers.",
+      "subtitle": "Page 35",
+      "file": "u5-lilys-family.mp3"
+    },
+    {
+      "id": "u6-science-lab-chant",
+      "unit": 6,
+      "unitTitle": "Science Lab",
+      "title": "The Science Lab Chant",
+      "subtitle": "Page 40",
+      "file": "u6-science-lab-chant.mp3"
+    },
+    {
+      "id": "u6-school-things",
+      "unit": 6,
+      "title": "School things. Listen, point and say.",
+      "subtitle": "Page 41",
+      "file": "u6-school-things.mp3"
+    },
+    {
+      "id": "u6-lab-things",
+      "unit": 6,
+      "title": "Lab things. Listen, point and say.",
+      "subtitle": "Page 41",
+      "file": "u6-lab-things.mp3"
+    },
+    {
+      "id": "u6-whats-this",
+      "unit": 6,
+      "title": "What’s This? Listen and number.",
+      "subtitle": "Page 43",
+      "file": "u6-whats-this.mp3"
+    },
+    {
+      "id": "u6-listen-and-write",
+      "unit": 6,
+      "title": "Review Camp. Listen and write.",
+      "subtitle": "Page 45",
+      "file": "u6-listen-and-write.mp3"
     }
   ]
 }
