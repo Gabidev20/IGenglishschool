@@ -8697,7 +8697,7 @@ html.lo-open, html.lo-open body { overflow: hidden; }
 .lo-tray-item.is-here small { color: #b8953a; font-weight: 800; }
 .lo-ghost { position: fixed; left: 0; top: 0; width: 72px; height: 72px; object-fit: contain; pointer-events: none; z-index: 2700; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .3)); }
 
-.lo-tools { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 6px 6px 4px; background: #fff; }
+.lo-tools { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; padding: 6px 6px 4px; background: #fff; }
 .lo-tool {
   display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0;
   border: 2px solid transparent; background: #f6f2f5; border-radius: 14px; padding: 4px 2px; color: var(--ink);
@@ -8911,3 +8911,111 @@ html.lo-open, html.lo-open body { overflow: hidden; }
 @media (max-width: 1100px) {
   .lo-ed.is-slides .lo-vt-l { display: none; }
 }
+
+/* ---- bimester tabs -------------------------------------------------------- */
+.lo-bims { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+.lo-bim {
+  border: 2px solid var(--border); background: #fff; border-radius: 999px; padding: 6px 14px;
+  font-family: var(--font-display); font-weight: 800; font-size: .95rem; color: var(--ink); cursor: pointer;
+}
+.lo-bim small { font-family: var(--font-body); font-weight: 600; font-size: .75rem; color: var(--ink-soft); margin-left: 4px; }
+.lo-bim.is-on { border-color: var(--color-accent-pop); background: #ffe8ee; }
+.lo-bim.is-soon { opacity: .55; cursor: default; border-style: dashed; }
+
+/* ---- PHASE 2: auto-checked exercises ---------------------------------------- */
+.lo-page > svg.lo-ix { pointer-events: none; overflow: visible; }
+.lo-ix-hit { fill: transparent; stroke: none; }
+.lo-ix .lo-ix-listen { pointer-events: all; cursor: pointer; }
+.lo-ed.ix-on .lo-ix .lo-ix-hit { pointer-events: all; cursor: pointer; }
+.lo-ed.ix-on .lo-ix-opt { stroke: rgba(61, 139, 217, .45); stroke-width: .35; stroke-dasharray: 1.2 .9; }
+.lo-ed.ix-on .lo-ix-opt:hover { fill: rgba(61, 139, 217, .10); }
+.lo-ix-fill { stroke: rgba(61, 139, 217, .35); stroke-width: .3; stroke-dasharray: 1 .8; }
+.lo-ed.ix-on .lo-ix-fill { fill: rgba(61, 139, 217, .07); stroke: rgba(61, 139, 217, .6); }
+.lo-ix-fill.is-ok { stroke: rgba(63, 138, 82, .5); fill: rgba(92, 173, 90, .08); stroke-dasharray: none; }
+.lo-ix-fill.is-bad { stroke: rgba(229, 64, 63, .6); fill: rgba(229, 64, 63, .06); }
+.lo-ix-txt { font-family: 'Baloo 2', 'Comic Sans MS', system-ui, sans-serif; font-weight: 800; pointer-events: none;
+  paint-order: stroke; stroke: #fff; stroke-width: .5; }
+.lo-ix-txt.is-ok { fill: #2f7d3b; }
+.lo-ix-txt.is-bad { fill: #d0342f; }
+.lo-ix-txt.is-key { fill: #2f7d3b; opacity: .55; font-style: italic; }
+.lo-ix-ok { fill: none; stroke: #3f9a4d; stroke-width: .9; pointer-events: none; }
+.lo-ix-key { fill: none; stroke: #3f9a4d; stroke-width: .6; stroke-dasharray: 1.4 1; opacity: .8; pointer-events: none; }
+.lo-ix-dot { fill: #fff; stroke: #3d8bd9; stroke-width: .6; }
+.lo-ed.ix-on .lo-ix-dot { fill: #e3f0fa; }
+.lo-ix-dot.is-sel { fill: #f6cf3a; stroke: #b8953a; stroke-width: .9; }
+.lo-ix-dot.is-ok { fill: #5cad5a; stroke: #3f8a52; }
+.lo-ix-line { stroke: #3f9a4d; stroke-width: .9; stroke-linecap: round; pointer-events: none; }
+.lo-ix-line.is-key { stroke-dasharray: 1.6 1.2; opacity: .7; stroke-width: .6; }
+.lo-ix-listen circle { fill: #fff8e0; stroke: #e7c766; stroke-width: .6; }
+.lo-ix-listen text { pointer-events: none; }
+.lo-ix .lo-shake { animation: lo-shake .45s ease; transform-box: fill-box; transform-origin: center; fill: rgba(229, 64, 63, .18); stroke: #e5403f; }
+@keyframes lo-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-1.2px); } 40% { transform: translateX(1.2px); } 60% { transform: translateX(-.8px); } 80% { transform: translateX(.8px); } }
+
+.lo-tool[data-tool="tap"] { display: none; }
+.lo-ed.has-ix .lo-tool[data-tool="tap"] { display: flex; }
+.lo-tool[data-tool="tap"].is-on { border-color: #3d8bd9; background: #e3f0fa; }
+.lo-ixonly { display: none; }
+.lo-ed.has-ix .lo-ixonly { display: inline-flex; }
+.lo-score { display: inline-block; flex: 0 0 auto; font-weight: 800; font-family: var(--font-display); font-size: .95rem;
+  padding: 4px 10px; border-radius: 999px; background: #fff8e0; border: 2px solid #f1e3b5; white-space: nowrap; }
+.lo-score[hidden] { display: none; }
+.lo-score.is-full { background: #e6f4e6; border-color: #5cad5a; }
+
+.lo-anssheet {
+  position: absolute; left: 8px; right: 8px; top: 8px; z-index: 6; max-width: 480px; margin: 0 auto;
+  background: #fff; border-radius: 16px; box-shadow: var(--shadow-md); padding: 10px; display: grid; gap: 6px;
+}
+.lo-anssheet[hidden] { display: none; }
+.lo-anssheet label { font-weight: 700; font-size: .9rem; color: var(--ink-soft); }
+.lo-anssheet input {
+  flex: 1; min-width: 0; font: 800 20px/1.2 'Baloo 2', system-ui, sans-serif; padding: 8px 12px;
+  border: 2px solid #3d8bd9; border-radius: 12px;
+}
+
+.lo-ixbadge {
+  position: absolute; right: 4px; bottom: 4px; padding: 2px 6px; border-radius: 999px; font-size: .68rem; font-weight: 800;
+  background: #fff8e0; border: 1px solid #e7c766; box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.lo-ixbadge.is-full { background: #e6f4e6; border-color: #5cad5a; }
+.lo-t-big--ix { background: #fff8e0; }
+
+.lo-confetti { position: absolute; inset: 0; pointer-events: none; z-index: 7; overflow: hidden; }
+.lo-confetti span {
+  position: absolute; left: calc(10% + var(--i) * 11%); top: 55%; font-size: 30px;
+  animation: lo-pop 1.3s ease-out forwards; animation-delay: calc(var(--i) * 40ms);
+}
+@keyframes lo-pop { 0% { transform: translateY(0) scale(.4); opacity: 0; } 25% { opacity: 1; transform: translateY(-120px) scale(1.1); } 100% { transform: translateY(-260px) scale(.9) rotate(25deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .lo-confetti { display: none; } .lo-ix .lo-shake { animation: none; } }
+
+/* ==========================================================================
+   🎮 Games shortcut (gameShortcut.js) — also on top of the online book
+   ========================================================================== */
+.lo-open .modal-overlay { z-index: 2800; }
+.lo-chip--games { border-color: var(--primary); color: var(--primary-dark); }
+.lo-games-fab { display: none; }
+.lo-ed.is-present .lo-games-fab { display: block; }
+.gs-label { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; margin: 16px 0 8px; }
+.gs-label small { font-family: var(--font-body); font-weight: 600; font-size: .8rem; color: var(--ink-faint); }
+.gs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.gs-tile {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 6px;
+  border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--surface);
+  cursor: pointer; font-family: inherit; color: var(--ink); transition: transform .12s ease, border-color .12s ease;
+}
+.gs-tile:hover { transform: translateY(-3px); border-color: var(--primary); }
+.gs-icon { font-size: 2rem; line-height: 1.1; }
+.gs-tile b { font-size: .92rem; text-align: center; }
+.gs-tile small { font-size: .74rem; color: var(--ink-faint); text-align: center; }
+.gs-search { width: 100%; padding: 10px 14px; border: 2px solid var(--border); border-radius: 999px; font: inherit; font-size: 1rem; background: var(--surface); color: var(--ink); }
+.gs-search:focus { outline: none; border-color: var(--primary); }
+.gs-topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-top: 10px; }
+.gs-hint { grid-column: 1 / -1; margin: 2px 0; color: var(--ink-faint); font-size: .9rem; }
+.gs-topic {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px; text-align: left;
+  border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--surface);
+  cursor: pointer; font-family: inherit; color: var(--ink);
+}
+.gs-topic:hover { border-color: var(--primary); }
+.gs-topic-emoji { font-size: 1.4rem; }
+.gs-topic b { flex: 1; font-size: .92rem; }
+.gs-topic small { font-weight: 800; color: var(--ink-faint); }

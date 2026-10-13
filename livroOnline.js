@@ -68,6 +68,7 @@ const LivroOnline = (() => {
   ];
   const SIZES = { pen: [28, 55, 110], hl: [160, 330, 650], text: [300, 440, 640] };
   const TOOLS = [
+    { id: 'tap', icon: '👆', label: 'Responder' },   // only on pages with exercises
     { id: 'hand', icon: '✋', label: 'Mover' },
     { id: 'pen', icon: '✏️', label: 'Lápis' },
     { id: 'hl', icon: '🖍️', label: 'Pintar' },
@@ -86,19 +87,75 @@ const LivroOnline = (() => {
   // -------------------------------------------------------------------------
   // BOOKS, MANIFESTS AND WHO GETS WHICH BOOK
   // -------------------------------------------------------------------------
+  // Each bimester is its own folder: <base><book>/b<N>/ with manifest.json,
+  // the page images, stickers/ and (optional) interactive.json. <base> is
+  // 'livro-online/' or '' (site root) — whichever answers; each manifest keeps
+  // the one it was found in (m._base), so b1 and b2 may even live apart.
   const manifestCache = {};
-  function loadManifest(book) {
-    if (!manifestCache[book]) {
-      const get = base => fetch(`${base}${book}/b1/manifest.json`, { cache: 'no-cache' })
-        .then(r => { if (!r.ok) throw new Error('manifest ' + r.status); return r.json(); });
-      manifestCache[book] = get(BASE)
-        .catch(e => {
-          const other = BASE ? '' : 'livro-online/';
-          return get(other).then(j => { BASE = other; return j; }, () => { throw e; });
+  const fetchJSON = url => fetch(url, { cache: 'no-cache' })
+    .then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+  function fromEitherBase(path) {
+    const first = BASE, other = BASE ? '' : 'livro-online/';
+    return fetchJSON(first + path).then(j => ({ j, base: first }),
+      e => fetchJSON(other + path).then(j => ({ j, base: other }), () => { throw e; }));
+  }
+  function loadManifest(book, bim, withIx) {
+    bim = Number(bim) || 1;
+    const key = `${book}:${bim}`;
+    if (!manifestCache[key]) {
+      manifestCache[key] = fromEitherBase(`${book}/b${bim}/manifest.json`)
+        .then(({ j, base }) => {
+          if (bim === 1) BASE = base;
+          j._base = base;
+          j.book = j.book || book;
+          j.bimester = Number(j.bimester) || bim;
+          return withIx === false ? j : loadInteractive(j).then(() => j);
         })
-        .catch(e => { delete manifestCache[book]; throw e; });
+        .catch(e => { delete manifestCache[key]; throw e; });
     }
-    return manifestCache[book];
+    return manifestCache[key];
+  }
+  // PHASE 2: the auto-checked exercises of a bimester (interactive.json next to
+  // the manifest) are attached to their pages as page.interactive.
+  function loadInteractive(m) {
+    return fetch(dirOf(m) + 'interactive.json', { cache: 'no-cache' })
+      .then(r => (r.ok ? r.json() : null)).catch(() => null)
+      .then(ix => {
+        if (!ix || !ix.pages) return;
+        m.pages.forEach(p => {
+          const d = ix.pages[String(p.n)];
+          if (d && Array.isArray(d.items) && d.items.length) p.interactive = d;
+        });
+      });
+  }
+  // Every published bimester of a book, oldest first. The list comes from
+  // <book>/index.json (written by the build script); without it the app probes
+  // b1, b2… until one is missing. A bimester whose files are not on the site
+  // yet simply does not show.
+  const bookCache = {};
+  function loadBook(book) {
+    if (!bookCache[book]) {
+      bookCache[book] = fromEitherBase(`${book}/index.json`)
+        .then(({ j }) => (j.bimesters || []).map(b => ({ n: Number(b.n), ix: b.interactive !== false })).filter(b => b.n > 0),
+          () => null)
+        .then(async list => {
+          const out = [];
+          if (list && list.length) {
+            const got = await Promise.all(list.map(b => loadManifest(book, b.n, b.ix).catch(() => null)));
+            got.forEach(m => { if (m) out.push(m); });
+          } else {
+            for (let n = 1; n <= 8; n++) {
+              const m = await loadManifest(book, n).catch(() => null);
+              if (!m) break;
+              out.push(m);
+            }
+          }
+          if (!out.length) throw new Error('no manifest for ' + book);
+          return out.sort((a, b) => a.bimester - b.bimester);
+        })
+        .catch(e => { delete bookCache[book]; throw e; });
+    }
+    return bookCache[book];
   }
   const tracksCache = {};
   function loadTracks(book) {
@@ -145,7 +202,10 @@ const LivroOnline = (() => {
   // -------------------------------------------------------------------------
   // PAGE DATA
   // -------------------------------------------------------------------------
-  const pageId = (book, n) => `${book}:b1:p${String(n).padStart(2, '0')}`;
+  const pageId = (book, n, bim) => `${book}:b${bim || 1}:p${String(n).padStart(2, '0')}`;
+  const pid = (m, n) => pageId(m.book, n, m.bimester || 1);
+  const bookKey = m => `${m.book}:b${m.bimester || 1}`;
+  function dirOf(m) { return `${m && m._base != null ? m._base : BASE}${m.book}/b${(m && m.bimester) || 1}/`; }
   const lsKey = (sid, id) => `igbook:${sid}:${id}`;
   const emptyPage = () => ({ v: 1, strokes: [], texts: [], stickers: [], done: false, updatedAt: 0 });
   function normalize(p) {
@@ -157,7 +217,10 @@ const LivroOnline = (() => {
       stickers: Array.isArray(p.stickers) ? p.stickers.filter(s => s && s.s) : [],
       done: Boolean(p.done),
       updatedAt: typeof p.updatedAt === 'string' ? (Date.parse(p.updatedAt) || 0) : num(p.updatedAt, 0),
-      ...(p.answers ? { answers: p.answers } : {}),
+      ...(p.answers && typeof p.answers === 'object' ? { answers: p.answers } : {}),
+      ...(p.score && typeof p.score === 'object' ? { score: { ok: num(p.score.ok, 0), total: num(p.score.total, 0) } } : {}),
+      ...(p.ixDone ? { ixDone: true } : {}),
+      ...(p.xp ? { xp: num(p.xp, 0) } : {}),
     };
   }
   function readLocal(sid, id) {
@@ -184,6 +247,7 @@ const LivroOnline = (() => {
     let sid = null, book = null;
     let mode = 'local';        // local | cloud | offline | nosql
     let timer = null, busy = false, again = false;
+    let lastManifest = null;
     let lastStatus = 'idle';
     const dirty = new Set();
     const listeners = new Set();
@@ -191,26 +255,30 @@ const LivroOnline = (() => {
     function status(s) { lastStatus = s; listeners.forEach(fn => { try { fn(s); } catch (e) { /* view gone */ } }); }
     function settled() { return mode === 'cloud' ? 'saved' : mode === 'offline' ? 'offline' : 'local'; }
 
-    async function open(studentId, bookId, manifest) {
+    // Merge one bimester (manifest) of one student: cloud copy into the local
+    // cache, local-only/newer pages queued to go up. Called once per bimester.
+    async function open(studentId, _book, manifest) {
+      while (busy) await new Promise(r => setTimeout(r, 50));
       // Switching student: whatever is still waiting goes up first, under the
       // student it belongs to.
       if (dirty.size) await flush();
-      sid = studentId; book = bookId; dirty.clear();
+      if (studentId !== sid) dirty.clear();
+      sid = studentId; book = manifest.book; lastManifest = manifest;
       if (!adapter.possible()) { mode = 'local'; status('local'); return false; }
       try {
-        const rows = await adapter.readAll(sid, `${bookId}:b1`);
+        const rows = await adapter.readAll(sid, bookKey(manifest));
         if (!rows) { mode = 'local'; status('local'); return false; }
         const remote = {};
         rows.forEach(row => { if (row && row.id) remote[row.id] = normalize(row.payload); });
         let changed = false;
         manifest.pages.forEach(pg => {
-          const id = pageId(bookId, pg.n);
+          const id = pid(manifest, pg.n);
           const r = remote[id], l = readLocal(sid, id);
           if (r && (!l || r.updatedAt > l.updatedAt)) { writeLocal(sid, id, r); changed = true; }
           else if (l && (!r || l.updatedAt > r.updatedAt) && (hasWork(l) || l.done || r)) dirty.add(id);
         });
         mode = 'cloud';
-        if (dirty.size) flush(); else status('saved');
+        if (dirty.size) await flush(); else status('saved');
         return changed;
       } catch (e) {
         if (missingErr(e)) { mode = 'nosql'; status('local'); }
@@ -226,7 +294,7 @@ const LivroOnline = (() => {
       if (mode !== 'cloud' || !sid) return null;
       const who = sid;
       try {
-        const row = await adapter.readOne(who, `${book}:b1`, id);
+        const row = await adapter.readOne(who, id.replace(/:p\d+$/, ''), id);
         if (!row || who !== sid) return null;
         const r = normalize(row.payload), l = readLocal(who, id);
         if (!l || r.updatedAt > l.updatedAt) { writeLocal(who, id, r); return r; }
@@ -273,7 +341,7 @@ const LivroOnline = (() => {
 
     window.addEventListener('online', () => {
       if (mode !== 'offline' || !sid) return;
-      loadManifest(book).then(m => open(sid, book, m)).catch(() => {});
+      if (lastManifest) open(sid, book, lastManifest).catch(() => {});
     });
     const leave = () => { if (dirty.size) flush(); };
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') leave(); });
@@ -370,10 +438,10 @@ const LivroOnline = (() => {
     const w = (meta ? meta.w : 0.1) * W * k, h = (meta ? meta.h : 0.07) * H * k;
     return { x: num(st.x, 0) - w / 2, y: num(st.y, 0) - h / 2, w, h };
   }
-  function stickerSVG(st, meta, book) {
+  function stickerSVG(st, meta, dir) {
     if (!meta) return '';
     const b = stickerBox(st, meta);
-    return `<image class="lo-stk" href="${esc(BASE + book + '/b1/' + meta.img)}" x="${Math.round(b.x)}" y="${Math.round(b.y)}" width="${Math.round(b.w)}" height="${Math.round(b.h)}" preserveAspectRatio="none"/>`;
+    return `<image class="lo-stk" href="${esc(dir + meta.img)}" x="${Math.round(b.x)}" y="${Math.round(b.y)}" width="${Math.round(b.w)}" height="${Math.round(b.h)}" preserveAspectRatio="none"/>`;
   }
 
   // Two layers: the ink multiplies onto the printed page (colouring keeps the
@@ -383,7 +451,7 @@ const LivroOnline = (() => {
     const sm = stickerMap(manifest);
     return `<svg class="lo-ink" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${page.strokes.map(strokeSVG).join('')}</svg>
       <svg class="lo-over" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${
-      page.stickers.map(s => stickerSVG(s, sm[s.s], manifest.book)).join('')}${page.texts.map(textSVG).join('')}</svg>`;
+      page.stickers.map(s => stickerSVG(s, sm[s.s], dirOf(manifest))).join('')}${page.texts.map(textSVG).join('')}</svg>`;
   }
   const smCache = new WeakMap();
   function stickerMap(m) {
@@ -463,13 +531,14 @@ const LivroOnline = (() => {
   function openEditor(o) {
     const m = o.manifest;
     const book = m.book;
+    const dir = dirOf(m);
     const sm = stickerMap(m);
     const ro = Boolean(o.readOnly);
     const pf = prefs();
     let idx = clamp(o.index || 0, 0, o.pages.length - 1);
     let pg = o.pages[idx];
     let data = emptyPage();
-    let tool = ro ? 'hand' : (TOOLS.some(t => t.id === pf.tool) ? pf.tool : 'pen');
+    let tool = ro ? 'hand' : (TOOLS.some(t => t.id === pf.tool && t.id !== 'tap') ? pf.tool : 'pen');
     let color = col(pf.color || '#2e2b2e');
     const size = { pen: clamp(pf.pen | 0, 0, 2) || 1, hl: clamp(pf.hl | 0, 0, 2) || 1, text: clamp(pf.text | 0, 0, 2) || 1 };
     let hist = [], redoStack = [];
@@ -480,7 +549,7 @@ const LivroOnline = (() => {
     // frame; "Meia página" shows each page as two slides (top / bottom half).
     // Coordinates never change — only the part of the page on screen does.
     let slides = false;
-    let view = pf.view === 'half' ? 'half' : 'full';
+    let view = pf.view === 'full' ? 'full' : 'half';   // half by default: bigger text on screen-share
     let part = 'full';                       // 'full' | 'top' | 'bottom'
     let frame = { x: 0, y: 0, w: 300, h: 424, pad: 6 };
     const audio = new Audio();
@@ -492,6 +561,8 @@ const LivroOnline = (() => {
       <div class="lo-top">
         <button class="lo-ico" data-a="back" type="button" aria-label="Voltar" title="Voltar">←</button>
         <div class="lo-top-title"><b data-ref="pnum"></b><span data-ref="ptitle"></span></div>
+        <span class="lo-score" data-ref="score" title="Exercícios com correção automática"></span>
+        ${o.teacher ? '<button class="lo-ico lo-ixonly" data-a="showans" type="button" aria-label="Mostrar respostas" title="Mostrar respostas (só a teacher vê este botão)">🔑</button>' : ''}
         <div class="lo-viewtog lo-only-slides" role="group" aria-label="Como mostrar a página">
           <button type="button" data-a="view-full" title="Página inteira">📄<span class="lo-vt-l"> Página inteira</span></button>
           <button type="button" data-a="view-half" title="Meia página — letra maior">🔍<span class="lo-vt-l"> Meia página</span></button>
@@ -509,6 +580,7 @@ const LivroOnline = (() => {
         <div class="lo-classbar">
           <span class="lo-who" title="Aluno e livro desta aula">👤 <b>${esc(o.who.name)}</b> · ${esc(o.who.book)}</span>
           ${o.onSwitch ? '<button type="button" class="lo-chip" data-a="switch" title="Trocar aluno">🔄<span class="lo-chip-l"> Trocar aluno</span></button>' : ''}
+          <button type="button" class="lo-chip lo-chip--games" data-a="games" title="Jogos: abre um jogo e volta para esta página">🎮<span class="lo-chip-l"> Jogos</span></button>
           <button type="button" class="lo-chip" data-a="present" title="Apresentar: esconde os botões da professora para compartilhar a tela">🖥️<span class="lo-chip-l"> Apresentar</span></button>
         </div>` : ''}
       <div class="lo-audio" data-ref="audio" hidden></div>
@@ -518,14 +590,25 @@ const LivroOnline = (() => {
           <img data-ref="img" alt="" draggable="false" />
           <svg class="lo-ink" data-ref="ink" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><g data-ref="strokes"></g><path data-ref="live" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <svg class="lo-over" data-ref="over" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"></svg>
+          <svg class="lo-ix" data-ref="ix" viewBox="0 0 210 297" preserveAspectRatio="none"></svg>
         </div>
         <div class="lo-zoom">
           <button type="button" data-a="zin" aria-label="Aumentar">＋</button>
           <button type="button" data-a="zout" aria-label="Diminuir">－</button>
           <button type="button" data-a="fit" aria-label="Página inteira" title="Página inteira">⤢</button>
+          ${o.who ? '<button type="button" class="lo-games-fab" data-a="games" aria-label="Jogos" title="Jogos">🎮</button>' : ''}
           ${o.who ? '<button type="button" class="lo-present-exit" data-a="present" aria-label="Sair da apresentação" title="Sair da apresentação">🖥️</button>' : ''}
         </div>
         <div class="lo-toast" data-ref="toast" hidden></div>
+        ${ro ? '' : `
+        <div class="lo-anssheet" data-ref="ans" hidden>
+          <label for="loAnsIn" data-ref="ansq"></label>
+          <div class="lo-ts-row">
+            <input id="loAnsIn" data-ref="ansin" type="text" maxlength="80" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+            <button type="button" class="lo-chip" data-ans="cancel" aria-label="Cancelar">✕</button>
+            <button type="button" class="lo-chip lo-chip--ok" data-ans="ok">OK ✓</button>
+          </div>
+        </div>`}
         ${ro ? '' : `
         <div class="lo-textsheet" data-ref="sheet" hidden>
           <textarea data-ref="ta" rows="2" maxlength="400" placeholder="Escreva aqui… / Write here…"></textarea>
@@ -677,7 +760,7 @@ const LivroOnline = (() => {
       strip.innerHTML = o.pages.map((p, i) => {
         const d = normalize(o.load(p)).done;
         return `<button type="button" class="lo-sthumb${i === idx ? ' is-on' : ''}${d ? ' is-done' : ''}" data-goto="${i}" title="p. ${p.n}${p.title ? ' · ' + esc(p.title) : ''}">
-          <img src="${esc(BASE + book + '/b1/' + p.thumb)}" alt="" loading="lazy" draggable="false" /><small>${p.n}</small></button>`;
+          <img src="${esc(dir + p.thumb)}" alt="" loading="lazy" draggable="false" /><small>${p.n}</small></button>`;
       }).join('');
       markStrip();
     }
@@ -720,7 +803,7 @@ const LivroOnline = (() => {
     // ---- drawing the page ---------------------------------------------------
     function renderInk() { strokesG.innerHTML = data.strokes.map(strokeSVG).join(''); }
     function renderOver() {
-      let html = data.stickers.map(s => stickerSVG(s, sm[s.s], book)).join('') + data.texts.map(textSVG).join('');
+      let html = data.stickers.map(s => stickerSVG(s, sm[s.s], dir)).join('') + data.texts.map(textSVG).join('');
       const st = selected && data.stickers.find(s => s.id === selected);
       if (st && sm[st.s] && tool === 'sticker') {
         const b = stickerBox(st, sm[st.s]);
@@ -731,7 +814,7 @@ const LivroOnline = (() => {
       }
       over.innerHTML = html;
     }
-    function render() { renderInk(); renderOver(); paintChrome(); }
+    function render() { renderInk(); renderOver(); renderIx(); paintChrome(); }
 
     function paintChrome() {
       const partLabel = part === 'top' ? ' · parte de cima' : part === 'bottom' ? ' · parte de baixo' : '';
@@ -743,6 +826,17 @@ const LivroOnline = (() => {
       root.querySelector('[data-a="view-full"]').classList.toggle('is-on', view === 'full');
       root.querySelector('[data-a="view-half"]').classList.toggle('is-on', view === 'half');
       root.querySelector('[data-a="slides"]').classList.toggle('is-on', slides);
+      const sc = $('score');
+      if (hasIx()) {
+        const s = ixScore();
+        sc.textContent = `⭐ ${s.ok}/${s.total}`;
+        sc.hidden = false;
+        sc.classList.toggle('is-full', s.total > 0 && s.ok === s.total);
+        $('slabel').textContent += `  ⭐ ${s.ok}/${s.total}`;
+      } else sc.hidden = true;
+      const sa = root.querySelector('[data-a="showans"]');
+      if (sa) sa.classList.toggle('is-on', showAns);
+      root.classList.toggle('ix-on', !ro && tool === 'tap' && hasIx());
       markStrip();
       if (ro) {
         $('rodone').textContent = data.done ? '✓ Feita' : (hasWork(data) ? '✏️ Em andamento' : '— Em branco');
@@ -798,9 +892,232 @@ const LivroOnline = (() => {
       toast._t = setTimeout(() => { t.hidden = true; }, 1800);
     }
 
+    // ---- PHASE 2: auto-checked exercises (interactive.json) ---------------------
+    // Drawn in their own SVG layer in page millimetres (viewBox 210 x 297), so
+    // they follow the page in every view (normal, slides, half page, zoom).
+    // Active with the 👆 Responder tool; every other tool keeps working on top.
+    let showAns = false;
+    let ixSel = null;                 // match: { q, side, id } waiting for its pair
+    const ixItems = () => (pg.interactive && Array.isArray(pg.interactive.items) ? pg.interactive.items : []);
+    const hasIx = () => ixItems().length > 0;
+    const f2 = v => Math.round(num(v, 0) * 100) / 100;
+    const answerOf = q => (data.answers || {})[q] || null;
+    const normAns = v => String(v == null ? '' : v).toLowerCase()
+      .replace(/[’‘`´]/g, "'").replace(/[“”]/g, '"')
+      .replace(/\s+/g, ' ').trim()
+      .replace(/^["'(]+|["')]+$/g, '')
+      .replace(/[.!?,;:]+$/, '').trim();
+    function ixScore() {
+      let ok = 0, total = 0;
+      ixItems().forEach(it => { total += ixPoints(it); });
+      ok = ixEarned(pg, data);
+      return { ok, total };
+    }
+
+    function renderIx() {
+      const layer = $('ix');
+      if (!layer) return;
+      if (!hasIx()) { layer.innerHTML = ''; return; }
+      const key = showAns && !!o.teacher;
+      let h = '';
+      ixItems().forEach(it => {
+        const a = answerOf(it.id) || {};
+        if (it.type === 'choice') {
+          const picks = Array.isArray(a.v) ? a.v : [];
+          (it.options || []).forEach((op, i) => {
+            const x = f2(op.x), y = f2(op.y), w = f2(op.w), hh = f2(op.h);
+            const picked = picks.includes(i) && op.ok;
+            if (picked) h += `<ellipse class="lo-ix-ok" cx="${f2(x + w / 2)}" cy="${f2(y + hh / 2)}" rx="${f2(w / 2 + 1.2)}" ry="${f2(hh / 2 + 1.2)}"/>`;
+            else if (key && op.ok) h += `<ellipse class="lo-ix-key" cx="${f2(x + w / 2)}" cy="${f2(y + hh / 2)}" rx="${f2(w / 2 + 1.2)}" ry="${f2(hh / 2 + 1.2)}"/>`;
+            h += `<rect class="lo-ix-hit lo-ix-opt" data-q="${esc(it.id)}" data-o="${i}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1.5"/>`;
+          });
+        } else if (it.type === 'fill') {
+          const x = f2(it.x), y = f2(it.y), w = f2(it.w), hh = f2(it.h);
+          const fs = f2(it.size || Math.min(hh * 0.78, 6));
+          const tx = f2(x + w / 2), ty = f2(y + hh * 0.5 + fs * 0.35);
+          h += `<rect class="lo-ix-hit lo-ix-fill${a.ok ? ' is-ok' : a.v ? ' is-bad' : ''}" data-q="${esc(it.id)}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1"/>`;
+          if (a.v) h += `<text class="lo-ix-txt${a.ok ? ' is-ok' : ' is-bad'}" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc(a.v)}</text>`;
+          else if (key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
+          if (a.v && !a.ok && key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${f2(y - 0.6)}" font-size="${f2(fs * 0.7)}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
+        } else if (it.type === 'match') {
+          const L = it.left || [], R = it.right || [];
+          const pt = (side, id) => (side === 'l' ? L : R).find(d => d.id === id);
+          const found = (a.v && typeof a.v === 'object') ? a.v : {};
+          Object.keys(it.pairs || {}).forEach(l => {
+            const r = it.pairs[l], p1 = pt('l', l), p2 = pt('r', r);
+            if (!p1 || !p2) return;
+            if (found[l] === r) h += `<line class="lo-ix-line" x1="${f2(p1.x)}" y1="${f2(p1.y)}" x2="${f2(p2.x)}" y2="${f2(p2.y)}"/>`;
+            else if (key) h += `<line class="lo-ix-line is-key" x1="${f2(p1.x)}" y1="${f2(p1.y)}" x2="${f2(p2.x)}" y2="${f2(p2.y)}"/>`;
+          });
+          [['l', L], ['r', R]].forEach(([side, list]) => list.forEach(d => {
+            const done = side === 'l' ? found[d.id] : Object.values(found).includes(d.id);
+            const sel = ixSel && ixSel.q === it.id && ixSel.side === side && ixSel.id === d.id;
+            h += `<circle class="lo-ix-hit lo-ix-dot${done ? ' is-ok' : ''}${sel ? ' is-sel' : ''}" data-q="${esc(it.id)}" data-side="${side}" data-id="${esc(d.id)}" cx="${f2(d.x)}" cy="${f2(d.y)}" r="${f2(d.r || 2.6)}"/>`;
+          }));
+        }
+      });
+      (pg.interactive.listen || []).forEach(l => {
+        h += `<g class="lo-ix-hit lo-ix-listen" data-track="${esc(l.track)}" transform="translate(${f2(l.x)} ${f2(l.y)})"><circle r="${f2(l.r || 5)}"/><text y="${f2((l.r || 5) * 0.38)}" font-size="${f2((l.r || 5) * 1.05)}" text-anchor="middle">🔊</text></g>`;
+      });
+      layer.innerHTML = h;
+    }
+
+    function ixFlash(el, cls) {
+      if (!el) return;
+      el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls);
+      setTimeout(() => el.classList.remove(cls), 600);
+    }
+    function ixCommit(q, val) {
+      remember();
+      data.answers = { ...(data.answers || {}), [q]: val };
+      data.score = ixScore();
+      const s = data.score;
+      if (s.total && s.ok === s.total && !data.ixDone) {
+        data.ixDone = true;
+        data.done = true;
+        let extra = '';
+        // Adventurers counts XP in the book itself: +10 XP once per page.
+        if (book === 'adventurers' && !data.xp && o.studentId && typeof addXP === 'function') {
+          try { addXP(o.studentId, 10); data.xp = 10; extra = ' +10 XP'; } catch (e) { /* progress not loaded */ }
+        }
+        changed();
+        celebrate(`🎉 Página completa! ${s.ok}/${s.total} ⭐${extra}`);
+        return;
+      }
+      changed();
+    }
+    function celebrate(text) {
+      toast(text);
+      const box = document.createElement('div');
+      box.className = 'lo-confetti';
+      box.innerHTML = ['⭐', '🎉', '✨', '🌟', '🎊', '⭐', '✨', '🎉'].map((e, i) => `<span style="--i:${i}">${e}</span>`).join('');
+      stage.appendChild(box);
+      setTimeout(() => box.remove(), 1400);
+    }
+    const tryAgain = () => toast(['Try again! 💪', 'Quase! Tente de novo 🙂', 'Oops! Try again ✨'][Math.floor(Math.random() * 3)]);
+
+    function playTrack(track) {
+      loadTracks(book).then(tracks => {
+        const t = tracks[track];
+        const fromPage = (pg.audio || []).find(a => a.track === track);
+        const file = (t && t.file) || (fromPage && fromPage.file);
+        if (!file) { toast('Áudio indisponível.'); return; }
+        const src = `audios/${book}/${file}`;
+        if (!audio.paused && audio.src.endsWith(encodeURI(src))) { audio.pause(); return; }
+        if (!audio.src.endsWith(encodeURI(src))) audio.src = src;
+        audioBtn = null;
+        audio.play().catch(() => toast('Não consegui tocar o áudio agora.'));
+      });
+    }
+
+    function onIx(el) {
+      if (el.dataset.track) { playTrack(el.dataset.track); return; }
+      if (ro) return;
+      const it = ixItems().find(x => x.id === el.dataset.q);
+      if (!it) return;
+      const a = answerOf(it.id) || { ok: false, t: 0 };
+      if (it.type === 'choice') {
+        if (a.ok) return;
+        const i = Number(el.dataset.o);
+        const op = (it.options || [])[i];
+        if (!op) return;
+        if (op.ok) {
+          const picks = Array.isArray(a.v) ? a.v.slice() : [];
+          if (!picks.includes(i)) picks.push(i);
+          const need = it.options.map((x, j) => (x.ok ? j : -1)).filter(j => j >= 0);
+          ixCommit(it.id, { ok: need.every(j => picks.includes(j)), v: picks, t: a.t || 0 });
+          if (!need.every(j => picks.includes(j))) toast('✓ Isso! Tem mais…');
+        } else {
+          ixFlash(el, 'lo-shake');
+          data.answers = { ...(data.answers || {}), [it.id]: { ...a, t: (a.t || 0) + 1 } };
+          data.updatedAt = Date.now(); if (o.save) o.save(pg, data);
+          tryAgain();
+        }
+      } else if (it.type === 'fill') {
+        openAnswer(it);
+      } else if (it.type === 'match') {
+        const side = el.dataset.side, id = el.dataset.id;
+        const found = { ...((a.v && typeof a.v === 'object') ? a.v : {}) };
+        if (side === 'l' ? found[id] : Object.values(found).includes(id)) return;     // already matched
+        if (!ixSel || ixSel.q !== it.id || ixSel.side === side) { ixSel = { q: it.id, side, id }; renderIx(); return; }
+        const l = side === 'l' ? id : ixSel.id, r = side === 'r' ? id : ixSel.id;
+        ixSel = null;
+        if ((it.pairs || {})[l] === r) {
+          found[l] = r;
+          ixCommit(it.id, { ok: Object.keys(it.pairs).every(k => found[k] === it.pairs[k]), v: found, t: a.t || 0 });
+        } else {
+          renderIx();
+          $('ix').querySelectorAll(`.lo-ix-dot[data-q="${CSS.escape(it.id)}"]`).forEach(d => {
+            if ((d.dataset.side === 'l' && d.dataset.id === l) || (d.dataset.side === 'r' && d.dataset.id === r)) ixFlash(d, 'lo-shake');
+          });
+          data.answers = { ...(data.answers || {}), [it.id]: { ...a, v: found, t: (a.t || 0) + 1 } };
+          data.updatedAt = Date.now(); if (o.save) o.save(pg, data);
+          tryAgain();
+        }
+      }
+    }
+
+    // Fill-in: a big input in a sheet (16px+ so phones do not zoom), checked on OK.
+    let answering = null;
+    function openAnswer(it) {
+      const sheet = $('ans'), input = $('ansin');
+      if (!sheet) return;
+      answering = it;
+      const a = answerOf(it.id);
+      input.value = a && a.v ? a.v : '';
+      $('ansq').textContent = it.hint || 'Escreva a resposta / Write the answer';
+      sheet.hidden = false;
+      setTimeout(() => { try { input.focus({ preventScroll: true }); input.select(); } catch (e) { input.focus(); } }, 30);
+    }
+    function closeAnswer(check) {
+      const sheet = $('ans'), input = $('ansin');
+      if (!sheet || !answering) return;
+      const it = answering;
+      answering = null;
+      sheet.hidden = true;
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      if (!check) return;
+      const v = input.value.replace(/\s+/g, ' ').trim();
+      const a = answerOf(it.id) || { t: 0 };
+      if (!v) {
+        if (a.v) { remember(); const rest = { ...(data.answers || {}) }; delete rest[it.id]; data.answers = rest; data.score = ixScore(); changed(); }
+        return;
+      }
+      const ok = (it.accept || []).some(x => normAns(x) === normAns(v));
+      if (ok) ixCommit(it.id, { ok: true, v, t: a.t || 0 });
+      else {
+        ixCommit(it.id, { ok: false, v, t: (a.t || 0) + 1 });
+        const el = $('ix').querySelector(`.lo-ix-fill[data-q="${CSS.escape(it.id)}"]`);
+        ixFlash(el, 'lo-shake');
+        tryAgain();
+      }
+    }
+    if (!ro) {
+      $('ans').addEventListener('click', e => {
+        const b = e.target.closest('[data-ans]');
+        if (b) closeAnswer(b.dataset.ans === 'ok');
+      });
+      $('ansin').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); closeAnswer(true); }
+        else if (e.key === 'Escape') { e.preventDefault(); closeAnswer(false); }
+      });
+    }
+
+    // Entering a page: exercises on it -> the 👆 tool is picked for the child.
+    function ixOnPage() {
+      ixSel = null;
+      showAns = false;
+      if (answering) closeAnswer(false);
+      root.classList.toggle('has-ix', hasIx());
+      if (ro) return;
+      if (hasIx()) { if (tool !== 'tap') { tool = 'tap'; } }
+      else if (tool === 'tap') { const t = prefs().tool; tool = TOOLS.some(x => x.id === t && t !== 'tap') ? t : 'pen'; }
+    }
+
     // ---- pages ----------------------------------------------------------------
     function leavePage() {
       closeSheet();
+      if (answering) closeAnswer(false);
       if (!ro && o.sync) o.sync.flush();
     }
     function goto(i, wantPart) {
@@ -811,10 +1128,11 @@ const LivroOnline = (() => {
       part = halfView() ? (wantPart === 'bottom' ? 'bottom' : 'top') : 'full';
       data = normalize(o.load(pg));
       hist = []; redoStack = []; selected = null;
-      img.src = `${BASE}${book}/b1/${pg.img}`;
+      ixOnPage();
+      img.src = `${dir}${pg.img}`;
       img.alt = `Página ${pg.n}: ${pg.title || ''}`;
       const nxt = o.pages[idx + 1];
-      if (nxt) { const pre = new Image(); pre.src = `${BASE}${book}/b1/${nxt.img}`; }
+      if (nxt) { const pre = new Image(); pre.src = `${dir}${nxt.img}`; }
       computeBase(); z = 1; applyView();
       fadeIn();
       render();
@@ -826,7 +1144,7 @@ const LivroOnline = (() => {
       // teacher in class): take the newer cloud copy if nothing was drawn yet.
       if (!ro && o.sync && o.sync.refresh) {
         const opened = pg;
-        o.sync.refresh(pageId(book, opened.n)).then(fresh => {
+        o.sync.refresh(pid(m, opened.n)).then(fresh => {
           if (!fresh || o.pages[idx] !== opened || hist.length || editing || act) return;
           data = normalize(fresh);
           selected = null;
@@ -891,6 +1209,8 @@ const LivroOnline = (() => {
         opts.innerHTML = `<div class="lo-opt-group">${sizes('text')}</div><div class="lo-opt-group lo-colors">${sw(COLORS)}</div><span class="lo-hint">Toque na página onde quer escrever.</span>`;
       } else if (tool === 'eraser') {
         opts.innerHTML = '<span class="lo-hint">🧽 Passe o dedo ou o mouse sobre o traço para apagar.</span>';
+      } else if (tool === 'tap') {
+        opts.innerHTML = '<span class="lo-hint">👆 Toque na resposta certa. Para escrever, toque na linha. As outras ferramentas também funcionam aqui.</span>';
       } else if (tool === 'hand') {
         opts.innerHTML = '<span class="lo-hint">✋ Arraste para mover a página. Dois dedos (ou a rodinha do mouse) para zoom.</span>';
       } else if (tool === 'sticker') {
@@ -898,7 +1218,7 @@ const LivroOnline = (() => {
         const rest = m.stickers.filter(s => !(s.pages || []).includes(pg.n));
         opts.innerHTML = `<div class="lo-tray" data-ref="tray">${here.concat(rest).map(s => `
           <button type="button" class="lo-tray-item${here.includes(s) ? ' is-here' : ''}" data-stk="${esc(s.id)}" title="${s.label ? 'Vai na ' + esc(s.label) : 'Adesivo livre'}">
-            <img src="${esc(BASE + book + '/b1/' + s.img)}" alt="" draggable="false" /><small>${here.includes(s) ? 'aqui!' : esc(s.label || 'livre')}</small>
+            <img src="${esc(dir + s.img)}" alt="" draggable="false" /><small>${here.includes(s) ? 'aqui!' : esc(s.label || 'livre')}</small>
           </button>`).join('')}</div>`;
         wireTray(opts.querySelector('[data-ref="tray"]'));
       }
@@ -1070,7 +1390,7 @@ const LivroOnline = (() => {
       const u = toUnits(e.clientX, e.clientY);
       const [b0, b1] = band();
       const offBand = part !== 'full' && (u.y < b0 * H || u.y > b1 * H);
-      const pan = ro || tool === 'hand' || e.button === 1 || offBand || (penSeen && e.pointerType === 'touch' && drawTool());
+      const pan = ro || tool === 'hand' || tool === 'tap' || e.button === 1 || offBand || (penSeen && e.pointerType === 'touch' && drawTool());
       if (!pan && tool === 'sticker') {
         if (hitHandle(u, 'del')) {
           remember();
@@ -1172,7 +1492,13 @@ const LivroOnline = (() => {
     let pinch = null;
 
     stage.addEventListener('pointerdown', e => {
-      if (e.target.closest('.lo-zoom, .lo-textsheet, .lo-toast')) return;
+      if (e.target.closest('.lo-zoom, .lo-textsheet, .lo-toast, .lo-anssheet')) return;
+      const ixHit = e.target.closest && e.target.closest('.lo-ix-hit');
+      if (ixHit && pts.size === 0 && (ixHit.classList.contains('lo-ix-listen') || (!ro && tool === 'tap'))) {
+        e.preventDefault();
+        onIx(ixHit);
+        return;
+      }
       if (e.pointerType === 'mouse' && e.button === 2) return;
       root.classList.remove('opts-open');
       if (e.pointerType === 'pen') penSeen = true;
@@ -1230,7 +1556,7 @@ const LivroOnline = (() => {
         if (slides) root.classList.toggle('opts-open', withOpts && (t.dataset.tool !== tool || !root.classList.contains('opts-open')));
         tool = t.dataset.tool;
         if (tool !== 'sticker') selected = null;
-        savePrefs({ ...prefs(), tool });
+        if (tool !== 'tap') savePrefs({ ...prefs(), tool });
         paintChrome(); paintOpts(); renderOver();
         return;
       }
@@ -1246,6 +1572,13 @@ const LivroOnline = (() => {
       switch (a.dataset.a) {
         case 'back': back(); break;
         case 'present': root.classList.toggle('is-present'); computeBase(); applyView(); break;
+        case 'games':
+          if (typeof openGamesMenu === 'function') {
+            const t = root.querySelector('[data-ref="ptitle"]');
+            openGamesMenu({ pageTitle: t ? t.textContent.trim() : '' });
+          }
+          break;
+        case 'showans': showAns = !showAns; renderIx(); paintChrome(); break;
         case 'view-full': setView('full'); break;
         case 'view-half': setView('half'); break;
         case 'fs': toggleFs(); break;
@@ -1275,6 +1608,7 @@ const LivroOnline = (() => {
           if (confirm('Apagar tudo o que você fez nesta página?')) {
             remember();
             data.strokes = []; data.texts = []; data.stickers = []; selected = null;
+            if (data.answers) { delete data.answers; delete data.score; delete data.ixDone; }
             changed();
           }
           break;
@@ -1317,15 +1651,33 @@ const LivroOnline = (() => {
   // -------------------------------------------------------------------------
   // BOOK HOME — units, thumbnails, ✓ (student) / progress (teacher)
   // -------------------------------------------------------------------------
+  // Points of a page's auto-checked exercises (phase 2) and what was earned.
+  const ixPoints = it => (it.type === 'match' ? Object.keys(it.pairs || {}).length : 1);
+  function ixTotal(p) { return p && p.interactive ? p.interactive.items.reduce((n, it) => n + ixPoints(it), 0) : 0; }
+  function ixEarned(p, w) {
+    if (!p || !p.interactive) return 0;
+    const a = (w && w.answers) || {};
+    return p.interactive.items.reduce((n, it) => {
+      const r = a[it.id];
+      if (!r) return n;
+      if (it.type === 'match') return n + Object.keys(r.v || {}).filter(k => (it.pairs || {})[k] === r.v[k]).length;
+      return n + (r.ok ? 1 : 0);
+    }, 0);
+  }
+
   function progressOf(manifest, getPage) {
     const pages = contentPages(manifest);
     const done = pages.filter(p => getPage(p).done).length;
     const started = pages.filter(p => hasWork(getPage(p))).length;
+    let ixOk = 0, ixAll = 0;
     const units = manifest.units.map(u => {
       const list = pages.filter(p => p.unit === u.n);
-      return { ...u, total: list.length, done: list.filter(p => getPage(p).done).length };
+      let ok = 0, all = 0;
+      list.forEach(p => { const t = ixTotal(p); if (t) { all += t; ok += ixEarned(p, getPage(p)); } });
+      ixOk += ok; ixAll += all;
+      return { ...u, total: list.length, done: list.filter(p => getPage(p).done).length, ixOk: ok, ixAll: all };
     }).filter(u => u.total);
-    return { total: pages.length, done, started, units };
+    return { total: pages.length, done, started, units, ixOk, ixAll };
   }
 
   function cardsHTML(manifest, getPage) {
@@ -1340,13 +1692,16 @@ const LivroOnline = (() => {
           <div class="lo-grid">
             ${list.map(p => {
               const w = getPage(p);
+              const t = ixTotal(p);
+              const e = t ? ixEarned(p, w) : 0;
               return `
                 <button type="button" class="lo-card${w.done ? ' is-done' : ''}" data-n="${p.n}">
                   <span class="lo-thumb">
-                    <img src="${esc(BASE + manifest.book + '/b1/' + p.thumb)}" alt="" loading="lazy" draggable="false" />
+                    <img src="${esc(dirOf(manifest) + p.thumb)}" alt="" loading="lazy" draggable="false" />
                     ${overlayHTML(w, manifest)}
                     ${w.done ? '<span class="lo-check" aria-label="feita">✓</span>' : hasWork(w) ? '<span class="lo-dot" aria-label="começada">✏️</span>' : ''}
                     ${(p.audio || []).length ? '<span class="lo-has-audio" aria-label="tem áudio">🎧</span>' : ''}
+                    ${t ? `<span class="lo-ixbadge${e === t ? ' is-full' : ''}" title="Exercícios com correção">${e || w.answers ? `⭐ ${e}/${t}` : '🎯'}</span>` : ''}
                   </span>
                   <span class="lo-card-n">p. ${p.n}</span>
                   <span class="lo-card-t">${esc(p.title || '')}</span>
@@ -1357,26 +1712,49 @@ const LivroOnline = (() => {
     }).join('');
   }
 
+  // "Bimestre 1 · 2" tabs; the next bimester shows as "em breve".
+  function bimTabsHTML(ms, cur, getPageFor) {
+    const last = ms[ms.length - 1].bimester;
+    const soon = last < 4 ? `<span class="lo-bim is-soon" aria-disabled="true">Bimestre ${last + 1} <small>em breve</small></span>` : '';
+    return `<div class="lo-bims" role="tablist" aria-label="Bimestre">
+      ${ms.map(m => {
+        const pr = progressOf(m, getPageFor(m));
+        return `<button type="button" role="tab" class="lo-bim${m === cur ? ' is-on' : ''}" data-bim="${m.bimester}" aria-selected="${m === cur}">Bimestre ${m.bimester} <small>${pr.done}/${pr.total} ✓</small></button>`;
+      }).join('')}${soon}</div>`;
+  }
+
   // ---- where each student stopped ----------------------------------------
   const LAST_KEY = 'igbook_last';
   function lastSeen() {
     try { const m = JSON.parse(localStorage.getItem(LAST_KEY) || '{}'); return m && typeof m === 'object' ? m : {}; } catch (e) { return {}; }
   }
-  function rememberPage(sid, book, n) {
-    const m = lastSeen();
-    m[sid] = { book, n, t: Date.now() };
-    try { localStorage.setItem(LAST_KEY, JSON.stringify(m)); } catch (e) { /* private mode */ }
+  function rememberPage(sid, m, n) {
+    const all = lastSeen();
+    all[sid] = { book: m.book, bim: m.bimester || 1, n, t: Date.now() };
+    try { localStorage.setItem(LAST_KEY, JSON.stringify(all)); } catch (e) { /* private mode */ }
+  }
+  function lastWork(sid, m) {
+    let n = null, t = 0;
+    contentPages(m).forEach(p => { const w = readLocal(sid, pid(m, p.n)); if (w && w.updatedAt > t) { t = w.updatedAt; n = p.n; } });
+    return { n, t };
   }
   // The page worked on most recently (at home or in class), else the last one
   // opened, else the first lesson page.
-  function resumePage(sid, book, manifest) {
-    const pages = contentPages(manifest);
+  function resumePage(sid, m) {
+    const lw = lastWork(sid, m);
+    if (lw.n) return lw.n;
+    const pages = contentPages(m);
+    const l = lastSeen()[sid];
+    if (l && l.book === m.book && (l.bim || 1) === (m.bimester || 1) && pages.some(p => p.n === l.n)) return l.n;
+    return (pages.find(p => p.kind === 'page') || pages[0]).n;
+  }
+  // The latest bimester with work; else the one opened last; else the first.
+  function resumeBimester(sid, ms) {
     let best = null, t = 0;
-    pages.forEach(p => { const w = readLocal(sid, pageId(book, p.n)); if (w && w.updatedAt > t) { t = w.updatedAt; best = p.n; } });
+    ms.forEach(m => { const lw = lastWork(sid, m); if (lw.t > t) { t = lw.t; best = m; } });
     if (best) return best;
     const l = lastSeen()[sid];
-    if (l && l.book === book && pages.some(p => p.n === l.n)) return l.n;
-    return (pages.find(p => p.kind === 'page') || pages[0]).n;
+    return (l && ms.find(m => m.book === l.book && m.bimester === (l.bim || 1))) || ms[0];
   }
 
   function closeAllViews() { while (stack.length) closeTop(); }
@@ -1399,46 +1777,50 @@ const LivroOnline = (() => {
     let unStatus = null;
     pushView(root, () => { sync.flush(); if (unStatus) unStatus(); });
 
-    let manifest;
-    try { manifest = await loadManifest(book); } catch (e) {
+    let ms;
+    try { ms = await loadBook(book); } catch (e) {
       root.innerHTML = `<div class="lo-loading"><span>⚠️</span><p>Não consegui abrir o livro agora.</p>
         <small>Verifique a internet e tente de novo.</small><button type="button" class="btn btn-primary" data-a="back">← Voltar</button></div>`;
       root.querySelector('[data-a="back"]').addEventListener('click', back);
       return;
     }
     const sid = student.id;
-    const getPage = p => readLocal(sid, pageId(book, p.n)) || emptyPage();
-    const who = { name: student.name, book: manifest.title || info.title };
+    const getPageFor = m => p => readLocal(sid, pid(m, p.n)) || emptyPage();
+    let cur = resumeBimester(sid, ms);
+    const who = { name: student.name, book: cur.title || info.title };
 
-    const openAt = n => {
-      const pages = contentPages(manifest);
+    const openAt = (m, n) => {
+      const pages = contentPages(m);
+      const getPage = getPageFor(m);
       openEditor({
-        manifest, pages, sync,
+        manifest: m, pages, sync, teacher, studentId: sid,
         index: Math.max(0, pages.findIndex(p => p.n === n)),
         load: p => getPage(p),
-        save: (p, work) => { const id = pageId(book, p.n); writeLocal(sid, id, work); sync.mark(id); },
-        onPage: p => rememberPage(sid, book, p.n),
+        save: (p, work) => { const id = pid(m, p.n); writeLocal(sid, id, work); sync.mark(id); },
+        onPage: p => rememberPage(sid, m, p.n),
         onLeave: () => setTimeout(paint, 0),
-        who: teacher ? who : null,
+        who: teacher ? { name: student.name, book: `${m.title || info.title}${ms.length > 1 ? ' · B' + m.bimester : ''}` } : null,
         onSwitch: teacher ? () => { closeAllViews(); openClassPicker(); } : null,
       });
     };
 
     const paint = () => {
       if (!root.isConnected) return;
-      const pr = progressOf(manifest, getPage);
-      const resume = resumePage(sid, book, manifest);
+      const getPage = getPageFor(cur);
+      const pr = progressOf(cur, getPage);
+      const resume = resumePage(sid, cur);
       root.innerHTML = `
         <div class="lo-home-wrap">
-          <header class="lo-home-head" style="--lo-color:${esc(manifest.color || '#8e6d86')}">
+          <header class="lo-home-head" style="--lo-color:${esc(cur.color || '#8e6d86')}">
             <button type="button" class="lo-ico" data-a="back" aria-label="Voltar">←</button>
             <div class="lo-home-title">
               ${teacher
-                ? `<h2>📖 ${esc(student.name)} <small>${esc(who.book)}</small></h2><p>Livro da aula · Bimestre 1 · salvo no livro de ${esc(student.name)}</p>`
-                : `<h2>📖 My book <small>Meu livro</small></h2><p>${esc(who.book)} · Bimestre 1</p>`}
+                ? `<h2>📖 ${esc(student.name)} <small>${esc(who.book)}</small></h2><p>Livro da aula · Bimestre ${cur.bimester} · salvo no livro de ${esc(student.name)}</p>`
+                : `<h2>📖 My book <small>Meu livro</small></h2><p>${esc(who.book)} · Bimestre ${cur.bimester}</p>`}
             </div>
             <span class="lo-status" data-ref="status"></span>
           </header>
+          ${bimTabsHTML(ms, cur, getPageFor)}
           ${teacher ? `
             <div class="lo-home-actions">
               <button type="button" class="btn btn-primary" data-a="resume">▶ Continuar na p. ${resume}</button>
@@ -1447,18 +1829,18 @@ const LivroOnline = (() => {
             </div>` : ''}
           <div class="lo-progress">
             <div class="lo-bar"><i style="width:${pr.total ? Math.round(pr.done / pr.total * 100) : 0}%"></i></div>
-            <b>${pr.done} de ${pr.total} páginas feitas ${pr.done === pr.total && pr.total ? '🏆' : ''}</b>
+            <b>${pr.done} de ${pr.total} páginas feitas ${pr.done === pr.total && pr.total ? '🏆' : ''}${pr.ixAll ? ` · ⭐ ${pr.ixOk}/${pr.ixAll} nos exercícios` : ''}</b>
           </div>
           <p class="lo-tip">${teacher
-            ? `Toque numa página para fazer junto com ${esc(student.name)}. Tudo é salvo no livro de ${esc(student.name)} — e aparece no link do aluno.`
-            : 'Toque numa página para fazer. ✏️ escrever e desenhar · 🖍️ pintar · 🔤 texto · ⭐ adesivos. Tudo é salvo sozinho.'}</p>
-          ${cardsHTML(manifest, getPage)}
+            ? `Toque numa página para fazer junto com ${esc(student.name)}. Tudo é salvo no livro de ${esc(student.name)} — e aparece no link do aluno. 🎯 = exercícios com correção automática.`
+            : 'Toque numa página para fazer. ✏️ escrever e desenhar · 🖍️ pintar · 🔤 texto · ⭐ adesivos · 👆 🎯 exercícios com correção. Tudo é salvo sozinho.'}</p>
+          ${cardsHTML(cur, getPage)}
         </div>`;
       if (unStatus) unStatus();
       unStatus = sync.onStatus(s => paintStatus(root.querySelector('[data-ref="status"]'), s));
       root.querySelector('[data-a="back"]').addEventListener('click', back);
       const rs = root.querySelector('[data-a="resume"]');
-      if (rs) rs.addEventListener('click', () => openAt(resume));
+      if (rs) rs.addEventListener('click', () => openAt(cur, resume));
       const sw = root.querySelector('[data-a="switch"]');
       if (sw) sw.addEventListener('click', () => { sync.flush(); closeAllViews(); openClassPicker(); });
       const bs = root.querySelector('select[data-book-for]');
@@ -1468,15 +1850,27 @@ const LivroOnline = (() => {
         closeAllViews();
         openBookHome(student, ctx);   // reopen with the new book (or the choice panel if none)
       });
-      root.querySelectorAll('[data-n]').forEach(btn => btn.addEventListener('click', () => openAt(Number(btn.dataset.n))));
+      root.querySelectorAll('[data-bim]').forEach(b => b.addEventListener('click', () => {
+        const m = ms.find(x => x.bimester === Number(b.dataset.bim));
+        if (m && m !== cur) { cur = m; paint(); }
+      }));
+      root.querySelectorAll('[data-n]').forEach(btn => btn.addEventListener('click', () => openAt(cur, Number(btn.dataset.n))));
     };
     paint();
-    const opened = sync.open(sid, book, manifest).then(changed => {
+    // Merge every bimester from the cloud, then (class mode) jump to where the
+    // student stopped — the latest bimester with work.
+    const opened = (async () => {
+      let changed = false;
+      for (const m of ms) changed = (await sync.open(sid, book, m)) || changed;
+      return changed;
+    })().then(changed => {
+      if (changed) cur = resumeBimester(sid, ms);
       if (changed && stack.length && stack[stack.length - 1].el === root) paint();
     });
     if (ctx.resume) {
       await opened;
-      if (root.isConnected && stack[stack.length - 1].el === root) openAt(resumePage(sid, book, manifest));
+      cur = resumeBimester(sid, ms);
+      if (root.isConnected && stack[stack.length - 1].el === root) openAt(cur, resumePage(sid, cur));
     }
   }
 
@@ -1578,7 +1972,7 @@ const LivroOnline = (() => {
     paintTeacher(document.getElementById('loTeacherMount'), student);
   }
 
-  async function paintTeacher(mount, student) {
+  async function paintTeacher(mount, student, bimWanted) {
     if (!mount) return;
     const raw = assignedRaw(student.id);
     const book = bookFor(student);
@@ -1601,15 +1995,17 @@ const LivroOnline = (() => {
     }
     mount.innerHTML = head + '<p class="quiz-empty">Carregando as páginas…</p>';
     wireChoose(mount, student);
-    let manifest;
-    try { manifest = await loadManifest(book); } catch (e) {
+    let ms;
+    try { ms = await loadBook(book); } catch (e) {
       mount.innerHTML = head + '<p class="quiz-empty">Não consegui abrir o livro (a pasta <b>livro-online/</b> já foi enviada para o site?).</p>';
       wireChoose(mount, student); return;
     }
     // Same merge as the class mode: cloud copy into this browser's cache.
-    await TeacherSync.open(student.id, book, manifest);
+    for (const m of ms) await TeacherSync.open(student.id, book, m);
     if (!mount.isConnected) return;
-    const getPage = p => readLocal(student.id, pageId(book, p.n)) || emptyPage();
+    const getPageFor = m => p => readLocal(student.id, pid(m, p.n)) || emptyPage();
+    const manifest = ms.find(m => m.bimester === Number(bimWanted)) || resumeBimester(student.id, ms);
+    const getPage = getPageFor(manifest);
     const pr = progressOf(manifest, getPage);
     const cloudOn = typeof IGCloud !== 'undefined' && IGCloud.enabled && IGCloud.enabled();
     const mode = TeacherSync.mode;
@@ -1617,38 +2013,40 @@ const LivroOnline = (() => {
       ? 'Sem Supabase: o livro fica salvo <b>neste navegador</b> (o mesmo que o link do aluno lê aqui).'
       : mode === 'offline' ? 'Não consegui falar com a nuvem agora — mostrando o que está neste aparelho. Verifique a internet.'
         : mode === 'nosql' ? 'A tabela de atividades dos alunos não existe ainda: rode o <b>supabase-share.sql</b> e depois o <b>supabase-livro-online.sql</b> no Supabase.'
-          : !pr.started ? 'Nada feito ainda. Para o aluno salvar pelo link dele, o <b>supabase-livro-online.sql</b> precisa ter sido rodado no Supabase.' : '';
-    mount.innerHTML = head + `
+          : !pr.started ? 'Nada feito ainda neste bimestre.' : '';
+    mount.innerHTML = head + bimTabsHTML(ms, manifest, getPageFor) + `
       <div class="lo-t-summary">
         <div class="lo-t-big"><b>${pr.done}/${pr.total}</b><small>páginas feitas</small></div>
         <div class="lo-t-big"><b>${pr.started}</b><small>com trabalho</small></div>
+        ${pr.ixAll ? `<div class="lo-t-big lo-t-big--ix"><b>⭐ ${pr.ixOk}/${pr.ixAll}</b><small>exercícios com correção</small></div>` : ''}
         <div class="lo-t-units">
           ${pr.units.map(u => `
             <div class="lo-t-unit"><span>${esc(u.title)}</span>
               <div class="lo-bar"><i style="width:${u.total ? Math.round(u.done / u.total * 100) : 0}%"></i></div>
-              <small>${u.done}/${u.total}</small></div>`).join('')}
+              <small>${u.done}/${u.total}${u.ixAll ? ` · ⭐ ${u.ixOk}/${u.ixAll}` : ''}</small></div>`).join('')}
         </div>
       </div>
       <div class="game-btn-row lo-t-actions">
-        <button type="button" class="btn btn-primary" id="loClassGo">▶ Fazer o livro com ${esc(student.name)} (p. ${resumePage(student.id, book, manifest)})</button>
+        <button type="button" class="btn btn-primary" id="loClassGo">▶ Fazer o livro com ${esc(student.name)} (p. ${resumePage(student.id, manifest)})</button>
         <label class="lo-t-ro"><input type="checkbox" id="loOnlyView" /> 👀 Abrir as páginas só para ver</label>
       </div>
       ${note ? `<p class="lo-t-note">${note}</p>` : ''}
-      <p class="lo-t-hint">Toque numa página para fazer junto com ${esc(student.name)} (ou só ver, marcando a caixa acima).</p>
+      <p class="lo-t-hint">Toque numa página para fazer junto com ${esc(student.name)} (ou só ver, marcando a caixa acima). ⭐ = nota dos exercícios com correção automática.</p>
       <div class="lo-t-cards">${cardsHTML(manifest, getPage)}</div>`;
     wireChoose(mount, student);
+    mount.querySelectorAll('[data-bim]').forEach(b => b.addEventListener('click', () => paintTeacher(mount, student, Number(b.dataset.bim))));
     mount.querySelector('#loClassGo').addEventListener('click', () => openClass(student.id));
     mount.querySelectorAll('[data-n]').forEach(btn => btn.addEventListener('click', () => {
       const list = contentPages(manifest);
       const viewOnly = mount.querySelector('#loOnlyView').checked;
       openEditor({
-        manifest, pages: list, readOnly: viewOnly, sync: viewOnly ? null : TeacherSync,
+        manifest, pages: list, readOnly: viewOnly, sync: viewOnly ? null : TeacherSync, teacher: true, studentId: student.id,
         index: list.findIndex(p => p.n === Number(btn.dataset.n)),
         load: p => getPage(p),
-        save: (p, work) => { const id = pageId(book, p.n); writeLocal(student.id, id, work); TeacherSync.mark(id); },
-        onPage: p => rememberPage(student.id, book, p.n),
-        onLeave: () => setTimeout(() => paintTeacher(mount, student), 0),
-        who: viewOnly ? null : { name: student.name, book: manifest.title },
+        save: (p, work) => { const id = pid(manifest, p.n); writeLocal(student.id, id, work); TeacherSync.mark(id); },
+        onPage: p => rememberPage(student.id, manifest, p.n),
+        onLeave: () => setTimeout(() => paintTeacher(mount, student, manifest.bimester), 0),
+        who: viewOnly ? null : { name: student.name, book: `${manifest.title}${ms.length > 1 ? ' · B' + manifest.bimester : ''}` },
         onSwitch: viewOnly ? null : () => { closeAllViews(); if (typeof closeModal === 'function') closeModal(); openClassPicker(); },
         subtitle: viewOnly ? `👀 ${esc(student.name)} · ${esc(manifest.title)} — só leitura` : '',
       });

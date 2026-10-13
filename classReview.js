@@ -280,7 +280,8 @@ function openClassReviewPlayer(review, opts) {
         <button class="game-btn secondary" data-rv="next">${index === cards.length - 1 ? '🏁' : '▶'}</button>
       </div>`;
     const card = body.querySelector('[data-rv="flip"]');
-    const flip = () => { flipped = !flipped; IGSound.flip(); card.classList.toggle('flipped', flipped); if (flipped && c.sentences && c.sentences[0]) rvSay(c.sentences[0]); };
+    // Turning the card is silent: a sentence is spoken only when it is tapped.
+    const flip = () => { flipped = !flipped; IGSound.flip(); card.classList.toggle('flipped', flipped); };
     card.addEventListener('click', e => { if (e.target.closest('[data-say]')) return; flip(); });
     card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
     body.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => rvSay(c.sentences[Number(b.dataset.say)])));
@@ -291,7 +292,7 @@ function openClassReviewPlayer(review, opts) {
     });
     body.querySelector('[data-rv="prev"]').addEventListener('click', () => { if (index > 0) { index--; flipped = false; IGSound.flip(); paint(); } });
     body.querySelector('[data-rv="next"]').addEventListener('click', () => {
-      if (index < cards.length - 1) { index++; flipped = false; IGSound.flip(); paint(); rvSay(cards[index].en); return; }
+      if (index < cards.length - 1) { index++; flipped = false; IGSound.flip(); paint(); return; }
       done = true;
       IGSound.win();
       if (!o.preview && typeof awardProgress === 'function') awardProgress(5 + said.size * 2, said.size >= Math.ceil(cards.length / 2) ? 1 : 0);
@@ -314,7 +315,7 @@ function openClassReviewPlayer(review, opts) {
   const edit = document.querySelector('[data-rv="edit"]');
   if (edit && o.onBack) edit.addEventListener('click', o.onBack);
   paint();
-  rvSay(cards[0] ? cards[0].en : '');
+  // Nothing speaks by itself: the word and each sentence play only when tapped.
 }
 
 // ---------------------------------------------------------------------------
