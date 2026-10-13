@@ -1,0 +1,953 @@
+{
+ "v": 1,
+ "book": "beyond",
+ "bimester": 2,
+ "id": "beyond:b2",
+ "title": "IG Beyond",
+ "ages": "12–14",
+ "color": "#c9435c",
+ "firstPage": 30,
+ "lastPage": 57,
+ "pageCount": 28,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 2"
+  },
+  {
+   "n": 4,
+   "title": "Unit 4 · Screens"
+  },
+  {
+   "n": 5,
+   "title": "Unit 5 · Food"
+  },
+  {
+   "n": 6,
+   "title": "Unit 6 · Then"
+  }
+ ],
+ "stickerSheet": 57,
+ "pages": [
+  {
+   "n": 30,
+   "id": "p30",
+   "img": "p30.webp",
+   "thumb": "t30.webp",
+   "unit": 0,
+   "title": "Bimestre 2",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 31,
+   "id": "p31",
+   "img": "p31.webp",
+   "thumb": "t31.webp",
+   "unit": 4,
+   "title": "Unit 4 · Screens",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u4-warm-up",
+     "file": "u4-warm-up.mp3",
+     "title": "Unit 4 opener (Screens and Games) – “Warm-up” box",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 32,
+   "id": "p32",
+   "img": "p32.webp",
+   "thumb": "t32.webp",
+   "unit": 4,
+   "title": "Worth Playing?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 33,
+   "id": "p33",
+   "img": "p33.webp",
+   "thumb": "t33.webp",
+   "unit": 4,
+   "title": "I’m Playing Right Now!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u4-voice-message",
+     "file": "u4-voice-message.mp3",
+     "title": "Lesson 2 · Practice – “I’m Playing Right Now!” (Listen to Th",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 34,
+   "id": "p34",
+   "img": "p34.webp",
+   "thumb": "t34.webp",
+   "unit": 4,
+   "title": "Every Day or Right Now?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 35,
+   "id": "p35",
+   "img": "p35.webp",
+   "thumb": "t35.webp",
+   "unit": 4,
+   "title": "You Have to Watch This!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 36,
+   "id": "p36",
+   "img": "p36.webp",
+   "thumb": "t36.webp",
+   "unit": 4,
+   "title": "Write a Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 37,
+   "id": "p37",
+   "img": "p37.webp",
+   "thumb": "t37.webp",
+   "unit": 4,
+   "title": "What I’m Watching & Playing",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 38,
+   "id": "p38",
+   "img": "p38.webp",
+   "thumb": "t38.webp",
+   "unit": 4,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 39,
+   "id": "p39",
+   "img": "p39.webp",
+   "thumb": "t39.webp",
+   "unit": 5,
+   "title": "Unit 5 · Food",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u5-warm-up",
+     "file": "u5-warm-up.mp3",
+     "title": "Unit 5 opener (Food Culture) – “Warm-up” box",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 40,
+   "id": "p40",
+   "img": "p40.webp",
+   "thumb": "t40.webp",
+   "unit": 5,
+   "title": "Brazil’s Favorite Snack",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 41,
+   "id": "p41",
+   "img": "p41.webp",
+   "thumb": "t41.webp",
+   "unit": 5,
+   "title": "Some Milk, Two Eggs",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 42,
+   "id": "p42",
+   "img": "p42.webp",
+   "thumb": "t42.webp",
+   "unit": 5,
+   "title": "How Much? How Many?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 43,
+   "id": "p43",
+   "img": "p43.webp",
+   "thumb": "t43.webp",
+   "unit": 5,
+   "title": "At the Café",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u5-at-the-cafe",
+     "file": "u5-at-the-cafe.mp3",
+     "title": "Lesson 3 · Use – “At the Café” (Listen and complete the conv",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 44,
+   "id": "p44",
+   "img": "p44.webp",
+   "thumb": "t44.webp",
+   "unit": 5,
+   "title": "Write a Recipe",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 45,
+   "id": "p45",
+   "img": "p45.webp",
+   "thumb": "t45.webp",
+   "unit": 5,
+   "title": "My Signature Snack",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 46,
+   "id": "p46",
+   "img": "p46.webp",
+   "thumb": "t46.webp",
+   "unit": 5,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 47,
+   "id": "p47",
+   "img": "p47.webp",
+   "thumb": "t47.webp",
+   "unit": 6,
+   "title": "Unit 6 · Then",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u6-warm-up",
+     "file": "u6-warm-up.mp3",
+     "title": "Unit 6 opener (Then and Now) – “Warm-up” box",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 48,
+   "id": "p48",
+   "img": "p48.webp",
+   "thumb": "t48.webp",
+   "unit": 6,
+   "title": "First Lady of Song",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-ella-fitzgerald",
+     "file": "u6-ella-fitzgerald.mp3",
+     "title": "Lesson 1 · Discover – “First Lady of Song” (Read and listen ",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 49,
+   "id": "p49",
+   "img": "p49.webp",
+   "thumb": "t49.webp",
+   "unit": 6,
+   "title": "I Played, She Danced",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 50,
+   "id": "p50",
+   "img": "p50.webp",
+   "thumb": "t50.webp",
+   "unit": 6,
+   "title": "I Went, She Sang",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 51,
+   "id": "p51",
+   "img": "p51.webp",
+   "thumb": "t51.webp",
+   "unit": 6,
+   "title": "Story Time!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u6-story",
+     "file": "u6-story.mp3",
+     "title": "Lesson 3 · Use – “Story Time!” (Listen to Bia’s story",
+     "available": false
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 52,
+   "id": "p52",
+   "img": "p52.webp",
+   "thumb": "t52.webp",
+   "unit": 6,
+   "title": "Write a Biography",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 53,
+   "id": "p53",
+   "img": "p53.webp",
+   "thumb": "t53.webp",
+   "unit": 6,
+   "title": "My Favorite Artist",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 54,
+   "id": "p54",
+   "img": "p54.webp",
+   "thumb": "t54.webp",
+   "unit": 6,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 55,
+   "id": "p55",
+   "img": "p55.webp",
+   "thumb": "t55.webp",
+   "unit": 6,
+   "title": "The Review Tour",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 56,
+   "id": "p56",
+   "img": "p56.webp",
+   "thumb": "t56.webp",
+   "unit": 6,
+   "title": "Review Mix",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 57,
+   "id": "p57",
+   "img": "p57.webp",
+   "thumb": "t57.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "reward1",
+   "img": "stickers/reward1.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    38,
+    46,
+    54
+   ],
+   "targets": [
+    {
+     "page": 38,
+     "x": 0.8381,
+     "y": 0.5522
+    },
+    {
+     "page": 46,
+     "x": 0.8381,
+     "y": 0.6397
+    },
+    {
+     "page": 54,
+     "x": 0.8381,
+     "y": 0.5993
+    }
+   ],
+   "label": "p. 38, 46, 54"
+  },
+  {
+   "id": "track1",
+   "img": "stickers/track1.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.034,
+   "wmm": 14.0,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3185
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3576
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3966
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4653
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5044
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5434
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6391
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6781
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7172
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7859
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8249
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.864
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "nowplaying1",
+   "img": "stickers/nowplaying1.webp",
+   "kind": "nowplaying",
+   "w": 0.2194,
+   "h": 0.0373,
+   "wmm": 46.1,
+   "hmm": 11.1,
+   "pages": [
+    37
+   ],
+   "targets": [
+    {
+     "page": 37,
+     "x": 0.5762,
+     "y": 0.1768
+    }
+   ],
+   "label": "p. 37"
+  },
+  {
+   "id": "reward2",
+   "img": "stickers/reward2.webp",
+   "kind": "reward",
+   "w": 0.1147,
+   "h": 0.0814,
+   "wmm": 24.1,
+   "hmm": 24.2,
+   "pages": [
+    38,
+    46,
+    54
+   ],
+   "targets": [
+    {
+     "page": 38,
+     "x": 0.8381,
+     "y": 0.5522
+    },
+    {
+     "page": 46,
+     "x": 0.8381,
+     "y": 0.6397
+    },
+    {
+     "page": 54,
+     "x": 0.8381,
+     "y": 0.5993
+    }
+   ],
+   "label": "p. 38, 46, 54"
+  },
+  {
+   "id": "track2",
+   "img": "stickers/track2.webp",
+   "kind": "track",
+   "w": 0.0671,
+   "h": 0.034,
+   "wmm": 14.1,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3185
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3576
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3966
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4653
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5044
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5434
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6391
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6781
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7172
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7859
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8249
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.864
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "chef1",
+   "img": "stickers/chef1.webp",
+   "kind": "chef",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    45
+   ],
+   "targets": [
+    {
+     "page": 45,
+     "x": 0.8667,
+     "y": 0.1886
+    }
+   ],
+   "label": "p. 45"
+  },
+  {
+   "id": "reward3",
+   "img": "stickers/reward3.webp",
+   "kind": "reward",
+   "w": 0.1147,
+   "h": 0.0814,
+   "wmm": 24.1,
+   "hmm": 24.2,
+   "pages": [
+    38,
+    46,
+    54
+   ],
+   "targets": [
+    {
+     "page": 38,
+     "x": 0.8381,
+     "y": 0.5522
+    },
+    {
+     "page": 46,
+     "x": 0.8381,
+     "y": 0.6397
+    },
+    {
+     "page": 54,
+     "x": 0.8381,
+     "y": 0.5993
+    }
+   ],
+   "label": "p. 38, 46, 54"
+  },
+  {
+   "id": "track3",
+   "img": "stickers/track3.webp",
+   "kind": "track",
+   "w": 0.0671,
+   "h": 0.034,
+   "wmm": 14.1,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3185
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3576
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3966
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4653
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5044
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5434
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6391
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6781
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7172
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7859
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8249
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.864
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "ticket1",
+   "img": "stickers/ticket1.webp",
+   "kind": "ticket",
+   "w": 0.2099,
+   "h": 0.0575,
+   "wmm": 44.1,
+   "hmm": 17.1,
+   "pages": [
+    53
+   ],
+   "targets": [
+    {
+     "page": 53,
+     "x": 0.581,
+     "y": 0.1835
+    }
+   ],
+   "label": "p. 53"
+  },
+  {
+   "id": "bonus21",
+   "img": "stickers/bonus21.webp",
+   "kind": "bonus2",
+   "w": 0.1052,
+   "h": 0.0746,
+   "wmm": 22.1,
+   "hmm": 22.2,
+   "pages": [
+    56
+   ],
+   "targets": [
+    {
+     "page": 56,
+     "x": 0.8238,
+     "y": 0.7778
+    }
+   ],
+   "label": "p. 56"
+  },
+  {
+   "id": "washi1",
+   "img": "stickers/washi1.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi2",
+   "img": "stickers/washi2.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi3",
+   "img": "stickers/washi3.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble1",
+   "img": "stickers/bubble1.webp",
+   "kind": "bubble",
+   "w": 0.1476,
+   "h": 0.0497,
+   "wmm": 31.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble2",
+   "img": "stickers/bubble2.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0497,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble3",
+   "img": "stickers/bubble3.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0497,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble4",
+   "img": "stickers/bubble4.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0497,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge1",
+   "img": "stickers/badge1.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge2",
+   "img": "stickers/badge2.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge3",
+   "img": "stickers/badge3.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge4",
+   "img": "stickers/badge4.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge5",
+   "img": "stickers/badge5.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge6",
+   "img": "stickers/badge6.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  }
+ ]
+}
