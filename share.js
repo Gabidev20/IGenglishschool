@@ -136,7 +136,7 @@ function openShareLinkModal(studentId) {
       e.currentTarget, '✅ Copiado!'));
     mount.querySelector('#sharePreview').addEventListener('click', () => {
       closeModal();
-      window.location.hash = `aluno=${code}`;
+      window.location.hash = `aluno=${code}&previa=1`;
       window.location.reload();
     });
     mount.querySelector('#shareRevoke').addEventListener('click', async () => {
@@ -332,6 +332,7 @@ const ShareMode = (() => {
     shell.id = 'studentShell';
     shell.innerHTML = `<div class="stu-loading"><span>📚</span><p>Abrindo…</p></div>`;
     document.body.appendChild(shell);
+    addPreviewExit();   // also on error screens, so she is never stuck
 
     cloud = Boolean(window.IG_SUPABASE && window.IG_SUPABASE.configured && typeof IGCloud !== 'undefined' && IGCloud.anonClient);
 
@@ -381,12 +382,36 @@ const ShareMode = (() => {
     renderStudentHome(shell, studentId);
   }
 
+  // The teacher's "see it as the student does" view: a way back to her own
+  // site. Back would otherwise leave for whatever page she came from, since
+  // the preview is only a hash change plus a reload.
+  function addPreviewExit() {
+    if (!/[#&]previa=1/.test(window.location.hash || '') || document.getElementById('stuPreviewExit')) return;
+    const bar = document.createElement('button');
+    bar.id = 'stuPreviewExit';
+    bar.type = 'button';
+    bar.innerHTML = '← Sair da visualização <small>voltar ao meu site</small>';
+    bar.addEventListener('click', () => {
+      try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) { /* ignore */ }
+      window.location.reload();
+    });
+    document.body.appendChild(bar);
+  }
+
   return { claim, start, active, flush, applyActivityLocally, get studentId() { return studentId; } };
 })();
 
 // ---------------------------------------------------------------------------
 // THE STUDENT'S HOME SCREEN
 // ---------------------------------------------------------------------------
+// Which of the teacher's answers this device has already opened.
+function shareSeenReplies(studentId) {
+  try { return JSON.parse(localStorage.getItem('ig_reply_seen_' + studentId) || '[]') || []; } catch (e) { return []; }
+}
+function shareMarkRepliesSeen(studentId, ids) {
+  try { localStorage.setItem('ig_reply_seen_' + studentId, JSON.stringify([...new Set(shareSeenReplies(studentId).concat(ids))])); } catch (e) { /* private mode */ }
+}
+
 function renderStudentHome(shell, studentId) {
   const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === studentId);
   if (!student) return;
@@ -473,6 +498,14 @@ function renderStudentHome(shell, studentId) {
     .filter(k => k !== 'games' || topics.length)
     .map(k => T[k]());
 
+  // The teacher's answers (a correction, a comment, a reply under an audio):
+  // the student is told there is one until they have opened it on this device.
+  const repliedTexts = (IGStore.getJSON('writing_' + student.id, []) || [])
+    .filter(w => w.correction && (w.correction.text || w.correction.note));
+  const seenReplies = shareSeenReplies(student.id);
+  const newReplies = repliedTexts.filter(w => !seenReplies.includes(w.id));
+  const markRepliesSeen = () => shareMarkRepliesSeen(student.id, repliedTexts.map(w => w.id));
+
   shell.innerHTML = `
     <div class="stu-wrap">
       <header class="stu-header" style="--stu-color:${shareEsc(student.color || '#8e6d86')}">
@@ -485,6 +518,15 @@ function renderStudentHome(shell, studentId) {
         </div>
         <button class="stu-help" id="stuHelpBtn" type="button" title="Ver o tutorial de novo">❓ <span>Ajuda</span></button>
       </header>
+
+      ${newReplies.length ? `
+        <div class="stu-alert reply">
+          <div>
+            <b>💬 Your teacher answered you!</b>
+            <small>A teacher respondeu — veja o que ela escreveu</small>
+          </div>
+          <button class="btn btn-primary" data-go="${newReplies.some(w => w.audio) && !newReplies.some(w => !w.audio) ? 'audio' : 'writing'}">Read</button>
+        </div>` : ''}
 
       ${pending.length ? `
         <div class="stu-alert">
@@ -534,7 +576,7 @@ function renderStudentHome(shell, studentId) {
     colors: () => openColorsGame(),
     alphabet: () => openAlphabetGame(),
     drawing: () => { if (typeof LiveTools !== 'undefined') LiveTools.openTool('drawing', { solo: true }); },
-    audio: () => openAudioMessage(student),
+    audio: () => { markRepliesSeen(); openAudioMessage(student); },
     'writing-practice': () => openWritingPractice(student.id, practiceTopics),
     practice: () => {
       if (prof === 'reader' && typeof openKidsPractice === 'function') { openKidsPractice(practiceTopics); return; }
@@ -551,7 +593,7 @@ function renderStudentHome(shell, studentId) {
     // has been given, not from the whole bank.
     dictation: () => openDictationModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
     speaking: () => openSpeakingModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
-    writing: () => (typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
+    writing: () => (markRepliesSeen(), typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
   };
   shell.querySelectorAll('[data-go]').forEach(btn => {
     btn.addEventListener('click', () => {

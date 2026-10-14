@@ -281,6 +281,30 @@ const IGCloud = (() => {
     return data.length;
   }
 
+  // Pages of the online book the students saved since the last check. The
+  // pages themselves stay in the table (pullBookPages reads them on demand);
+  // this only rings the bell. The very first check just sets the starting
+  // point, so a teacher is not told about work from before this existed.
+  async function pullBookActivity() {
+    if (!ready || !teacher) return 0;
+    const key = 'ig_book_seen_at_' + teacher.id;
+    let since = null;
+    try { since = localStorage.getItem(key); } catch (e) { /* ignore */ }
+    if (!since) { try { localStorage.setItem(key, new Date().toISOString()); } catch (e) { /* ignore */ } return 0; }
+    const sb = await getClient();
+    const { data, error } = await sb.from(tbl('student_activity'))
+      .select('student_id,id,created_at')
+      .eq('teacher_id', teacher.id).eq('kind', 'book').gt('created_at', since).order('created_at');
+    if (error || !data || !data.length) return 0;
+    try { localStorage.setItem(key, data[data.length - 1].created_at); } catch (e) { /* ignore */ }
+    try {
+      window.dispatchEvent(new CustomEvent('ig:student-activity', {
+        detail: { rows: data.map(r => ({ kind: 'book', studentId: r.student_id, isNew: true })) },
+      }));
+    } catch (e) { /* old browser */ }
+    return data.length;
+  }
+
   // The online book of one student (livroOnline.js): every saved page of
   // `bookKey` (e.g. 'explorers:b1'), read-only. RLS keeps it to her rows.
   async function pullBookPages(studentId, bookKey) {
@@ -719,10 +743,11 @@ const IGCloud = (() => {
     // Then whatever the students did at home since the last time she opened
     // the site. Harmless when the share tables are not installed yet.
     try { await pullStudentActivity(); } catch (e) { /* share tables optional */ }
+    try { await pullBookActivity(); } catch (e) { /* share tables optional */ }
     // And keep listening while the site is open: a message a student sends
     // mid-afternoon shows up within a minute, not at the next sign-in.
     if (!activityTimer) {
-      const poll = () => { if (document.visibilityState !== 'hidden') pullStudentActivity().catch(() => {}); };
+      const poll = () => { if (document.visibilityState !== 'hidden') { pullStudentActivity().catch(() => {}); pullBookActivity().catch(() => {}); } };
       activityTimer = setInterval(poll, 60000);
       window.addEventListener('focus', poll);
     }

@@ -50,12 +50,16 @@ function inboxToast(text, onClick) {
     const isNew = r => r.isNew !== false;
     const writers = [...new Set(rows.filter(r => r.kind === 'writing' && isNew(r)).map(r => nameOf(r.studentId)))];
     const homework = [...new Set(rows.filter(r => r.kind === 'homework_result' && isNew(r)).map(r => nameOf(r.studentId)))];
+    const books = [...new Set(rows.filter(r => r.kind === 'book' && isNew(r)).map(r => nameOf(r.studentId)))];
     refreshInboxBadge();
     if (writers.length) {
       if (typeof IGSound !== 'undefined') IGSound.bell();
       inboxToast(`📩 Nova mensagem de ${writers.join(', ')} — clique para ler`, () => openWritingDesk());
     } else if (homework.length) {
       inboxToast(`📚 ${homework.join(', ')} fez a lição de casa!`);
+    } else if (books.length) {
+      if (typeof IGSound !== 'undefined') IGSound.bell();
+      inboxToast(`📖 ${books.join(', ')} fez atividade no livro!`);
     }
     // The homework list shows the new results too.
     const hwRoot = document.getElementById('homeworkRoot');

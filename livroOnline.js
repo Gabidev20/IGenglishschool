@@ -71,7 +71,7 @@ const LivroOnline = (() => {
     ['#5cad5a', 'verde'], ['#3d8bd9', 'azul'], ['#9461c0', 'roxo'], ['#f05d77', 'rosa'],
     ['#f7a8c4', 'rosa-claro'], ['#8b5a2b', 'marrom'], ['#7fd3e6', 'azul-claro'], ['#9aa0a6', 'cinza'],
   ];
-  const SIZES = { pen: [28, 55, 110], hl: [160, 330, 650], text: [300, 440, 640] };
+  const SIZES = { pen: [28, 55, 110], hl: [160, 330, 650], text: [150, 240, 380] };
   const TOOLS = [
     { id: 'tap', icon: '👆', label: 'Responder' },   // only on pages with exercises
     { id: 'hand', icon: '✋', label: 'Mover' },
@@ -546,7 +546,10 @@ const LivroOnline = (() => {
     let data = emptyPage();
     let tool = ro ? 'hand' : (TOOLS.some(t => t.id === pf.tool && t.id !== 'tap') ? pf.tool : 'pen');
     let color = col(pf.color || '#2e2b2e');
-    const size = { pen: clamp(pf.pen | 0, 0, 2) || 1, hl: clamp(pf.hl | 0, 0, 2) || 1, text: clamp(pf.text | 0, 0, 2) || 1 };
+    // A size picked once stays picked (0 = the smallest is a valid choice);
+    // only a first-ever visit starts in the middle.
+    const savedSize = (v) => (v === undefined || v === null ? 1 : clamp(Number(v) | 0, 0, 2));
+    const size = { pen: savedSize(pf.pen), hl: savedSize(pf.hl), text: savedSize(pf.text) };
     let hist = [], redoStack = [];
     let selected = null;            // sticker instance id
     let penSeen = false;
@@ -1561,7 +1564,7 @@ const LivroOnline = (() => {
       $('sheet').addEventListener('click', e => {
         const c = e.target.closest('[data-tsc]'), s = e.target.closest('[data-tss]'), b = e.target.closest('[data-ts]');
         if (c && editing) { editing.t.c = c.dataset.tsc; color = editing.t.c; renderOver(); $('sheet').querySelectorAll('[data-tsc]').forEach(x => x.classList.toggle('is-on', x === c)); }
-        if (s && editing) { editing.t.s = Number(s.dataset.tss); renderOver(); $('sheet').querySelectorAll('[data-tss]').forEach(x => x.classList.toggle('is-on', x === s)); }
+        if (s && editing) { editing.t.s = Number(s.dataset.tss); const si = SIZES.text.indexOf(editing.t.s); if (si >= 0) { size.text = si; savePrefs({ ...prefs(), text: si }); } renderOver(); $('sheet').querySelectorAll('[data-tss]').forEach(x => x.classList.toggle('is-on', x === s)); }
         if (b && b.dataset.ts === 'ok') closeSheet();
         if (b && b.dataset.ts === 'del' && editing) { editing.t.v = ''; closeSheet(); }
       });
