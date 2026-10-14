@@ -363,7 +363,7 @@ function dashPaintWeek(pane) {
                       <span class="dash-class-avatar">${igEscapeHtml(s.avatar || '🙂')}</span>
                       <span class="dash-class-text">
                         <span class="dash-class-name">${igEscapeHtml(s.name)}</span>
-                        <span class="dash-class-meta">${sched.time ? igEscapeHtml(sched.time) + ' · ' : ''}${igEscapeHtml(s.levelLabel || '')}</span>
+                        <span class="dash-class-meta">${sched.time ? igEscapeHtml(sched.time) + ' · ' : ''}${igEscapeHtml(s.levelLabel || '')}${typeof groupMemberNames === 'function' && groupMemberNames(s.id).length ? ' · 👥 ' + groupMemberNames(s.id).length : ''}</span>
                       </span>
                     </button>
                     <label class="dash-check" title="Marcar como preparada">

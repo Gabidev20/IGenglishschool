@@ -1,9 +1,9 @@
 /* ==========================================================================
    IGenglishschool — Teacher-only extras per student + automatic phonetics
 
-   • Class type: individual, or part of a GROUP. A group is just a name shared
-     by several students; "Today's class" then lists every member so presence
-     / absence is marked for each one and a class is logged on each record.
+   • Class type: individual, or GROUP. A group is a single record with a list
+     of member names; "Today's class" lists every member so presence /
+     absence is marked per person, in one class and one sheet for the group.
    • Private notes (goal, likes…): only the teacher sees them.
    • IPA lookup for the "Pronunciation" column of the class sheet.
 
@@ -18,33 +18,26 @@ function loadStudentExtras() {
 }
 
 function getStudentExtra(studentId) {
-  return loadStudentExtras()[studentId] || { notes: '', groupId: null, groupName: '' };
+  return loadStudentExtras()[studentId] || { notes: '', isGroup: false, members: [] };
 }
 
 function saveStudentExtra(studentId, patch) {
   const map = loadStudentExtras();
   const next = { ...(map[studentId] || {}), ...patch };
-  if (!next.notes && !next.groupId) delete map[studentId];
+  if (!next.notes && !next.isGroup) delete map[studentId];
   else map[studentId] = next;
   IGStore.setJSON(STUDENT_EXTRAS_KEY, map);
 }
 
-// Distinct groups that still have at least one student: [{ id, name }]
-function listStudentGroups() {
-  const alive = new Set(loadStudents().map(s => s.id));
-  const seen = new Map();
-  Object.entries(loadStudentExtras()).forEach(([sid, e]) => {
-    if (e && e.groupId && alive.has(sid) && !seen.has(e.groupId)) seen.set(e.groupId, { id: e.groupId, name: e.groupName || 'Grupo' });
-  });
-  return [...seen.values()];
+// A group is ONE record (one card, one class log, one class sheet) whose
+// members are only names — attendance is marked per name in Today's Class.
+function isGroupStudent(studentId) {
+  return Boolean(getStudentExtra(studentId).isGroup);
 }
 
-// Everyone in the same group as this student (the student included), or [].
-function groupMembersOf(studentId) {
-  const gid = getStudentExtra(studentId).groupId;
-  if (!gid) return [];
-  const extras = loadStudentExtras();
-  return loadStudents().filter(s => extras[s.id] && extras[s.id].groupId === gid);
+function groupMemberNames(studentId) {
+  const e = getStudentExtra(studentId);
+  return e.isGroup && Array.isArray(e.members) ? e.members : [];
 }
 
 // ---------------------------------------------------------------------------

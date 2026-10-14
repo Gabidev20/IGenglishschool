@@ -89,6 +89,17 @@ function renderClassSheetCanvas(student, session) {
   while (textLines.length && !textLines[textLines.length - 1]) textLines.pop();
   const hasText = textLines.length > 0;
   const textBodyH = hasText ? INNER * 2 + textLines.length * LINE : 0;
+  // Group classes: who came and who didn't.
+  const att = Array.isArray(sheet.attendance) ? sheet.attendance : [];
+  const hasAtt = att.length > 0;
+  const presentNames = att.filter(a => a.present).map(a => a.name).join(', ');
+  const absentNames = att.filter(a => !a.present).map(a => a.name).join(', ');
+  const attRows = [];
+  if (hasAtt) {
+    if (presentNames) attRows.push({ mark: 'PRESENT', lines: sheetWrap(measure, presentNames, BOX_W - INNER * 2 - 200) });
+    if (absentNames) attRows.push({ mark: 'ABSENT', lines: sheetWrap(measure, absentNames, BOX_W - INNER * 2 - 200) });
+  }
+  const attBodyH = hasAtt ? INNER * 2 + attRows.reduce((n, r) => n + r.lines.length, 0) * LINE : 0;
   const NUM_W = 52;
   const hwRows = homework.length
     ? homework.map((h, i) => ({ no: `${i + 1}-`, lines: sheetWrap(measure, h, BOX_W - INNER * 2 - NUM_W) }))
@@ -102,7 +113,7 @@ function renderClassSheetCanvas(student, session) {
   const hwBodyLines = hwRows.reduce((n, r) => n + r.lines.length, 0);
   const hwBodyH = Math.max(150, INNER * 2 + hwBodyLines * LINE);
   const footerH = 70;
-  const H = PAD + titleH + inClassH + GAP + HEAD_H + wordsBodyH + GAP + (hasText ? HEAD_H + textBodyH + GAP : 0) + HEAD_H + hwBodyH + footerH;
+  const H = PAD + titleH + inClassH + GAP + (hasAtt ? HEAD_H + attBodyH + GAP : 0) + HEAD_H + wordsBodyH + GAP + (hasText ? HEAD_H + textBodyH + GAP : 0) + HEAD_H + hwBodyH + footerH;
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
@@ -136,6 +147,32 @@ function renderClassSheetCanvas(student, session) {
   ctx.font = fontBody;
   inClassLines.forEach((l, i) => ctx.fillText(l, PAD + INNER, y + INNER + 34 + (i + 1) * LINE - 10));
   y += inClassH + GAP;
+
+  // ATTENDANCE (group classes)
+  if (hasAtt) {
+    ctx.fillStyle = HEAD_BG;
+    ctx.fillRect(PAD, y, BOX_W, HEAD_H);
+    ctx.strokeRect(PAD, y, BOX_W, HEAD_H + attBodyH);
+    ctx.beginPath();
+    ctx.moveTo(PAD, y + HEAD_H); ctx.lineTo(PAD + BOX_W, y + HEAD_H);
+    ctx.stroke();
+    ctx.fillStyle = INK;
+    ctx.font = fontBold;
+    ctx.textAlign = 'center';
+    ctx.fillText('ATTENDANCE', W / 2, y + HEAD_H / 2 + 9);
+    ctx.textAlign = 'left';
+    let ay = y + HEAD_H + INNER;
+    attRows.forEach(r => {
+      ctx.font = fontBold;
+      ctx.fillStyle = r.mark === 'ABSENT' ? ACCENT : INK;
+      ctx.fillText(r.mark, PAD + INNER, ay + LINE - 10);
+      ctx.font = fontBody;
+      ctx.fillStyle = INK;
+      r.lines.forEach((l, i) => ctx.fillText(l, PAD + INNER + 200, ay + (i + 1) * LINE - 10));
+      ay += r.lines.length * LINE;
+    });
+    y += HEAD_H + attBodyH + GAP;
+  }
 
   // NEW WORDS / EXPRESSIONS | PRONUNCIATION
   ctx.fillStyle = HEAD_BG;

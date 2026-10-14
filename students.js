@@ -551,16 +551,30 @@ function openStudentForm(existing, onDone) {
   const levelChoices = LEVEL_OPTIONS.filter(o => myLevels.includes(o.id) || o.id === state.levelId);
   const hasExtras = typeof getStudentExtra === 'function';
   const extra = hasExtras ? getStudentExtra(state.id) : {};
-  const groups = hasExtras ? listStudentGroups() : [];
-  const inGroup = Boolean(extra.groupId);
+  const inGroup = Boolean(extra.isGroup);
 
   openModal(`
     <div class="modal-content-pad">
       <h3 id="modalTitle">${isEdit ? '✏️ Edit Student' : '+ New Student'}</h3>
+      ${hasExtras ? `
+      <div class="gm-form-field">
+        <label>Tipo de aula</label>
+        <div class="attendance-toggle">
+          <button type="button" class="attendance-btn ${inGroup ? '' : 'active'}" id="stTypeSolo">👤 Individual</button>
+          <button type="button" class="attendance-btn ${inGroup ? 'active' : ''}" id="stTypeGroup">👥 Grupo</button>
+        </div>
+      </div>
+      ` : ''}
       <div class="gm-form-field" id="stNameField">
-        <label for="stName">Name</label>
+        <label for="stName" id="stNameLabel">Name</label>
         <input type="text" id="stName" placeholder="e.g. Maya" value="${escapeAttrLite(state.name)}" />
       </div>
+      ${hasExtras ? `
+      <div class="gm-form-field" id="stGroupNamesField" ${inGroup ? '' : 'hidden'}>
+        <label for="stGroupNames">Alunos do grupo <span class="sheet-private-hint">(um nome por linha — o nome do grupo vai no campo acima)</span></label>
+        <textarea id="stGroupNames" rows="6" placeholder="Rayandra&#10;Gabi&#10;Yandrew">${escapeHtmlLite((extra.members || []).join(String.fromCharCode(10)))}</textarea>
+      </div>
+      ` : ''}
       <div class="gm-form-field">
         <label for="stAge">Age <span class="sheet-private-hint">(opcional)</span></label>
         <input type="text" id="stAge" inputmode="numeric" placeholder="e.g. 8" value="${escapeAttrLite(state.age)}" />
@@ -579,25 +593,6 @@ function openStudentForm(existing, onDone) {
         </select>
       </div>
       ${hasExtras ? `
-      <div class="gm-form-field">
-        <label>Tipo de aula</label>
-        <div class="attendance-toggle">
-          <button type="button" class="attendance-btn ${inGroup ? '' : 'active'}" id="stTypeSolo">👤 Individual</button>
-          <button type="button" class="attendance-btn ${inGroup ? 'active' : ''}" id="stTypeGroup">👥 Grupo</button>
-        </div>
-      </div>
-      <div class="gm-form-field" id="stGroupBox" ${inGroup ? '' : 'hidden'}>
-        <label for="stGroupSel">Grupo</label>
-        <select id="stGroupSel">
-          ${groups.map(g => `<option value="${escapeAttrLite(g.id)}" ${g.id === extra.groupId ? 'selected' : ''}>${escapeAttrLite(g.name)}</option>`).join('')}
-          <option value="__new" ${groups.length === 0 || !inGroup ? (groups.length === 0 ? 'selected' : '') : ''}>➕ Novo grupo…</option>
-        </select>
-        <input type="text" id="stGroupName" placeholder="Nome do novo grupo (ex.: Turma das 14h)" style="margin-top:8px" />
-      </div>
-      <div class="gm-form-field" id="stGroupNamesField" hidden>
-        <label for="stGroupNames">Alunos do grupo <span class="sheet-private-hint">(um nome por linha — todos são cadastrados de uma vez)</span></label>
-        <textarea id="stGroupNames" rows="5" placeholder="Rayandra&#10;Maria&#10;João"></textarea>
-      </div>
       <div class="gm-form-field">
         <label for="stNotes">Anotações sobre o aluno <span class="sheet-private-hint">(só para você — objetivo, o que ele gosta…)</span></label>
         <textarea id="stNotes" rows="3" placeholder="e.g. Quer viajar para os EUA. Gosta de futebol e Minecraft.">${escapeHtmlLite(extra.notes || '')}</textarea>
@@ -619,6 +614,7 @@ function openStudentForm(existing, onDone) {
     </div>
   `);
 
+  let groupMode = inGroup;
   document.getElementById('stSaveBtn').addEventListener('click', () => {
     const name = document.getElementById('stName').value.trim();
     const age = parseInt(document.getElementById('stAge').value, 10) || null;   // optional
@@ -627,12 +623,11 @@ function openStudentForm(existing, onDone) {
     const color = document.getElementById('stColor').value;
 
     const errorEl = document.getElementById('stFormError');
-    const multi = isMultiGroup();
-    const groupNames = multi
+    const members = groupMode
       ? document.getElementById('stGroupNames').value.split(String.fromCharCode(10)).map(n => n.trim()).filter(Boolean)
       : [];
-    if (multi && !groupNames.length) return showFormErrorLite(errorEl, 'Digite o nome de pelo menos um aluno do grupo.');
-    if (!multi && !name) return showFormErrorLite(errorEl, 'Please enter the student\'s name.');
+    if (!name) return showFormErrorLite(errorEl, groupMode ? 'Digite o nome do grupo.' : "Please enter the student's name.");
+    if (groupMode && !members.length) return showFormErrorLite(errorEl, 'Digite o nome de pelo menos um aluno do grupo.');
     // Adults too: some teachers have grown-up students.
     if (age !== null && (age < 1 || age > 120)) return showFormErrorLite(errorEl, 'Please enter a valid age (1-120).');
 
@@ -642,42 +637,12 @@ function openStudentForm(existing, onDone) {
     const levelLabel = !age ? opt.levelLabel : age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults')
       : age >= 15 ? opt.levelLabel.replace(/^(Kids|Juniors)/, 'Teens')
       : opt.levelLabel;
-    if (multi) {
-      // A new group: every name becomes a student of that group.
-      const groupName = document.getElementById('stGroupName').value.trim() || 'Grupo';
-      const groupId = 'grp' + Date.now().toString(36);
-      const stamp = Date.now();
-      let firstId = null;
-      groupNames.forEach((n, i) => {
-        const id = 'st' + (stamp + i).toString(36);
-        if (!firstId) firstId = id;
-        students.push({ id, name: n, age, levelId, tier: opt.tier, levelLabel, avatar, color });
-        saveStudentExtra(id, { notes: '', groupId, groupName });
-      });
-      saveStudents(students);
-      if (!getActiveStudentId()) setActiveStudentId(firstId);
-      renderProfileList();
-      onActiveStudentChanged();
-      returnTo();
-      return;
-    }
     const record = { ...(existing || {}), id: state.id, name, age, levelId, tier: opt.tier, levelLabel, avatar, color };
     const idx = students.findIndex(s => s.id === state.id);
     if (idx >= 0) students[idx] = record; else students.push(record);
     saveStudents(students);
     if (hasExtras) {
-      let groupId = null, groupName = '';
-      if (groupMode) {
-        const sel = document.getElementById('stGroupSel').value;
-        if (sel === '__new') {
-          groupName = document.getElementById('stGroupName').value.trim() || 'Grupo';
-          groupId = 'grp' + Date.now().toString(36);
-        } else {
-          groupId = sel;
-          groupName = (groups.find(g => g.id === sel) || {}).name || 'Grupo';
-        }
-      }
-      saveStudentExtra(record.id, { notes: document.getElementById('stNotes').value.trim(), groupId, groupName });
+      saveStudentExtra(record.id, { notes: document.getElementById('stNotes').value.trim(), isGroup: groupMode, members });
     }
     if (typeof saveStudentProfile === 'function') saveStudentProfile(record.id, document.getElementById('stProfile').value || null);
 
@@ -687,28 +652,16 @@ function openStudentForm(existing, onDone) {
     returnTo();
   });
 
-  let groupMode = inGroup;
-  // Creating a brand-new group: the teacher lists all its students at once.
-  const isMultiGroup = () => {
-    const sel = document.getElementById('stGroupSel');
-    return hasExtras && !isEdit && groupMode && sel && sel.value === '__new';
-  };
   if (hasExtras) {
     const solo = document.getElementById('stTypeSolo'), grp = document.getElementById('stTypeGroup');
-    const box = document.getElementById('stGroupBox'), sel = document.getElementById('stGroupSel');
-    const nameEl = document.getElementById('stGroupName');
     const syncGroup = () => {
       solo.classList.toggle('active', !groupMode);
       grp.classList.toggle('active', groupMode);
-      box.hidden = !groupMode;
-      nameEl.hidden = sel.value !== '__new';
-      const multi = isMultiGroup();
-      document.getElementById('stNameField').hidden = multi;
-      document.getElementById('stGroupNamesField').hidden = !multi;
+      document.getElementById('stGroupNamesField').hidden = !groupMode;
+      document.getElementById('stNameLabel').textContent = groupMode ? 'Nome do grupo' : 'Name';
     };
     solo.addEventListener('click', () => { groupMode = false; syncGroup(); });
     grp.addEventListener('click', () => { groupMode = true; syncGroup(); });
-    sel.addEventListener('change', syncGroup);
     syncGroup();
   }
 

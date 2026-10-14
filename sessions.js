@@ -148,6 +148,7 @@ function refreshLiveClassCockpit() {
       <div class="cockpit-student-info">
         <h3>${escapeHtmlLite(student.name)}</h3>
         <p>${student.age ? student.age + ' yrs · ' : ''}${escapeHtmlLite(student.levelLabel)}</p>
+        ${typeof groupMemberNames === 'function' && groupMemberNames(student.id).length ? `<p class="cockpit-group-members">👥 ${groupMemberNames(student.id).map(escapeHtmlLite).join(' · ')}</p>` : ''}
       </div>
     </div>
 
@@ -417,6 +418,8 @@ function editClassSession(sessionId) {
   if (!session) return;
   drawerEditingId = session.id;
   drawerAttendance = session.present ? 'present' : 'absent';
+  drawerGroupAtt = {};
+  ((session.sheet && session.sheet.attendance) || []).forEach(a => { drawerGroupAtt[a.name] = a.present ? 'present' : 'absent'; });
   document.getElementById('sessionDrawer').classList.add('open');
   paintSessionDrawer();
   const body = document.getElementById('sessionDrawerBody');
@@ -488,7 +491,7 @@ function paintSessionDrawer() {
     .map(l => `<button type="button" class="session-topic-chip" data-topic-chip="${escapeHtmlLite(l)}" title="${escapeHtmlLite(l)}">↺ ${escapeHtmlLite(l)}</button>`)
     .join('');
 
-  const groupList = typeof groupMembersOf === 'function' ? groupMembersOf(student.id) : [];
+  const groupList = typeof groupMemberNames === 'function' ? groupMemberNames(student.id) : [];
   body.innerHTML = `
     <div class="session-student-line" style="--accent-color:${student.color}">
       <span class="student-card-avatar" style="background:${student.color}">${student.avatar}</span>
@@ -516,15 +519,15 @@ function paintSessionDrawer() {
       <textarea id="sessionStudentNotes" rows="2" placeholder="Objetivo do aluno, interesses…">${escapeHtmlLite(getStudentExtra(student.id).notes || '')}</textarea>
     </div>` : ''}
 
-    ${groupList.length > 1 && !editing ? `
+    ${groupList.length ? `
     <div class="gm-form-field">
-      <label>Attendance · 👥 ${escapeHtmlLite(getStudentExtra(student.id).groupName || 'Grupo')}</label>
-      ${groupList.map(m => `
+      <label>Attendance · 👥 ${escapeHtmlLite(student.name)}</label>
+      ${groupList.map(n => `
         <div class="session-group-row">
-          <strong>${escapeHtmlLite(m.name)}</strong>
-          <div class="attendance-toggle" data-group-member="${escapeAttrLite(m.id)}">
-            <button type="button" class="attendance-btn present ${drawerGroupAtt[m.id] !== 'absent' ? 'active' : ''}" data-gatt="present">✅ Present</button>
-            <button type="button" class="attendance-btn absent ${drawerGroupAtt[m.id] === 'absent' ? 'active' : ''}" data-gatt="absent">❌ Absent</button>
+          <strong>${escapeHtmlLite(n)}</strong>
+          <div class="attendance-toggle" data-group-member="${escapeAttrLite(n)}">
+            <button type="button" class="attendance-btn present ${drawerGroupAtt[n] !== 'absent' ? 'active' : ''}" data-gatt="present">✅ Present</button>
+            <button type="button" class="attendance-btn absent ${drawerGroupAtt[n] === 'absent' ? 'active' : ''}" data-gatt="absent">❌ Absent</button>
           </div>
         </div>`).join('')}
     </div>` : `
@@ -597,10 +600,10 @@ function paintSessionDrawer() {
 
   // Toggling attendance updates just the two buttons — a full repaint here
   // would wipe out notes/topic the teacher already typed.
-  body.querySelectorAll('.attendance-btn').forEach(btn => {
+  body.querySelectorAll('[data-att]').forEach(btn => {
     btn.addEventListener('click', () => {
       drawerAttendance = btn.dataset.att;
-      body.querySelectorAll('.attendance-btn').forEach(b => b.classList.remove('active'));
+      body.querySelectorAll('[data-att]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
@@ -761,6 +764,13 @@ function renumberSheetRows(container) {
   container.querySelectorAll('.sheet-row-no').forEach((el, i) => { el.textContent = `${i + 1}-`; });
 }
 
+// A group class counts as attended when at least one member came.
+function sheetPresent(sheet) {
+  return Array.isArray(sheet.attendance) && sheet.attendance.length
+    ? sheet.attendance.some(a => a.present)
+    : drawerAttendance === 'present';
+}
+
 function gatherSheetFields() {
   const words = [...document.querySelectorAll('#sessionWords .sheet-row')]
     .map(r => ({ word: r.querySelector('.sheet-word').value.trim(), pron: r.querySelector('.sheet-pron').value.trim() }))
@@ -771,7 +781,9 @@ function gatherSheetFields() {
   const classNumber = parseInt(document.getElementById('sessionClassNo').value, 10) || null;
   const textEl = document.getElementById('sessionText');
   const text = textEl ? textEl.value.trim() : '';
-  return { classNumber, words, homework, text };
+  const attendance = [...document.querySelectorAll('[data-group-member]')]
+    .map(box => ({ name: box.dataset.groupMember, present: drawerGroupAtt[box.dataset.groupMember] !== 'absent' }));
+  return { classNumber, words, homework, text, ...(attendance.length ? { attendance } : {}) };
 }
 
 function renderSessionHistory(studentId) {
@@ -835,27 +847,13 @@ function saveClassSession(student) {
   const record = {
     id: 'sess' + Date.now().toString(36),
     date,
-    present: drawerAttendance === 'present',
+    present: sheetPresent(sheet),
     topicLabel,
     notes,
     sheet,
     stats: { xp: acc.xp, stars: acc.stars },
     createdAt: Date.now(),
   };
-  // Group class: the student on screen takes the group's score; every other
-  // member gets the same class on their own log, with their own presence.
-  const members = typeof groupMembersOf === 'function' ? groupMembersOf(student.id) : [];
-  if (members.length > 1) {
-    record.present = drawerGroupAtt[student.id] !== 'absent';
-    members.filter(m => m.id !== student.id).forEach((m, i) => {
-      const theirs = loadSessions(m.id);
-      theirs.push({
-        ...record, id: 'sess' + (Date.now() + i + 1).toString(36),
-        present: drawerGroupAtt[m.id] !== 'absent', stats: { xp: 0, stars: 0 },
-      });
-      saveSessions(m.id, theirs);
-    });
-  }
   sessions.push(record);
   saveSessions(student.id, sessions);
   resetCurrentSessionAccumulator(student.id);
@@ -881,7 +879,7 @@ function saveEditedSession(student, fields) {
   const sessions = loadSessions(student.id);
   const idx = sessions.findIndex(x => x.id === drawerEditingId);
   if (idx < 0) { drawerEditingId = null; paintSessionDrawer(); return null; }
-  const record = { ...sessions[idx], ...fields, present: drawerAttendance === 'present', editedAt: Date.now() };
+  const record = { ...sessions[idx], ...fields, present: sheetPresent(fields.sheet), editedAt: Date.now() };
   const moveSel = document.getElementById('sessionMoveTo');
   const targetId = moveSel ? moveSel.value : student.id;
 
@@ -902,6 +900,7 @@ function saveEditedSession(student, fields) {
 
   drawerEditingId = null;
   drawerAttendance = 'present';
+  drawerGroupAtt = {};
   paintSessionDrawer();
   refreshLiveClassCockpit();
   if (typeof renderDashboardStatsOnly === 'function') renderDashboardStatsOnly();
