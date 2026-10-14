@@ -24,12 +24,12 @@
 
     <nav class="main-nav" id="mainNav" aria-label="Primary">
       <a href="#live-class" class="nav-link" data-section="live-class">Live Class</a>
+      <a href="#homework" class="nav-link" data-section="homework">Lição</a>
       <a href="#dashboard" class="nav-link" data-section="dashboard">Painel</a>
       <a href="#levels" class="nav-link" data-section="levels">Levels</a>
       <a href="#games" class="nav-link" data-section="games">Games</a>
       <a href="#game-maker" class="nav-link" data-section="game-maker">Game Maker</a>
       <a href="#exam-maker" class="nav-link" data-section="exam-maker">Provas</a>
-      <a href="#homework" class="nav-link" data-section="homework">Lição</a>
       <!-- In the phone menu only: on a computer these two are the round
            buttons on the right of the header, so they never scroll out of
            sight when the menu runs out of room. -->
@@ -93,6 +93,17 @@
       <h2>Live Class</h2>
     </div>
     <div class="live-class-cockpit" id="liveClassCockpit"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============
+       Right under Live Class: it is part of the class routine, not a place to scroll to. -->
+  <section class="teaser-section" id="homework" data-collapsible>
+    <div class="section-head">
+      <span class="section-eyebrow">Praticar em casa</span>
+      <h2>Lição de Casa</h2>
+      <p>Monte um conjunto de tarefas para um aluno — prova, revisão dos erros, ditado, speaking e writing. Ele faz em casa e o resultado volta para você.</p>
+    </div>
+    <div id="homeworkRoot"></div>
   </section>
 
   <!-- ============ TEACHER DASHBOARD ============
@@ -183,15 +194,6 @@
     </div>
   </section>
 
-  <!-- ============ HOMEWORK ============ -->
-  <section class="teaser-section" id="homework" data-collapsible>
-    <div class="section-head">
-      <span class="section-eyebrow">Praticar em casa</span>
-      <h2>Lição de Casa</h2>
-      <p>Monte um conjunto de tarefas para um aluno — prova, revisão dos erros, ditado, speaking e writing. Ele faz em casa e o resultado volta para você.</p>
-    </div>
-    <div id="homeworkRoot"></div>
-  </section>
 
 </main>
 
