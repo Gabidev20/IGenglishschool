@@ -559,7 +559,6 @@ const LivroOnline = (() => {
     let part = 'full';                       // 'full' | 'top' | 'bottom'
     let frame = { x: 0, y: 0, w: 300, h: 424, pad: 6 };
     const audio = new Audio();
-    let audioBtn = null;
 
     const root = document.createElement('div');
     root.className = 'lo-root lo-ed' + (ro ? ' is-readonly' : '');
@@ -1108,7 +1107,6 @@ const LivroOnline = (() => {
         const src = `audios/${book}/${file}`;
         if (!audio.paused && audio.src.endsWith(encodeURI(src))) { audio.pause(); return; }
         if (!audio.src.endsWith(encodeURI(src))) audio.src = src;
-        audioBtn = null;
         audio.play().catch(() => toast('Não consegui tocar o áudio agora.'));
       });
     }
@@ -1226,7 +1224,7 @@ const LivroOnline = (() => {
     function goto(i, wantPart) {
       if (i < 0 || i >= o.pages.length) return;
       leavePage();
-      audio.pause();
+      audio.pause(); audio.removeAttribute('src'); audio.load();
       idx = i; pg = o.pages[idx];
       part = halfView() ? (wantPart === 'bottom' ? 'bottom' : 'top') : 'full';
       split = splitFor(pg);
@@ -1266,40 +1264,126 @@ const LivroOnline = (() => {
       }
     }
 
-    // ---- audio ------------------------------------------------------------------
+    // ---- audio: track chips + player (back / pause / forward / seek / speed) ----
+    let audioItems = [];
+    const fmtT = t => { t = Math.max(0, Math.floor(t || 0)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
+    const curIdx = () => audioItems.findIndex(a => audio.src && audio.src.endsWith(encodeURI(`audios/${book}/${a.file}`)));
+    function loadItem(i, andPlay) {
+      const a = audioItems[i];
+      if (!a) return;
+      const src = `audios/${book}/${a.file}`;
+      if (!audio.src.endsWith(encodeURI(src))) { audio.src = src; audio.playbackRate = rate; }
+      if (andPlay) {
+        audio.currentTime = 0;
+        audio.play().catch(() => toast('Não consegui tocar o áudio agora.'));
+      }
+      paintAudioState();
+    }
+    let rate = 1, apMin = false;
+    const RATES = [1, 0.75, 0.5];
     function paintAudio() {
       const box = $('audio');
       const list = (pg.audio || []);
+      audioItems = [];
       if (!list.length) { box.hidden = true; box.innerHTML = ''; return; }
       loadTracks(book).then(tracks => {
         if (o.pages[idx] !== pg) return;
-        const items = list.map(a => {
+        audioItems = list.map(a => {
           const t = tracks[a.track];
           const file = (t && t.file) || a.file;
           return (t || a.available) && file ? { file, title: (t && t.title ? t.title.split(/\. |\? /)[0] : a.title) || 'Audio' } : null;
         }).filter(Boolean);
-        box.hidden = !items.length;
-        box.innerHTML = items.map((a, i) => `<button type="button" class="lo-audio-btn" data-au="${i}">🎧 <span>Ouvir</span> <small>${esc(a.title)}</small></button>`).join('');
+        box.hidden = !audioItems.length;
+        if (!audioItems.length) { box.innerHTML = ''; return; }
+        box.innerHTML = `
+          ${audioItems.length > 1 ? `<div class="lo-ap-tracks">${audioItems.map((a, i) => `<button type="button" class="lo-audio-btn" data-au="${i}">🎧 <small>${esc(a.title)}</small></button>`).join('')}</div>` : ''}
+          <div class="lo-ap-bar" data-ref="apbar">
+            <div class="lo-ap-head"><span class="lo-ap-title" data-ref="aptitle"></span>
+              <button type="button" class="lo-ap-min" data-ap="min" aria-label="Minimizar o player" title="Minimizar / expandir">▾</button></div>
+            <div class="lo-ap-row">
+              <button type="button" class="lo-ap-b" data-ap="restart" aria-label="Voltar ao início" title="Voltar ao início">⏮</button>
+              <button type="button" class="lo-ap-b" data-ap="back" aria-label="Voltar 5 segundos" title="Voltar 5 segundos">⏪<small>5s</small></button>
+              <button type="button" class="lo-ap-b lo-ap-play" data-ap="play" aria-label="Tocar ou pausar" title="Tocar / pausar (espaço no áudio)">▶</button>
+              <button type="button" class="lo-ap-b" data-ap="fwd" aria-label="Avançar 5 segundos" title="Avançar 5 segundos">⏩<small>5s</small></button>
+              <span class="lo-ap-time" data-ref="aptime">0:00</span>
+              <input type="range" class="lo-ap-seek" data-ref="apseek" min="0" max="1000" value="0" step="1" aria-label="Posição do áudio" />
+              <span class="lo-ap-time" data-ref="apdur">0:00</span>
+              <button type="button" class="lo-ap-b lo-ap-rate" data-ap="rate" aria-label="Velocidade" title="Velocidade">1×</button>
+              <button type="button" class="lo-ap-b lo-ap-loop" data-ap="loop" aria-label="Repetir" title="Repetir o áudio">🔁</button>
+            </div>
+          </div>`;
         box.querySelectorAll('[data-au]').forEach(btn => btn.addEventListener('click', () => {
-          const a = items[Number(btn.dataset.au)];
-          const src = `audios/${book}/${a.file}`;
-          if (audioBtn === btn && !audio.paused) { audio.pause(); return; }
-          if (!audio.src.endsWith(encodeURI(src))) audio.src = src;
-          audioBtn = btn;
-          audio.play().catch(() => toast('Não consegui tocar o áudio agora.'));
+          const i = Number(btn.dataset.au);
+          if (curIdx() === i && !audio.paused) { audio.pause(); return; }
+          loadItem(i, curIdx() !== i || audio.ended || audio.currentTime < 0.05);
+          if (curIdx() === i && audio.paused && audio.currentTime >= 0.05 && !audio.ended) audio.play().catch(() => {});
         }));
+        const seek = box.querySelector('[data-ref="apseek"]');
+        let scrubbing = false;
+        const doAct = act => {
+          if (act === 'play') {
+            if (curIdx() < 0) { loadItem(0, true); return; }
+            if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(() => toast('Não consegui tocar o áudio agora.')); }
+            else audio.pause();
+          } else if (act === 'back') {
+            if (curIdx() < 0) return;
+            audio.currentTime = Math.max(0, audio.currentTime - 5); paintAudioState();
+          } else if (act === 'fwd') {
+            if (curIdx() < 0) loadItem(0, false);
+            audio.currentTime = Math.min((audio.duration || 1e9) - 0.05, audio.currentTime + 5); paintAudioState();
+          } else if (act === 'restart') {
+            if (curIdx() < 0) return;
+            audio.currentTime = 0; paintAudioState();
+          } else if (act === 'rate') {
+            rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length];
+            audio.playbackRate = rate; paintAudioState();
+          } else if (act === 'loop') {
+            audio.loop = !audio.loop; paintAudioState();
+          } else if (act === 'min') {
+            apMin = !apMin; box.classList.toggle('is-min', apMin);
+            const mb = box.querySelector('[data-ap="min"]'); if (mb) mb.textContent = apMin ? '▴' : '▾';
+          }
+        };
+        box.querySelectorAll('[data-ap]').forEach(btn => btn.addEventListener('click', () => doAct(btn.dataset.ap)));
+        seek.addEventListener('input', () => {
+          if (curIdx() < 0) loadItem(0, false);
+          scrubbing = true;
+          if (audio.duration) audio.currentTime = (Number(seek.value) / 1000) * audio.duration;
+          paintAudioState(true);
+        });
+        seek.addEventListener('change', () => { scrubbing = false; paintAudioState(); });
+        seek._scrub = () => scrubbing;
+        // keep keyboard/space on the slider from triggering page shortcuts
+        ['keydown'].forEach(ev => box.addEventListener(ev, e => e.stopPropagation()));
+        box.classList.toggle('is-min', apMin);
+        { const mb = box.querySelector('[data-ap="min"]'); if (mb) mb.textContent = apMin ? '▴' : '▾'; }
+        paintAudioState();
       });
     }
-    const paintAudioState = () => {
-      root.querySelectorAll('.lo-audio-btn').forEach(b => {
-        const playing = b === audioBtn && !audio.paused;
-        b.classList.toggle('is-playing', playing);
-        const span = b.querySelector('span'); if (span) span.textContent = playing ? 'Pausar' : 'Ouvir';
-      });
-    };
-    audio.addEventListener('play', paintAudioState);
-    audio.addEventListener('pause', paintAudioState);
-    audio.addEventListener('ended', paintAudioState);
+    function paintAudioState(fromSeek) {
+      const box = root.querySelector('[data-ref="audio"]');
+      if (!box || box.hidden) return;
+      const i = curIdx();
+      const playing = i >= 0 && !audio.paused;
+      box.querySelectorAll('.lo-audio-btn').forEach((b, k) => b.classList.toggle('is-playing', k === i && playing));
+      const title = box.querySelector('[data-ref="aptitle"]');
+      if (title) title.textContent = i >= 0 ? audioItems[i].title : (audioItems[0] ? audioItems[0].title : '');
+      const playBtn = box.querySelector('[data-ap="play"]');
+      if (playBtn) { playBtn.textContent = playing ? '⏸' : '▶'; playBtn.classList.toggle('is-playing', playing); }
+      const dur = i >= 0 && audio.duration && isFinite(audio.duration) ? audio.duration : 0;
+      const cur = i >= 0 ? audio.currentTime : 0;
+      const seek = box.querySelector('[data-ref="apseek"]');
+      const t = box.querySelector('[data-ref="aptime"]'), d = box.querySelector('[data-ref="apdur"]');
+      if (seek) {
+        if (!fromSeek) seek.value = dur ? Math.round(cur / dur * 1000) : 0;
+        seek.style.setProperty('--p', (dur ? cur / dur * 100 : 0) + '%');
+      }
+      if (t) t.textContent = fmtT(cur);
+      if (d) d.textContent = dur ? fmtT(dur) : '–:––';
+      const rb = box.querySelector('[data-ap="rate"]'); if (rb) rb.textContent = (rate === 1 ? '1' : String(rate).replace('0.', '.')) + '×';
+      const lb = box.querySelector('[data-ap="loop"]'); if (lb) lb.classList.toggle('is-on', audio.loop);
+    }
+    ['play', 'pause', 'ended', 'timeupdate', 'loadedmetadata', 'durationchange', 'ratechange'].forEach(ev => audio.addEventListener(ev, () => paintAudioState()));
 
     // ---- tool options row ---------------------------------------------------
     function paintOpts() {
