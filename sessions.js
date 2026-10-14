@@ -691,7 +691,7 @@ function addSheetWordRow(container, focus, value) {
   row.className = 'sheet-row sheet-row--word';
   row.innerHTML = `
     <input type="text" class="sheet-word" placeholder="word / expression" autocomplete="off" value="${escapeAttrLite(v.word || '')}" />
-    <input type="text" class="sheet-pron" placeholder="pronunciation" autocomplete="off" value="${escapeAttrLite(v.pron || '')}" />
+    <input type="text" class="sheet-pron" placeholder="word to improve" autocomplete="off" value="${escapeAttrLite(v.pron || '')}" />
     <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
   `;
   wireSheetRow(row, container, () => addSheetWordRow(container, true));
@@ -700,28 +700,33 @@ function addSheetWordRow(container, focus, value) {
   if (focus) row.querySelector('input').focus();
 }
 
-// Typing a word and leaving the field fills the phonetic transcription,
-// unless the teacher already wrote one.
+// The right-hand column holds only the words the student must improve.
+// Typing one and leaving the field puts its phonetic transcription right
+// beside it ("home /həʊm/"); a word that already shows one is left alone.
 function wireAutoPronunciation(row) {
   if (typeof lookupIpa !== 'function') return;
-  const wordEl = row.querySelector('.sheet-word');
   const pronEl = row.querySelector('.sheet-pron');
-  let last = '';
-  wordEl.addEventListener('change', async () => {
-    const word = wordEl.value.trim();
-    if (!word || word === last || (pronEl.value.trim() && pronEl.dataset.auto !== '1')) return;
-    last = word;
+  pronEl.addEventListener('change', async () => {
+    const word = pronEl.value.replace(/\s*\/[^/]*\/\s*$/, '').trim();
+    if (!word) return;
+    if (pronEl.value.trim() !== word) {
+      if (pronEl.dataset.word === word) return;   // transcription already there
+      pronEl.value = word;                         // word was edited: look it up again
+    }
+    pronEl.dataset.word = word;
+    const old = pronEl.placeholder;
     pronEl.placeholder = 'buscando…';
     try {
       const ipa = await lookupIpa(word);
-      if (wordEl.value.trim() !== word) return;
-      if (ipa) { pronEl.value = ipa; pronEl.dataset.auto = '1'; }
-      else { pronEl.value = ''; pronEl.placeholder = 'não achei — digite'; }
+      if (pronEl.value.trim() === word) {
+        if (ipa) pronEl.value = word + ' ' + ipa;
+        else pronEl.placeholder = 'fonética não encontrada';
+      }
     } catch (e) {
-      pronEl.placeholder = 'sem internet — digite';
+      pronEl.placeholder = 'fonética indisponível';
     }
+    if (pronEl.placeholder === 'buscando…') pronEl.placeholder = old;
   });
-  pronEl.addEventListener('input', () => { pronEl.dataset.auto = ''; });
 }
 
 function addSheetHomeworkRow(container, focus, value) {
