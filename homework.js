@@ -16,6 +16,7 @@ const HW_TASK_TYPES = [
   { id: 'writing', icon: '✍️', label: 'Writing', hint: 'Escrever um texto para a professora corrigir' },
   { id: 'study', icon: '📚', label: 'Estudar um tópico', hint: 'Vídeo, leitura e flashcards do tópico' },
   { id: 'book', icon: '📖', label: 'Páginas do livro', hint: 'Abre o livro do aluno direto na página' },
+  { id: 'free', icon: '✏️', label: 'Tarefa livre', hint: 'Qualquer coisa escrita por você — o aluno marca quando terminar' },
 ];
 
 // "8-9, 12" / "pág 8 a 10" -> [8, 9, 12] / [8, 9, 10]
@@ -78,6 +79,69 @@ function hwDueLabel(hw) {
   if (days === 0) return 'para hoje';
   if (days === 1) return 'para amanhã';
   return `em ${days} dias`;
+}
+
+// ---------------------------------------------------------------------------
+// QUICK HOMEWORK — written straight from Today's Class or from the cockpit
+// card, no builder: each line becomes a free task ("Workbook page 12",
+// "IG Beyond p. 6-7") on the student's own link. Nothing to select or send.
+// ---------------------------------------------------------------------------
+// A line that names pages ("pág 6 e 7", "página 6 do IG Beyond", "page 12")
+// becomes a task that opens the student's online book right there; anything
+// else stays a free task. A physical "workbook" stays free: it is not in the app.
+function hwTaskFromLine(student, line) {
+  const label = String(line || '').trim();
+  const m = label.match(/(?:p[aá]g(?:ina)?s?\.?|pages?|\bp\.)\s*(\d+(?:\s*(?:-|–|a|até|to|e|,|;)\s*\d+)*)/i);
+  const hasBook = typeof LivroOnline !== 'undefined' && student && LivroOnline.bookFor && LivroOnline.bookFor(student);
+  if (m && hasBook && !/workbook|caderno/i.test(label)) {
+    const pages = hwParsePages(m[1]);
+    if (pages.length) return { type: 'book', label, pagesText: m[1], pages };
+  }
+  return { type: 'free', label };
+}
+
+function hwSyncClassHomework(student, session) {
+  if (!student || !session) return;
+  const id = 'hwcls_' + session.id;
+  const lines = ((session.sheet && session.sheet.homework) || []).map(l => String(l).trim()).filter(Boolean);
+  const prev = hwLoad().find(h => h.id === id);
+  if (!lines.length) { if (prev) hwDelete(id); return; }
+  const when = typeof sheetDateLabel === 'function' ? sheetDateLabel(session.date) : session.date;
+  // A line left unchanged keeps whatever the student already did with it.
+  const tasks = lines.map(l => (prev && prev.tasks.find(t => t.label === l)) || hwTaskFromLine(student, l));
+  const now = new Date().toISOString();
+  hwUpsert({
+    ...(prev || {}), id, fromClass: session.id, studentId: student.id, studentName: student.name,
+    title: `Lição de casa · ${when}`, note: (prev && prev.note) || '', dueDate: (prev && prev.dueDate) || '',
+    topicsText: '', topicIds: [], topicLabels: [], tasks,
+    createdAt: (prev && prev.createdAt) || now, sentAt: (prev && prev.sentAt) || now,
+  });
+}
+
+// One loose "Lição de casa" per student, kept open until the student has done
+// everything on it; adding a line just appends a task.
+function hwQuickAdd(student, label) {
+  const text = String(label || '').trim();
+  if (!student || !text) return;
+  const list = hwLoad();
+  let hw = list.find(h => h.fromQuick === student.id && !hwIsDone(h));
+  const now = new Date().toISOString();
+  if (!hw) {
+    hw = {
+      id: 'hwq' + Date.now().toString(36), fromQuick: student.id, studentId: student.id, studentName: student.name,
+      title: 'Lição de casa', note: '', dueDate: '', topicsText: '', topicIds: [], topicLabels: [], tasks: [],
+      createdAt: now, sentAt: now,
+    };
+  }
+  hw.tasks.push(hwTaskFromLine(student, text));
+  hwUpsert(hw);
+}
+
+function hwRemoveTask(hwId, index) {
+  const hw = hwLoad().find(h => h.id === hwId);
+  if (!hw) return;
+  hw.tasks.splice(index, 1);
+  if (hw.tasks.length) hwUpsert(hw); else hwDelete(hwId);
 }
 
 // ---------------------------------------------------------------------------
@@ -475,10 +539,11 @@ function openHomeworkRunner(hw, onChanged) {
               <div class="hw-run-text">
                 <b>${igEscapeHtml(t.label || meta.label)}</b>
                 <small>${r ? (typeof r.pct === 'number' ? `feito · ${r.pct}%` : 'feito ✅')
+                  : t.type === 'free' ? 'Faça e depois toque em “Já fiz” para marcar como feita'
                   : t.type === 'book' ? `${hwPagesLabel(t.pages || hwParsePages(t.pagesText))} · ${t.pagesDone ? `${t.pagesDone} de ${(t.pages || []).length} feita(s) · ` : ''}toque em “Terminei esta página ✓” em cada uma`
                   : meta.hint}</small>
               </div>
-              <button class="game-btn ${r ? 'secondary' : ''}" data-run="${i}">${r ? '🔁 Refazer' : '▶️ Começar'}</button>
+              <button class="game-btn ${r ? 'secondary' : ''}" data-run="${i}">${r ? '🔁 Refazer' : t.type === 'free' ? '✅ Já fiz' : '▶️ Começar'}</button>
             </div>`;
         }).join('')}
       </div>
@@ -554,6 +619,12 @@ function openHomeworkRunner(hw, onChanged) {
           openHomeworkRunner(hw, onChanged);
         },
       });
+      return;
+    }
+
+    // free — whatever the teacher wrote; the student says when it is done.
+    if (task.type === 'free') {
+      if (confirm(`${task.label}\n\nJá fez esta tarefa?`)) done({ pct: null, self: true });
       return;
     }
 

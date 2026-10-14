@@ -236,6 +236,10 @@ function cockpitContextHTML(student) {
   const last = sessions[sessions.length - 1] || null;
   const lastTopic = last ? cockpitFindTopic(last.topicLabel) : null;
   const pending = (typeof hwForStudent === 'function' ? hwForStudent(student.id) : []).filter(h => !hwIsDone(h));
+  // Every task the student still has to do, whichever homework it is in.
+  const pendingTasks = pending.flatMap(h => h.tasks.map((t, index) => ({ t, index, hwId: h.id }))
+    .filter(x => !x.t.result)
+    .map(x => ({ label: x.t.label || 'Tarefa', free: x.t.type === 'free', hwId: x.hwId, index: x.index })));
   const choices = cockpitTopicChoices(student);
   const fmtDate = d => { try { return new Date(d + 'T12:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); } catch (e) { return d; } };
   const lastHw = last && last.sheet && Array.isArray(last.sheet.homework) ? last.sheet.homework : [];
@@ -268,10 +272,17 @@ function cockpitContextHTML(student) {
 
       <div class="cockpit-ctx-card">
         <p class="cockpit-ctx-label">🏠 Lição de casa</p>
-        ${pending.length ? `
-          <p class="cockpit-ctx-main"><b>${pending.length}</b> pendente${pending.length === 1 ? '' : 's'}: ${pending.slice(0, 2).map(h => escapeHtmlLite(h.title || 'Lição de casa')).join(' · ')}${pending.length > 2 ? '…' : ''}</p>
+        ${pendingTasks.length ? `
+          <ul class="cockpit-hw-list">
+            ${pendingTasks.slice(0, 6).map(p => `<li><span>${escapeHtmlLite(p.label)}</span>${p.free ? `<button type="button" class="cockpit-hw-del" data-hw-del="${escapeAttrLite(p.hwId)}:${p.index}" aria-label="Remover" title="Remover">✕</button>` : ''}</li>`).join('')}
+          </ul>
+          ${pendingTasks.length > 6 ? `<p class="cockpit-ctx-note">+ ${pendingTasks.length - 6} outras…</p>` : ''}
         ` : '<p class="cockpit-ctx-note">Nada pendente. 🎉</p>'}
-        <button class="game-btn secondary" type="button" id="cockpitGoHomework">${pending.length ? '👀 Ver lições' : '✨ Passar uma lição'}</button>
+        <div class="cockpit-hw-add">
+          <input type="text" id="cockpitHwInput" placeholder="Escreva a lição e aperte Enter…" autocomplete="off" aria-label="Nova lição de casa" />
+          <button class="btn btn-primary" type="button" id="cockpitHwAdd">➕</button>
+        </div>
+        <button class="game-btn secondary" type="button" id="cockpitGoHomework">👀 Ver todas as lições</button>
       </div>
     </div>`;
 }
@@ -284,6 +295,22 @@ function wireCockpitContext(root, student) {
   root.querySelectorAll('[data-open-topic]').forEach(btn => btn.addEventListener('click', () => openFromValue(btn.dataset.openTopic)));
   const openBtn = root.querySelector('#cockpitOpenTopic');
   if (openBtn) openBtn.addEventListener('click', () => openFromValue(root.querySelector('#cockpitTopicSelect').value));
+  const hwInput = root.querySelector('#cockpitHwInput');
+  const addHw = () => {
+    if (!hwInput || !hwInput.value.trim() || typeof hwQuickAdd !== 'function') return;
+    hwQuickAdd(student, hwInput.value);
+    refreshLiveClassCockpit();
+    const again = document.getElementById('cockpitHwInput');
+    if (again) again.focus();
+  };
+  if (hwInput) hwInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addHw(); } });
+  const hwAddBtn = root.querySelector('#cockpitHwAdd');
+  if (hwAddBtn) hwAddBtn.addEventListener('click', addHw);
+  root.querySelectorAll('[data-hw-del]').forEach(btn => btn.addEventListener('click', () => {
+    const [id, idx] = btn.dataset.hwDel.split(':');
+    hwRemoveTask(id, Number(idx));
+    refreshLiveClassCockpit();
+  }));
   const hw = root.querySelector('#cockpitGoHomework');
   if (hw) hw.addEventListener('click', () => {
     const section = document.getElementById('homework');
@@ -856,6 +883,7 @@ function saveClassSession(student) {
   };
   sessions.push(record);
   saveSessions(student.id, sessions);
+  if (typeof hwSyncClassHomework === 'function') hwSyncClassHomework(student, record);
   resetCurrentSessionAccumulator(student.id);
   drawerAttendance = 'present';
   drawerGroupAtt = {};
@@ -898,6 +926,11 @@ function saveEditedSession(student, fields) {
     saveSessions(student.id, sessions);
   }
 
+  if (typeof hwSyncClassHomework === 'function') {
+    const owner = (targetId && targetId !== student.id && loadStudents().find(x => x.id === targetId)) || student;
+    if (owner !== student) hwSyncClassHomework(student, { ...record, sheet: { homework: [] } });   // drops it from the old student
+    hwSyncClassHomework(owner, record);
+  }
   drawerEditingId = null;
   drawerAttendance = 'present';
   drawerGroupAtt = {};

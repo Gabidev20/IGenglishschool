@@ -9384,3 +9384,14 @@ html.sl-open .modal-overlay { z-index: 2900; }
 }
 #stuPreviewExit small { font-weight: 500; font-size: 0.7rem; opacity: 0.75; }
 #stuPreviewExit:hover { background: var(--color-primary, #8e6d86); }
+
+/* Quick homework on the live-class cockpit */
+.cockpit-hw-list { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.cockpit-hw-list li { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.cockpit-hw-list li::before { content: '☐'; color: var(--color-primary); }
+.cockpit-hw-list li span { flex: 1; }
+.cockpit-hw-del { border: 0; background: transparent; color: var(--ink-faint); cursor: pointer; font-size: 0.85rem; padding: 0 4px; }
+.cockpit-hw-del:hover { color: var(--color-accent-pop-deep); }
+.cockpit-hw-add { display: flex; gap: 6px; margin-bottom: 8px; }
+.cockpit-hw-add input { flex: 1; min-width: 0; padding: 9px 12px; border: 2px solid var(--border); border-radius: 12px; font: inherit; font-size: 0.9rem; }
+.cockpit-hw-add .btn { padding: 8px 14px; }
