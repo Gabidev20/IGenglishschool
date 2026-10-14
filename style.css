@@ -9395,3 +9395,11 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .cockpit-hw-add { display: flex; gap: 6px; margin-bottom: 8px; }
 .cockpit-hw-add input { flex: 1; min-width: 0; padding: 9px 12px; border: 2px solid var(--border); border-radius: 12px; font: inherit; font-size: 0.9rem; }
 .cockpit-hw-add .btn { padding: 8px 14px; }
+
+/* Lição de casa inside the live-class cockpit */
+.cockpit-context { grid-template-columns: 1fr; }
+.cockpit-hw { margin: 6px 0 14px; }
+.cockpit-hw-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.cockpit-hw-head h3 { margin: 0; font-size: 1.05rem; }
+.cockpit-hw-head .cockpit-hw-add { flex: 1 1 280px; max-width: 560px; margin: 0; }
+#cockpitHwBody #homeworkRoot { margin: 0; }

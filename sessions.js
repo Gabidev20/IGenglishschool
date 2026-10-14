@@ -83,9 +83,30 @@ function drawWarmupQuestion() {
   return warmupDeck.shift();
 }
 
+// The full "Lição de Casa" section lives inside the live-class cockpit while a
+// student is open. The cockpit is rebuilt from a string, so the section's
+// content is parked back in its own section first and moved in afterwards.
+function parkHomeworkRoot() {
+  const r = document.getElementById('homeworkRoot');
+  const sec = document.getElementById('homework');
+  if (!r || !sec) return;
+  if (!sec.contains(r)) sec.appendChild(r);
+  sec.style.display = '';
+}
+function seatHomeworkRoot() {
+  const r = document.getElementById('homeworkRoot');
+  const sec = document.getElementById('homework');
+  const slot = document.getElementById('cockpitHwBody');
+  if (!r || !sec || !slot) return;
+  slot.appendChild(r);
+  sec.style.display = 'none';
+  if (typeof renderHomework === 'function') { try { renderHomework(r); } catch (e) { /* ignore */ } }
+}
+
 function refreshLiveClassCockpit() {
   const root = document.getElementById('liveClassCockpit');
   if (!root) return;
+  parkHomeworkRoot();
   const student = getActiveStudent();
   root.classList.toggle('has-picker', !student);
 
@@ -206,6 +227,7 @@ function refreshLiveClassCockpit() {
   });
   wireCockpitContext(root, student);
   renderCockpitLinks(student);
+  seatHomeworkRoot();
 }
 
 // ---------------------------------------------------------------------------
@@ -235,12 +257,6 @@ function cockpitContextHTML(student) {
     String(a.date).localeCompare(String(b.date)) || (a.createdAt || 0) - (b.createdAt || 0));
   const last = sessions[sessions.length - 1] || null;
   const lastTopic = last ? cockpitFindTopic(last.topicLabel) : null;
-  const pending = (typeof hwForStudent === 'function' ? hwForStudent(student.id) : []).filter(h => !hwIsDone(h));
-  // Every task the student still has to do, whichever homework it is in.
-  const pendingTasks = pending.flatMap(h => h.tasks.map((t, index) => ({ t, index, hwId: h.id }))
-    .filter(x => !x.t.result)
-    .map(x => ({ label: x.t.label || 'Tarefa', free: x.t.type === 'free', hwId: x.hwId, index: x.index })));
-  const choices = cockpitTopicChoices(student);
   const fmtDate = d => { try { return new Date(d + 'T12:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); } catch (e) { return d; } };
   const lastHw = last && last.sheet && Array.isArray(last.sheet.homework) ? last.sheet.homework : [];
 
@@ -256,34 +272,17 @@ function cockpitContextHTML(student) {
           ${lastTopic ? `<button class="game-btn secondary" type="button" data-open-topic="${escapeAttrLite(lastTopic.level.id)}|${escapeAttrLite(lastTopic.topic.id)}">↺ Revisar: ${escapeHtmlLite(lastTopic.topic.title)}</button>` : ''}
         ` : `<p class="cockpit-ctx-note">Nenhuma aula registrada ainda — use <b>📋 Today's Class</b> no fim da aula.</p>`}
       </div>
+    </div>
 
-      <div class="cockpit-ctx-card">
-        <p class="cockpit-ctx-label">📖 Tópico de hoje</p>
-        ${choices.length ? `
-          <div class="cockpit-topic-row">
-            <select id="cockpitTopicSelect" aria-label="Tópico para abrir">
-              ${choices.map(c => `<option value="${escapeAttrLite(c.level.id)}|${escapeAttrLite(c.topic.id)}" ${lastTopic && lastTopic.topic.id === c.topic.id && lastTopic.level.id === c.level.id ? 'selected' : ''}>${escapeHtmlLite(c.topic.emoji || '')} ${escapeHtmlLite(c.topic.title)}</option>`).join('')}
-            </select>
-            <button class="btn btn-primary" type="button" id="cockpitOpenTopic">▶ Abrir</button>
-          </div>
-          <p class="cockpit-ctx-note">Vídeo, jogos, quiz, leitura e speaking do tópico, prontos para compartilhar a tela.</p>
-        ` : '<p class="cockpit-ctx-note">Este nível ainda não tem tópicos.</p>'}
-      </div>
-
-      <div class="cockpit-ctx-card">
-        <p class="cockpit-ctx-label">🏠 Lição de casa</p>
-        ${pendingTasks.length ? `
-          <ul class="cockpit-hw-list">
-            ${pendingTasks.slice(0, 6).map(p => `<li><span>${escapeHtmlLite(p.label)}</span>${p.free ? `<button type="button" class="cockpit-hw-del" data-hw-del="${escapeAttrLite(p.hwId)}:${p.index}" aria-label="Remover" title="Remover">✕</button>` : ''}</li>`).join('')}
-          </ul>
-          ${pendingTasks.length > 6 ? `<p class="cockpit-ctx-note">+ ${pendingTasks.length - 6} outras…</p>` : ''}
-        ` : '<p class="cockpit-ctx-note">Nada pendente. 🎉</p>'}
+    <div class="cockpit-hw" id="cockpitHwSlot">
+      <div class="cockpit-hw-head">
+        <h3>🏠 Lição de casa</h3>
         <div class="cockpit-hw-add">
-          <input type="text" id="cockpitHwInput" placeholder="Escreva a lição e aperte Enter…" autocomplete="off" aria-label="Nova lição de casa" />
-          <button class="btn btn-primary" type="button" id="cockpitHwAdd">➕</button>
+          <input type="text" id="cockpitHwInput" placeholder="Escreva a lição (ex.: IG Beyond pág 6 e 7) e aperte Enter…" autocomplete="off" aria-label="Nova lição de casa" />
+          <button class="btn btn-primary" type="button" id="cockpitHwAdd">➕ Passar</button>
         </div>
-        <button class="game-btn secondary" type="button" id="cockpitGoHomework">👀 Ver todas as lições</button>
       </div>
+      <div id="cockpitHwBody"></div>
     </div>`;
 }
 
@@ -306,11 +305,6 @@ function wireCockpitContext(root, student) {
   if (hwInput) hwInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addHw(); } });
   const hwAddBtn = root.querySelector('#cockpitHwAdd');
   if (hwAddBtn) hwAddBtn.addEventListener('click', addHw);
-  root.querySelectorAll('[data-hw-del]').forEach(btn => btn.addEventListener('click', () => {
-    const [id, idx] = btn.dataset.hwDel.split(':');
-    hwRemoveTask(id, Number(idx));
-    refreshLiveClassCockpit();
-  }));
   const hw = root.querySelector('#cockpitGoHomework');
   if (hw) hw.addEventListener('click', () => {
     const section = document.getElementById('homework');
