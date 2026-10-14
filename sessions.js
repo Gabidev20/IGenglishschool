@@ -147,7 +147,7 @@ function refreshLiveClassCockpit() {
       <span class="cockpit-avatar" style="background:${student.color}">${student.avatar}</span>
       <div class="cockpit-student-info">
         <h3>${escapeHtmlLite(student.name)}</h3>
-        <p>${student.age} yrs · ${escapeHtmlLite(student.levelLabel)}</p>
+        <p>${student.age ? student.age + ' yrs · ' : ''}${escapeHtmlLite(student.levelLabel)}</p>
       </div>
     </div>
 

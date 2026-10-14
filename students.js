@@ -319,7 +319,7 @@ function awardProgress(xp, stars) {
 // Age-based split used by the Live Lesson cockpit's routine bar: ages 3-8
 // get the Hello/Bye Bye song routine, older students get a chit-chat warm-up.
 function isYoungLearner(student) {
-  return student.age <= 8;
+  return Boolean(student.age) && student.age <= 8;
 }
 
 // null when nobody is selected. It used to fall back to the first student,
@@ -496,7 +496,7 @@ function paintStudentManagerGrid() {
       <span class="student-card-avatar" style="background:${s.color}">${s.avatar}</span>
       <div class="student-card-info">
         <strong>${escapeHtmlLite(s.name)}</strong>
-        <span>${s.age} yrs · ${escapeHtmlLite(s.levelLabel)}</span>
+        <span>${s.age ? s.age + ' yrs · ' : ''}${escapeHtmlLite(s.levelLabel)}</span>
       </div>
       <div class="student-card-actions">
         <button class="gm-remove-row" data-share-student="${s.id}" aria-label="Link do aluno" title="Link do aluno">🔗</button>
@@ -562,7 +562,7 @@ function openStudentForm(existing, onDone) {
         <input type="text" id="stName" placeholder="e.g. Maya" value="${escapeAttrLite(state.name)}" />
       </div>
       <div class="gm-form-field">
-        <label for="stAge">Age</label>
+        <label for="stAge">Age <span class="sheet-private-hint">(opcional)</span></label>
         <input type="text" id="stAge" inputmode="numeric" placeholder="e.g. 8" value="${escapeAttrLite(state.age)}" />
       </div>
       <div class="gm-form-field">
@@ -621,7 +621,7 @@ function openStudentForm(existing, onDone) {
 
   document.getElementById('stSaveBtn').addEventListener('click', () => {
     const name = document.getElementById('stName').value.trim();
-    const age = parseInt(document.getElementById('stAge').value, 10);
+    const age = parseInt(document.getElementById('stAge').value, 10) || null;   // optional
     const levelId = document.getElementById('stLevel').value;
     const avatar = document.getElementById('stAvatar').value.trim() || '⭐';
     const color = document.getElementById('stColor').value;
@@ -634,12 +634,12 @@ function openStudentForm(existing, onDone) {
     if (multi && !groupNames.length) return showFormErrorLite(errorEl, 'Digite o nome de pelo menos um aluno do grupo.');
     if (!multi && !name) return showFormErrorLite(errorEl, 'Please enter the student\'s name.');
     // Adults too: some teachers have grown-up students.
-    if (!age || age < 1 || age > 120) return showFormErrorLite(errorEl, 'Please enter a valid age (1-120).');
+    if (age !== null && (age < 1 || age > 120)) return showFormErrorLite(errorEl, 'Please enter a valid age (1-120).');
 
     const opt = levelOption(levelId);
     const students = loadStudents();
     // An adult reads as "Adults (A2)", not "Kids (A0)" / "Teens (A2)".
-    const levelLabel = age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults')
+    const levelLabel = !age ? opt.levelLabel : age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults')
       : age >= 15 ? opt.levelLabel.replace(/^(Kids|Juniors)/, 'Teens')
       : opt.levelLabel;
     if (multi) {
