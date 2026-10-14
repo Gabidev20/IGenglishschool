@@ -51,201 +51,286 @@ function sheetWrap(ctx, text, maxWidth) {
   return out.length ? out : [''];
 }
 
-function renderClassSheetCanvas(student, session) {
-  const W = 1200;
-  const PAD = 48;
-  const BOX_W = W - PAD * 2;
-  const INNER = 22;              // text padding inside a box
-  const LINE = 40;               // body line height
-  const GAP = 40;                // space between boxes
-  const INK = '#2e2b2e';
-  const SOFT = '#6d6a6d';
-  const HEAD_BG = '#f3f3f1';
-  const ACCENT = '#8e6d86';
+// The school logo, loaded once; a missing file just leaves the badge empty.
+let sheetLogoPromise = null;
+function sheetLoadLogo() {
+  if (!sheetLogoPromise) {
+    sheetLogoPromise = new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = 'logo.png';
+    });
+  }
+  return sheetLogoPromise;
+}
 
-  const fontBody = '400 28px Inter, system-ui, sans-serif';
-  const fontBold = '700 26px Inter, system-ui, sans-serif';
-  const fontTitle = '500 54px Inter, system-ui, sans-serif';
-  const fontSmall = '500 22px Inter, system-ui, sans-serif';
+function sheetRoundRect(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+}
+
+// "home /həʊm/" -> { word: 'home', ipa: '/həʊm/' }
+function sheetSplitPron(text) {
+  const m = String(text || '').match(/^(.*?)\s*(\/[^/]+\/)\s*$/);
+  return m ? { word: m[1].trim(), ipa: m[2] } : { word: String(text || '').trim(), ipa: '' };
+}
+
+async function renderClassSheetCanvas(student, session) {
+  const W = 1080;
+  const M = 56;                    // outer margin
+  const CW = W - M * 2;            // card width
+  const CP = 38;                   // card padding
+  const LINE = 46;
+  const C = {
+    bg: '#f3f3f1', ink: '#2e2b2e', soft: '#6d6a6d',
+    mauve: '#8e6d86', mauveD: '#6f5469', mauveL: '#b08aa6',
+    sage: '#a9b4a4', sageD: '#6f7d68',
+    van: '#faefc2', vanD: '#b8953a', vanText: '#6b5413',
+    coral: '#f05d77', coralD: '#c9435c',
+  };
+  const F = (w, s, fam) => `${w} ${s}px ${fam || 'Inter, system-ui, sans-serif'}`;
+  const DISPLAY = '"Plus Jakarta Sans", Inter, system-ui, sans-serif';
 
   const sheet = session.sheet || {};
   const words = Array.isArray(sheet.words) ? sheet.words : [];
+  const newWords = words.map(w => String(w.word || '').trim()).filter(Boolean);
+  const pronList = words.map(w => sheetSplitPron(w.pron)).filter(p => p.word);
   const homework = Array.isArray(sheet.homework) ? sheet.homework : [];
-
-  // A first pass on a scratch canvas measures everything, so the final image
-  // is exactly as tall as its content — a long word list just makes it longer.
-  const measure = document.createElement('canvas').getContext('2d');
-  const colW = BOX_W / 2;
-
-  measure.font = fontBody;
-  const inClassLines = sheetWrap(measure, session.topicLabel || '—', BOX_W - INNER * 2);
-  const wordRows = words.map(w => {
-    const left = sheetWrap(measure, w.word || '', colW - INNER * 2);
-    const right = sheetWrap(measure, w.pron || '', colW - INNER * 2);
-    return { left, right, lines: Math.max(left.length, right.length) };
-  });
-  // Longer phrases / texts: each line the teacher typed stays its own line.
-  const textLines = String(sheet.text || '').split(/\r?\n/).flatMap(l => (l.trim() ? sheetWrap(measure, l.trim(), BOX_W - INNER * 2) : ['']));
-  while (textLines.length && !textLines[textLines.length - 1]) textLines.pop();
-  const hasText = textLines.length > 0;
-  const textBodyH = hasText ? INNER * 2 + textLines.length * LINE : 0;
-  // Group classes: who came and who didn't.
   const att = Array.isArray(sheet.attendance) ? sheet.attendance : [];
-  const hasAtt = att.length > 0;
-  const presentNames = att.filter(a => a.present).map(a => a.name).join(', ');
-  const absentNames = att.filter(a => !a.present).map(a => a.name).join(', ');
-  const attRows = [];
-  if (hasAtt) {
-    if (presentNames) attRows.push({ mark: 'PRESENT', lines: sheetWrap(measure, presentNames, BOX_W - INNER * 2 - 200) });
-    if (absentNames) attRows.push({ mark: 'ABSENT', lines: sheetWrap(measure, absentNames, BOX_W - INNER * 2 - 200) });
-  }
-  const attBodyH = hasAtt ? INNER * 2 + attRows.reduce((n, r) => n + r.lines.length, 0) * LINE : 0;
-  const NUM_W = 52;
-  const hwRows = homework.length
-    ? homework.map((h, i) => ({ no: `${i + 1}-`, lines: sheetWrap(measure, h, BOX_W - INNER * 2 - NUM_W) }))
-    : [{ no: '', lines: ['No homework today.'] }];
+  const classNo = sheet.classNumber;
+  const logo = await sheetLoadLogo();
 
-  const titleH = 110;
-  const inClassH = INNER + 34 + inClassLines.length * LINE + INNER - 6;
-  const HEAD_H = 64;
-  const wordsBodyLines = wordRows.reduce((n, r) => n + r.lines, 0);
-  const wordsBodyH = Math.max(220, INNER * 2 + wordsBodyLines * LINE + Math.max(0, wordRows.length - 1) * 10);
-  const hwBodyLines = hwRows.reduce((n, r) => n + r.lines.length, 0);
-  const hwBodyH = Math.max(150, INNER * 2 + hwBodyLines * LINE);
-  const footerH = 70;
-  const H = PAD + titleH + inClassH + GAP + (hasAtt ? HEAD_H + attBodyH + GAP : 0) + HEAD_H + wordsBodyH + GAP + (hasText ? HEAD_H + textBodyH + GAP : 0) + HEAD_H + hwBodyH + footerH;
+  const measure = document.createElement('canvas').getContext('2d');
+  const wrap = (font, text, width) => { measure.font = font; return sheetWrap(measure, text, width); };
+  const INNER = CW - CP * 2;
+  const HEAD = 84;                 // card header (label pill) block
+  const GAP = 34;
 
   const canvas = document.createElement('canvas');
-  canvas.width = W;
-  canvas.height = H;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, W, H);
-  ctx.textBaseline = 'alphabetic';
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = INK;
 
-  let y = PAD;
+  // ---- Measure each section: { color, label, icon, bodyH, draw(x, y) } ----
+  const top = [];      // before the words cards
+  const bottom = [];   // after them
 
-  // Title + who it is for
-  ctx.fillStyle = INK;
-  ctx.font = fontTitle;
-  ctx.textAlign = 'left';
-  ctx.fillText(sheetTitle(session), PAD, y + 58);
-  ctx.font = fontSmall;
-  ctx.fillStyle = SOFT;
-  ctx.textAlign = 'right';
-  ctx.fillText(student.name || '', W - PAD, y + 56);
-  y += titleH;
-
-  // IN CLASS
-  ctx.strokeRect(PAD, y, BOX_W, inClassH);
-  ctx.textAlign = 'left';
-  ctx.fillStyle = INK;
-  ctx.font = fontBold;
-  ctx.fillText('IN CLASS', PAD + INNER, y + INNER + 24);
-  ctx.font = fontBody;
-  inClassLines.forEach((l, i) => ctx.fillText(l, PAD + INNER, y + INNER + 34 + (i + 1) * LINE - 10));
-  y += inClassH + GAP;
+  top.push((() => {
+    const lines = wrap(F(500, 32), session.topicLabel || '—', INNER);
+    return {
+      label: 'IN CLASS', icon: '📚', color: C.mauve, bodyH: lines.length * LINE + 4,
+      draw(x, y) {
+        ctx.font = F(500, 32); ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+        lines.forEach((l, i) => ctx.fillText(l, x, y + (i + 1) * LINE - 12));
+      },
+    };
+  })());
 
   // ATTENDANCE (group classes)
-  if (hasAtt) {
-    ctx.fillStyle = HEAD_BG;
-    ctx.fillRect(PAD, y, BOX_W, HEAD_H);
-    ctx.strokeRect(PAD, y, BOX_W, HEAD_H + attBodyH);
-    ctx.beginPath();
-    ctx.moveTo(PAD, y + HEAD_H); ctx.lineTo(PAD + BOX_W, y + HEAD_H);
-    ctx.stroke();
-    ctx.fillStyle = INK;
-    ctx.font = fontBold;
-    ctx.textAlign = 'center';
-    ctx.fillText('ATTENDANCE', W / 2, y + HEAD_H / 2 + 9);
-    ctx.textAlign = 'left';
-    let ay = y + HEAD_H + INNER;
-    attRows.forEach(r => {
-      ctx.font = fontBold;
-      ctx.fillStyle = r.mark === 'ABSENT' ? ACCENT : INK;
-      ctx.fillText(r.mark, PAD + INNER, ay + LINE - 10);
-      ctx.font = fontBody;
-      ctx.fillStyle = INK;
-      r.lines.forEach((l, i) => ctx.fillText(l, PAD + INNER + 200, ay + (i + 1) * LINE - 10));
-      ay += r.lines.length * LINE;
+  if (att.length) {
+    const rows = [];
+    const here = att.filter(a => a.present).map(a => a.name).join(', ');
+    const away = att.filter(a => !a.present).map(a => a.name).join(', ');
+    if (here) rows.push({ mark: '✅  Present', color: C.sageD, lines: wrap(F(500, 30), here, INNER - 230) });
+    if (away) rows.push({ mark: '❌  Absent', color: C.coralD, lines: wrap(F(500, 30), away, INNER - 230) });
+    top.push({
+      label: 'ATTENDANCE', icon: '👥', color: C.sageD,
+      bodyH: rows.reduce((n, r) => n + r.lines.length, 0) * LINE + (rows.length - 1) * 10,
+      draw(x, y) {
+        let ry = y;
+        rows.forEach(r => {
+          ctx.textAlign = 'left';
+          ctx.font = F(700, 28); ctx.fillStyle = r.color;
+          ctx.fillText(r.mark, x, ry + LINE - 12);
+          ctx.font = F(500, 30); ctx.fillStyle = C.ink;
+          r.lines.forEach((l, i) => ctx.fillText(l, x + 230, ry + (i + 1) * LINE - 12));
+          ry += r.lines.length * LINE + 10;
+        });
+      },
     });
-    y += HEAD_H + attBodyH + GAP;
   }
 
-  // NEW WORDS / EXPRESSIONS | PRONUNCIATION
-  ctx.fillStyle = HEAD_BG;
-  ctx.fillRect(PAD, y, BOX_W, HEAD_H);
-  ctx.strokeRect(PAD, y, BOX_W, HEAD_H + wordsBodyH);
-  ctx.beginPath();
-  ctx.moveTo(PAD, y + HEAD_H); ctx.lineTo(PAD + BOX_W, y + HEAD_H);
-  ctx.moveTo(PAD + colW, y); ctx.lineTo(PAD + colW, y + HEAD_H + wordsBodyH);
-  ctx.stroke();
-  ctx.fillStyle = INK;
-  ctx.font = fontBold;
-  ctx.textAlign = 'center';
-  ctx.fillText('NEW WORDS / EXPRESSIONS', PAD + colW / 2, y + HEAD_H / 2 + 9);
-  ctx.fillText('PRONUNCIATION', PAD + colW * 1.5, y + HEAD_H / 2 + 9);
-  ctx.textAlign = 'left';
-  let ry = y + HEAD_H + INNER;
-  wordRows.forEach(r => {
-    ctx.font = '600 28px Inter, system-ui, sans-serif';
-    ctx.fillStyle = INK;
-    r.left.forEach((l, i) => ctx.fillText(l, PAD + INNER, ry + (i + 1) * LINE - 10));
-    ctx.font = fontBody;
-    ctx.fillStyle = ACCENT;
-    r.right.forEach((l, i) => ctx.fillText(l, PAD + colW + INNER, ry + (i + 1) * LINE - 10));
-    ry += r.lines * LINE + 10;
-  });
-  y += HEAD_H + wordsBodyH + GAP;
+  // NEW WORDS | PRONUNCIATION — two cards side by side
+  const HALF = (CW - 24) / 2;
+  const HIN = HALF - CP * 2;
+  let wordsBlock = null;
+  if (newWords.length || pronList.length) {
+    const left = newWords.map(t => ({ lines: wrap(F(600, 31), t, HIN - 30) }));
+    const right = pronList.map(p => {
+      measure.font = F(700, 31); const ww = measure.measureText(p.word).width;
+      measure.font = F(500, 28); const iw = p.ipa ? measure.measureText(p.ipa).width : 0;
+      const oneLine = !p.ipa || ww + 16 + iw <= HIN - 30;
+      return { ...p, oneLine, lines: oneLine ? [p.word] : wrap(F(700, 31), p.word, HIN - 30) };
+    });
+    const leftH = left.reduce((n, it) => n + it.lines.length * LINE + 12, 0);
+    const rightH = right.reduce((n, it) => n + it.lines.length * LINE + (it.ipa && !it.oneLine ? LINE - 6 : 0) + 12, 0);
+    wordsBlock = { left, right, bodyH: Math.max(leftH, rightH, LINE) };
+  }
 
   // PHRASES / TEXT
-  if (hasText) {
-    ctx.fillStyle = HEAD_BG;
-    ctx.fillRect(PAD, y, BOX_W, HEAD_H);
-    ctx.strokeRect(PAD, y, BOX_W, HEAD_H + textBodyH);
-    ctx.beginPath();
-    ctx.moveTo(PAD, y + HEAD_H); ctx.lineTo(PAD + BOX_W, y + HEAD_H);
-    ctx.stroke();
-    ctx.fillStyle = INK;
-    ctx.font = fontBold;
-    ctx.textAlign = 'center';
-    ctx.fillText('PHRASES / TEXT', W / 2, y + HEAD_H / 2 + 9);
-    ctx.textAlign = 'left';
-    ctx.font = fontBody;
-    textLines.forEach((l, i) => ctx.fillText(l, PAD + INNER, y + HEAD_H + INNER + (i + 1) * LINE - 10));
-    y += HEAD_H + textBodyH + GAP;
+  if (String(sheet.text || '').trim()) {
+    const lines = String(sheet.text).split(/\r?\n/).flatMap(l => (l.trim() ? wrap(F(500, 31), l.trim(), INNER) : ['']));
+    while (lines.length && !lines[lines.length - 1]) lines.pop();
+    bottom.push({
+      label: 'PHRASES & TEXT', icon: '💬', color: C.vanD, bodyH: lines.length * LINE + 4,
+      draw(x, y) {
+        ctx.font = F(500, 31); ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+        lines.forEach((l, i) => ctx.fillText(l, x, y + (i + 1) * LINE - 12));
+      },
+    });
   }
 
   // HOMEWORK
-  ctx.fillStyle = HEAD_BG;
-  ctx.fillRect(PAD, y, BOX_W, HEAD_H);
-  ctx.strokeRect(PAD, y, BOX_W, HEAD_H + hwBodyH);
-  ctx.beginPath();
-  ctx.moveTo(PAD, y + HEAD_H); ctx.lineTo(PAD + BOX_W, y + HEAD_H);
-  ctx.stroke();
-  ctx.fillStyle = INK;
-  ctx.font = fontBold;
-  ctx.textAlign = 'center';
-  ctx.fillText('HOMEWORK', W / 2, y + HEAD_H / 2 + 9);
-  ctx.textAlign = 'left';
-  ctx.font = fontBody;
-  ry = y + HEAD_H + INNER;
-  hwRows.forEach(r => {
-    ctx.fillStyle = INK;
-    if (r.no) ctx.fillText(r.no, PAD + INNER, ry + LINE - 10);
-    if (!r.no) ctx.fillStyle = SOFT;
-    r.lines.forEach((l, i) => ctx.fillText(l, PAD + INNER + (r.no ? NUM_W : 0), ry + (i + 1) * LINE - 10));
-    ry += r.lines.length * LINE;
-  });
-  y += HEAD_H + hwBodyH;
+  {
+    const items = homework.map((h, i) => ({ no: i + 1, lines: wrap(F(500, 31), h, INNER - 70) }));
+    const empty = !items.length;
+    const bodyH = empty ? LINE : items.reduce((n, it) => n + it.lines.length * LINE + 14, 0) - 8;
+    bottom.push({
+      label: 'HOMEWORK', icon: '🏠', color: C.coral, bodyH,
+      draw(x, y) {
+        ctx.textAlign = 'left';
+        if (empty) { ctx.font = F(500, 31); ctx.fillStyle = C.soft; ctx.fillText('No homework today 🎉', x, y + LINE - 12); return; }
+        let ry = y;
+        items.forEach(it => {
+          ctx.fillStyle = C.coral;
+          ctx.beginPath(); ctx.arc(x + 25, ry + 24, 25, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.font = F(800, 26); ctx.textAlign = 'center';
+          ctx.fillText(String(it.no), x + 25, ry + 34);
+          ctx.textAlign = 'left'; ctx.font = F(500, 31); ctx.fillStyle = C.ink;
+          it.lines.forEach((l, i) => ctx.fillText(l, x + 70, ry + (i + 1) * LINE - 12));
+          ry += it.lines.length * LINE + 14;
+        });
+      },
+    });
+  }
 
-  // Footer
-  ctx.font = fontSmall;
-  ctx.fillStyle = ACCENT;
+  const order = [...top];
+  if (wordsBlock) order.push({ words: true, bodyH: wordsBlock.bodyH });
+  order.push(...bottom);
+
+  const HEADER_H = 330;
+  const FOOT_H = 150;
+  const heightOf = s => HEAD + s.bodyH + CP;
+  const H = HEADER_H + 40 + order.reduce((n, s) => n + heightOf(s) + GAP, 0) - GAP + FOOT_H;
+
+  canvas.width = W; canvas.height = H;
+  ctx.textBaseline = 'alphabetic';
+
+  // ---- Background: warm off-white with soft colour washes ----
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  const wash = (cx, cy, r, color, a) => {
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    g.addColorStop(0, color + a); g.addColorStop(1, color + '00');
+    ctx.fillStyle = g; ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+  };
+  wash(W - 60, H * 0.35, 420, '#faefc2', 'cc');
+  wash(40, H * 0.62, 420, '#a9b4a4', '66');
+  wash(W - 80, H - 260, 380, '#f05d77', '26');
+
+  // ---- Header ----
+  const g = ctx.createLinearGradient(0, 0, W, HEADER_H);
+  g.addColorStop(0, C.mauveD); g.addColorStop(0.55, C.mauve); g.addColorStop(1, C.mauveL);
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, HEADER_H - 64);
+  ctx.arcTo(W, HEADER_H, W - 64, HEADER_H, 64); ctx.lineTo(64, HEADER_H);
+  ctx.arcTo(0, HEADER_H, 0, HEADER_H - 64, 64); ctx.closePath(); ctx.fill();
+  ctx.save(); ctx.clip();
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.beginPath(); ctx.arc(W - 90, 70, 190, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(250,239,194,0.16)';
+  ctx.beginPath(); ctx.arc(W - 250, HEADER_H - 20, 110, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(240,93,119,0.22)';
+  ctx.beginPath(); ctx.arc(120, HEADER_H + 10, 90, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  // The logo is light letters on a transparent background, so it goes
+  // straight onto the mauve header (cropped to the part that has artwork).
+  if (logo) {
+    const sw = logo.naturalWidth, sh = Math.round(logo.naturalHeight * 0.66);
+    const lw = 230, lh = Math.round(lw * sh / sw);
+    ctx.drawImage(logo, 0, 0, sw, sh, W - M - lw + 10, 26, lw, lh);
+  }
+  ctx.textAlign = 'left'; ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = F(700, 26);
+  try { ctx.letterSpacing = '3px'; } catch (e) { /* older browsers */ }
+  ctx.fillText('LESSON RECAP', M, 96);
+  try { ctx.letterSpacing = '0px'; } catch (e) { /* older browsers */ }
+
+  // title, date pill, student
+  ctx.font = F(800, 104, DISPLAY); ctx.fillStyle = '#fff';
+  ctx.fillText(classNo ? `Class ${classNo}` : 'Class', M, 232);
+  const dateText = sheetDateLabel(session.date);
+  ctx.font = F(700, 28); const dw = ctx.measureText(dateText).width + 48;
+  ctx.fillStyle = C.van; sheetRoundRect(ctx, M, 262, dw, 48, 24); ctx.fill();
+  ctx.fillStyle = C.vanText; ctx.fillText(dateText, M + 24, 296);
+  ctx.textAlign = 'right'; ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.font = F(600, 30);
+  ctx.fillText(student.name || '', W - M, 296);
+
+  // ---- Cards ----
+  const card = (x, y, w, h, color, label, icon) => {
+    ctx.save();
+    ctx.shadowColor = 'rgba(46,43,46,0.10)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10;
+    ctx.fillStyle = '#fff'; sheetRoundRect(ctx, x, y, w, h, 36); ctx.fill();
+    ctx.restore();
+    ctx.font = F(800, 23); try { ctx.letterSpacing = '2px'; } catch (e) { /* older browsers */ }
+    const text = `${icon}  ${label}`;
+    const pw = ctx.measureText(text).width + 44;
+    ctx.fillStyle = color; sheetRoundRect(ctx, x + CP - 6, y + 26, pw, 46, 23); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(text, x + CP + 16, y + 58);
+    try { ctx.letterSpacing = '0px'; } catch (e) { /* older browsers */ }
+  };
+
+  let y = HEADER_H + 40;
+  order.forEach(s => {
+    const h = heightOf(s);
+    if (s.words) {
+      const wb = wordsBlock;
+      [['NEW WORDS', '✨', C.coral, M], ['PRONUNCIATION', '🗣️', C.mauve, M + HALF + 24]].forEach(([label, icon, color, x], side) => {
+        card(x, y, HALF, h, color, label, icon);
+        const items = side === 0 ? wb.left : wb.right;
+        let ry = y + HEAD + 4;
+        if (!items.length) {
+          ctx.font = F(500, 31); ctx.fillStyle = '#c9c6c9'; ctx.textAlign = 'left';
+          ctx.fillText('—', x + CP, ry + LINE - 12);
+          return;
+        }
+        items.forEach(it => {
+          ctx.fillStyle = color;
+          ctx.beginPath(); ctx.arc(x + CP + 6, ry + 22, 6, 0, Math.PI * 2); ctx.fill();
+          ctx.textAlign = 'left';
+          ctx.font = side === 0 ? F(600, 31) : F(700, 31); ctx.fillStyle = C.ink;
+          it.lines.forEach((l, i) => ctx.fillText(l, x + CP + 30, ry + (i + 1) * LINE - 12));
+          if (side === 0) { ry += it.lines.length * LINE + 12; return; }
+          if (it.ipa) {
+            ctx.font = F(500, 28); ctx.fillStyle = C.mauve;
+            if (it.oneLine) {
+              measure.font = F(700, 31);
+              ctx.fillText(it.ipa, x + CP + 30 + measure.measureText(it.word).width + 16, ry + LINE - 12);
+            } else {
+              ctx.fillText(it.ipa, x + CP + 30, ry + (it.lines.length + 1) * LINE - 18);
+            }
+          }
+          ry += it.lines.length * LINE + (it.ipa && !it.oneLine ? LINE - 6 : 0) + 12;
+        });
+      });
+    } else {
+      card(M, y, CW, h, s.color, s.label, s.icon);
+      s.draw(M + CP, y + HEAD + 4);
+    }
+    y += h + GAP;
+  });
+
+  // ---- Footer ----
   ctx.textAlign = 'center';
-  ctx.fillText('IG English School 💜', W / 2, y + 48);
+  ctx.font = F(700, 34, DISPLAY); ctx.fillStyle = C.mauve;
+  ctx.fillText('IG English School 💜', W / 2, H - FOOT_H / 2 + 14);
+  ctx.font = F(500, 22); ctx.fillStyle = C.soft;
+  ctx.fillText('Keep practicing — see you next class!', W / 2, H - FOOT_H / 2 + 52);
 
   return canvas;
 }
@@ -293,11 +378,11 @@ async function openClassSheetModal(student, session) {
   // Inter comes from Google Fonts; draw only once it is in, or the first
   // sheet of the day would come out in a fallback font.
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
-  try { await document.fonts.load('700 26px Inter'); } catch (e) {}
+  try { await document.fonts.load('700 26px Inter'); await document.fonts.load('800 40px "Plus Jakarta Sans"'); } catch (e) {}
 
   const preview = document.getElementById('classSheetPreview');
   if (!preview) return;   // modal closed while fonts loaded
-  const canvas = renderClassSheetCanvas(student, session);
+  const canvas = await renderClassSheetCanvas(student, session);
   const blob = await sheetCanvasToBlob(canvas);
   const fileName = sheetFileName(student, session);
   const file = new File([blob], fileName, { type: 'image/png' });
