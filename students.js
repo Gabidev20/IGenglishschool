@@ -557,7 +557,7 @@ function openStudentForm(existing, onDone) {
   openModal(`
     <div class="modal-content-pad">
       <h3 id="modalTitle">${isEdit ? '✏️ Edit Student' : '+ New Student'}</h3>
-      <div class="gm-form-field">
+      <div class="gm-form-field" id="stNameField">
         <label for="stName">Name</label>
         <input type="text" id="stName" placeholder="e.g. Maya" value="${escapeAttrLite(state.name)}" />
       </div>
@@ -594,6 +594,10 @@ function openStudentForm(existing, onDone) {
         </select>
         <input type="text" id="stGroupName" placeholder="Nome do novo grupo (ex.: Turma das 14h)" style="margin-top:8px" />
       </div>
+      <div class="gm-form-field" id="stGroupNamesField" hidden>
+        <label for="stGroupNames">Alunos do grupo <span class="sheet-private-hint">(um nome por linha — todos são cadastrados de uma vez)</span></label>
+        <textarea id="stGroupNames" rows="5" placeholder="Rayandra&#10;Maria&#10;João"></textarea>
+      </div>
       <div class="gm-form-field">
         <label for="stNotes">Anotações sobre o aluno <span class="sheet-private-hint">(só para você — objetivo, o que ele gosta…)</span></label>
         <textarea id="stNotes" rows="3" placeholder="e.g. Quer viajar para os EUA. Gosta de futebol e Minecraft.">${escapeHtmlLite(extra.notes || '')}</textarea>
@@ -623,7 +627,12 @@ function openStudentForm(existing, onDone) {
     const color = document.getElementById('stColor').value;
 
     const errorEl = document.getElementById('stFormError');
-    if (!name) return showFormErrorLite(errorEl, 'Please enter the student\'s name.');
+    const multi = isMultiGroup();
+    const groupNames = multi
+      ? document.getElementById('stGroupNames').value.split(String.fromCharCode(10)).map(n => n.trim()).filter(Boolean)
+      : [];
+    if (multi && !groupNames.length) return showFormErrorLite(errorEl, 'Digite o nome de pelo menos um aluno do grupo.');
+    if (!multi && !name) return showFormErrorLite(errorEl, 'Please enter the student\'s name.');
     // Adults too: some teachers have grown-up students.
     if (!age || age < 1 || age > 120) return showFormErrorLite(errorEl, 'Please enter a valid age (1-120).');
 
@@ -633,6 +642,25 @@ function openStudentForm(existing, onDone) {
     const levelLabel = age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults')
       : age >= 15 ? opt.levelLabel.replace(/^(Kids|Juniors)/, 'Teens')
       : opt.levelLabel;
+    if (multi) {
+      // A new group: every name becomes a student of that group.
+      const groupName = document.getElementById('stGroupName').value.trim() || 'Grupo';
+      const groupId = 'grp' + Date.now().toString(36);
+      const stamp = Date.now();
+      let firstId = null;
+      groupNames.forEach((n, i) => {
+        const id = 'st' + (stamp + i).toString(36);
+        if (!firstId) firstId = id;
+        students.push({ id, name: n, age, levelId, tier: opt.tier, levelLabel, avatar, color });
+        saveStudentExtra(id, { notes: '', groupId, groupName });
+      });
+      saveStudents(students);
+      if (!getActiveStudentId()) setActiveStudentId(firstId);
+      renderProfileList();
+      onActiveStudentChanged();
+      returnTo();
+      return;
+    }
     const record = { ...(existing || {}), id: state.id, name, age, levelId, tier: opt.tier, levelLabel, avatar, color };
     const idx = students.findIndex(s => s.id === state.id);
     if (idx >= 0) students[idx] = record; else students.push(record);
@@ -660,6 +688,11 @@ function openStudentForm(existing, onDone) {
   });
 
   let groupMode = inGroup;
+  // Creating a brand-new group: the teacher lists all its students at once.
+  const isMultiGroup = () => {
+    const sel = document.getElementById('stGroupSel');
+    return hasExtras && !isEdit && groupMode && sel && sel.value === '__new';
+  };
   if (hasExtras) {
     const solo = document.getElementById('stTypeSolo'), grp = document.getElementById('stTypeGroup');
     const box = document.getElementById('stGroupBox'), sel = document.getElementById('stGroupSel');
@@ -669,6 +702,9 @@ function openStudentForm(existing, onDone) {
       grp.classList.toggle('active', groupMode);
       box.hidden = !groupMode;
       nameEl.hidden = sel.value !== '__new';
+      const multi = isMultiGroup();
+      document.getElementById('stNameField').hidden = multi;
+      document.getElementById('stGroupNamesField').hidden = !multi;
     };
     solo.addEventListener('click', () => { groupMode = false; syncGroup(); });
     grp.addEventListener('click', () => { groupMode = true; syncGroup(); });
