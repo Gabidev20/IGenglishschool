@@ -395,6 +395,8 @@ function openRoutineSongModal(songId) {
 // "TODAY'S CLASS" DRAWER — attendance, date, topic, notes, auto-tallied score
 // ---------------------------------------------------------------------------
 let drawerAttendance = 'present';
+// Group classes: attendance per member id ('present' | 'absent').
+let drawerGroupAtt = {};
 // The class being corrected, when the drawer is in edit mode (null = a new
 // class). A class logged with the wrong date, topic or student is fixed in
 // place instead of being logged twice.
@@ -403,6 +405,7 @@ let drawerShowAllHistory = false;
 
 function openSessionDrawer() {
   drawerAttendance = 'present';
+  drawerGroupAtt = {};
   drawerEditingId = null;
   document.getElementById('sessionDrawer').classList.add('open');
   paintSessionDrawer();
@@ -485,6 +488,7 @@ function paintSessionDrawer() {
     .map(l => `<button type="button" class="session-topic-chip" data-topic-chip="${escapeHtmlLite(l)}" title="${escapeHtmlLite(l)}">↺ ${escapeHtmlLite(l)}</button>`)
     .join('');
 
+  const groupList = typeof groupMembersOf === 'function' ? groupMembersOf(student.id) : [];
   body.innerHTML = `
     <div class="session-student-line" style="--accent-color:${student.color}">
       <span class="student-card-avatar" style="background:${student.color}">${student.avatar}</span>
@@ -506,13 +510,31 @@ function paintSessionDrawer() {
           </select>
         </div>` : ''}` : ''}
 
+    ${typeof getStudentExtra === 'function' ? `
+    <div class="gm-form-field">
+      <label for="sessionStudentNotes">📝 Sobre o aluno <span class="sheet-private-hint">(só para você — objetivo, o que gosta…)</span></label>
+      <textarea id="sessionStudentNotes" rows="2" placeholder="Objetivo do aluno, interesses…">${escapeHtmlLite(getStudentExtra(student.id).notes || '')}</textarea>
+    </div>` : ''}
+
+    ${groupList.length > 1 && !editing ? `
+    <div class="gm-form-field">
+      <label>Attendance · 👥 ${escapeHtmlLite(getStudentExtra(student.id).groupName || 'Grupo')}</label>
+      ${groupList.map(m => `
+        <div class="session-group-row">
+          <strong>${escapeHtmlLite(m.name)}</strong>
+          <div class="attendance-toggle" data-group-member="${escapeAttrLite(m.id)}">
+            <button type="button" class="attendance-btn present ${drawerGroupAtt[m.id] !== 'absent' ? 'active' : ''}" data-gatt="present">✅ Present</button>
+            <button type="button" class="attendance-btn absent ${drawerGroupAtt[m.id] === 'absent' ? 'active' : ''}" data-gatt="absent">❌ Absent</button>
+          </div>
+        </div>`).join('')}
+    </div>` : `
     <div class="gm-form-field">
       <label>Attendance</label>
       <div class="attendance-toggle">
         <button class="attendance-btn present ${drawerAttendance === 'present' ? 'active' : ''}" data-att="present">✅ Present</button>
         <button class="attendance-btn absent ${drawerAttendance === 'absent' ? 'active' : ''}" data-att="absent">❌ Absent</button>
       </div>
-    </div>
+    </div>`}
 
     <div class="session-date-row">
       <div class="gm-form-field session-classno-field">
@@ -552,6 +574,11 @@ function paintSessionDrawer() {
     </div>
 
     <div class="gm-form-field">
+      <label for="sessionText">Phrases / texts <span class="sheet-private-hint">(vai na ficha, em um bloco próprio)</span></label>
+      <textarea id="sessionText" rows="4" placeholder="Frases maiores, diálogos ou um texto para o aluno ver na ficha…">${editing ? escapeHtmlLite(sheet.text || '') : ''}</textarea>
+    </div>
+
+    <div class="gm-form-field">
       <label for="sessionNotes">Teacher's notes <span class="sheet-private-hint">(só para você — não vai na ficha)</span></label>
       <textarea id="sessionNotes" rows="4" placeholder="e.g. Great pronunciation of /p/ and /t/ sounds, practiced Simple Past regular verbs...">${editing ? escapeHtmlLite(editing.notes || '') : ''}</textarea>
     </div>
@@ -577,6 +604,15 @@ function paintSessionDrawer() {
       btn.classList.add('active');
     });
   });
+
+  body.querySelectorAll('[data-group-member]').forEach(box => {
+    box.querySelectorAll('[data-gatt]').forEach(btn => btn.addEventListener('click', () => {
+      drawerGroupAtt[box.dataset.groupMember] = btn.dataset.gatt;
+      box.querySelectorAll('.attendance-btn').forEach(b => b.classList.toggle('active', b === btn));
+    }));
+  });
+  const stNotesEl = document.getElementById('sessionStudentNotes');
+  if (stNotesEl) stNotesEl.addEventListener('change', () => saveStudentExtra(student.id, { notes: stNotesEl.value.trim() }));
 
   // Picking a topic adds it to whatever is already written instead of
   // replacing it, so two topics in one class are a matter of picking twice.
@@ -659,8 +695,33 @@ function addSheetWordRow(container, focus, value) {
     <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
   `;
   wireSheetRow(row, container, () => addSheetWordRow(container, true));
+  wireAutoPronunciation(row);
   container.appendChild(row);
   if (focus) row.querySelector('input').focus();
+}
+
+// Typing a word and leaving the field fills the phonetic transcription,
+// unless the teacher already wrote one.
+function wireAutoPronunciation(row) {
+  if (typeof lookupIpa !== 'function') return;
+  const wordEl = row.querySelector('.sheet-word');
+  const pronEl = row.querySelector('.sheet-pron');
+  let last = '';
+  wordEl.addEventListener('change', async () => {
+    const word = wordEl.value.trim();
+    if (!word || word === last || (pronEl.value.trim() && pronEl.dataset.auto !== '1')) return;
+    last = word;
+    pronEl.placeholder = 'buscando…';
+    try {
+      const ipa = await lookupIpa(word);
+      if (wordEl.value.trim() !== word) return;
+      if (ipa) { pronEl.value = ipa; pronEl.dataset.auto = '1'; }
+      else { pronEl.value = ''; pronEl.placeholder = 'não achei — digite'; }
+    } catch (e) {
+      pronEl.placeholder = 'sem internet — digite';
+    }
+  });
+  pronEl.addEventListener('input', () => { pronEl.dataset.auto = ''; });
 }
 
 function addSheetHomeworkRow(container, focus, value) {
@@ -703,7 +764,9 @@ function gatherSheetFields() {
     .map(i => i.value.trim())
     .filter(Boolean);
   const classNumber = parseInt(document.getElementById('sessionClassNo').value, 10) || null;
-  return { classNumber, words, homework };
+  const textEl = document.getElementById('sessionText');
+  const text = textEl ? textEl.value.trim() : '';
+  return { classNumber, words, homework, text };
 }
 
 function renderSessionHistory(studentId) {
@@ -774,10 +837,25 @@ function saveClassSession(student) {
     stats: { xp: acc.xp, stars: acc.stars },
     createdAt: Date.now(),
   };
+  // Group class: the student on screen takes the group's score; every other
+  // member gets the same class on their own log, with their own presence.
+  const members = typeof groupMembersOf === 'function' ? groupMembersOf(student.id) : [];
+  if (members.length > 1) {
+    record.present = drawerGroupAtt[student.id] !== 'absent';
+    members.filter(m => m.id !== student.id).forEach((m, i) => {
+      const theirs = loadSessions(m.id);
+      theirs.push({
+        ...record, id: 'sess' + (Date.now() + i + 1).toString(36),
+        present: drawerGroupAtt[m.id] !== 'absent', stats: { xp: 0, stars: 0 },
+      });
+      saveSessions(m.id, theirs);
+    });
+  }
   sessions.push(record);
   saveSessions(student.id, sessions);
   resetCurrentSessionAccumulator(student.id);
   drawerAttendance = 'present';
+  drawerGroupAtt = {};
 
   paintSessionDrawer();
   // "Última aula" on the cockpit now shows this one.

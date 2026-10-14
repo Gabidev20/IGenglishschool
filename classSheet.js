@@ -84,6 +84,11 @@ function renderClassSheetCanvas(student, session) {
     const right = sheetWrap(measure, w.pron || '', colW - INNER * 2);
     return { left, right, lines: Math.max(left.length, right.length) };
   });
+  // Longer phrases / texts: each line the teacher typed stays its own line.
+  const textLines = String(sheet.text || '').split(/\r?\n/).flatMap(l => (l.trim() ? sheetWrap(measure, l.trim(), BOX_W - INNER * 2) : ['']));
+  while (textLines.length && !textLines[textLines.length - 1]) textLines.pop();
+  const hasText = textLines.length > 0;
+  const textBodyH = hasText ? INNER * 2 + textLines.length * LINE : 0;
   const NUM_W = 52;
   const hwRows = homework.length
     ? homework.map((h, i) => ({ no: `${i + 1}-`, lines: sheetWrap(measure, h, BOX_W - INNER * 2 - NUM_W) }))
@@ -97,7 +102,7 @@ function renderClassSheetCanvas(student, session) {
   const hwBodyLines = hwRows.reduce((n, r) => n + r.lines.length, 0);
   const hwBodyH = Math.max(150, INNER * 2 + hwBodyLines * LINE);
   const footerH = 70;
-  const H = PAD + titleH + inClassH + GAP + HEAD_H + wordsBodyH + GAP + HEAD_H + hwBodyH + footerH;
+  const H = PAD + titleH + inClassH + GAP + HEAD_H + wordsBodyH + GAP + (hasText ? HEAD_H + textBodyH + GAP : 0) + HEAD_H + hwBodyH + footerH;
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
@@ -157,6 +162,24 @@ function renderClassSheetCanvas(student, session) {
     ry += r.lines * LINE + 10;
   });
   y += HEAD_H + wordsBodyH + GAP;
+
+  // PHRASES / TEXT
+  if (hasText) {
+    ctx.fillStyle = HEAD_BG;
+    ctx.fillRect(PAD, y, BOX_W, HEAD_H);
+    ctx.strokeRect(PAD, y, BOX_W, HEAD_H + textBodyH);
+    ctx.beginPath();
+    ctx.moveTo(PAD, y + HEAD_H); ctx.lineTo(PAD + BOX_W, y + HEAD_H);
+    ctx.stroke();
+    ctx.fillStyle = INK;
+    ctx.font = fontBold;
+    ctx.textAlign = 'center';
+    ctx.fillText('PHRASES / TEXT', W / 2, y + HEAD_H / 2 + 9);
+    ctx.textAlign = 'left';
+    ctx.font = fontBody;
+    textLines.forEach((l, i) => ctx.fillText(l, PAD + INNER, y + HEAD_H + INNER + (i + 1) * LINE - 10));
+    y += HEAD_H + textBodyH + GAP;
+  }
 
   // HOMEWORK
   ctx.fillStyle = HEAD_BG;

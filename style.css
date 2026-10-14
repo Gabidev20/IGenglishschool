@@ -9368,3 +9368,7 @@ html.sl-open .modal-overlay { z-index: 2900; }
 /* Drawing Challenge on the student's own link */
 .dc-solo-tip { margin: 10px 0 0; padding: 10px 12px; border-radius: 14px; background: #fff8e6; border: 2px dashed #e7c766; font-weight: 700; font-size: .95rem; text-align: center; }
 .dc-solo-tip small { display: block; font-weight: 500; color: var(--ink-soft); margin-top: 2px; }
+
+/* Group class: one attendance row per member */
+.session-group-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.session-group-row .attendance-toggle { flex: 1 1 200px; max-width: 280px; }

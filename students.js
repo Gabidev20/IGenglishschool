@@ -549,6 +549,10 @@ function openStudentForm(existing, onDone) {
     ? { ...existing }
     : { id: 'st' + Date.now().toString(36), name: '', age: adultOnly ? 18 : 6, levelId: myLevels[0] || 'a0', color: '#8e6d86', avatar: adultOnly ? '🙂' : '⭐' };
   const levelChoices = LEVEL_OPTIONS.filter(o => myLevels.includes(o.id) || o.id === state.levelId);
+  const hasExtras = typeof getStudentExtra === 'function';
+  const extra = hasExtras ? getStudentExtra(state.id) : {};
+  const groups = hasExtras ? listStudentGroups() : [];
+  const inGroup = Boolean(extra.groupId);
 
   openModal(`
     <div class="modal-content-pad">
@@ -574,6 +578,26 @@ function openStudentForm(existing, onDone) {
           ${typeof PROFILE_META !== 'undefined' ? Object.entries(PROFILE_META).map(([id, m]) => `<option value="${id}" ${isEdit && loadStudentProfiles()[state.id] === id ? 'selected' : ''}>${m.icon} ${m.label} — ${m.desc}</option>`).join('') : ''}
         </select>
       </div>
+      ${hasExtras ? `
+      <div class="gm-form-field">
+        <label>Tipo de aula</label>
+        <div class="attendance-toggle">
+          <button type="button" class="attendance-btn ${inGroup ? '' : 'active'}" id="stTypeSolo">👤 Individual</button>
+          <button type="button" class="attendance-btn ${inGroup ? 'active' : ''}" id="stTypeGroup">👥 Grupo</button>
+        </div>
+      </div>
+      <div class="gm-form-field" id="stGroupBox" ${inGroup ? '' : 'hidden'}>
+        <label for="stGroupSel">Grupo</label>
+        <select id="stGroupSel">
+          ${groups.map(g => `<option value="${escapeAttrLite(g.id)}" ${g.id === extra.groupId ? 'selected' : ''}>${escapeAttrLite(g.name)}</option>`).join('')}
+          <option value="__new" ${groups.length === 0 || !inGroup ? (groups.length === 0 ? 'selected' : '') : ''}>➕ Novo grupo…</option>
+        </select>
+        <input type="text" id="stGroupName" placeholder="Nome do novo grupo (ex.: Turma das 14h)" style="margin-top:8px" />
+      </div>
+      <div class="gm-form-field">
+        <label for="stNotes">Anotações sobre o aluno <span class="sheet-private-hint">(só para você — objetivo, o que ele gosta…)</span></label>
+        <textarea id="stNotes" rows="3" placeholder="e.g. Quer viajar para os EUA. Gosta de futebol e Minecraft.">${escapeHtmlLite(extra.notes || '')}</textarea>
+      </div>` : ''}
       <div class="gm-form-field">
         <label for="stAvatar">Avatar emoji</label>
         <input type="text" id="stAvatar" class="gm-input-emoji" style="max-width:100px" placeholder="⭐" value="${escapeAttrLite(state.avatar)}" />
@@ -609,10 +633,24 @@ function openStudentForm(existing, onDone) {
     const levelLabel = age >= 18 ? opt.levelLabel.replace(/^(Kids|Juniors|Teens)/, 'Adults')
       : age >= 15 ? opt.levelLabel.replace(/^(Kids|Juniors)/, 'Teens')
       : opt.levelLabel;
-    const record = { id: state.id, name, age, levelId, tier: opt.tier, levelLabel, avatar, color };
+    const record = { ...(existing || {}), id: state.id, name, age, levelId, tier: opt.tier, levelLabel, avatar, color };
     const idx = students.findIndex(s => s.id === state.id);
     if (idx >= 0) students[idx] = record; else students.push(record);
     saveStudents(students);
+    if (hasExtras) {
+      let groupId = null, groupName = '';
+      if (groupMode) {
+        const sel = document.getElementById('stGroupSel').value;
+        if (sel === '__new') {
+          groupName = document.getElementById('stGroupName').value.trim() || 'Grupo';
+          groupId = 'grp' + Date.now().toString(36);
+        } else {
+          groupId = sel;
+          groupName = (groups.find(g => g.id === sel) || {}).name || 'Grupo';
+        }
+      }
+      saveStudentExtra(record.id, { notes: document.getElementById('stNotes').value.trim(), groupId, groupName });
+    }
     if (typeof saveStudentProfile === 'function') saveStudentProfile(record.id, document.getElementById('stProfile').value || null);
 
     if (!getActiveStudentId()) setActiveStudentId(record.id);
@@ -620,6 +658,23 @@ function openStudentForm(existing, onDone) {
     onActiveStudentChanged();
     returnTo();
   });
+
+  let groupMode = inGroup;
+  if (hasExtras) {
+    const solo = document.getElementById('stTypeSolo'), grp = document.getElementById('stTypeGroup');
+    const box = document.getElementById('stGroupBox'), sel = document.getElementById('stGroupSel');
+    const nameEl = document.getElementById('stGroupName');
+    const syncGroup = () => {
+      solo.classList.toggle('active', !groupMode);
+      grp.classList.toggle('active', groupMode);
+      box.hidden = !groupMode;
+      nameEl.hidden = sel.value !== '__new';
+    };
+    solo.addEventListener('click', () => { groupMode = false; syncGroup(); });
+    grp.addEventListener('click', () => { groupMode = true; syncGroup(); });
+    sel.addEventListener('change', syncGroup);
+    syncGroup();
+  }
 
   document.getElementById('stCancelBtn').addEventListener('click', returnTo);
 
