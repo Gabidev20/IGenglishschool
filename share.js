@@ -431,6 +431,7 @@ function renderStudentHome(shell, studentId) {
     review: () => (review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
     games: () => tile('games', '🎮', prof === 'adult' ? 'Topics & games' : 'Games', prof === 'adult' ? 'Vocabulário, leitura e jogos dos meus tópicos' : 'Jogos com as palavras do meu nível'),
     colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
+    drawing: () => tile('drawing', '🖍️', 'Drawing Challenge', 'Desenho surpresa — abra a caixa e desenhe', 'stu-tile--review'),
     alphabet: () => tile('alphabet', '🔤', 'ABC', 'Alfabeto — ouvir e falar as letras'),
     backpack: () => tile('backpack', '🎒', 'Backpack', 'Mochila — school objects'),
     house: () => tile('house', '🏠', 'House', 'Casa — parts of the house'),
@@ -451,7 +452,7 @@ function renderStudentHome(shell, studentId) {
   };
   // The picture games are tiles of their own; the teacher can switch each
   // one off in the link window.
-  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body', alphabet: 'alphabet' };
+  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body', alphabet: 'alphabet', drawing: 'drawing' };
   // A grown-up's page leads with the skill their teacher said matters most.
   const adultSkills = () => {
     const order = { speaking: ['speaking', 'audio'], listening: ['dictation'], writing: ['write', 'writingPractice'], reading: ['games'], grammar: ['practice'] };
@@ -462,9 +463,9 @@ function renderStudentHome(shell, studentId) {
   };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
-    prereader: ['review', 'colors', 'alphabet', 'feelings', 'weather', 'body', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
-    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
-    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'alphabet', 'games', 'mistakes'],
+    prereader: ['review', 'colors', 'alphabet', 'drawing', 'feelings', 'weather', 'body', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
+    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
+    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'alphabet', 'drawing', 'games', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
     .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []))
@@ -532,6 +533,7 @@ function renderStudentHome(shell, studentId) {
     body: () => openBodyGame(),
     colors: () => openColorsGame(),
     alphabet: () => openAlphabetGame(),
+    drawing: () => { if (typeof LiveTools !== 'undefined') LiveTools.openTool('drawing', { solo: true }); },
     audio: () => openAudioMessage(student),
     'writing-practice': () => openWritingPractice(student.id, practiceTopics),
     practice: () => {

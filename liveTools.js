@@ -907,11 +907,11 @@ const LiveTools = (() => {
     stickers: { title: '📔 Sticker Book', render: renderStickers },
     links: { title: '🔗 Links da Aula', render: renderClassLinks },
     drawing: { title: '🎨 Drawing Challenge',
-      render: c => renderDrawingChallenge(c, { tone, playBell, playTick, confettiBurst, track }) },
+      render: (c, opts) => renderDrawingChallenge(c, { tone, playBell, playTick, confettiBurst, track, solo: Boolean(opts && opts.solo) }) },
     whoami: { title: '🕵️ Who am I?', render: c => renderWhoAmI(c) },
   };
 
-  function openTool(toolId) {
+  function openTool(toolId, opts) {
     const meta = TOOL_META[toolId];
     if (!meta) return;
     // Wide frame: the Wheel and Sticker editors lay out in columns, and the
@@ -922,13 +922,13 @@ const LiveTools = (() => {
           <span class="modal-head-thumb modal-head-thumb--icon">${meta.title.split(' ')[0]}</span>
           <div class="modal-head-text">
             <h3 id="modalTitle">${meta.title.replace(/^\S+\s/, '')}</h3>
-            <p class="modal-head-sub"><span class="modal-head-desc">Live Class Tools</span></p>
+            <p class="modal-head-sub"><span class="modal-head-desc">${opts && opts.solo ? 'Surprise drawing — desenhe e mostre!' : 'Live Class Tools'}</span></p>
           </div>
         </div>
         <div id="liveToolMount"></div>
       </div>
     `, true);
-    meta.render(document.getElementById('liveToolMount'));
+    meta.render(document.getElementById('liveToolMount'), opts);
   }
 
   function initFab() {

@@ -16,7 +16,7 @@ const DRAW_THEMES = [
     ['butterfly', 'uma borboleta', '🦋'], ['penguin', 'um pinguim', '🐧'], ['giraffe', 'uma girafa', '🦒'], ['pig', 'um porco', '🐷']] },
   { id: 'food', en: 'Food', pt: 'Comida', emoji: '🍕', items: [
     ['pizza', 'uma pizza', '🍕'], ['apple', 'uma maçã', '🍎'], ['banana', 'uma banana', '🍌'], ['ice cream', 'um sorvete', '🍦'],
-    ['birthday cake', 'um bolo de aniversário', '🎂'], ['sandwich', 'um sanduíche', '🥪'], ['hamburger', 'um hambúrguer', '🍔'],
+    ['cake', 'um bolo', '🍰'], ['sandwich', 'um sanduíche', '🥪'], ['hamburger', 'um hambúrguer', '🍔'],
     ['carrot', 'uma cenoura', '🥕'], ['watermelon', 'uma melancia', '🍉'], ['cookie', 'um biscoito', '🍪'],
     ['strawberry', 'um morango', '🍓'], ['egg', 'um ovo', '🥚'], ['hot dog', 'um cachorro-quente', '🌭'], ['donut', 'uma rosquinha', '🍩']] },
   { id: 'house', en: 'House', pt: 'Casa', emoji: '🏠', items: [
@@ -58,7 +58,7 @@ const DRAW_TWISTS = [
   ['wearing a hat', 'usando um chapéu', '🎩'], ['with sunglasses', 'de óculos escuros', '🕶️'], ['on the moon', 'na lua', '🌙'],
   ['in the rain', 'na chuva', '🌧️'], ['eating ice cream', 'tomando sorvete', '🍦'], ['playing soccer', 'jogando futebol', '⚽'],
   ['sleeping', 'dormindo', '😴'], ['on a skateboard', 'andando de skate', '🛹'], ['at the beach', 'na praia', '🏖️'],
-  ['with a birthday cake', 'com um bolo de aniversário', '🎂'], ['flying with balloons', 'voando com balões', '🎈'],
+  ['with a cake', 'com um bolo', '🍰'], ['flying with balloons', 'voando com balões', '🎈'],
   ['under the sea', 'no fundo do mar', '🌊'], ['in a castle', 'num castelo', '🏰'], ['dancing', 'dançando', '💃'],
   ['with a crown', 'com uma coroa', '👑'], ['in space', 'no espaço', '🚀'], ['reading a book', 'lendo um livro', '📖'],
   ['on a rainbow', 'num arco-íris', '🌈'], ['in the snow', 'na neve', '❄️'], ['with a big smile', 'com um sorrisão', '😁'],
@@ -78,7 +78,8 @@ function renderDrawingChallenge(container, kit) {
   };
 
   // Course topics the teacher can draw from (the words of today's lesson).
-  const courseTopics = (typeof LEVELS !== 'undefined' ? LEVELS : []).flatMap(level =>
+  const solo = Boolean(kit && kit.solo);   // the student alone, on their own link
+  const courseTopics = solo ? [] : (typeof LEVELS !== 'undefined' ? LEVELS : []).flatMap(level =>
     (level.topics || []).filter(t => (t.words || []).length).map(t => ({ key: `${level.id}:${t.id}`, label: `${level.code} · ${t.title}`, topic: t })));
 
   let themeId = IGStore.getRaw('draw_theme') || 'surprise';
@@ -259,11 +260,13 @@ function renderDrawingChallenge(container, kit) {
 
         <div class="dc-main">
           ${cardHTML()}
+          ${solo ? `
+          <p class="dc-solo-tip">🖍️ Draw on paper, then show your drawing to your teacher or your family! <small>Desenhe no papel e mostre para a sua teacher ou para a família.</small></p>` : `
           <div class="dc-score">
             <span class="dc-score-label">⭐ Best drawing</span>
             <button class="dc-score-btn" data-score="teacher">👩‍🏫 Teacher <b>${score.teacher}</b></button>
             <button class="dc-score-btn" data-score="student">🧒 Student <b>${score.student}</b></button>
-          </div>
+          </div>`}
         </div>
       </div>`;
     justRevealed = false;

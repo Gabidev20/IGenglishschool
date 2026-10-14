@@ -35,6 +35,7 @@ const SA_READY_GAMES = [
   { id: 'house', icon: '🏠', label: 'House' },
   { id: 'where', icon: '📦', label: 'Where is it?' },
   { id: 'backpack', icon: '🎒', label: 'Backpack' },
+  { id: 'drawing', icon: '🖍️', label: 'Drawing Challenge' },
 ];
 
 // Exam-style practice topics for grown-ups, by the level that meets them.
@@ -138,7 +139,7 @@ function saDefaultKeys(student) {
   });
 
   if (young) SA_READY_GAMES.forEach(g => keys.push(`g:${g.id}`));
-  else if (prof === 'writer') keys.push('g:alphabet');
+  else if (prof === 'writer') keys.push('g:alphabet', 'g:drawing');
 
   const taughtTitles = [...taught].join(' ');
   saPracticeTopics(student).forEach(t => {
@@ -222,7 +223,7 @@ function saEditorHTML(student) {
 
       ${young || prof === 'writer' ? `
         <p class="sa-group-label">🎮 Jogos com figuras</p>
-        <div class="sa-grid">${SA_READY_GAMES.filter(g => young || g.id === 'alphabet').map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
+        <div class="sa-grid">${SA_READY_GAMES.filter(g => young || g.id === 'alphabet' || g.id === 'drawing').map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
 
       ${practice.length ? `
         <p class="sa-group-label">⚡ Treinos (Practice / Writing)</p>
