@@ -78,6 +78,98 @@
       "L"
      ],
      "size": 5
+    },
+    {
+     "id": "ra1",
+     "type": "fill",
+     "x": 54.0,
+     "y": 192.7,
+     "w": 62.8,
+     "h": 7.0,
+     "accept": [
+      "13",
+      "thirteen",
+      "she's 13",
+      "she is 13",
+      "she's thirteen",
+      "she is thirteen",
+      "13 years old",
+      "she's 13 years old"
+     ],
+     "size": 4.2,
+     "hint": "1. How old is Luna?"
+    },
+    {
+     "id": "ra2",
+     "type": "fill",
+     "x": 61.2,
+     "y": 203.7,
+     "w": 55.6,
+     "h": 7.0,
+     "accept": [
+      "Toronto",
+      "Toronto, Canada",
+      "Canada",
+      "he's from Toronto",
+      "he is from Toronto",
+      "he's from Toronto, Canada",
+      "he is from Toronto, Canada",
+      "from Toronto",
+      "from Toronto, Canada"
+     ],
+     "size": 4.2,
+     "hint": "2. Where is Theo from?"
+    },
+    {
+     "id": "ra3",
+     "type": "fill",
+     "x": 82.3,
+     "y": 214.7,
+     "w": 34.5,
+     "h": 7.0,
+     "accept": [
+      "Pixel",
+      "her name is Pixel",
+      "it's Pixel",
+      "her cat's name is Pixel",
+      "she's Pixel"
+     ],
+     "size": 4.2,
+     "hint": "3. What's the name of Luna's cat?"
+    },
+    {
+     "id": "ra4",
+     "type": "fill",
+     "x": 45.0,
+     "y": 225.7,
+     "w": 71.8,
+     "h": 7.0,
+     "accept": [
+      "Theo's sister",
+      "his sister",
+      "she's Theo's sister",
+      "she is Theo's sister",
+      "Theo's sister, Mia"
+     ],
+     "size": 4.2,
+     "hint": "4. Who is Mia?"
+    },
+    {
+     "id": "ra5",
+     "type": "fill",
+     "x": 95.1,
+     "y": 236.7,
+     "w": 21.7,
+     "h": 7.0,
+     "accept": [
+      "The Night Owls",
+      "Night Owls",
+      "it's The Night Owls",
+      "their name is The Night Owls",
+      "it's Night Owls"
+     ],
+     "size": 4.2,
+     "hint": "5. What's the name of Bia's dance crew?"
     }
    ]
   },
@@ -1602,6 +1694,198 @@
        "ok": false
       }
      ]
+    }
+   ]
+  },
+  "28": {
+   "items": [
+    {
+     "id": "f1",
+     "type": "fill",
+     "x": 24.2,
+     "y": 69.7,
+     "w": 76.6,
+     "h": 7.0,
+     "accept": [
+      "My brother has got a new bike",
+      "My brother's got a new bike"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: My brother have got a new bike!"
+    },
+    {
+     "id": "f2",
+     "type": "fill",
+     "x": 114.2,
+     "y": 69.7,
+     "w": 76.6,
+     "h": 7.0,
+     "accept": [
+      "There are three cats on my street"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: There is three cats on my street."
+    },
+    {
+     "id": "f3",
+     "type": "fill",
+     "x": 24.2,
+     "y": 90.7,
+     "w": 76.6,
+     "h": 7.0,
+     "accept": [
+      "Luna watches videos every night"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: Luna watch videos every night."
+    },
+    {
+     "id": "f4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 90.7,
+     "w": 76.6,
+     "h": 7.0,
+     "accept": [
+      "Is your sister 15? Yes, she is",
+      "Yes, she is",
+      "Is your sister 15? Yes she is"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: Is your sister 15? Yes, she’s."
+    },
+    {
+     "id": "f5",
+     "type": "fill",
+     "x": 24.2,
+     "y": 111.7,
+     "w": 76.6,
+     "h": 7.0,
+     "accept": [
+      "I never go to the gym"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: I go never to the gym."
+    },
+    {
+     "id": "f6",
+     "type": "fill",
+     "x": 114.2,
+     "y": 111.7,
+     "w": 76.6,
+     "h": 7.0,
+     "accept": [
+      "We've got two new children in our class",
+      "We have got two new children in our class"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: We’ve got two new childs in our class."
+    },
+    {
+     "id": "r1",
+     "type": "fill",
+     "x": 35.32,
+     "y": 171.6,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "am"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (1): use the box"
+    },
+    {
+     "id": "r2",
+     "type": "fill",
+     "x": 20.4,
+     "y": 177.8,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "Her"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (2): use the box"
+    },
+    {
+     "id": "r3",
+     "type": "fill",
+     "x": 81.01,
+     "y": 177.8,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "There's",
+      "There is"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (3): use the box"
+    },
+    {
+     "id": "r4",
+     "type": "fill",
+     "x": 20.4,
+     "y": 184.0,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "are"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (4): use the box"
+    },
+    {
+     "id": "r5",
+     "type": "fill",
+     "x": 90.55,
+     "y": 184.0,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "got"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (5): use the box"
+    },
+    {
+     "id": "r6",
+     "type": "fill",
+     "x": 156.21,
+     "y": 184.0,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "sleeps"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (6): use the box"
+    },
+    {
+     "id": "r7",
+     "type": "fill",
+     "x": 53.01,
+     "y": 190.2,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "doesn't",
+      "does not"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (7): use the box"
+    },
+    {
+     "id": "r8",
+     "type": "fill",
+     "x": 20.4,
+     "y": 196.4,
+     "w": 27.42,
+     "h": 5.6,
+     "accept": [
+      "always"
+     ],
+     "size": 3.9,
+     "hint": "Rafa's profile, blank (8): use the box"
     }
    ]
   }

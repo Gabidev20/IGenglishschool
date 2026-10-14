@@ -1,0 +1,2479 @@
+{
+ "v": 1,
+ "units": "mm",
+ "book": "adventurers",
+ "bimester": 2,
+ "note": "Auto-checked exercises (phase 2). Positions from the book sources (ix_b2_adventurers.py); answers from the teacher's guide.",
+ "pages": {
+  "30": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "fill",
+     "x": 18.2,
+     "y": 106.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "art"
+     ],
+     "size": 5,
+     "hint": "Picture 1: write the school subject"
+    },
+    {
+     "id": "A2",
+     "type": "fill",
+     "x": 64.2,
+     "y": 106.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "P.E.",
+      "PE",
+      "P.E"
+     ],
+     "size": 5,
+     "hint": "Picture 2: write the school subject"
+    },
+    {
+     "id": "A3",
+     "type": "fill",
+     "x": 110.2,
+     "y": 106.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "science"
+     ],
+     "size": 5,
+     "hint": "Picture 3: write the school subject"
+    },
+    {
+     "id": "A4",
+     "type": "fill",
+     "x": 156.2,
+     "y": 106.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "history"
+     ],
+     "size": 5,
+     "hint": "Picture 4: write the school subject"
+    },
+    {
+     "id": "A5",
+     "type": "fill",
+     "x": 18.2,
+     "y": 144.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "music"
+     ],
+     "size": 5,
+     "hint": "Picture 5: write the school subject"
+    },
+    {
+     "id": "A6",
+     "type": "fill",
+     "x": 64.2,
+     "y": 144.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "math",
+      "maths"
+     ],
+     "size": 5,
+     "hint": "Picture 6: write the school subject"
+    },
+    {
+     "id": "A7",
+     "type": "fill",
+     "x": 110.2,
+     "y": 144.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "geography"
+     ],
+     "size": 5,
+     "hint": "Picture 7: write the school subject"
+    },
+    {
+     "id": "A8",
+     "type": "fill",
+     "x": 156.2,
+     "y": 144.4,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "English"
+     ],
+     "size": 5,
+     "hint": "Picture 8: write the school subject"
+    },
+    {
+     "id": "B1",
+     "type": "fill",
+     "x": 149.2,
+     "y": 178.7,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "art"
+     ],
+     "size": 5,
+     "hint": "You paint and draw pictures."
+    },
+    {
+     "id": "B2",
+     "type": "fill",
+     "x": 149.2,
+     "y": 185.9,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "math",
+      "maths"
+     ],
+     "size": 5,
+     "hint": "You add and subtract numbers."
+    },
+    {
+     "id": "B3",
+     "type": "fill",
+     "x": 149.2,
+     "y": 193.1,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "music"
+     ],
+     "size": 5,
+     "hint": "You sing songs and play the drums."
+    },
+    {
+     "id": "B4",
+     "type": "fill",
+     "x": 149.2,
+     "y": 200.3,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "P.E.",
+      "PE",
+      "P.E"
+     ],
+     "size": 5,
+     "hint": "You run, jump and play soccer."
+    },
+    {
+     "id": "B5",
+     "type": "fill",
+     "x": 149.2,
+     "y": 207.5,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "science"
+     ],
+     "size": 5,
+     "hint": "You do experiments in the lab."
+    },
+    {
+     "id": "B6",
+     "type": "fill",
+     "x": 149.2,
+     "y": 214.7,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "geography"
+     ],
+     "size": 5,
+     "hint": "You read maps and learn about countries."
+    },
+    {
+     "id": "B7",
+     "type": "fill",
+     "x": 149.2,
+     "y": 221.9,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "history"
+     ],
+     "size": 5,
+     "hint": "You learn about the past: kings, queens and pyramids."
+    }
+   ]
+  },
+  "31": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "fill",
+     "x": 22.4,
+     "y": 134.4,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Open"
+     ],
+     "size": 4.8,
+     "hint": "__ your book to page 30."
+    },
+    {
+     "id": "A2",
+     "type": "fill",
+     "x": 22.4,
+     "y": 142.0,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Sit"
+     ],
+     "size": 4.8,
+     "hint": "__ down, please."
+    },
+    {
+     "id": "A3",
+     "type": "fill",
+     "x": 22.5,
+     "y": 149.6,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Raise"
+     ],
+     "size": 4.8,
+     "hint": "__ your hand to ask a question."
+    },
+    {
+     "id": "A4",
+     "type": "fill",
+     "x": 22.9,
+     "y": 157.2,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Listen"
+     ],
+     "size": 4.8,
+     "hint": "__ to the audio."
+    },
+    {
+     "id": "A5",
+     "type": "fill",
+     "x": 122.6,
+     "y": 134.4,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Write"
+     ],
+     "size": 4.8,
+     "hint": "__ your name on the page."
+    },
+    {
+     "id": "A6",
+     "type": "fill",
+     "x": 122.5,
+     "y": 142.0,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Put on"
+     ],
+     "size": 4.8,
+     "hint": "__ your safety glasses."
+    },
+    {
+     "id": "A7",
+     "type": "fill",
+     "x": 122.1,
+     "y": 149.6,
+     "w": 26.2,
+     "h": 7.0,
+     "accept": [
+      "Close"
+     ],
+     "size": 4.8,
+     "hint": "__ the window. It's cold!"
+    }
+   ]
+  },
+  "32": {
+   "items": [
+    {
+     "id": "C1",
+     "type": "fill",
+     "x": 35.7,
+     "y": 175.9,
+     "w": 18.0,
+     "h": 7.0,
+     "accept": [
+      "is"
+     ],
+     "size": 4.8,
+     "hint": "1. There __ a clock."
+    },
+    {
+     "id": "C2a",
+     "type": "fill",
+     "x": 35.7,
+     "y": 183.9,
+     "w": 18.0,
+     "h": 7.0,
+     "accept": [
+      "are"
+     ],
+     "size": 4.8,
+     "hint": "2. There __ __ windows."
+    },
+    {
+     "id": "C2b",
+     "type": "fill",
+     "x": 54.6,
+     "y": 183.9,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "two",
+      "2"
+     ],
+     "size": 4.8,
+     "hint": "2. There are __ windows."
+    },
+    {
+     "id": "C3a",
+     "type": "fill",
+     "x": 35.8,
+     "y": 191.9,
+     "w": 18.0,
+     "h": 7.0,
+     "accept": [
+      "are"
+     ],
+     "size": 4.8,
+     "hint": "3. There __ __ plants."
+    },
+    {
+     "id": "C3b",
+     "type": "fill",
+     "x": 54.7,
+     "y": 191.9,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "three",
+      "3"
+     ],
+     "size": 4.8,
+     "hint": "3. There are __ plants."
+    },
+    {
+     "id": "C4",
+     "type": "fill",
+     "x": 128.2,
+     "y": 175.9,
+     "w": 18.0,
+     "h": 7.0,
+     "accept": [
+      "is"
+     ],
+     "size": 4.8,
+     "hint": "4. There __ a microscope."
+    },
+    {
+     "id": "C5a",
+     "type": "fill",
+     "x": 127.9,
+     "y": 183.9,
+     "w": 18.0,
+     "h": 7.0,
+     "accept": [
+      "are"
+     ],
+     "size": 4.8,
+     "hint": "5. There __ __ flasks."
+    },
+    {
+     "id": "C5b",
+     "type": "fill",
+     "x": 146.7,
+     "y": 183.9,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "five",
+      "5"
+     ],
+     "size": 4.8,
+     "hint": "5. There are __ flasks."
+    },
+    {
+     "id": "C6a",
+     "type": "fill",
+     "x": 127.8,
+     "y": 191.9,
+     "w": 18.0,
+     "h": 7.0,
+     "accept": [
+      "are"
+     ],
+     "size": 4.8,
+     "hint": "6. There __ __ fish."
+    },
+    {
+     "id": "C6b",
+     "type": "fill",
+     "x": 146.7,
+     "y": 191.9,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "two",
+      "2"
+     ],
+     "size": 4.8,
+     "hint": "6. There are __ fish."
+    },
+    {
+     "id": "D1",
+     "type": "fill",
+     "x": 22.2,
+     "y": 230.4,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "Yes, there is"
+     ],
+     "size": 4.8,
+     "hint": "1. Is there a computer?"
+    },
+    {
+     "id": "D2",
+     "type": "fill",
+     "x": 22.2,
+     "y": 241.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "No, there isn't",
+      "No, there is not"
+     ],
+     "size": 4.8,
+     "hint": "2. Is there a cat?"
+    },
+    {
+     "id": "D3",
+     "type": "fill",
+     "x": 114.2,
+     "y": 230.4,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "Yes, there are"
+     ],
+     "size": 4.8,
+     "hint": "3. Are there any stools?"
+    },
+    {
+     "id": "D4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 241.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "No, there aren't",
+      "No, there are not"
+     ],
+     "size": 4.8,
+     "hint": "4. Are there any books?"
+    }
+   ]
+  },
+  "33": {
+   "items": [
+    {
+     "id": "R1",
+     "type": "fill",
+     "x": 22.2,
+     "y": 227.3,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "safety glasses",
+      "your safety glasses",
+      "wear your safety glasses",
+      "wear safety glasses",
+      "you wear safety glasses",
+      "you wear your safety glasses",
+      "I wear safety glasses",
+      "I wear my safety glasses"
+     ],
+     "size": 4.4,
+     "hint": "1. What do you wear in the lab?"
+    },
+    {
+     "id": "R2",
+     "type": "fill",
+     "x": 22.2,
+     "y": 238.8,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "before and after",
+      "before and after the lab",
+      "before and after working",
+      "wash your hands before and after"
+     ],
+     "size": 4.4,
+     "hint": "2. When do you wash your hands?"
+    },
+    {
+     "id": "R3",
+     "type": "fill",
+     "x": 22.2,
+     "y": 250.3,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "next to the door",
+      "it's next to the door",
+      "it is next to the door",
+      "the first aid kit is next to the door"
+     ],
+     "size": 4.4,
+     "hint": "3. Where's the first aid kit?"
+    },
+    {
+     "id": "R4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 227.3,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "yes, there is",
+      "yes",
+      "yes there is"
+     ],
+     "size": 4.4,
+     "hint": "4. Is there a fish tank in the lab?"
+    },
+    {
+     "id": "R5",
+     "type": "fill",
+     "x": 114.2,
+     "y": 238.8,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "walk. don't run",
+      "walk, don't run",
+      "walk don't run",
+      "walk. do not run",
+      "walk"
+     ],
+     "size": 4.4,
+     "hint": "5. What's rule number 5?"
+    },
+    {
+     "id": "R6",
+     "type": "fill",
+     "x": 114.2,
+     "y": 250.3,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "the science teacher",
+      "science teacher",
+      "a science teacher",
+      "she's the science teacher",
+      "she is the science teacher",
+      "dr. silva is the science teacher",
+      "the teacher"
+     ],
+     "size": 4.4,
+     "hint": "6. Who's Dr. Silva?"
+    }
+   ]
+  },
+  "36": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 76.2,
+       "w": 16.23,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 40.53,
+       "y": 76.2,
+       "w": 18.53,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 60.76,
+       "y": 76.2,
+       "w": 22.05,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 91.2,
+       "w": 13.28,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 37.58,
+       "y": 91.2,
+       "w": 16.8,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 56.08,
+       "y": 91.2,
+       "w": 11.64,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 106.2,
+       "w": 10.33,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 34.63,
+       "y": 106.2,
+       "w": 13.03,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 49.36,
+       "y": 106.2,
+       "w": 12.38,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 76.2,
+       "w": 10.33,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 126.63,
+       "y": 76.2,
+       "w": 13.03,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 141.36,
+       "y": 76.2,
+       "w": 11.39,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 91.2,
+       "w": 10.33,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 126.63,
+       "y": 91.2,
+       "w": 15.49,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 143.82,
+       "y": 91.2,
+       "w": 18.2,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 106.2,
+       "w": 12.38,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 128.68,
+       "y": 106.2,
+       "w": 16.31,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 146.69,
+       "y": 106.2,
+       "w": 14.34,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "38": {
+   "items": [
+    {
+     "id": "B1a",
+     "type": "fill",
+     "x": 74.4,
+     "y": 180.9,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "red"
+     ],
+     "size": 4.8,
+     "hint": "1. Mia has got long, __ hair and green eyes."
+    },
+    {
+     "id": "B1b",
+     "type": "fill",
+     "x": 134.6,
+     "y": 180.9,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "eyes"
+     ],
+     "size": 4.8,
+     "hint": "1. Mia has got long, red hair and green __."
+    },
+    {
+     "id": "B2",
+     "type": "fill",
+     "x": 76.1,
+     "y": 193.1,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "curly"
+     ],
+     "size": 4.8,
+     "hint": "2. Leo has got short, __, black hair and brown eyes."
+    },
+    {
+     "id": "B3a",
+     "type": "fill",
+     "x": 95.1,
+     "y": 205.3,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "brown"
+     ],
+     "size": 4.8,
+     "hint": "3. Aiko has got long, straight, __ hair and brown eyes."
+    },
+    {
+     "id": "B3b",
+     "type": "fill",
+     "x": 141.7,
+     "y": 205.3,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "brown"
+     ],
+     "size": 4.8,
+     "hint": "3. Aiko has got long, straight, brown hair and __ eyes."
+    },
+    {
+     "id": "B4a",
+     "type": "fill",
+     "x": 78.3,
+     "y": 217.5,
+     "w": 26.8,
+     "h": 7.0,
+     "accept": [
+      "blond",
+      "blonde"
+     ],
+     "size": 4.8,
+     "hint": "4. Sam has got short, __ hair and blue eyes."
+    },
+    {
+     "id": "B4b",
+     "type": "fill",
+     "x": 125.0,
+     "y": 217.5,
+     "w": 26.7,
+     "h": 7.0,
+     "accept": [
+      "blue"
+     ],
+     "size": 4.8,
+     "hint": "4. Sam has got short, blond hair and __ eyes."
+    }
+   ]
+  },
+  "39": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 33.41,
+       "y": 129.37,
+       "w": 11.75,
+       "h": 6.09,
+       "ok": false
+      },
+      {
+       "x": 48.36,
+       "y": 129.37,
+       "w": 8.94,
+       "h": 6.09,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "A2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 53.23,
+       "y": 135.97,
+       "w": 11.75,
+       "h": 6.09,
+       "ok": true
+      },
+      {
+       "x": 68.18,
+       "y": 135.97,
+       "w": 8.95,
+       "h": 6.09,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 27.96,
+       "y": 142.57,
+       "w": 11.75,
+       "h": 6.09,
+       "ok": true
+      },
+      {
+       "x": 42.91,
+       "y": 142.57,
+       "w": 8.94,
+       "h": 6.09,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 39.97,
+       "y": 149.17,
+       "w": 11.75,
+       "h": 6.09,
+       "ok": false
+      },
+      {
+       "x": 54.92,
+       "y": 149.17,
+       "w": 8.94,
+       "h": 6.09,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 32.67,
+       "y": 155.77,
+       "w": 11.75,
+       "h": 6.09,
+       "ok": true
+      },
+      {
+       "x": 47.62,
+       "y": 155.77,
+       "w": 8.94,
+       "h": 6.09,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 35.1,
+       "y": 162.37,
+       "w": 11.75,
+       "h": 6.09,
+       "ok": false
+      },
+      {
+       "x": 50.05,
+       "y": 162.37,
+       "w": 8.95,
+       "h": 6.09,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "B1",
+     "type": "fill",
+     "x": 86.2,
+     "y": 194.2,
+     "w": 108.6,
+     "h": 7.0,
+     "accept": [
+      "Leo hasn't got straight hair",
+      "Leo has not got straight hair"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: Leo has got straight hair."
+    },
+    {
+     "id": "B2",
+     "type": "fill",
+     "x": 86.2,
+     "y": 202.8,
+     "w": 108.6,
+     "h": 7.0,
+     "accept": [
+      "I haven't got a hat",
+      "I have not got a hat"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: I have got a hat."
+    },
+    {
+     "id": "B3",
+     "type": "fill",
+     "x": 86.2,
+     "y": 211.4,
+     "w": 108.6,
+     "h": 7.0,
+     "accept": [
+      "Mia hasn't got glasses",
+      "Mia has not got glasses"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: Mia has got glasses."
+    },
+    {
+     "id": "B4",
+     "type": "fill",
+     "x": 86.2,
+     "y": 220.0,
+     "w": 108.6,
+     "h": 7.0,
+     "accept": [
+      "They haven't got boots",
+      "They have not got boots"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: They have got boots."
+    }
+   ]
+  },
+  "40": {
+   "items": [
+    {
+     "id": "C1",
+     "type": "fill",
+     "x": 19.6,
+     "y": 115.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "jacket"
+     ],
+     "size": 4.8,
+     "hint": "Picture 1: write the clothes word"
+    },
+    {
+     "id": "C2",
+     "type": "fill",
+     "x": 50.0,
+     "y": 115.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "skirt"
+     ],
+     "size": 4.8,
+     "hint": "Picture 2: write the clothes word"
+    },
+    {
+     "id": "C3",
+     "type": "fill",
+     "x": 80.4,
+     "y": 115.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "socks"
+     ],
+     "size": 4.8,
+     "hint": "Picture 3: write the clothes word"
+    },
+    {
+     "id": "C4",
+     "type": "fill",
+     "x": 110.8,
+     "y": 115.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "T-shirt",
+      "tshirt",
+      "t shirt"
+     ],
+     "size": 4.8,
+     "hint": "Picture 4: write the clothes word"
+    },
+    {
+     "id": "C5",
+     "type": "fill",
+     "x": 141.2,
+     "y": 115.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "boots"
+     ],
+     "size": 4.8,
+     "hint": "Picture 5: write the clothes word"
+    },
+    {
+     "id": "C6",
+     "type": "fill",
+     "x": 171.6,
+     "y": 115.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "cap"
+     ],
+     "size": 4.8,
+     "hint": "Picture 6: write the clothes word"
+    },
+    {
+     "id": "C7",
+     "type": "fill",
+     "x": 19.6,
+     "y": 157.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "dress"
+     ],
+     "size": 4.8,
+     "hint": "Picture 7: write the clothes word"
+    },
+    {
+     "id": "C8",
+     "type": "fill",
+     "x": 50.0,
+     "y": 157.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "shorts"
+     ],
+     "size": 4.8,
+     "hint": "Picture 8: write the clothes word"
+    },
+    {
+     "id": "C9",
+     "type": "fill",
+     "x": 80.4,
+     "y": 157.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "scarf"
+     ],
+     "size": 4.8,
+     "hint": "Picture 9: write the clothes word"
+    },
+    {
+     "id": "C10",
+     "type": "fill",
+     "x": 110.8,
+     "y": 157.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "sweater"
+     ],
+     "size": 4.8,
+     "hint": "Picture 10: write the clothes word"
+    },
+    {
+     "id": "C11",
+     "type": "fill",
+     "x": 141.2,
+     "y": 157.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "sneakers"
+     ],
+     "size": 4.8,
+     "hint": "Picture 11: write the clothes word"
+    },
+    {
+     "id": "C12",
+     "type": "fill",
+     "x": 171.6,
+     "y": 157.9,
+     "w": 23.8,
+     "h": 7.0,
+     "accept": [
+      "pants"
+     ],
+     "size": 4.8,
+     "hint": "Picture 12: write the clothes word"
+    },
+    {
+     "id": "D1",
+     "type": "fill",
+     "x": 119.2,
+     "y": 235.7,
+     "w": 15.6,
+     "h": 7.0,
+     "accept": [
+      "Ella"
+     ],
+     "size": 4.8,
+     "hint": "1. She's got a hat and a dress. Who is it?"
+    },
+    {
+     "id": "D2",
+     "type": "fill",
+     "x": 139.2,
+     "y": 235.7,
+     "w": 15.6,
+     "h": 7.0,
+     "accept": [
+      "Theo"
+     ],
+     "size": 4.8,
+     "hint": "2. He's got a cap and a jacket. Who is it?"
+    },
+    {
+     "id": "D3",
+     "type": "fill",
+     "x": 159.2,
+     "y": 235.7,
+     "w": 15.6,
+     "h": 7.0,
+     "accept": [
+      "Lara"
+     ],
+     "size": 4.8,
+     "hint": "3. She's got glasses, a sweater and a scarf. Who is it?"
+    },
+    {
+     "id": "D4",
+     "type": "fill",
+     "x": 179.2,
+     "y": 235.7,
+     "w": 15.6,
+     "h": 7.0,
+     "accept": [
+      "Davi"
+     ],
+     "size": 4.8,
+     "hint": "4. He's got curly hair and a T-shirt. Who is it?"
+    }
+   ]
+  },
+  "41": {
+   "items": [
+    {
+     "id": "R1",
+     "type": "fill",
+     "x": 22.2,
+     "y": 231.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "the club camera",
+      "club camera",
+      "the camera",
+      "our camera",
+      "our club camera",
+      "a camera",
+      "camera"
+     ],
+     "size": 4.4,
+     "hint": "1. What's missing?"
+    },
+    {
+     "id": "R2",
+     "type": "fill",
+     "x": 22.2,
+     "y": 242.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "white hair",
+      "white hair on the desk",
+      "there's white hair",
+      "there is white hair"
+     ],
+     "size": 4.4,
+     "hint": "2. What's on the desk?"
+    },
+    {
+     "id": "R3",
+     "type": "fill",
+     "x": 22.2,
+     "y": 253.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "no, she hasn't",
+      "no, she has not",
+      "no, she hasn't got white hair",
+      "no, she hasn't got white hair. she's got gray hair",
+      "no",
+      "no, she hasn't. she's got gray hair"
+     ],
+     "size": 4.4,
+     "hint": "3. Has Ms. Bell got white hair?"
+    },
+    {
+     "id": "R4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 231.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "paw prints",
+      "paw print",
+      "paws",
+      "there are paw prints"
+     ],
+     "size": 4.4,
+     "hint": "4. What's on the floor in panel 5?"
+    },
+    {
+     "id": "R5",
+     "type": "fill",
+     "x": 114.2,
+     "y": 242.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "snowy",
+      "snowy has",
+      "snowy has got the camera",
+      "snowy has got it"
+     ],
+     "size": 4.4,
+     "hint": "5. Who has got the camera?"
+    },
+    {
+     "id": "R6",
+     "type": "fill",
+     "x": 114.2,
+     "y": 253.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "mia's cat",
+      "it's mia's cat",
+      "she's mia's cat",
+      "mia's cat snowy",
+      "a cat",
+      "the cat",
+      "a cat. mia's cat",
+      "mia's cat. she's white"
+     ],
+     "size": 4.4,
+     "hint": "6. Who's Snowy?"
+    }
+   ]
+  },
+  "44": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 76.2,
+       "w": 15.98,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 40.28,
+       "y": 76.2,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 55.67,
+       "y": 76.2,
+       "w": 10.33,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 91.2,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 37.99,
+       "y": 91.2,
+       "w": 15.98,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 55.67,
+       "y": 91.2,
+       "w": 12.38,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 106.2,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 37.99,
+       "y": 106.2,
+       "w": 15.98,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 55.67,
+       "y": 106.2,
+       "w": 10.33,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 76.2,
+       "w": 18.85,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 135.15,
+       "y": 76.2,
+       "w": 15.49,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 152.35,
+       "y": 76.2,
+       "w": 21.15,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 91.2,
+       "w": 17.62,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 133.92,
+       "y": 91.2,
+       "w": 17.62,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 153.25,
+       "y": 91.2,
+       "w": 19.84,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 106.2,
+       "w": 15.98,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 132.28,
+       "y": 106.2,
+       "w": 14.26,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 148.25,
+       "y": 106.2,
+       "w": 21.81,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "46": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "fill",
+     "x": 16.2,
+     "y": 108.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "parrot"
+     ],
+     "size": 5,
+     "hint": "Animal 1: write the word"
+    },
+    {
+     "id": "A2",
+     "type": "fill",
+     "x": 46.8,
+     "y": 108.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "lion"
+     ],
+     "size": 5,
+     "hint": "Animal 2: write the word"
+    },
+    {
+     "id": "A3",
+     "type": "fill",
+     "x": 77.4,
+     "y": 108.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "fish"
+     ],
+     "size": 5,
+     "hint": "Animal 3: write the word"
+    },
+    {
+     "id": "A4",
+     "type": "fill",
+     "x": 108.0,
+     "y": 108.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "penguin"
+     ],
+     "size": 5,
+     "hint": "Animal 4: write the word"
+    },
+    {
+     "id": "A5",
+     "type": "fill",
+     "x": 138.6,
+     "y": 108.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "dog"
+     ],
+     "size": 5,
+     "hint": "Animal 5: write the word"
+    },
+    {
+     "id": "A6",
+     "type": "fill",
+     "x": 169.2,
+     "y": 108.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "elephant"
+     ],
+     "size": 5,
+     "hint": "Animal 6: write the word"
+    },
+    {
+     "id": "A7",
+     "type": "fill",
+     "x": 16.2,
+     "y": 142.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "turtle"
+     ],
+     "size": 5,
+     "hint": "Animal 7: write the word"
+    },
+    {
+     "id": "A8",
+     "type": "fill",
+     "x": 46.8,
+     "y": 142.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "cat"
+     ],
+     "size": 5,
+     "hint": "Animal 8: write the word"
+    },
+    {
+     "id": "A9",
+     "type": "fill",
+     "x": 77.4,
+     "y": 142.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "monkey"
+     ],
+     "size": 5,
+     "hint": "Animal 9: write the word"
+    },
+    {
+     "id": "A10",
+     "type": "fill",
+     "x": 108.0,
+     "y": 142.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "giraffe"
+     ],
+     "size": 5,
+     "hint": "Animal 10: write the word"
+    },
+    {
+     "id": "A11",
+     "type": "fill",
+     "x": 138.6,
+     "y": 142.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "frog"
+     ],
+     "size": 5,
+     "hint": "Animal 11: write the word"
+    },
+    {
+     "id": "A12",
+     "type": "fill",
+     "x": 169.2,
+     "y": 142.5,
+     "w": 24.6,
+     "h": 7.0,
+     "accept": [
+      "rabbit"
+     ],
+     "size": 5,
+     "hint": "Animal 12: write the word"
+    },
+    {
+     "id": "Bhome1",
+     "type": "fill",
+     "x": 17.2,
+     "y": 202.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "dog",
+      "rabbit"
+     ],
+     "size": 4.6,
+     "hint": "Who lives home? (one of two)"
+    },
+    {
+     "id": "Bhome2",
+     "type": "fill",
+     "x": 78.53,
+     "y": 202.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "dog",
+      "rabbit"
+     ],
+     "size": 4.6,
+     "hint": "Who lives home? (one of two)"
+    },
+    {
+     "id": "Bjungle1",
+     "type": "fill",
+     "x": 139.86,
+     "y": 202.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "monkey",
+      "parrot"
+     ],
+     "size": 4.6,
+     "hint": "Who lives jungle? (one of two)"
+    },
+    {
+     "id": "Bjungle2",
+     "type": "fill",
+     "x": 17.2,
+     "y": 209.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "monkey",
+      "parrot"
+     ],
+     "size": 4.6,
+     "hint": "Who lives jungle? (one of two)"
+    },
+    {
+     "id": "Bsavanna1",
+     "type": "fill",
+     "x": 78.53,
+     "y": 209.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "lion",
+      "zebra"
+     ],
+     "size": 4.6,
+     "hint": "Who lives savanna? (one of two)"
+    },
+    {
+     "id": "Bsavanna2",
+     "type": "fill",
+     "x": 139.86,
+     "y": 209.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "lion",
+      "zebra"
+     ],
+     "size": 4.6,
+     "hint": "Who lives savanna? (one of two)"
+    },
+    {
+     "id": "Bocean1",
+     "type": "fill",
+     "x": 17.2,
+     "y": 228.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "shark",
+      "octopus"
+     ],
+     "size": 4.6,
+     "hint": "Who lives ocean? (one of two)"
+    },
+    {
+     "id": "Bocean2",
+     "type": "fill",
+     "x": 17.2,
+     "y": 235.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "shark",
+      "octopus"
+     ],
+     "size": 4.6,
+     "hint": "Who lives ocean? (one of two)"
+    },
+    {
+     "id": "Bpond1",
+     "type": "fill",
+     "x": 78.53,
+     "y": 228.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "frog",
+      "duck"
+     ],
+     "size": 4.6,
+     "hint": "Who lives pond? (one of two)"
+    },
+    {
+     "id": "Bpond2",
+     "type": "fill",
+     "x": 78.53,
+     "y": 235.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "frog",
+      "duck"
+     ],
+     "size": 4.6,
+     "hint": "Who lives pond? (one of two)"
+    },
+    {
+     "id": "Bice1",
+     "type": "fill",
+     "x": 139.86,
+     "y": 228.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "penguin",
+      "polar bear"
+     ],
+     "size": 4.6,
+     "hint": "Who lives ice? (one of two)"
+    },
+    {
+     "id": "Bice2",
+     "type": "fill",
+     "x": 139.86,
+     "y": 235.4,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "penguin",
+      "polar bear"
+     ],
+     "size": 4.6,
+     "hint": "Who lives ice? (one of two)"
+    }
+   ]
+  },
+  "47": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "fill",
+     "x": 23.2,
+     "y": 137.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "beak"
+     ],
+     "size": 4.8,
+     "hint": "Label 1"
+    },
+    {
+     "id": "A2",
+     "type": "fill",
+     "x": 69.2,
+     "y": 137.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "wing"
+     ],
+     "size": 4.8,
+     "hint": "Label 2"
+    },
+    {
+     "id": "A3",
+     "type": "fill",
+     "x": 115.2,
+     "y": 137.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "tail"
+     ],
+     "size": 4.8,
+     "hint": "Label 3"
+    },
+    {
+     "id": "A4",
+     "type": "fill",
+     "x": 161.2,
+     "y": 137.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "fin"
+     ],
+     "size": 4.8,
+     "hint": "Label 4"
+    },
+    {
+     "id": "A5",
+     "type": "fill",
+     "x": 23.2,
+     "y": 146.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "scales"
+     ],
+     "size": 4.8,
+     "hint": "Label 5"
+    },
+    {
+     "id": "A6",
+     "type": "fill",
+     "x": 69.2,
+     "y": 146.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "trunk"
+     ],
+     "size": 4.8,
+     "hint": "Label 6"
+    },
+    {
+     "id": "A7",
+     "type": "fill",
+     "x": 115.2,
+     "y": 146.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "ear"
+     ],
+     "size": 4.8,
+     "hint": "Label 7"
+    },
+    {
+     "id": "A8",
+     "type": "fill",
+     "x": 161.2,
+     "y": 146.7,
+     "w": 35.6,
+     "h": 7.0,
+     "accept": [
+      "shell"
+     ],
+     "size": 4.8,
+     "hint": "Label 8"
+    },
+    {
+     "id": "B1",
+     "type": "fill",
+     "x": 149.2,
+     "y": 178.7,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "giraffe"
+     ],
+     "size": 4.8,
+     "hint": "1. It has got a long neck and four long legs."
+    },
+    {
+     "id": "B2",
+     "type": "fill",
+     "x": 149.2,
+     "y": 186.3,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "penguin"
+     ],
+     "size": 4.8,
+     "hint": "2. It has got black and white feathers. It lives on the ice."
+    },
+    {
+     "id": "B3",
+     "type": "fill",
+     "x": 149.2,
+     "y": 193.9,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "elephant"
+     ],
+     "size": 4.8,
+     "hint": "3. It has got a trunk and big ears."
+    },
+    {
+     "id": "B4",
+     "type": "fill",
+     "x": 149.2,
+     "y": 201.5,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "turtle"
+     ],
+     "size": 4.8,
+     "hint": "4. It has got a shell. It's very slow."
+    },
+    {
+     "id": "B5",
+     "type": "fill",
+     "x": 149.2,
+     "y": 209.1,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "lion"
+     ],
+     "size": 4.8,
+     "hint": "5. It has got yellow fur and a big mane."
+    },
+    {
+     "id": "B6",
+     "type": "fill",
+     "x": 149.2,
+     "y": 216.7,
+     "w": 45.6,
+     "h": 7.0,
+     "accept": [
+      "frog"
+     ],
+     "size": 4.8,
+     "hint": "6. It has got green skin and long legs. It lives in a pond."
+    }
+   ]
+  },
+  "48": {
+   "items": [
+    {
+     "id": "C1",
+     "type": "fill",
+     "x": 142.2,
+     "y": 129.7,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "Bolt can swim"
+     ],
+     "size": 4.8,
+     "hint": "1. Bolt · swim -> write a sentence with can/can't"
+    },
+    {
+     "id": "C2",
+     "type": "fill",
+     "x": 142.2,
+     "y": 138.3,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "Kiki can't fly",
+      "Kiki cannot fly",
+      "Kiki can not fly"
+     ],
+     "size": 4.8,
+     "hint": "2. Kiki · fly -> write a sentence with can/can't"
+    },
+    {
+     "id": "C3",
+     "type": "fill",
+     "x": 142.2,
+     "y": 146.9,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "Shelly can't climb",
+      "Shelly cannot climb",
+      "Shelly can not climb"
+     ],
+     "size": 4.8,
+     "hint": "3. Shelly · climb -> write a sentence with can/can't"
+    },
+    {
+     "id": "C4",
+     "type": "fill",
+     "x": 142.2,
+     "y": 155.5,
+     "w": 52.6,
+     "h": 7.0,
+     "accept": [
+      "Pepe can talk"
+     ],
+     "size": 4.8,
+     "hint": "4. Pepe · talk -> write a sentence with can/can't"
+    },
+    {
+     "id": "D1",
+     "type": "fill",
+     "x": 58.2,
+     "y": 186.7,
+     "w": 46.6,
+     "h": 7.0,
+     "accept": [
+      "Yes, it can",
+      "Yes, he can"
+     ],
+     "size": 4.8,
+     "hint": "1. Can Bolt swim?"
+    },
+    {
+     "id": "D2",
+     "type": "fill",
+     "x": 58.2,
+     "y": 195.7,
+     "w": 46.6,
+     "h": 7.0,
+     "accept": [
+      "Yes, it can",
+      "Yes, he can",
+      "Yes, she can"
+     ],
+     "size": 4.8,
+     "hint": "2. Can Kiki climb?"
+    },
+    {
+     "id": "D3",
+     "type": "fill",
+     "x": 150.2,
+     "y": 186.7,
+     "w": 46.6,
+     "h": 7.0,
+     "accept": [
+      "No, it can't",
+      "No, it cannot",
+      "No, she can't",
+      "No, it can not"
+     ],
+     "size": 4.8,
+     "hint": "3. Can Shelly fly?"
+    },
+    {
+     "id": "D4",
+     "type": "fill",
+     "x": 150.2,
+     "y": 195.7,
+     "w": 46.6,
+     "h": 7.0,
+     "accept": [
+      "No, it can't",
+      "No, it cannot",
+      "No, he can't",
+      "No, it can not"
+     ],
+     "size": 4.8,
+     "hint": "4. Can Pepe swim?"
+    }
+   ]
+  },
+  "49": {
+   "items": [
+    {
+     "id": "R1",
+     "type": "fill",
+     "x": 22.2,
+     "y": 229.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "Antarctica",
+      "it's Antarctica",
+      "its home is Antarctica",
+      "in Antarctica",
+      "it lives in Antarctica"
+     ],
+     "size": 4.4,
+     "hint": "1. What's the emperor penguin's home?"
+    },
+    {
+     "id": "R2",
+     "type": "fill",
+     "x": 22.2,
+     "y": 240.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "grass, leaves and fruit",
+      "grass, fruit and leaves",
+      "leaves, grass and fruit",
+      "leaves, fruit and grass",
+      "fruit, grass and leaves",
+      "fruit, leaves and grass",
+      "grass, leaves, fruit",
+      "grass, fruit, leaves",
+      "leaves, grass, fruit",
+      "leaves, fruit, grass",
+      "fruit, grass, leaves",
+      "fruit, leaves, grass",
+      "grass, leaves and fruits",
+      "grass, fruit and leavess",
+      "leaves, grass and fruits",
+      "leaves, fruit and grasss",
+      "fruit, grass and leavess",
+      "fruit, leaves and grasss"
+     ],
+     "size": 4.4,
+     "hint": "2. Name 3 things elephants eat."
+    },
+    {
+     "id": "R3",
+     "type": "fill",
+     "x": 22.2,
+     "y": 251.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "no, it can't",
+      "no, it cannot",
+      "no, it can not",
+      "no"
+     ],
+     "size": 4.4,
+     "hint": "3. Can an elephant jump?"
+    },
+    {
+     "id": "R4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 229.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "red, yellow and blue",
+      "red yellow and blue",
+      "red, yellow, and blue",
+      "they're red, yellow and blue",
+      "they are red, yellow and blue"
+     ],
+     "size": 4.4,
+     "hint": "4. What color are the macaw's feathers?"
+    },
+    {
+     "id": "R5",
+     "type": "fill",
+     "x": 114.2,
+     "y": 240.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "about 12 meters long",
+      "about 12 meters",
+      "12 meters long",
+      "12 meters",
+      "about 12 m",
+      "12 m",
+      "12 metres",
+      "about 12 metres long"
+     ],
+     "size": 4.4,
+     "hint": "5. How long was T. rex?"
+    },
+    {
+     "id": "R6",
+     "type": "fill",
+     "x": 114.2,
+     "y": 251.1,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "the scarlet macaw",
+      "scarlet macaw",
+      "the macaw",
+      "macaw",
+      "a scarlet macaw",
+      "it's the scarlet macaw"
+     ],
+     "size": 4.4,
+     "hint": "6. Which animal can live for 50 years?"
+    }
+   ]
+  },
+  "52": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 74.2,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 37.99,
+       "y": 74.2,
+       "w": 16.56,
+       "h": 7.2,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "A2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 87.8,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 37.99,
+       "y": 87.8,
+       "w": 16.56,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 56.25,
+       "y": 87.8,
+       "w": 10.33,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 101.4,
+       "w": 14.26,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 38.56,
+       "y": 101.4,
+       "w": 18.2,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 58.46,
+       "y": 101.4,
+       "w": 20.9,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 74.2,
+       "w": 16.97,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 133.27,
+       "y": 74.2,
+       "w": 15.98,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 150.95,
+       "y": 74.2,
+       "w": 16.15,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 87.8,
+       "w": 18.85,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 135.15,
+       "y": 87.8,
+       "w": 18.28,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 155.13,
+       "y": 87.8,
+       "w": 12.62,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 101.4,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 129.99,
+       "y": 101.4,
+       "w": 16.56,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 148.25,
+       "y": 101.4,
+       "w": 15.98,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

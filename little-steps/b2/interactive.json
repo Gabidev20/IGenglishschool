@@ -1,0 +1,470 @@
+{
+ "v": 1,
+ "units": "mm",
+ "book": "little-steps",
+ "bimester": 2,
+ "note": "Auto-checked exercises (phase 2) for bimester 2. Positions from the book sources (ix_b2_extract.py); answers from _gabarito-b2-little-steps.md and the page images.",
+ "pages": {
+  "29": {
+   "items": [
+    {
+     "id": "bs1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 26,
+       "y": 81,
+       "w": 32,
+       "h": 37,
+       "ok": false
+      },
+      {
+       "x": 58,
+       "y": 81,
+       "w": 42,
+       "h": 37,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "bs2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 120,
+       "y": 81,
+       "w": 33,
+       "h": 37,
+       "ok": false
+      },
+      {
+       "x": 153,
+       "y": 81,
+       "w": 42,
+       "h": 37,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "bs3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 26,
+       "y": 127,
+       "w": 32,
+       "h": 37,
+       "ok": true
+      },
+      {
+       "x": 58,
+       "y": 127,
+       "w": 42,
+       "h": 37,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "bs4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 120,
+       "y": 127,
+       "w": 33,
+       "h": 37,
+       "ok": false
+      },
+      {
+       "x": 153,
+       "y": 127,
+       "w": 42,
+       "h": 37,
+       "ok": true
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u4-big-or-small",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "31": {
+   "items": [
+    {
+     "id": "m1",
+     "type": "match",
+     "left": [
+      {
+       "id": "butterfly",
+       "x": 90,
+       "y": 98
+      },
+      {
+       "id": "heart",
+       "x": 90,
+       "y": 143
+      },
+      {
+       "id": "rocket",
+       "x": 90,
+       "y": 188
+      }
+     ],
+     "right": [
+      {
+       "id": "rocket",
+       "x": 122,
+       "y": 98
+      },
+      {
+       "id": "butterfly",
+       "x": 122,
+       "y": 143
+      },
+      {
+       "id": "heart",
+       "x": 122,
+       "y": 188
+      }
+     ],
+     "pairs": {
+      "butterfly": "butterfly",
+      "heart": "heart",
+      "rocket": "rocket"
+     }
+    }
+   ]
+  },
+  "32": {
+   "items": [
+    {
+     "id": "findD",
+     "type": "choice",
+     "multi": true,
+     "options": [
+      {
+       "x": 14.5,
+       "y": 253.54,
+       "w": 27,
+       "h": 27,
+       "ok": true
+      },
+      {
+       "x": 45.3,
+       "y": 253.54,
+       "w": 27,
+       "h": 27,
+       "ok": false
+      },
+      {
+       "x": 76.1,
+       "y": 253.54,
+       "w": 27,
+       "h": 27,
+       "ok": true
+      },
+      {
+       "x": 106.9,
+       "y": 253.54,
+       "w": 27,
+       "h": 27,
+       "ok": false
+      },
+      {
+       "x": 137.7,
+       "y": 253.54,
+       "w": 27,
+       "h": 27,
+       "ok": true
+      },
+      {
+       "x": 168.5,
+       "y": 253.54,
+       "w": 27,
+       "h": 27,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "33": {
+   "items": [
+    {
+     "id": "how1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 141.5,
+       "y": 89.16,
+       "w": 11,
+       "h": 16.55,
+       "ok": false
+      },
+      {
+       "x": 156.5,
+       "y": 89.16,
+       "w": 11,
+       "h": 16.55,
+       "ok": true
+      },
+      {
+       "x": 171.5,
+       "y": 89.16,
+       "w": 11,
+       "h": 16.55,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "how2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 141.5,
+       "y": 103.66,
+       "w": 11,
+       "h": 16.55,
+       "ok": true
+      },
+      {
+       "x": 156.5,
+       "y": 103.66,
+       "w": 11,
+       "h": 16.55,
+       "ok": false
+      },
+      {
+       "x": 171.5,
+       "y": 103.66,
+       "w": 11,
+       "h": 16.55,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "how3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 141.5,
+       "y": 118.16,
+       "w": 11,
+       "h": 16.55,
+       "ok": true
+      },
+      {
+       "x": 156.5,
+       "y": 118.16,
+       "w": 11,
+       "h": 16.55,
+       "ok": false
+      },
+      {
+       "x": 171.5,
+       "y": 118.16,
+       "w": 11,
+       "h": 16.55,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "38": {
+   "items": [
+    {
+     "id": "findE",
+     "type": "choice",
+     "multi": true,
+     "options": [
+      {
+       "x": 16.99,
+       "y": 252.88,
+       "w": 22,
+       "h": 28,
+       "ok": true
+      },
+      {
+       "x": 47.8,
+       "y": 252.88,
+       "w": 22,
+       "h": 28,
+       "ok": false
+      },
+      {
+       "x": 78.59,
+       "y": 252.88,
+       "w": 22,
+       "h": 28,
+       "ok": true
+      },
+      {
+       "x": 109.4,
+       "y": 252.88,
+       "w": 22,
+       "h": 28,
+       "ok": false
+      },
+      {
+       "x": 140.2,
+       "y": 252.88,
+       "w": 22,
+       "h": 28,
+       "ok": true
+      },
+      {
+       "x": 171.01,
+       "y": 252.88,
+       "w": 22,
+       "h": 28,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "43": {
+   "items": [
+    {
+     "id": "who1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 80,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 80,
+       "w": 38,
+       "h": 30,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 80,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "who2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 120,
+       "w": 38,
+       "h": 30,
+       "ok": true
+      },
+      {
+       "x": 97,
+       "y": 120,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 120,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "who3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 160,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 160,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 160,
+       "w": 38,
+       "h": 30,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "who4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 200,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 200,
+       "w": 38,
+       "h": 30,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 200,
+       "w": 38,
+       "h": 30,
+       "ok": false
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u6-who-is-it",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  }
+ }
+}

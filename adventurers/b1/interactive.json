@@ -358,6 +358,308 @@
     }
    ]
   },
+  "6": {
+   "items": [
+    {
+     "id": "C1",
+     "type": "fill",
+     "x": 94.2,
+     "y": 133.2,
+     "w": 100.6,
+     "h": 7.0,
+     "accept": [
+      "I'm not from Mexico",
+      "I am not from Mexico"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: I'm from Mexico."
+    },
+    {
+     "id": "C2",
+     "type": "fill",
+     "x": 94.2,
+     "y": 141.8,
+     "w": 100.6,
+     "h": 7.0,
+     "accept": [
+      "Sam isn't Japanese",
+      "Sam is not Japanese"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: Sam is Japanese."
+    },
+    {
+     "id": "C3",
+     "type": "fill",
+     "x": 94.2,
+     "y": 150.4,
+     "w": 100.6,
+     "h": 7.0,
+     "accept": [
+      "Mia and Leo aren't American",
+      "Mia and Leo are not American"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: Mia and Leo are American."
+    },
+    {
+     "id": "C4",
+     "type": "fill",
+     "x": 94.2,
+     "y": 159.0,
+     "w": 100.6,
+     "h": 7.0,
+     "accept": [
+      "We aren't 15 years old",
+      "We are not 15 years old"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: We are 15 years old."
+    },
+    {
+     "id": "C5",
+     "type": "fill",
+     "x": 94.2,
+     "y": 167.6,
+     "w": 100.6,
+     "h": 7.0,
+     "accept": [
+      "Snowy isn't a dog",
+      "Snowy is not a dog"
+     ],
+     "size": 4.4,
+     "hint": "Make it negative: Snowy is a dog."
+    }
+   ]
+  },
+  "7": {
+   "items": [
+    {
+     "id": "D1",
+     "type": "fill",
+     "x": 23.2,
+     "y": 136.9,
+     "w": 77.6,
+     "h": 7.0,
+     "accept": [
+      "Are you Brazilian"
+     ],
+     "size": 4.6,
+     "hint": "Put the words in order: Brazilian you Are"
+    },
+    {
+     "id": "D2",
+     "type": "fill",
+     "x": 23.2,
+     "y": 157.9,
+     "w": 77.6,
+     "h": 7.0,
+     "accept": [
+      "Is Aiko from Japan"
+     ],
+     "size": 4.6,
+     "hint": "Put the words in order: from Aiko Japan Is"
+    },
+    {
+     "id": "D3",
+     "type": "fill",
+     "x": 115.2,
+     "y": 136.9,
+     "w": 77.6,
+     "h": 7.0,
+     "accept": [
+      "Where are you from"
+     ],
+     "size": 4.6,
+     "hint": "Put the words in order: from you are Where"
+    },
+    {
+     "id": "D4",
+     "type": "fill",
+     "x": 115.2,
+     "y": 157.9,
+     "w": 77.6,
+     "h": 7.0,
+     "accept": [
+      "Is Leo ten years old"
+     ],
+     "size": 4.6,
+     "hint": "Put the words in order: ten Is old years Leo"
+    }
+   ]
+  },
+  "10": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 76.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 36.2,
+       "y": 76.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 49.8,
+       "y": 76.2,
+       "w": 13.7,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 91.2,
+       "w": 18.3,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 43.1,
+       "y": 91.2,
+       "w": 22.9,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 68.2,
+       "y": 91.2,
+       "w": 25.2,
+       "h": 7.2,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 106.2,
+       "w": 18.3,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 43.1,
+       "y": 106.2,
+       "w": 20.6,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 65.9,
+       "y": 106.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 76.2,
+       "w": 13.7,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 130.5,
+       "y": 76.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 144.1,
+       "y": 76.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 91.2,
+       "w": 16.0,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 132.8,
+       "y": 91.2,
+       "w": 18.3,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 153.3,
+       "y": 91.2,
+       "w": 25.2,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 106.2,
+       "w": 13.7,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 130.5,
+       "y": 106.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 144.1,
+       "y": 106.2,
+       "w": 11.4,
+       "h": 7.2,
+       "ok": true
+      }
+     ]
+    }
+   ]
+  },
   "12": {
    "items": [
     {
@@ -731,6 +1033,457 @@
       "4": "d",
       "5": "b"
      }
+    }
+   ]
+  },
+  "14": {
+   "items": [
+    {
+     "id": "C1",
+     "type": "fill",
+     "x": 81,
+     "y": 73.7,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "42"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: forty-two"
+    },
+    {
+     "id": "C2",
+     "type": "fill",
+     "x": 81,
+     "y": 82.3,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "16"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: sixteen"
+    },
+    {
+     "id": "C3",
+     "type": "fill",
+     "x": 81,
+     "y": 90.9,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "79"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: seventy-nine"
+    },
+    {
+     "id": "C4",
+     "type": "fill",
+     "x": 81,
+     "y": 107.7,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "68"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: sixty-eight"
+    },
+    {
+     "id": "C5",
+     "type": "fill",
+     "x": 81,
+     "y": 116.3,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "21"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: twenty-one"
+    },
+    {
+     "id": "C6",
+     "type": "fill",
+     "x": 81,
+     "y": 124.9,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "34"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: thirty-four"
+    },
+    {
+     "id": "C7",
+     "type": "fill",
+     "x": 174,
+     "y": 73.7,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "13"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: thirteen"
+    },
+    {
+     "id": "C8",
+     "type": "fill",
+     "x": 174,
+     "y": 82.3,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "90"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: ninety"
+    },
+    {
+     "id": "C9",
+     "type": "fill",
+     "x": 174,
+     "y": 90.9,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "55"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: fifty-five"
+    },
+    {
+     "id": "C10",
+     "type": "fill",
+     "x": 174,
+     "y": 107.7,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "87"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: eighty-seven"
+    },
+    {
+     "id": "C11",
+     "type": "fill",
+     "x": 174,
+     "y": 116.3,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "14"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: fourteen"
+    },
+    {
+     "id": "C12",
+     "type": "fill",
+     "x": 174,
+     "y": 124.9,
+     "w": 17,
+     "h": 6.4,
+     "accept": [
+      "100"
+     ],
+     "size": 4.6,
+     "hint": "Write the number: one hundred"
+    }
+   ]
+  },
+  "15": {
+   "items": [
+    {
+     "id": "R1",
+     "type": "fill",
+     "x": 22.2,
+     "y": 207.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "10",
+      "ten",
+      "10 years old",
+      "ten years old",
+      "she's 10",
+      "she's ten",
+      "aiko is 10",
+      "aiko is ten",
+      "she is 10",
+      "she is ten"
+     ],
+     "size": 4.4,
+     "hint": "1. How old is Aiko?"
+    },
+    {
+     "id": "R2",
+     "type": "fill",
+     "x": 22.2,
+     "y": 222.4,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "orange",
+      "it's orange",
+      "his favorite color is orange",
+      "his favorite is orange"
+     ],
+     "size": 4.4,
+     "hint": "2. What's Leo's favorite color?"
+    },
+    {
+     "id": "R3",
+     "type": "fill",
+     "x": 22.2,
+     "y": 236.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "48-13-90",
+      "48 13 90",
+      "it's 48-13-90",
+      "forty-eight, thirteen, ninety",
+      "forty-eight thirteen ninety"
+     ],
+     "size": 4.4,
+     "hint": "3. What's Aiko's club code?"
+    },
+    {
+     "id": "R4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 207.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "2",
+      "two",
+      "2 pets",
+      "two pets",
+      "2 fish",
+      "two fish",
+      "he has 2 pets",
+      "he has two pets",
+      "he has 2 fish",
+      "he has two fish",
+      "he's got 2 pets",
+      "he's got two pets",
+      "he has got 2 pets",
+      "he has got two pets"
+     ],
+     "size": 4.4,
+     "hint": "4. How many pets does Leo have?"
+    },
+    {
+     "id": "R5",
+     "type": "fill",
+     "x": 114.2,
+     "y": 222.4,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "sushi",
+      "it's sushi",
+      "her favorite food is sushi",
+      "her favorite is sushi"
+     ],
+     "size": 4.4,
+     "hint": "5. What's Aiko's favorite food?"
+    },
+    {
+     "id": "R6",
+     "type": "fill",
+     "x": 114.2,
+     "y": 236.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "10",
+      "ten",
+      "it's 10",
+      "it's ten",
+      "his favorite number is 10",
+      "his favorite number is ten"
+     ],
+     "size": 4.4,
+     "hint": "6. What's Leo's favorite number?"
+    }
+   ]
+  },
+  "18": {
+   "items": [
+    {
+     "id": "A1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 76.2,
+       "w": 12.62,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 36.92,
+       "y": 76.2,
+       "w": 16.97,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 55.59,
+       "y": 76.2,
+       "w": 16.56,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 91.2,
+       "w": 22.38,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 46.68,
+       "y": 91.2,
+       "w": 26.73,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 75.11,
+       "y": 91.2,
+       "w": 16.31,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 22.6,
+       "y": 106.2,
+       "w": 20.9,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 45.2,
+       "y": 106.2,
+       "w": 16.56,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 63.46,
+       "y": 106.2,
+       "w": 13.69,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 76.2,
+       "w": 25.41,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 141.71,
+       "y": 76.2,
+       "w": 24.76,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 168.17,
+       "y": 76.2,
+       "w": 23.2,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 91.2,
+       "w": 17.54,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 133.84,
+       "y": 91.2,
+       "w": 22.13,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 157.68,
+       "y": 91.2,
+       "w": 16.97,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 114.6,
+       "y": 106.2,
+       "w": 34.6,
+       "h": 7.2,
+       "ok": true
+      },
+      {
+       "x": 150.9,
+       "y": 106.2,
+       "w": 20.49,
+       "h": 7.2,
+       "ok": false
+      },
+      {
+       "x": 173.09,
+       "y": 106.2,
+       "w": 15.16,
+       "h": 7.2,
+       "ok": false
+      }
+     ]
     }
    ]
   },
@@ -1183,6 +1936,96 @@
       "smart"
      ],
      "size": 4.6
+    }
+   ]
+  },
+  "23": {
+   "items": [
+    {
+     "id": "R1",
+     "type": "fill",
+     "x": 22.2,
+     "y": 224.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "Leo's grandma",
+      "Leo's grandmother",
+      "she's Leo's grandma",
+      "her name is Rosa. she's Leo's grandma",
+      "his grandma",
+      "she is Leo's grandma"
+     ],
+     "size": 4.4,
+     "hint": "1. Who is Rosa?"
+    },
+    {
+     "id": "R2",
+     "type": "fill",
+     "x": 22.2,
+     "y": 236.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "7",
+      "seven",
+      "7 years old",
+      "seven years old",
+      "he's 7",
+      "he's seven",
+      "he is 7",
+      "he is seven",
+      "noah is 7",
+      "noah is seven"
+     ],
+     "size": 4.4,
+     "hint": "2. How old is Noah?"
+    },
+    {
+     "id": "R4",
+     "type": "fill",
+     "x": 114.2,
+     "y": 224.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "red",
+      "it's red",
+      "his favorite color is red",
+      "his favorite is red"
+     ],
+     "size": 4.4,
+     "hint": "4. What's Noah's favorite color?"
+    },
+    {
+     "id": "R5",
+     "type": "fill",
+     "x": 114.2,
+     "y": 236.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "surfing",
+      "their hobby is surfing",
+      "it's surfing"
+     ],
+     "size": 4.4,
+     "hint": "5. What's Kate and Tom's hobby?"
+    },
+    {
+     "id": "R6",
+     "type": "fill",
+     "x": 114.2,
+     "y": 248.9,
+     "w": 82.6,
+     "h": 7.0,
+     "accept": [
+      "Yuki",
+      "it's Yuki",
+      "yuki is creative"
+     ],
+     "size": 4.4,
+     "hint": "6. Who is creative?"
     }
    ]
   },
