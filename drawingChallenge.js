@@ -39,10 +39,6 @@ const DRAW_THEMES = [
     ['car', 'um carro', '🚗'], ['bus', 'um ônibus', '🚌'], ['bike', 'uma bicicleta', '🚲'], ['train', 'um trem', '🚂'],
     ['airplane', 'um avião', '✈️'], ['boat', 'um barco', '⛵'], ['helicopter', 'um helicóptero', '🚁'], ['rocket', 'um foguete', '🚀'],
     ['truck', 'um caminhão', '🚚'], ['motorcycle', 'uma moto', '🏍️'], ['submarine', 'um submarino', '🛥️'], ['hot-air balloon', 'um balão', '🎈']] },
-  { id: 'fantasy', en: 'Fantasy', pt: 'Fantasia', emoji: '🦄', items: [
-    ['unicorn', 'um unicórnio', '🦄'], ['dragon', 'um dragão', '🐉'], ['robot', 'um robô', '🤖'], ['monster', 'um monstro', '👾'],
-    ['castle', 'um castelo', '🏰'], ['princess', 'uma princesa', '👸'], ['superhero', 'um super-herói', '🦸'], ['pirate', 'um pirata', '🏴‍☠️'],
-    ['wizard', 'um mago', '🧙'], ['alien', 'um alienígena', '👽'], ['mermaid', 'uma sereia', '🧜‍♀️'], ['fairy', 'uma fada', '🧚']] },
   { id: 'sea', en: 'Sea', pt: 'Mar', emoji: '🌊', items: [
     ['shark', 'um tubarão', '🦈'], ['octopus', 'um polvo', '🐙'], ['whale', 'uma baleia', '🐋'], ['crab', 'um caranguejo', '🦀'],
     ['starfish', 'uma estrela-do-mar', '⭐'], ['jellyfish', 'uma água-viva', '🪼'], ['dolphin', 'um golfinho', '🐬'],
@@ -51,7 +47,63 @@ const DRAW_THEMES = [
     ['teddy bear', 'um ursinho', '🧸'], ['ball', 'uma bola', '⚽'], ['kite', 'uma pipa', '🪁'], ['doll', 'uma boneca', '🪆'],
     ['yo-yo', 'um ioiô', '🪀'], ['toy car', 'um carrinho', '🚗'], ['balloon', 'um balão', '🎈'], ['video game', 'um videogame', '🎮'],
     ['puzzle', 'um quebra-cabeça', '🧩'], ['drum', 'um tambor', '🥁']] },
+  { id: 'pets', en: 'Pets', pt: 'Bichinhos de estimação', emoji: '🐶', items: [
+    ['puppy', 'um cachorrinho', '🐶'], ['kitten', 'um gatinho', '🐱'], ['hamster', 'um hamster', '🐹'], ['goldfish', 'um peixinho dourado', '🐠'],
+    ['parrot', 'um papagaio', '🦜'], ['rabbit', 'um coelho', '🐰'], ['turtle', 'uma tartaruga', '🐢'], ['dog house', 'uma casinha de cachorro', '🏠'],
+    ['dog bone', 'um osso de cachorro', '🦴'], ['fish bowl', 'um aquário redondo', '🐟']] },
+  { id: 'dinosaurs', en: 'Dinosaurs', pt: 'Dinossauros', emoji: '🦖', items: [
+    ['dinosaur', 'um dinossauro', '🦖'], ['T. rex', 'um tiranossauro rex', '🦖'], ['long-neck dinosaur', 'um dinossauro pescoçudo', '🦕'],
+    ['baby dinosaur', 'um dinossauro bebê', '🦖'], ['dinosaur egg', 'um ovo de dinossauro', '🥚'], ['footprint', 'uma pegada', '🐾'],
+    ['volcano', 'um vulcão', '🌋'], ['bone', 'um osso', '🦴'], ['palm tree', 'uma palmeira', '🌴'], ['fossil', 'um fóssil', '🦴']] },
+  { id: 'bugs', en: 'Bugs', pt: 'Insetos', emoji: '🐞', items: [
+    ['ladybug', 'uma joaninha', '🐞'], ['bee', 'uma abelha', '🐝'], ['butterfly', 'uma borboleta', '🦋'], ['ant', 'uma formiga', '🐜'],
+    ['spider', 'uma aranha', '🕷️'], ['snail', 'um caracol', '🐌'], ['caterpillar', 'uma lagarta', '🐛'], ['grasshopper', 'um gafanhoto', '🦗'],
+    ['spider web', 'uma teia de aranha', '🕸️'], ['flower with a bee', 'uma flor com uma abelha', '🌻']] },
+  { id: 'farm', en: 'Farm', pt: 'Fazenda', emoji: '🐄', items: [
+    ['cow', 'uma vaca', '🐄'], ['sheep', 'uma ovelha', '🐑'], ['chicken', 'uma galinha', '🐔'], ['duck', 'um pato', '🦆'],
+    ['goat', 'uma cabra', '🐐'], ['rooster', 'um galo', '🐓'], ['tractor', 'um trator', '🚜'], ['farmer', 'um fazendeiro', '🧑‍🌾'],
+    ['corn', 'um milho', '🌽'], ['apple tree', 'uma macieira', '🌳']] },
+  { id: 'space', en: 'Space', pt: 'Espaço', emoji: '🚀', items: [
+    ['planet', 'um planeta', '🪐'], ['rocket', 'um foguete', '🚀'], ['star', 'uma estrela', '⭐'], ['moon', 'uma lua', '🌙'],
+    ['sun', 'um sol', '☀️'], ['astronaut', 'um astronauta', '🧑‍🚀'], ['satellite', 'um satélite', '🛰️'], ['telescope', 'um telescópio', '🔭'],
+    ['comet', 'um cometa', '☄️'], ['galaxy', 'uma galáxia', '🌌'], ['the Earth', 'a Terra', '🌍', true]] },
+  { id: 'body', en: 'Body parts', pt: 'Partes do corpo', emoji: '🧍', items: [
+    ['eye', 'um olho', '👁️'], ['nose', 'um nariz', '👃'], ['mouth', 'uma boca', '👄'], ['ear', 'uma orelha', '👂'],
+    ['hand', 'uma mão', '✋'], ['foot', 'um pé', '🦶'], ['leg', 'uma perna', '🦵'], ['arm', 'um braço', '💪'],
+    ['tooth', 'um dente', '🦷'], ['tongue', 'uma língua', '👅'], ['heart', 'um coração', '❤️'], ['brain', 'um cérebro', '🧠'], ['face', 'um rosto', '🙂']] },
+  { id: 'feelings', en: 'Feelings', pt: 'Sentimentos', emoji: '😊', items: [
+    ['happy face', 'um rosto feliz', '😊'], ['sad face', 'um rosto triste', '😢'], ['angry face', 'um rosto bravo', '😠'],
+    ['surprised face', 'um rosto surpreso', '😮'], ['sleepy face', 'um rosto com sono', '😴'], ['scared face', 'um rosto assustado', '😨'],
+    ['excited face', 'um rosto animado', '🤩'], ['silly face', 'um rosto bobo', '🤪']] },
+  { id: 'fruits', en: 'Fruits & veggies', pt: 'Frutas e legumes', emoji: '🍓', items: [
+    ['pineapple', 'um abacaxi', '🍍'], ['grapes', 'uvas', '🍇', true], ['orange', 'uma laranja', '🍊'], ['lemon', 'um limão', '🍋'],
+    ['cherries', 'cerejas', '🍒', true], ['pear', 'uma pera', '🍐'], ['peach', 'um pêssego', '🍑'], ['tomato', 'um tomate', '🍅'],
+    ['broccoli', 'um brócolis', '🥦'], ['potato', 'uma batata', '🥔'], ['corn', 'um milho', '🌽']] },
+  { id: 'weather', en: 'Weather', pt: 'Tempo', emoji: '🌦️', items: [
+    ['sun', 'um sol', '☀️'], ['cloud', 'uma nuvem', '☁️'], ['rain', 'chuva', '🌧️', true], ['rainbow', 'um arco-íris', '🌈'],
+    ['snowman', 'um boneco de neve', '⛄'], ['lightning', 'um raio', '⚡'], ['umbrella', 'um guarda-chuva', '☂️'], ['tornado', 'um tornado', '🌪️'],
+    ['snowflake', 'um floco de neve', '❄️'], ['thermometer', 'um termômetro', '🌡️']] },
+  { id: 'sports', en: 'Sports', pt: 'Esportes', emoji: '⚽', items: [
+    ['soccer ball', 'uma bola de futebol', '⚽'], ['basketball', 'uma bola de basquete', '🏀'], ['volleyball', 'uma bola de vôlei', '🏐'],
+    ['tennis racket', 'uma raquete de tênis', '🎾'], ['trophy', 'um troféu', '🏆'], ['medal', 'uma medalha', '🏅'], ['skateboard', 'um skate', '🛹'],
+    ['swimming pool', 'uma piscina', '🏊'], ['sneakers', 'tênis', '👟', true], ['goal', 'um gol', '🥅']] },
+  { id: 'music', en: 'Music', pt: 'Música', emoji: '🎸', items: [
+    ['guitar', 'um violão', '🎸'], ['drum', 'um tambor', '🥁'], ['piano', 'um piano', '🎹'], ['violin', 'um violino', '🎻'],
+    ['trumpet', 'uma trombeta', '🎺'], ['microphone', 'um microfone', '🎤'], ['headphones', 'fones de ouvido', '🎧', true], ['music note', 'uma nota musical', '🎵'],
+    ['saxophone', 'um saxofone', '🎷'], ['radio', 'um rádio', '📻']] },
+  { id: 'jobs', en: 'Jobs', pt: 'Profissões', emoji: '🧑‍🚒', items: [
+    ['doctor', 'um médico', '🧑‍⚕️'], ['firefighter', 'um bombeiro', '🧑‍🚒'], ['chef', 'um cozinheiro', '🧑‍🍳'], ['farmer', 'um fazendeiro', '🧑‍🌾'],
+    ['pilot', 'um piloto', '🧑‍✈️'], ['painter', 'um pintor', '🧑‍🎨'], ['singer', 'um cantor', '🧑‍🎤'], ['builder', 'um construtor', '👷'],
+    ['police officer', 'um policial', '👮'], ['scientist', 'um cientista', '🧑‍🔬'], ['astronaut', 'um astronauta', '🧑‍🚀']] },
 ];
+
+// Kid favourites first; anything not listed keeps its place at the end.
+const DRAW_ORDER = ['animals', 'pets', 'dinosaurs', 'bugs', 'farm', 'sea', 'space', 'body', 'feelings', 'food', 'fruits', 'house',
+  'school', 'nature', 'weather', 'clothes', 'transport', 'sports', 'music', 'jobs', 'toys'];
+DRAW_THEMES.sort((a, b) => {
+  const ia = DRAW_ORDER.indexOf(a.id), ib = DRAW_ORDER.indexOf(b.id);
+  return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+});
 
 // Silly mode adds one of these: "Draw a cat wearing a hat!"
 const DRAW_TWISTS = [
@@ -83,6 +135,8 @@ function renderDrawingChallenge(container, kit) {
     (level.topics || []).filter(t => (t.words || []).length).map(t => ({ key: `${level.id}:${t.id}`, label: `${level.code} · ${t.title}`, topic: t })));
 
   let themeId = IGStore.getRaw('draw_theme') || 'surprise';
+  // A theme that no longer exists (e.g. one saved before it was removed) falls back to Surprise.
+  if (themeId !== 'surprise' && !themeId.startsWith('course:') && !DRAW_THEMES.some(t => t.id === themeId)) themeId = 'surprise';
   let silly = IGStore.getRaw('draw_silly') === '1';
   let minutes = Number(IGStore.getRaw('draw_minutes') || 2);
   let challenge = null;          // { en, pt, emoji, twist }
