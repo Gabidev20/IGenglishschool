@@ -50,7 +50,13 @@ function inboxToast(text, onClick) {
     const isNew = r => r.isNew !== false;
     const writers = [...new Set(rows.filter(r => r.kind === 'writing' && isNew(r)).map(r => nameOf(r.studentId)))];
     const homework = [...new Set(rows.filter(r => r.kind === 'homework_result' && isNew(r)).map(r => nameOf(r.studentId)))];
-    const books = [...new Set(rows.filter(r => r.kind === 'book' && isNew(r)).map(r => nameOf(r.studentId)))];
+    // The online book can fire often while a student works: tell the teacher
+    // once per student, then stay quiet for 10 minutes.
+    const bookQuiet = (window.__igBookRang = window.__igBookRang || {});
+    const books = [...new Set(rows.filter(r => r.kind === 'book' && isNew(r) && !(bookQuiet[r.studentId] > Date.now() - 600000)).map(r => {
+      bookQuiet[r.studentId] = Date.now();
+      return nameOf(r.studentId);
+    }))];
     refreshInboxBadge();
     if (writers.length) {
       if (typeof IGSound !== 'undefined') IGSound.bell();

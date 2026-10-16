@@ -293,10 +293,14 @@ const IGCloud = (() => {
     if (!since) { try { localStorage.setItem(key, new Date().toISOString()); } catch (e) { /* ignore */ } return 0; }
     const sb = await getClient();
     const { data, error } = await sb.from(tbl('student_activity'))
-      .select('student_id,id,created_at')
+      .select('student_id,id,created_at,by:payload->>by')
       .eq('teacher_id', teacher.id).eq('kind', 'book').gt('created_at', since).order('created_at');
     if (error || !data || !data.length) return 0;
     try { localStorage.setItem(key, data[data.length - 1].created_at); } catch (e) { /* ignore */ }
+    // Pages the teacher saved herself (class mode) are not "the student did something".
+    const fromStudents = data.filter(r => r.by !== 'teacher');
+    if (!fromStudents.length) return 0;
+    data.length = 0; fromStudents.forEach(r => data.push(r));
     try {
       window.dispatchEvent(new CustomEvent('ig:student-activity', {
         detail: { rows: data.map(r => ({ kind: 'book', studentId: r.student_id, isNew: true })) },
@@ -340,7 +344,7 @@ const IGCloud = (() => {
     const sb = await getClient();
     const { error } = await sb.from(tbl('student_activity')).upsert({
       id: pageId, teacher_id: teacher.id, student_id: studentId, kind: 'book',
-      payload, created_at: new Date().toISOString(),
+      payload: { ...payload, by: 'teacher' }, created_at: new Date().toISOString(),
     }, { onConflict: 'teacher_id,student_id,kind,id' });
     if (error) throw error;
     return true;
