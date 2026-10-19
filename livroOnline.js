@@ -727,6 +727,9 @@ const LivroOnline = (() => {
         outEl.textContent = mode === 'die' ? 'Tap the dice to roll' : 'Tap the coin to flip';
         hist = []; paintHist();
       }));
+      // the ✕ closes the panel directly (clicks on the panel don't bubble up to the page handlers below)
+      const closeBtn = dicePanel.querySelector('.lo-dice-x');
+      if (closeBtn) closeBtn.addEventListener('click', () => { dicePanel.hidden = true; });
       // never let taps on the panel reach the page (drawing / panning)
       ['pointerdown', 'pointerup', 'click', 'wheel', 'touchstart'].forEach(ev => dicePanel.addEventListener(ev, e => e.stopPropagation(), { passive: true }));
     }
