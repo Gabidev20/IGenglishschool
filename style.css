@@ -9403,3 +9403,7 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .cockpit-hw-head h3 { margin: 0; font-size: 1.05rem; }
 .cockpit-hw-head .cockpit-hw-add { flex: 1 1 280px; max-width: 560px; margin: 0; }
 #cockpitHwBody #homeworkRoot { margin: 0; }
+
+/* Livro online: board-game pawns in the sticker tray */
+.lo-tray-item.is-pawn img { height: 46px; width: auto; object-fit: contain; }
+.lo-tray-item.is-pawn small { color: var(--ink-soft); }

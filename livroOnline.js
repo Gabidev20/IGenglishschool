@@ -446,7 +446,7 @@ const LivroOnline = (() => {
   function stickerSVG(st, meta, dir) {
     if (!meta) return '';
     const b = stickerBox(st, meta);
-    return `<image class="lo-stk" href="${esc(dir + meta.img)}" x="${Math.round(b.x)}" y="${Math.round(b.y)}" width="${Math.round(b.w)}" height="${Math.round(b.h)}" preserveAspectRatio="none"/>`;
+    return `<image class="lo-stk" href="${esc(stkSrc(dir, meta))}" x="${Math.round(b.x)}" y="${Math.round(b.y)}" width="${Math.round(b.w)}" height="${Math.round(b.h)}" preserveAspectRatio="none"/>`;
   }
 
   // Two layers: the ink multiplies onto the printed page (colouring keeps the
@@ -458,9 +458,23 @@ const LivroOnline = (() => {
       <svg class="lo-over" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${
       page.stickers.map(s => stickerSVG(s, sm[s.s], dirOf(manifest))).join('')}${page.texts.map(textSVG).join('')}</svg>`;
   }
+  // Board-game pawns: four colours, available on EVERY page and in every book
+  // (any number of copies), for the printed board games with static pawns.
+  const pawnSvg = (c, hi) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 80"><g stroke="#2e2b2e" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="30" cy="70" rx="23" ry="7.5" fill="${c}"/><path d="M19 68 C21 52 25 46 26 40 L34 40 C35 46 39 52 41 68 Z" fill="${c}"/><ellipse cx="30" cy="40" rx="12" ry="4.6" fill="${c}"/><circle cx="30" cy="22" r="14" fill="${c}"/></g><path d="M22 18 Q24 11 31 10" fill="none" stroke="${hi}" stroke-width="4" stroke-linecap="round" opacity=".85"/><path d="M26 64 Q28 54 29 48" fill="none" stroke="${hi}" stroke-width="3" stroke-linecap="round" opacity=".55"/></svg>`;
+  const PAWNS = [
+    ['pawn-green', 'Peão verde', '#3fae5a', '#d3f3d9'],
+    ['pawn-blue', 'Peão azul', '#3b82d9', '#d4e6fb'],
+    ['pawn-red', 'Peão vermelho', '#e5403f', '#fbd5d3'],
+    ['pawn-purple', 'Peão roxo', '#8e5bc0', '#e6d8f4'],
+  ].map(([id, label, c, hi]) => ({
+    id, label, pawn: true, w: 0.052, h: 0.049,
+    img: 'data:image/svg+xml;utf8,' + encodeURIComponent(pawnSvg(c, hi)),
+  }));
+  const allStickers = m => PAWNS.concat(m.stickers || []);
+  const stkSrc = (dir, meta) => (String(meta.img).startsWith('data:') ? meta.img : dir + meta.img);
   const smCache = new WeakMap();
   function stickerMap(m) {
-    if (!smCache.has(m)) { const o = {}; (m.stickers || []).forEach(s => { o[s.id] = s; }); smCache.set(m, o); }
+    if (!smCache.has(m)) { const o = {}; allStickers(m).forEach(s => { o[s.id] = s; }); smCache.set(m, o); }
     return smCache.get(m);
   }
 
@@ -1407,9 +1421,9 @@ const LivroOnline = (() => {
       } else if (tool === 'sticker') {
         const here = m.stickers.filter(s => (s.pages || []).includes(pg.n));
         const rest = m.stickers.filter(s => !(s.pages || []).includes(pg.n));
-        opts.innerHTML = `<div class="lo-tray" data-ref="tray">${here.concat(rest).map(s => `
-          <button type="button" class="lo-tray-item${here.includes(s) ? ' is-here' : ''}" data-stk="${esc(s.id)}" title="${s.label ? 'Vai na ' + esc(s.label) : 'Adesivo livre'}">
-            <img src="${esc(dir + s.img)}" alt="" draggable="false" /><small>${here.includes(s) ? 'aqui!' : esc(s.label || 'livre')}</small>
+        opts.innerHTML = `<div class="lo-tray" data-ref="tray">${PAWNS.concat(here, rest).map(s => `
+          <button type="button" class="lo-tray-item${here.includes(s) ? ' is-here' : ''}${s.pawn ? ' is-pawn' : ''}" data-stk="${esc(s.id)}" title="${s.pawn ? esc(s.label) + ' — para os jogos de tabuleiro (pode usar quantos quiser)' : s.label ? 'Vai na ' + esc(s.label) : 'Adesivo livre'}">
+            <img src="${esc(stkSrc(dir, s))}" alt="" draggable="false" /><small>${here.includes(s) ? 'aqui!' : esc(s.label || 'livre')}</small>
           </button>`).join('')}</div>`;
         wireTray(opts.querySelector('[data-ref="tray"]'));
       }
@@ -1434,6 +1448,8 @@ const LivroOnline = (() => {
         const c = visibleCentre();
         p = snapTo(meta, c.x, c.y, (meta.targets || []).some(g => g.page === pg.n && g.x != null && !data.stickers.some(s => s.s === meta.id)));
       }
+      // Several stickers added by tapping don't pile on one spot: each lands a little to the side.
+      if (!at && !p.snapped) { const n = data.stickers.length % 6; p = { ...p, x: p.x + n * 330, y: p.y + n * 250 }; }
       remember();
       const st = { id: uid(), s: meta.id, x: Math.round(clamp(p.x, 0, W)), y: Math.round(clamp(p.y, 0, H)), k: 1 };
       data.stickers.push(st);
