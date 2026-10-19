@@ -2141,7 +2141,7 @@ const SlidesAula = (() => {
         try {
           m = await LivroOnline.loadManifest(book, bim, false);
           dir = `${m._base != null ? m._base : ''}${m.book}/b${m.bimester || bim}/`;
-          bp.innerHTML = m.pages.filter(p => p.kind !== 'stickers').map(p => `<button type="button" class="sl-bpg" data-p="${p.n}" title="Página ${p.n}"><img src="${esc(dir + (p.thumb || p.img))}" alt="Página ${p.n}" loading="lazy"><span>${p.n}</span></button>`).join('');
+          bp.innerHTML = m.pages.filter(p => p.kind !== 'stickers').map(p => `<button type="button" class="sl-bpg" data-p="${p.n}" title="Página ${p.n}"><img src="${esc(LivroOnline.resUrl ? LivroOnline.resUrl(m, p.thumb || p.img) : dir + (p.thumb || p.img))}" alt="Página ${p.n}" loading="lazy"><span>${p.n}</span></button>`).join('');
         } catch (e) { bp.innerHTML = '<p class="sl-ctx-hint">Este bimestre ainda não está no site.</p>'; }
       };
       d.addEventListener('click', e => {
@@ -2165,7 +2165,7 @@ const SlidesAula = (() => {
         }
         const use = e.target.closest('[data-use]');
         if (use && page) {
-          const url = dir + page.img;
+          const url = LivroOnline.resUrl ? LivroOnline.resUrl(m, page.img) : dir + page.img;
           d.remove();
           if (!safeSrc(url)) { toast(root, 'Não consegui usar esta página.'); return; }
           if (use.dataset.use === 'bg') {

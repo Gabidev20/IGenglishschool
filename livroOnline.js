@@ -102,10 +102,17 @@ const LivroOnline = (() => {
   const manifestCache = {};
   const fetchJSON = url => fetch(url, { cache: 'no-cache' })
     .then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+  // The A1 book was uploaded to GitHub in five batches, each landing in its own
+  // folder (parte1…parte5, 42 pages each; manifest + index in parte5). Support
+  // that layout so nothing has to be uploaded again.
+  const A1_PARTS = [42, 84, 126, 168, 210].map((to, i) => ({ to, base: `parte${i + 1}/` }));
   function fromEitherBase(path) {
     const first = BASE, other = BASE ? '' : 'livro-online/';
     return fetchJSON(first + path).then(j => ({ j, base: first }),
-      e => fetchJSON(other + path).then(j => ({ j, base: other }), () => { throw e; }));
+      e => fetchJSON(other + path).then(j => ({ j, base: other }),
+        () => (/^a1\//.test(path)
+          ? fetchJSON('parte5/' + path).then(j => ({ j, base: 'parte5/' }), () => { throw e; })
+          : Promise.reject(e))));
   }
   function loadManifest(book, bim, withIx) {
     bim = Number(bim) || 1;
@@ -113,8 +120,9 @@ const LivroOnline = (() => {
     if (!manifestCache[key]) {
       manifestCache[key] = fromEitherBase(`${book}/b${bim}/manifest.json`)
         .then(({ j, base }) => {
-          if (bim === 1) BASE = base;
+          if (bim === 1 && (base === '' || base === 'livro-online/')) BASE = base;
           j._base = base;
+          if (base === 'parte5/') j._split = A1_PARTS;
           j.book = j.book || book;
           j.bimester = Number(j.bimester) || bim;
           return withIx === false ? j : loadInteractive(j).then(() => j);
@@ -215,6 +223,18 @@ const LivroOnline = (() => {
   const isSingle = m => Boolean(m && (m.single || (bookInfo(m.book) || {}).single));
   const pid = (m, n) => pageId(m.book, n, m.bimester || 1);
   const bookKey = m => `${m.book}:b${m.bimester || 1}`;
+  // Page image / thumbnail URL of a manifest (handles the split A1 upload).
+  function resUrl(m, file) {
+    if (m && m._split) {
+      const mm = /^[pt](\d+)\./.exec(String(file));
+      if (mm) {
+        const n = Number(mm[1]);
+        const part = m._split.find(x => n <= x.to);
+        if (part) return `${part.base}${m.book}/b${(m && m.bimester) || 1}/${file}`;
+      }
+    }
+    return dirOf(m) + file;
+  }
   function dirOf(m) { return `${m && m._base != null ? m._base : BASE}${m.book}/b${(m && m.bimester) || 1}/`; }
   const lsKey = (sid, id) => `igbook:${sid}:${id}`;
   const emptyPage = () => ({ v: 1, strokes: [], texts: [], stickers: [], done: false, updatedAt: 0 });
@@ -887,7 +907,7 @@ const LivroOnline = (() => {
       strip.innerHTML = o.pages.map((p, i) => {
         const d = normalize(o.load(p)).done;
         return `<button type="button" class="lo-sthumb${i === idx ? ' is-on' : ''}${d ? ' is-done' : ''}" data-goto="${i}" title="p. ${p.n}${p.title ? ' · ' + esc(p.title) : ''}">
-          <img src="${esc(dir + p.thumb)}" alt="" loading="lazy" draggable="false" /><small>${p.n}</small></button>`;
+          <img src="${esc(resUrl(m, p.thumb))}" alt="" loading="lazy" draggable="false" /><small>${p.n}</small></button>`;
       }).join('');
       markStrip();
     }
@@ -1256,10 +1276,10 @@ const LivroOnline = (() => {
       data = normalize(o.load(pg));
       hist = []; redoStack = []; selected = null;
       ixOnPage();
-      img.src = `${dir}${pg.img}`;
+      img.src = resUrl(m, pg.img);
       img.alt = `Página ${pg.n}: ${pg.title || ''}`;
       const nxt = o.pages[idx + 1];
-      if (nxt) { const pre = new Image(); pre.src = `${dir}${nxt.img}`; }
+      if (nxt) { const pre = new Image(); pre.src = resUrl(m, nxt.img); }
       computeBase(); z = 1; applyView();
       fadeIn();
       render();
@@ -1919,7 +1939,7 @@ const LivroOnline = (() => {
               return `
                 <button type="button" class="lo-card${w.done ? ' is-done' : ''}" data-n="${p.n}" data-q="${esc(normQ(`${p.n} p${p.n} ${p.title || ''} ${u.title}`))}">
                   <span class="lo-thumb">
-                    <img src="${esc(dirOf(manifest) + p.thumb)}" alt="" loading="lazy" draggable="false" />
+                    <img src="${esc(resUrl(manifest, p.thumb))}" alt="" loading="lazy" draggable="false" />
                     ${overlayHTML(w, manifest)}
                     ${w.done ? '<span class="lo-check" aria-label="feita">✓</span>' : hasWork(w) ? '<span class="lo-dot" aria-label="começada">✏️</span>' : ''}
                     ${(p.audio || []).length ? '<span class="lo-has-audio" aria-label="tem áudio">🎧</span>' : ''}
@@ -2399,7 +2419,7 @@ const LivroOnline = (() => {
   else wireTeacherButtons();
 
   return {
-    BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest,
+    resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest,
     // Homework: open the student's book right on the pages the teacher set.
     // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }
     openHomeworkPages: (student, hw) => openBookHome(student, { teacher: !window.IG_SHARE_MODE, homework: hw }),
