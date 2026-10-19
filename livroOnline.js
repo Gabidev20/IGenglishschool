@@ -65,6 +65,9 @@ const LivroOnline = (() => {
     { id: 'explorers', title: 'IG Explorers', ages: '7–8', min: 7, max: 8 },
     { id: 'adventurers', title: 'IG Adventurers', ages: '9–11', min: 9, max: 11 },
     { id: 'beyond', title: 'IG Beyond', ages: '12–14', min: 12, max: 14 },
+    // Adult / teen coursebook: ONE volume (no bimesters), assigned by hand only —
+    // never chosen by age (bookByAge skips `manual` books).
+    { id: 'a1', title: 'Speak Up! A1+', ages: '15+', min: null, max: null, manual: true, single: true },
   ];
   const COLORS = [
     ['#2e2b2e', 'preto'], ['#e5403f', 'vermelho'], ['#f39237', 'laranja'], ['#f6cf3a', 'amarelo'],
@@ -176,7 +179,7 @@ const LivroOnline = (() => {
   const bookInfo = id => BOOKS.find(b => b.id === id) || null;
   function bookByAge(age) {
     const a = Number(age) || 0;
-    const b = BOOKS.find(x => a >= x.min && a <= x.max);
+    const b = BOOKS.find(x => !x.manual && a >= x.min && a <= x.max);
     return b ? b.id : null;
   }
   // The teacher's choice rides in student_access (studentAccess.js), which
@@ -208,6 +211,8 @@ const LivroOnline = (() => {
   // PAGE DATA
   // -------------------------------------------------------------------------
   const pageId = (book, n, bim) => `${book}:b${bim || 1}:p${String(n).padStart(2, '0')}`;
+  // One-volume books (Speak Up! A1+): no "Bimestre" tabs/labels anywhere.
+  const isSingle = m => Boolean(m && (m.single || (bookInfo(m.book) || {}).single));
   const pid = (m, n) => pageId(m.book, n, m.bimester || 1);
   const bookKey = m => `${m.book}:b${m.bimester || 1}`;
   function dirOf(m) { return `${m && m._base != null ? m._base : BASE}${m.book}/b${(m && m.bimester) || 1}/`; }
@@ -1893,25 +1898,26 @@ const LivroOnline = (() => {
       ixOk += ok; ixAll += all;
       return { ...u, total: list.length, done: list.filter(p => getPage(p).done).length, ixOk: ok, ixAll: all };
     }).filter(u => u.total);
-    return { total: pages.length, done, started, units, ixOk, ixAll };
+    const modules = (manifest.modules || []).map(md => {
+      const us = units.filter(u => (md.units || []).includes(u.n));
+      return { n: md.n, title: md.title, total: us.reduce((a, u) => a + u.total, 0), done: us.reduce((a, u) => a + u.done, 0), ixOk: 0, ixAll: 0 };
+    }).filter(md => md.total);
+    return { total: pages.length, done, started, units, modules, ixOk, ixAll };
   }
 
-  function cardsHTML(manifest, getPage) {
-    const pages = contentPages(manifest);
-    return manifest.units.map(u => {
-      const list = pages.filter(p => p.unit === u.n);
-      if (!list.length) return '';
-      const d = list.filter(p => getPage(p).done).length;
-      return `
+  const normQ = v => String(v == null ? '' : v).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  function unitSectionHTML(manifest, getPage, u, list, noHead) {
+    const d = list.filter(p => getPage(p).done).length;
+    return `
         <section class="lo-unit">
-          <h3>${esc(u.title)} <small>${d}/${list.length} ✓</small></h3>
+          ${noHead ? '' : `<h3>${esc(u.title)} <small>${d}/${list.length} ✓</small></h3>`}
           <div class="lo-grid">
             ${list.map(p => {
               const w = getPage(p);
               const t = ixTotal(p);
               const e = t ? ixEarned(p, w) : 0;
               return `
-                <button type="button" class="lo-card${w.done ? ' is-done' : ''}" data-n="${p.n}">
+                <button type="button" class="lo-card${w.done ? ' is-done' : ''}" data-n="${p.n}" data-q="${esc(normQ(`${p.n} p${p.n} ${p.title || ''} ${u.title}`))}">
                   <span class="lo-thumb">
                     <img src="${esc(dirOf(manifest) + p.thumb)}" alt="" loading="lazy" draggable="false" />
                     ${overlayHTML(w, manifest)}
@@ -1925,11 +1931,76 @@ const LivroOnline = (() => {
             }).join('')}
           </div>
         </section>`;
+  }
+
+  // Which modules of a one-volume book are open on the home (kept while repainting).
+  const openMods = {};
+  function cardsHTML(manifest, getPage, focusN) {
+    const pages = contentPages(manifest);
+    if (!manifest.modules) {
+      return manifest.units.map(u => {
+        const list = pages.filter(p => p.unit === u.n);
+        return list.length ? unitSectionHTML(manifest, getPage, u, list) : '';
+      }).join('');
+    }
+    // Speak Up! A1+: 210 pages -> collapsible MODULES (closed ones load no thumbnails) + a page finder.
+    const key = bookKey(manifest);
+    if (!openMods[key]) {
+      const fp = pages.find(p => p.n === focusN);
+      const md = fp && manifest.modules.find(m => (m.units || []).includes(fp.unit));
+      openMods[key] = new Set([md ? md.n : (manifest.modules[1] || manifest.modules[0]).n]);
+    }
+    const open = openMods[key];
+    const body = manifest.modules.map(md => {
+      const lists = (md.units || []).map(n => manifest.units.find(u => u.n === n)).filter(Boolean)
+        .map(u => ({ u, list: pages.filter(p => p.unit === u.n) })).filter(x => x.list.length);
+      if (!lists.length) return '';
+      const all = lists.reduce((a, x) => a.concat(x.list), []);
+      const d = all.filter(p => getPage(p).done).length;
+      return `
+        <details class="lo-module" data-mod="${md.n}"${open.has(md.n) ? ' open' : ''}>
+          <summary><span class="lo-mod-t">${esc(md.title)}</span>
+            <span class="lo-bar lo-mod-bar"><i style="width:${Math.round(d / all.length * 100)}%"></i></span>
+            <small>${d}/${all.length} ✓</small></summary>
+          ${lists.map(x => unitSectionHTML(manifest, getPage, x.u, x.list, (md.units || []).length === 1)).join('')}
+        </details>`;
     }).join('');
+    return `<div class="lo-find"><input type="search" class="lo-find-in" placeholder="🔍 Buscar página (número ou título)…" autocomplete="off" aria-label="Buscar página" /></div>
+      <div class="lo-modules">${body}</div>`;
+  }
+  // Open/close memory + page finder of the module list (no-op for the children's books).
+  function wireModules(container, manifest) {
+    const inp = container.querySelector('.lo-find-in');
+    if (!inp) return;
+    const open = openMods[bookKey(manifest)] || (openMods[bookKey(manifest)] = new Set());
+    const mods = [...container.querySelectorAll('details.lo-module')];
+    mods.forEach(d => d.addEventListener('toggle', () => {
+      if (inp.value.trim()) return;       // opened/closed by the finder: don't remember
+      if (d.open) open.add(Number(d.dataset.mod)); else open.delete(Number(d.dataset.mod));
+    }));
+    const cards = [...container.querySelectorAll('.lo-card')];
+    const query = () => normQ(inp.value).trim().replace(/^p\.?\s*/, '');
+    inp.addEventListener('input', () => {
+      const q = query();
+      cards.forEach(c => { c.hidden = Boolean(q) && !c.dataset.q.includes(q); });
+      container.querySelectorAll('.lo-unit').forEach(u => { u.hidden = Boolean(q) && !u.querySelector('.lo-card:not([hidden])'); });
+      mods.forEach(d => {
+        const any = !q || d.querySelector('.lo-card:not([hidden])');
+        d.hidden = !any;
+        d.open = q ? Boolean(any) : open.has(Number(d.dataset.mod));
+      });
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const q = query();
+      const hit = cards.find(c => !c.hidden && c.dataset.n === q) || cards.find(c => !c.hidden);
+      if (hit && q) hit.click();
+    });
   }
 
   // "Bimestre 1 · 2" tabs; the next bimester shows as "em breve".
   function bimTabsHTML(ms, cur, getPageFor) {
+    if (ms.length === 1 && isSingle(cur)) return '';     // one volume: no bimesters
     const last = ms[ms.length - 1].bimester;
     const soon = last < 4 ? `<span class="lo-bim is-soon" aria-disabled="true">Bimestre ${last + 1} <small>em breve</small></span>` : '';
     return `<div class="lo-bims" role="tablist" aria-label="Bimestre">
@@ -1962,6 +2033,7 @@ const LivroOnline = (() => {
     const pages = contentPages(m);
     const l = lastSeen()[sid];
     if (l && l.book === m.book && (l.bim || 1) === (m.bimester || 1) && pages.some(p => p.n === l.n)) return l.n;
+    if (isSingle(m)) return (pages.find(p => p.kind === 'opener') || pages[0]).n;   // lesson 1, not the contents
     return (pages.find(p => p.kind === 'page') || pages[0]).n;
   }
   // The latest bimester with work; else the one opened last; else the first.
@@ -2047,8 +2119,8 @@ const LivroOnline = (() => {
             <button type="button" class="lo-ico" data-a="back" aria-label="Voltar">←</button>
             <div class="lo-home-title">
               ${teacher
-                ? `<h2>📖 ${esc(student.name)} <small>${esc(who.book)}</small></h2><p>Livro da aula · Bimestre ${cur.bimester} · salvo no livro de ${esc(student.name)}</p>`
-                : `<h2>📖 My book <small>Meu livro</small></h2><p>${esc(who.book)} · Bimestre ${cur.bimester}</p>`}
+                ? `<h2>📖 ${esc(student.name)} <small>${esc(who.book)}</small></h2><p>Livro da aula${isSingle(cur) ? '' : ' · Bimestre ' + cur.bimester} · salvo no livro de ${esc(student.name)}</p>`
+                : `<h2>📖 My book <small>Meu livro</small></h2><p>${esc(who.book)}${isSingle(cur) ? '' : ' · Bimestre ' + cur.bimester}</p>`}
             </div>
             <span class="lo-status" data-ref="status"></span>
           </header>
@@ -2066,7 +2138,7 @@ const LivroOnline = (() => {
           <p class="lo-tip">${teacher
             ? `Toque numa página para fazer junto com ${esc(student.name)}. Tudo é salvo no livro de ${esc(student.name)} — e aparece no link do aluno. 🎯 = exercícios com correção automática.`
             : 'Toque numa página para fazer. ✏️ escrever e desenhar · 🖍️ pintar · 🔤 texto · ⭐ adesivos · 👆 🎯 exercícios com correção. Tudo é salvo sozinho.'}</p>
-          ${cardsHTML(cur, getPage)}
+          ${cardsHTML(cur, getPage, resume)}
         </div>`;
       if (unStatus) unStatus();
       unStatus = sync.onStatus(s => paintStatus(root.querySelector('[data-ref="status"]'), s));
@@ -2086,6 +2158,7 @@ const LivroOnline = (() => {
         const m = ms.find(x => x.bimester === Number(b.dataset.bim));
         if (m && m !== cur) { cur = m; paint(); }
       }));
+      wireModules(root, cur);
       root.querySelectorAll('[data-n]').forEach(btn => btn.addEventListener('click', () => openAt(cur, Number(btn.dataset.n))));
     };
     paint();
@@ -2264,14 +2337,14 @@ const LivroOnline = (() => {
       ? 'Sem Supabase: o livro fica salvo <b>neste navegador</b> (o mesmo que o link do aluno lê aqui).'
       : mode === 'offline' ? 'Não consegui falar com a nuvem agora — mostrando o que está neste aparelho. Verifique a internet.'
         : mode === 'nosql' ? 'A tabela de atividades dos alunos não existe ainda: rode o <b>supabase-share.sql</b> e depois o <b>supabase-livro-online.sql</b> no Supabase.'
-          : !pr.started ? 'Nada feito ainda neste bimestre.' : '';
+          : !pr.started ? (isSingle(manifest) ? 'Nada feito ainda neste livro.' : 'Nada feito ainda neste bimestre.') : '';
     mount.innerHTML = head + bimTabsHTML(ms, manifest, getPageFor) + `
       <div class="lo-t-summary">
         <div class="lo-t-big"><b>${pr.done}/${pr.total}</b><small>páginas feitas</small></div>
         <div class="lo-t-big"><b>${pr.started}</b><small>com trabalho</small></div>
         ${pr.ixAll ? `<div class="lo-t-big lo-t-big--ix"><b>⭐ ${pr.ixOk}/${pr.ixAll}</b><small>exercícios com correção</small></div>` : ''}
         <div class="lo-t-units">
-          ${pr.units.map(u => `
+          ${(pr.modules.length ? pr.modules : pr.units).map(u => `
             <div class="lo-t-unit"><span>${esc(u.title)}</span>
               <div class="lo-bar"><i style="width:${u.total ? Math.round(u.done / u.total * 100) : 0}%"></i></div>
               <small>${u.done}/${u.total}${u.ixAll ? ` · ⭐ ${u.ixOk}/${u.ixAll}` : ''}</small></div>`).join('')}
@@ -2283,8 +2356,9 @@ const LivroOnline = (() => {
       </div>
       ${note ? `<p class="lo-t-note">${note}</p>` : ''}
       <p class="lo-t-hint">Toque numa página para fazer junto com ${esc(student.name)} (ou só ver, marcando a caixa acima). ⭐ = nota dos exercícios com correção automática.</p>
-      <div class="lo-t-cards">${cardsHTML(manifest, getPage)}</div>`;
+      <div class="lo-t-cards">${cardsHTML(manifest, getPage, resumePage(student.id, manifest))}</div>`;
     wireChoose(mount, student);
+    wireModules(mount, manifest);
     mount.querySelectorAll('[data-bim]').forEach(b => b.addEventListener('click', () => paintTeacher(mount, student, Number(b.dataset.bim))));
     mount.querySelector('#loClassGo').addEventListener('click', () => openClass(student.id));
     mount.querySelectorAll('[data-n]').forEach(btn => btn.addEventListener('click', () => {

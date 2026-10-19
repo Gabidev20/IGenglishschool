@@ -8912,6 +8912,25 @@ html.lo-open, html.lo-open body { overflow: hidden; }
   .lo-ed.is-slides .lo-vt-l { display: none; }
 }
 
+/* ---- one-volume book (Speak Up! A1+): collapsible modules + page finder -------- */
+.lo-find { margin: 10px 0 4px; }
+.lo-find-in { width: 100%; box-sizing: border-box; border: 2px solid var(--border); border-radius: 999px; padding: 9px 16px; font: inherit; background: #fff; color: var(--ink); }
+.lo-module { border: 2px solid var(--border); border-radius: 16px; background: #fff; margin: 10px 0; padding: 0 12px 6px; }
+.lo-module[hidden], .lo-unit[hidden], .lo-card[hidden] { display: none; }
+.lo-module > summary {
+  display: grid; grid-template-columns: minmax(0, 1fr) 90px auto; gap: 10px; align-items: center;
+  cursor: pointer; padding: 12px 0; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; list-style: none;
+}
+.lo-module > summary::-webkit-details-marker { display: none; }
+.lo-mod-t::before { content: '▸ '; display: inline-block; transition: transform .12s; }
+.lo-module[open] .lo-mod-t::before { content: '▾ '; }
+.lo-module > summary small { font-family: var(--font-body); font-weight: 600; font-size: .8rem; color: var(--ink-soft); }
+.lo-module .lo-unit h3 { font-size: 1rem; margin: 10px 0 8px; }
+@media (max-width: 420px) {
+  .lo-module { padding: 0 8px 4px; }
+  .lo-module > summary { grid-template-columns: minmax(0, 1fr) 56px auto; font-size: .95rem; }
+}
+
 /* ---- bimester tabs -------------------------------------------------------- */
 .lo-bims { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
 .lo-bim {

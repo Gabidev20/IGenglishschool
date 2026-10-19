@@ -2149,7 +2149,8 @@ const SlidesAula = (() => {
         const b = e.target.closest('[data-book]');
         if (b) {
           picked = b.dataset.book;
-          d.querySelector('[data-ref="bm"]').innerHTML = [1, 2, 3, 4].map(n => `<button type="button" class="sl-btn" data-bim="${n}">Bimestre ${n}</button>`).join('');
+          const bk = LivroOnline.BOOKS.find(x => x.id === picked);
+          d.querySelector('[data-ref="bm"]').innerHTML = bk && bk.single ? '' : [1, 2, 3, 4].map(n => `<button type="button" class="sl-btn" data-bim="${n}">Bimestre ${n}</button>`).join('');
           loadBim(picked, 1);
           return;
         }
