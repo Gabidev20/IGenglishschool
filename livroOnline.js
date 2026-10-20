@@ -83,6 +83,7 @@ const LivroOnline = (() => {
     { id: 'eraser', icon: '🧽', label: 'Apagar' },
     { id: 'text', icon: '🔤', label: 'Texto' },
     { id: 'sticker', icon: '⭐', label: 'Adesivos' },
+    { id: 'photo', icon: '📷', label: 'Foto' },
   ];
   const PREFS_KEY = 'igbook_prefs';
 
@@ -237,6 +238,15 @@ const LivroOnline = (() => {
   }
   function dirOf(m) { return `${m && m._base != null ? m._base : BASE}${m.book}/b${(m && m.bimester) || 1}/`; }
   const lsKey = (sid, id) => `igbook:${sid}:${id}`;
+  // PHOTOS: a sticker with id 'photo' that carries its own (compressed) image:
+  // { id, s:'photo', src:'data:image/…', pw, ph, x, y, k } — pw/ph are the size
+  // as fractions of the page, like a sticker's meta w/h. Older code ignores them.
+  const PHOTO_MAX_SRC = 400000, PHOTO_BUDGET = 250000, PHOTO_MAX_N = 4;
+  const photoOk = s => typeof s.src === 'string' && s.src.startsWith('data:image/') && s.src.length <= PHOTO_MAX_SRC
+    && Number(s.pw) > 0 && Number(s.pw) <= 3 && Number(s.ph) > 0 && Number(s.ph) <= 3;
+  const metaFor = (sm, st) => (!st ? null : st.s === 'photo'
+    ? (photoOk(st) ? { id: 'photo', w: Number(st.pw), h: Number(st.ph), img: st.src, photo: true } : null)
+    : sm[st.s]);
   const emptyPage = () => ({ v: 1, strokes: [], texts: [], stickers: [], done: false, updatedAt: 0 });
   function normalize(p) {
     if (!p || typeof p !== 'object') return emptyPage();
@@ -244,7 +254,7 @@ const LivroOnline = (() => {
       v: 1,
       strokes: Array.isArray(p.strokes) ? p.strokes.filter(s => s && Array.isArray(s.p) && s.p.length >= 2) : [],
       texts: Array.isArray(p.texts) ? p.texts.filter(t => t && typeof t.v === 'string') : [],
-      stickers: Array.isArray(p.stickers) ? p.stickers.filter(s => s && s.s) : [],
+      stickers: Array.isArray(p.stickers) ? p.stickers.filter(s => s && s.s && (s.s !== 'photo' || photoOk(s))) : [],
       done: Boolean(p.done),
       updatedAt: typeof p.updatedAt === 'string' ? (Date.parse(p.updatedAt) || 0) : num(p.updatedAt, 0),
       ...(p.answers && typeof p.answers === 'object' ? { answers: p.answers } : {}),
@@ -463,8 +473,43 @@ const LivroOnline = (() => {
       lines.map((l, i) => `<tspan x="${x}" dy="${i ? Math.round(s * 1.12) : Math.round(s * 0.92)}">${esc(l) || ' '}</tspan>`).join('')}</text>`;
   }
 
+  // Downscale + re-encode a pasted/picked image so a page record stays small.
+  let webpOk = null;
+  async function compressPhoto(file) {
+    let bmp, iw, ih;
+    try { bmp = await createImageBitmap(file); iw = bmp.width; ih = bmp.height; }
+    catch (e) {
+      bmp = await new Promise((res, rej) => {
+        const url = URL.createObjectURL(file), im = new Image();
+        im.onload = () => { URL.revokeObjectURL(url); res(im); };
+        im.onerror = () => { URL.revokeObjectURL(url); rej(new Error('bad image')); };
+        im.src = url;
+      });
+      iw = bmp.naturalWidth; ih = bmp.naturalHeight;
+    }
+    if (!iw || !ih) throw new Error('empty image');
+    if (webpOk === null) { try { webpOk = document.createElement('canvas').toDataURL('image/webp').startsWith('data:image/webp'); } catch (e) { webpOk = false; } }
+    const mime = webpOk ? 'image/webp' : 'image/jpeg';
+    let best = null;
+    for (const side of [900, 780, 700, 600, 540, 480]) {
+      const f = Math.min(1, side / Math.max(iw, ih));
+      const cw = Math.max(1, Math.round(iw * f)), ch = Math.max(1, Math.round(ih * f));
+      const cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+      const cx = cv.getContext('2d');
+      cx.fillStyle = '#fff'; cx.fillRect(0, 0, cw, ch);
+      cx.drawImage(bmp, 0, 0, cw, ch);
+      for (const q of (webpOk ? [0.78, 0.68, 0.58, 0.5, 0.45] : [0.75, 0.65, 0.55, 0.5, 0.45])) {
+        const src = cv.toDataURL(mime, q);
+        best = { src, w: cw, h: ch };
+        if (src.length <= 110000) { if (bmp.close) bmp.close(); return best; }
+      }
+    }
+    if (bmp.close) bmp.close();
+    return best;
+  }
+
   function stickerBox(st, meta) {
-    const k = clamp(num(st.k, 1), 0.4, 2.5);
+    const k = meta && meta.photo ? clamp(num(st.k, 1), 0.2, 4) : clamp(num(st.k, 1), 0.4, 2.5);
     const w = (meta ? meta.w : 0.1) * W * k, h = (meta ? meta.h : 0.07) * H * k;
     return { x: num(st.x, 0) - w / 2, y: num(st.y, 0) - h / 2, w, h };
   }
@@ -481,7 +526,7 @@ const LivroOnline = (() => {
     const sm = stickerMap(manifest);
     return `<svg class="lo-ink" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${page.strokes.map(strokeSVG).join('')}</svg>
       <svg class="lo-over" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${
-      page.stickers.map(s => stickerSVG(s, sm[s.s], dirOf(manifest))).join('')}${page.texts.map(textSVG).join('')}</svg>`;
+      page.stickers.map(s => stickerSVG(s, metaFor(sm, s), dirOf(manifest))).join('')}${page.texts.map(textSVG).join('')}</svg>`;
   }
   // Board-game pawns: four colours, available on EVERY page and in every book
   // (any number of copies), for the printed board games with static pawns.
@@ -768,6 +813,7 @@ const LivroOnline = (() => {
       leavePage();
       audio.pause();
       window.removeEventListener('keydown', onKey);
+      document.removeEventListener('paste', onPaste);
       window.removeEventListener('resize', applyMode);
       document.removeEventListener('fullscreenchange', onFs);
       document.removeEventListener('webkitfullscreenchange', onFs);
@@ -950,10 +996,10 @@ const LivroOnline = (() => {
     // ---- drawing the page ---------------------------------------------------
     function renderInk() { strokesG.innerHTML = data.strokes.map(strokeSVG).join(''); }
     function renderOver() {
-      let html = data.stickers.map(s => stickerSVG(s, sm[s.s], dir)).join('') + data.texts.map(textSVG).join('');
+      let html = data.stickers.map(s => stickerSVG(s, metaFor(sm, s), dir)).join('') + data.texts.map(textSVG).join('');
       const st = selected && data.stickers.find(s => s.id === selected);
-      if (st && sm[st.s] && tool === 'sticker') {
-        const b = stickerBox(st, sm[st.s]);
+      if (st && metaFor(sm, st) && stkTool()) {
+        const b = stickerBox(st, metaFor(sm, st));
         const r = 13 / pxPerUnit();
         html += `<rect class="lo-sel" x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" vector-effect="non-scaling-stroke"/>
           <g class="lo-handle lo-handle--del"><circle cx="${b.x + b.w}" cy="${b.y}" r="${r}"/><text x="${b.x + b.w}" y="${b.y + r * 0.42}" font-size="${r * 1.2}">✕</text></g>
@@ -1446,6 +1492,8 @@ const LivroOnline = (() => {
         opts.innerHTML = '<span class="lo-hint">👆 Toque na resposta certa. Para escrever, toque na linha. As outras ferramentas também funcionam aqui.</span>';
       } else if (tool === 'hand') {
         opts.innerHTML = '<span class="lo-hint">✋ Arraste para mover a página. Dois dedos (ou a rodinha do mouse) para zoom.</span>';
+      } else if (tool === 'photo') {
+        opts.innerHTML = `<div class="lo-opt-group"><button type="button" class="lo-chip" data-photo="paste">📋 Colar foto</button><button type="button" class="lo-chip" data-photo="file">📁 Escolher arquivo</button></div><span class="lo-hint">Dica: Win+Shift+S para recortar a tela e depois Ctrl+V aqui. Toque na foto para mover, ⤡ para o tamanho.</span>`;
       } else if (tool === 'sticker') {
         const here = m.stickers.filter(s => (s.pages || []).includes(pg.n));
         const rest = m.stickers.filter(s => !(s.pages || []).includes(pg.n));
@@ -1455,6 +1503,73 @@ const LivroOnline = (() => {
           </button>`).join('')}</div>`;
         wireTray(opts.querySelector('[data-ref="tray"]'));
       }
+    }
+
+    // ---- photos (paste / file / drop) -------------------------------------------
+    const stkTool = () => tool === 'sticker' || tool === 'photo';
+    const photoMsgFull = 'Esta página já tem fotos demais — apague uma ou use uma menor';
+    const fileIn = document.createElement('input');
+    fileIn.type = 'file'; fileIn.accept = 'image/*'; fileIn.hidden = true;
+    root.appendChild(fileIn);
+    fileIn.addEventListener('change', () => { const f = fileIn.files && fileIn.files[0]; if (f) addPhoto(f); });
+    async function addPhoto(file) {
+      if (ro) return;
+      if (!file || !/^image\//.test(file.type || '')) { toast('Não consegui abrir esta imagem'); return; }
+      const photos = data.stickers.filter(s => s.s === 'photo');
+      if (photos.length >= PHOTO_MAX_N) { toast(photoMsgFull); return; }
+      const forPg = pg;
+      let r;
+      try { r = await compressPhoto(file); } catch (err) { toast('Não consegui abrir esta imagem'); return; }
+      if (forPg !== pg) return;                       // moved to another page meanwhile
+      const used = data.stickers.reduce((n, s) => n + (s.s === 'photo' ? s.src.length : 0), 0);
+      if (data.stickers.filter(s => s.s === 'photo').length >= PHOTO_MAX_N || used + r.src.length > PHOTO_BUDGET) { toast(photoMsgFull); return; }
+      let pw = 0.34, ph = pw * W / (r.w / r.h) / H;
+      if (ph > 0.45) { pw *= 0.45 / ph; ph = 0.45; }
+      const c = visibleCentre(), n = photos.length % 4;
+      remember();
+      const st = { id: uid(), s: 'photo', src: r.src, pw: Math.round(pw * 1e4) / 1e4, ph: Math.round(ph * 1e4) / 1e4,
+        x: Math.round(clamp(c.x + n * 300, 0, W)), y: Math.round(clamp(c.y + n * 250, 0, H)), k: 1 };
+      data.stickers.push(st);
+      selected = st.id;
+      tool = 'photo';
+      changed();
+      paintOpts();
+      toast('📷 Foto colocada! Arraste para mover.');
+    }
+    function imageFrom(dt) {
+      if (!dt) return null;
+      const items = [...(dt.items || [])].filter(i => i.kind === 'file' && /^image\//.test(i.type));
+      if (items.length) return items[0].getAsFile();
+      return [...(dt.files || [])].find(f => /^image\//.test(f.type)) || null;
+    }
+    async function pasteFromClipboard() {
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.read) throw new Error('no');
+        const list = await navigator.clipboard.read();
+        for (const it of list) {
+          const type = it.types.find(t => t.startsWith('image/'));
+          if (type) { addPhoto(new File([await it.getType(type)], 'colada', { type })); return; }
+        }
+        toast('Não tem imagem copiada. Recorte com Win+Shift+S e tente de novo.');
+      } catch (err) { toast('Aperte Ctrl+V para colar a foto'); }
+    }
+    function onPaste(e) {
+      if (ro || (stack[stack.length - 1] && stack[stack.length - 1].el !== root)) return;
+      if (typeof SlidesAula !== 'undefined' && SlidesAula.isOpen()) return;
+      const t = e.target;
+      if (t && t.closest && t.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"]')) return;
+      const f = imageFrom(e.clipboardData);
+      if (!f) return;
+      e.preventDefault();
+      addPhoto(f);
+    }
+    document.addEventListener('paste', onPaste);
+    if (!ro) {
+      stage.addEventListener('dragover', e => { if (e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files')) e.preventDefault(); });
+      stage.addEventListener('drop', e => {
+        const f = imageFrom(e.dataTransfer);
+        if (f) { e.preventDefault(); addPhoto(f); }
+      });
     }
 
     // ---- stickers ----------------------------------------------------------------
@@ -1528,16 +1643,17 @@ const LivroOnline = (() => {
     function hitSticker(u) {
       for (let i = data.stickers.length - 1; i >= 0; i--) {
         const s = data.stickers[i];
-        if (!sm[s.s]) continue;
-        const b = stickerBox(s, sm[s.s]);
+        const mt = metaFor(sm, s);
+        if (!mt) continue;
+        const b = stickerBox(s, mt);
         if (u.x >= b.x && u.x <= b.x + b.w && u.y >= b.y && u.y <= b.y + b.h) return s;
       }
       return null;
     }
     function hitHandle(u, which) {
       const st = selected && data.stickers.find(s => s.id === selected);
-      if (!st || !sm[st.s]) return false;
-      const b = stickerBox(st, sm[st.s]);
+      if (!st || !metaFor(sm, st)) return false;
+      const b = stickerBox(st, metaFor(sm, st));
       const r = 22 / pxPerUnit();
       const hx = b.x + b.w, hy = which === 'del' ? b.y : b.y + b.h;
       return Math.hypot(u.x - hx, u.y - hy) <= r;
@@ -1626,7 +1742,7 @@ const LivroOnline = (() => {
       const [b0, b1] = band();
       const offBand = part !== 'full' && (u.y < b0 * H || u.y > b1 * H);
       const pan = ro || tool === 'hand' || tool === 'tap' || e.button === 1 || offBand || (penSeen && e.pointerType === 'touch' && drawTool());
-      if (!pan && tool === 'sticker') {
+      if (!pan && stkTool()) {
         if (hitHandle(u, 'del')) {
           remember();
           data.stickers = data.stickers.filter(s => s.id !== selected);
@@ -1650,7 +1766,7 @@ const LivroOnline = (() => {
         act = { type: 'text', target: hit, before: snap(), start: u, ox: hit ? hit.x : 0, oy: hit ? hit.y : 0, sx: e.clientX, sy: e.clientY, moved: false, tx0: tx, ty0: ty };
         return;
       }
-      if (pan || tool === 'sticker') { act = { type: 'pan', sx: e.clientX, sy: e.clientY, tx0: tx, ty0: ty }; return; }
+      if (pan || stkTool()) { act = { type: 'pan', sx: e.clientX, sy: e.clientY, tx0: tx, ty0: ty }; return; }
       if (tool === 'eraser') { act = { type: 'erase', before: snap(), removed: false }; eraseAt(u, act); return; }
       const w = SIZES[tool][size[tool]];
       act = { type: 'draw', t: tool, c: color, w, p: [u.x, u.y] };
@@ -1678,7 +1794,7 @@ const LivroOnline = (() => {
         act.st.y = Math.round(clamp(act.oy + u.y - act.start.y, 0, H));
         act.moved = true; renderOver();
       } else if (act.type === 'stk-res') {
-        act.st.k = Math.round(clamp(act.k0 * Math.hypot(u.x - act.st.x, u.y - act.st.y) / act.d0, 0.5, 2) * 100) / 100;
+        act.st.k = Math.round(clamp(act.k0 * Math.hypot(u.x - act.st.x, u.y - act.st.y) / act.d0, act.st.s === 'photo' ? 0.2 : 0.5, act.st.s === 'photo' ? 4 : 2) * 100) / 100;
         act.moved = true; renderOver();
       } else if (act.type === 'text') {
         if (!act.moved && Math.hypot(e.clientX - act.sx, e.clientY - act.sy) < 8) return;
@@ -1706,7 +1822,7 @@ const LivroOnline = (() => {
       } else if (a.type === 'stk-move' || a.type === 'stk-res') {
         if (a.moved) {
           if (a.type === 'stk-move') {
-            const p = snapTo(sm[a.st.s], a.st.x, a.st.y, false);
+            const p = snapTo(metaFor(sm, a.st), a.st.x, a.st.y, false);
             if (p.snapped) { a.st.x = Math.round(p.x); a.st.y = Math.round(p.y); a.st.k = 1; toast('⭐ Colou no lugar certo!'); }
           }
           remember(a.before); changed();
@@ -1782,15 +1898,21 @@ const LivroOnline = (() => {
 
     // ---- buttons ------------------------------------------------------------------
     root.addEventListener('click', e => {
+      const pb = e.target.closest('[data-photo]');
+      if (pb) {
+        if (pb.dataset.photo === 'file') { fileIn.value = ''; fileIn.click(); }
+        else pasteFromClipboard();
+        return;
+      }
       const t = e.target.closest('[data-tool]');
       if (t) {
         closeSheet();
         // Slides: colours/sizes live in a popover — tapping the active tool
         // again shows/hides it.
-        const withOpts = ['pen', 'hl', 'text', 'sticker'].includes(t.dataset.tool);
+        const withOpts = ['pen', 'hl', 'text', 'sticker', 'photo'].includes(t.dataset.tool);
         if (slides) root.classList.toggle('opts-open', withOpts && (t.dataset.tool !== tool || !root.classList.contains('opts-open')));
         tool = t.dataset.tool;
-        if (tool !== 'sticker') selected = null;
+        if (!stkTool()) selected = null;
         if (tool !== 'tap') savePrefs({ ...prefs(), tool });
         paintChrome(); paintOpts(); renderOver();
         return;
