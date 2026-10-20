@@ -69,8 +69,16 @@ const GroupLink = (() => {
     return status(group).filter(m => !m.student || !m.code).length;
   }
 
+  const isPrivate = group => Boolean(getStudentExtra(group.id).privateLinks);
   function writeRoster(group, rows) {
+    // Private mode: every member only has their own link; nothing about the
+    // others (names or codes) travels to any link.
+    if (isPrivate(group)) { saWrite(group.id, { members: [] }); return; }
     saWrite(group.id, { members: rows.map(m => ({ n: m.name, e: m.student.avatar || '🙂', c: m.code })) });
+  }
+  function personalLine(member, group, url) {
+    return [`Oi, ${member}! Este é o seu link pessoal para praticar inglês 😊`, '', url, '',
+      'É só abrir no celular ou no computador — não precisa instalar nada. O seu progresso fica salvo aí, só seu. Não passe este link para os colegas, está bem?'].join('\n');
   }
 
   // Creates the missing member accounts (never duplicates), makes sure every
@@ -153,15 +161,23 @@ const GroupLink = (() => {
   function sectionHTML(group, url) {
     return `
       <div class="grp-box" id="grpBox">
-        <h4>👥 Link do grupo</h4>
-        <p class="share-lead">Todos usam <b>este mesmo link</b>. Cada um escolhe o seu nome e o progresso
-          (livro online, exercícios, lição de casa, erros, escrita) fica <b>separado</b> por pessoa.</p>
-        <div class="share-url-box">
-          <input type="text" id="grpUrl" readonly value="${esc(url)}" />
-          <button class="btn btn-primary" id="grpCopy" type="button">📋 Copiar</button>
+        <h4>👥 Links do grupo</h4>
+        <div id="grpPrivateBanner" class="share-note" hidden>
+          🔒 <b>Modo privado ligado.</b> Cada pessoa usa <b>só o seu link individual</b> (abaixo): não existe tela de escolha de nomes,
+          e ninguém consegue abrir a página dos colegas.
+          <div class="game-btn-row" style="margin-top:8px"><button class="game-btn secondary" id="grpPublicOn" type="button">Voltar a usar o link único do grupo</button></div>
         </div>
-        <div class="game-btn-row" style="margin-top:10px">
-          <button class="game-btn" id="grpWhats" type="button">📱 Copiar mensagem pronta</button>
+        <div id="grpPublic">
+          <p class="share-lead">Opção 1 — <b>um link para todos</b>: cada um escolhe o seu nome e o progresso
+            (livro online, exercícios, lição de casa, erros, escrita) fica <b>separado</b> por pessoa.</p>
+          <div class="share-url-box">
+            <input type="text" id="grpUrl" readonly value="${esc(url)}" />
+            <button class="btn btn-primary" id="grpCopy" type="button">📋 Copiar</button>
+          </div>
+          <div class="game-btn-row" style="margin-top:10px">
+            <button class="game-btn" id="grpWhats" type="button">📱 Copiar mensagem pronta</button>
+            <button class="game-btn secondary" id="grpPrivateOn" type="button" title="Desliga o link único: cada pessoa recebe só o seu link, e ninguém vê os outros">🔒 Prefiro links individuais (privado)</button>
+          </div>
         </div>
         <div id="grpMembers"></div>
         <p class="share-note">🔒 Quem tiver o link do grupo consegue abrir a página de qualquer membro (aparecem só os nomes e os bonequinhos, nunca o progresso dos outros). Combine com a turma de cada um abrir só o próprio nome.</p>
@@ -183,12 +199,14 @@ const GroupLink = (() => {
               <small>${m.student ? (m.code ? '✅ conta criada' : '⚠️ sem link — clique em criar contas') : '⏳ conta ainda não criada'}</small></span>
             ${m.student && m.code ? `
               <button class="game-btn secondary grp-copy" type="button" data-url="${esc(shareUrlFor(links[m.student.id] || m.code))}">📋 Link dele(a)</button>
+              <button class="game-btn grp-msg" type="button" data-url="${esc(shareUrlFor(links[m.student.id] || m.code))}" data-name="${esc(m.name)}" title="Copia uma mensagem pronta para mandar só para ${esc(m.name)}">📱 Mensagem</button>
               <button class="gm-remove-row grp-revoke" type="button" title="Revogar o link individual" aria-label="Revogar o link de ${esc(m.name)}">🚫</button>` : ''}
           </li>`).join('')}
       </ul>
       <div class="game-btn-row">
         <button class="game-btn" id="grpCreate" type="button" ${busy ? 'disabled' : ''}>${busy ? 'Criando…' : pend ? `👥 Criar contas dos membros (${pend})` : '🔄 Atualizar contas dos membros'}</button>
         <button class="game-btn secondary" id="grpApply" type="button" title="Copia livro, jogos liberados e slides do grupo para todos os membros">♻️ Aplicar liberações do grupo a todos</button>
+        <button class="game-btn secondary" id="grpAllMsgs" type="button" title="Uma lista com o nome e o link de cada pessoa">📋 Copiar todos os links (lista)</button>
       </div>
       ${hidden ? `<p class="share-note">ℹ️ ${hidden} conta(s) de nomes que você tirou da lista continuam guardadas (com todo o progresso), mas não aparecem mais na escolha.</p>` : ''}
       <p class="share-note">Os membros aparecem na lista de alunos como <b>Nome (${esc(group.name)})</b>: pelo 📖 e pelo 🔗 de cada um você vê o livro e o progresso individual. A aula do grupo continua sendo registrada no aluno-grupo.</p>`;
@@ -204,9 +222,32 @@ const GroupLink = (() => {
     mount.querySelector('#grpCopy').addEventListener('click', e => copy(url, e.currentTarget, '✅ Copiado!'));
     mount.querySelector('#grpWhats').addEventListener('click', e => copy(shareLine(url, group), e.currentTarget, '✅ Copiado!'));
 
+    const applyPrivacy = () => {
+      const priv = isPrivate(group);
+      const pub = mount.querySelector('#grpPublic'), ban = mount.querySelector('#grpPrivateBanner');
+      if (pub) pub.hidden = priv;
+      if (ban) ban.hidden = !priv;
+    };
+    const setPrivate = async on => {
+      if (on && !confirm('Ligar o modo privado? O link único do grupo deixa de mostrar os nomes dos colegas. Cada pessoa precisa usar o link individual que você mandar. Quem já abriu o link do grupo continua entrando na própria página normalmente.')) return;
+      saveStudentExtra(group.id, { privateLinks: on });
+      try { await syncMembers(group); } catch (e) { console.error('group sync', e); }
+      applyPrivacy();
+      paint(false);
+    };
+    const onPriv = mount.querySelector('#grpPrivateOn'), offPriv = mount.querySelector('#grpPublicOn');
+    if (onPriv) onPriv.addEventListener('click', () => setPrivate(true));
+    if (offPriv) offPriv.addEventListener('click', () => setPrivate(false));
+    applyPrivacy();
     const paint = busy => {
       holder.innerHTML = membersHTML(group, busy);
       holder.querySelectorAll('.grp-copy').forEach(b => b.addEventListener('click', e => copy(b.dataset.url, e.currentTarget, '✅ Copiado!')));
+      holder.querySelectorAll('.grp-msg').forEach(b => b.addEventListener('click', e => copy(personalLine(b.dataset.name, group, b.dataset.url), e.currentTarget, '✅ Copiada!')));
+      const allBtn = holder.querySelector('#grpAllMsgs');
+      if (allBtn) allBtn.addEventListener('click', e => {
+        const lines = status(group).filter(m => m.student && m.code).map(m => `${m.name}: ${shareUrlFor(shareLoadLinks()[m.student.id] || m.code)}`);
+        copy(lines.join('\n'), e.currentTarget, '✅ Lista copiada!');
+      });
       holder.querySelectorAll('.grp-revoke').forEach(b => b.addEventListener('click', async () => {
         const name = b.closest('.grp-row').dataset.name;
         const m = status(group).find(x => x.name === name);
