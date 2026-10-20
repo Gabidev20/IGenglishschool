@@ -68,6 +68,8 @@ async function shareRevoke(student) {
   const code = map[student.id];
   delete map[student.id];
   shareSaveLinks(map);
+  // A member's link must also leave the group's chooser (groupLink.js).
+  if (typeof GroupLink !== 'undefined') GroupLink.onMemberRevoked(student);
   if (code && typeof IGCloud !== 'undefined' && IGCloud.enabled && IGCloud.enabled() && IGCloud.revokeShareLink) {
     try { await IGCloud.revokeShareLink(code); } catch (e) { console.error('share revoke', e); }
   }
@@ -88,10 +90,13 @@ function openShareLinkModal(studentId) {
 
   shareEnsureLink(student).then(code => {
     const url = shareUrlFor(code);
+    const grp = typeof GroupLink !== 'undefined' && GroupLink.hasMembers(student);
     const cloudOn = typeof IGCloud !== 'undefined' && IGCloud.enabled && IGCloud.enabled();
     mount.innerHTML = `
+      ${grp ? GroupLink.sectionHTML(student, url) : `
       <p class="share-lead">Mande este endereço para ${shareEsc(student.name)} ou para a família.
         Quem abrir vê <b>só este aluno</b>: o progresso, a lição de casa, os jogos e os exercícios.</p>
+      ${typeof GroupLink !== 'undefined' ? GroupLink.memberNote(student) : ''}
 
       <div class="share-url-box">
         <input type="text" id="shareUrl" readonly value="${shareEsc(url)}" />
@@ -102,7 +107,12 @@ function openShareLinkModal(studentId) {
         <button class="game-btn" id="shareWhats">📱 Copiar mensagem pronta</button>
         <button class="game-btn secondary" id="sharePreview">👁️ Ver como o aluno vê</button>
         <button class="game-btn secondary danger" id="shareRevoke">🚫 Revogar link</button>
-      </div>
+      </div>`}
+
+      ${grp ? `<div class="game-btn-row">
+        <button class="game-btn secondary" id="sharePreview">👁️ Ver como o aluno vê</button>
+        <button class="game-btn secondary danger" id="shareRevoke">🚫 Parar de usar o link do grupo</button>
+      </div>` : ''}
 
       <div class="share-note ${cloudOn ? 'ok' : 'warn'}">
         ${cloudOn
@@ -110,7 +120,7 @@ function openShareLinkModal(studentId) {
           : '⚠️ Sem Supabase configurado, este link só funciona <b>neste navegador</b>. Preencha o supabaseConfig.js para que a família consiga abrir do aparelho dela.'}
       </div>
 
-      <p class="share-note">🔒 O código é secreto e longo, como um link do Google Drive. Quem tiver o link vê este aluno — e nada mais do site. Dá para revogar quando quiser.</p>
+      ${grp ? '' : '<p class="share-note">🔒 O código é secreto e longo, como um link do Google Drive. Quem tiver o link vê este aluno — e nada mais do site. Dá para revogar quando quiser.</p>'}
 
       ${typeof SlidesAula !== 'undefined' ? SlidesAula.visibilityHTML(student) : ''}
 
@@ -118,15 +128,16 @@ function openShareLinkModal(studentId) {
     if (typeof SlidesAula !== 'undefined') SlidesAula.wireVisibility(mount, student);
     if (typeof saWireEditor === 'function') saWireEditor(mount, student);
 
-    const urlInput = mount.querySelector('#shareUrl');
+    const urlInput = mount.querySelector('#shareUrl') || document.createElement('input');
     const copy = (text, btn, label) => {
       const done = () => { const old = btn.textContent; btn.textContent = label; setTimeout(() => { btn.textContent = old; }, 1600); };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => { urlInput.select(); });
       else { urlInput.select(); document.execCommand('copy'); done(); }
     };
 
-    mount.querySelector('#shareCopy').addEventListener('click', e => copy(url, e.currentTarget, '✅ Copiado!'));
-    mount.querySelector('#shareWhats').addEventListener('click', e => copy(
+    if (grp) GroupLink.mountSection(mount, student, url);
+    if (!grp) mount.querySelector('#shareCopy').addEventListener('click', e => copy(url, e.currentTarget, '✅ Copiado!'));
+    if (!grp) mount.querySelector('#shareWhats').addEventListener('click', e => copy(
       [`Oi! Aqui é a aula de inglês de ${student.name} 😊`,
        '',
        'Neste link dá para ver o progresso, jogar os jogos e fazer os exercícios em casa:',
@@ -140,7 +151,8 @@ function openShareLinkModal(studentId) {
       window.location.reload();
     });
     mount.querySelector('#shareRevoke').addEventListener('click', async () => {
-      if (!confirm(`Revogar o link de ${student.name}? O endereço antigo para de funcionar.`)) return;
+      if (!confirm(grp ? `Parar de usar o link do grupo "${student.name}"? O endereço do grupo deixa de funcionar; os links individuais dos membros continuam valendo.`
+        : `Revogar o link de ${student.name}? O endereço antigo para de funcionar.`)) return;
       await shareRevoke(student);
       closeModal();
     });
@@ -174,6 +186,8 @@ const ShareMode = (() => {
       levelLabel: st.level_label || st.levelLabel,
       color: st.color, avatar: st.avatar,
     };
+    // A member of a group shows as plain "Ana" on their own page (groupLink.js).
+    if (data.access && typeof data.access.fn === 'string' && data.access.fn) student.name = data.access.fn;
     studentId = student.id;
     IGStore.setJSON('students', [student]);
     IGStore.setRaw('active_student', student.id);
@@ -343,6 +357,7 @@ const ShareMode = (() => {
         if (error) throw error;
         if (!data || !data.ok) throw new Error(data && data.error ? data.error : 'link_invalid');
         hydrate(data);
+        if (typeof GroupLink !== 'undefined' && GroupLink.studentGate(shell, code, data.access)) return;
       } catch (e) {
         console.error(e);
         // Um link revogado e um erro do servidor são problemas diferentes, e
@@ -376,6 +391,7 @@ const ShareMode = (() => {
       }
       studentId = student.id;
       pendingLog = (IGStore.getJSON('log_' + studentId, []) || []).length;
+      if (typeof GroupLink !== 'undefined' && typeof saRecord === 'function' && GroupLink.studentGate(shell, code, saRecord(student.id))) return;
     }
 
     watchWrites();
@@ -398,7 +414,7 @@ const ShareMode = (() => {
     document.body.appendChild(bar);
   }
 
-  return { claim, start, active, flush, applyActivityLocally, get studentId() { return studentId; } };
+  return { claim, start, active, flush, applyActivityLocally, get studentId() { return studentId; }, get code() { return code; } };
 })();
 
 // ---------------------------------------------------------------------------
@@ -506,16 +522,18 @@ function renderStudentHome(shell, studentId) {
   const newReplies = repliedTexts.filter(w => !seenReplies.includes(w.id));
   const markRepliesSeen = () => shareMarkRepliesSeen(student.id, repliedTexts.map(w => w.id));
 
+  const groupHome = typeof GroupLink !== 'undefined' && GroupLink.homeCodeFor(ShareMode.code);
   shell.innerHTML = `
     <div class="stu-wrap">
       <header class="stu-header" style="--stu-color:${shareEsc(student.color || '#8e6d86')}">
         <span class="stu-avatar">${shareEsc(student.avatar || '🙂')}</span>
         <div>
-          <h1>Hello, ${shareEsc(student.name)}! 👋</h1>
+          <h1>Hello, ${shareEsc((typeof saRecord === 'function' && saRecord(student.id).fn) || student.name)}! 👋</h1>
           <p>${shareEsc(student.levelLabel || (typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : ''))}
              · ${progress.xp || 0} XP · ${progress.stars || 0} ⭐
              ${stats && stats.streak ? ` · 🔥 ${stats.streak} day${stats.streak === 1 ? '' : 's'}` : ''}</p>
         </div>
+ ${groupHome ? '<button class="stu-help stu-switch" id="stuSwitchBtn" type="button" title="Voltar para a escolha do grupo">👥 <span>Trocar de pessoa</span></button>' : ''}
         <button class="stu-help" id="stuHelpBtn" type="button" title="Ver o tutorial de novo">❓ <span>Ajuda</span></button>
       </header>
 
@@ -552,6 +570,9 @@ function renderStudentHome(shell, studentId) {
 
       <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br><small>a teacher vê o que você faz aqui</small><br><small class="stu-credit">Emoji graphics: Twemoji (CC-BY 4.0)</small></p>
     </div>`;
+
+  const switchBtn = shell.querySelector('#stuSwitchBtn');
+  if (switchBtn) switchBtn.addEventListener('click', () => GroupLink.backToGroup(ShareMode.code));
 
   const go = {
     book: () => LivroOnline.openStudent(student),

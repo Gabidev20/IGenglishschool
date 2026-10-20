@@ -87,7 +87,9 @@ function saPracticeTopics(student) {
 // Topic keys whose title appears in this student's class log.
 function saComputeTaught(student) {
   if (typeof loadSessions !== 'function' || typeof LEVELS === 'undefined') return [];
-  const labels = loadSessions(student.id).map(s => String(s.topicLabel || '').toLowerCase()).filter(Boolean);
+  // A member of a group with one shared link follows what the GROUP was taught.
+  const srcId = (typeof studentGroupId === 'function' && studentGroupId(student.id)) || student.id;
+  const labels = loadSessions(srcId).map(s => String(s.topicLabel || '').toLowerCase()).filter(Boolean);
   if (!labels.length) return [];
   const out = [];
   LEVELS.forEach(l => l.topics.forEach(t => {

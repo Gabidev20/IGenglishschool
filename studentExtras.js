@@ -24,7 +24,7 @@ function getStudentExtra(studentId) {
 function saveStudentExtra(studentId, patch) {
   const map = loadStudentExtras();
   const next = { ...(map[studentId] || {}), ...patch };
-  if (!next.notes && !next.isGroup) delete map[studentId];
+  if (!next.notes && !next.isGroup && !next.groupId && !next.memberIds) delete map[studentId];
   else map[studentId] = next;
   IGStore.setJSON(STUDENT_EXTRAS_KEY, map);
 }
@@ -38,6 +38,22 @@ function isGroupStudent(studentId) {
 function groupMemberNames(studentId) {
   const e = getStudentExtra(studentId);
   return e.isGroup && Array.isArray(e.members) ? e.members : [];
+}
+
+// ---- group links (groupLink.js) --------------------------------------------
+// Each member of a group that shares ONE link is also a normal student record
+// (so progress, book pages and homework stay separate). Their extras carry
+// `groupId` (+ `memberName`); the group's extras carry `memberIds`.
+function studentGroupId(studentId) {
+  const g = getStudentExtra(studentId).groupId;
+  return typeof g === 'string' && g ? g : null;
+}
+
+function studentGroupName(studentId) {
+  const gid = studentGroupId(studentId);
+  if (!gid || typeof loadStudents !== 'function') return '';
+  const g = loadStudents().find(s => s.id === gid);
+  return g ? g.name : '';
 }
 
 // ---------------------------------------------------------------------------

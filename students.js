@@ -339,6 +339,12 @@ function tierMeta(tier) {
   return { kids: { icon: '🧸', label: 'Kids' }, juniors: { icon: '✏️', label: 'Juniors' }, teens: { icon: '🎧', label: 'Teens' } }[tier] || { icon: '🎓', label: '' };
 }
 
+// "👥 Monday" tag for a member of a group that shares one link (groupLink.js).
+function groupTagHTML(studentId) {
+  const name = typeof studentGroupName === 'function' ? studentGroupName(studentId) : '';
+  return name ? ` <span class="grp-tag">👥 ${escapeHtmlLite(name)}</span>` : '';
+}
+
 function renderProfileList() {
   const students = loadStudents();
   const activeId = getActiveStudentId();
@@ -353,7 +359,7 @@ function renderProfileList() {
         <span class="option-avatar" style="background:${s.color}">${s.avatar}</span>
         <span>
           <span class="option-name">${escapeHtmlLite(s.name)}</span>
-          <span class="option-level">${escapeHtmlLite(s.levelLabel)}</span>
+          <span class="option-level">${escapeHtmlLite(s.levelLabel)}${groupTagHTML(s.id)}</span>
         </span>
       </button>
       <button class="profile-edit-btn" data-edit-student="${s.id}" aria-label="Edit ${escapeHtmlLite(s.name)}" title="Edit student">✏️</button>
@@ -496,7 +502,7 @@ function paintStudentManagerGrid() {
       <span class="student-card-avatar" style="background:${s.color}">${s.avatar}</span>
       <div class="student-card-info">
         <strong>${escapeHtmlLite(s.name)}</strong>
-        <span>${s.age ? s.age + ' yrs · ' : ''}${escapeHtmlLite(s.levelLabel)}</span>
+        <span>${s.age ? s.age + ' yrs · ' : ''}${escapeHtmlLite(s.levelLabel)}${groupTagHTML(s.id)}</span>
       </div>
       <div class="student-card-actions">
         <button class="gm-remove-row" data-share-student="${s.id}" aria-label="Link do aluno" title="Link do aluno">🔗</button>
