@@ -709,13 +709,25 @@ function nextClassNumber(studentId) {
   return Math.max(highest, list.length) + 1;
 }
 
+// Symbols the teacher may need when correcting a transcription by hand.
+const IPA_SYMBOLS = ['ə', 'ɪ', 'æ', 'ʌ', 'ʊ', 'ɒ', 'ɔː', 'iː', 'uː', 'ɜː', 'ɑː', 'ʃ', 'ʒ', 'θ', 'ð', 'ŋ', 'tʃ', 'dʒ', 'ˈ', 'ˌ'];
+
 function addSheetWordRow(container, focus, value) {
   const v = value || {};
   const row = document.createElement('div');
   row.className = 'sheet-row sheet-row--word';
   row.innerHTML = `
     <input type="text" class="sheet-word" placeholder="word / expression" autocomplete="off" value="${escapeAttrLite(v.word || '')}" />
-    <input type="text" class="sheet-pron" placeholder="word to improve" autocomplete="off" value="${escapeAttrLite(v.pron || '')}" />
+    <div class="sheet-pron-wrap">
+      <div class="sheet-pron-line">
+        <input type="text" class="sheet-pron" placeholder="word to improve" autocomplete="off" spellcheck="false"
+          title="Escreva a palavra e saia do campo: a fonética aparece. Você pode editar à mão — a correção fica salva." value="${escapeAttrLite(v.pron || '')}" />
+        <button type="button" class="sheet-pron-btn sheet-pron-redo" tabindex="-1" title="Buscar a fonética de novo (ignora correção salva e estimativa)" aria-label="Buscar a fonética de novo">↻</button>
+        <span class="sheet-pron-edit" title="Você pode editar a transcrição à mão. A correção fica salva e será usada nas próximas vezes." aria-label="Editável">✎</span>
+      </div>
+      <div class="sheet-pron-hint" hidden></div>
+      <div class="sheet-ipa-bar" hidden>${IPA_SYMBOLS.map(s => `<button type="button" class="sheet-ipa-sym" data-sym="${s}" tabindex="-1">${s}</button>`).join('')}</div>
+    </div>
     <button type="button" class="sheet-row-del" aria-label="Remover linha" title="Remover">✕</button>
   `;
   wireSheetRow(row, container, () => addSheetWordRow(container, true));
@@ -726,30 +738,109 @@ function addSheetWordRow(container, focus, value) {
 
 // The right-hand column holds only the words the student must improve.
 // Typing one and leaving the field puts its phonetic transcription right
-// beside it ("home /həʊm/"); a word that already shows one is left alone.
+// beside it ("home /həʊm/"). Any word gets one (api/ipa.js, then the local
+// ipaG2p.js guess, flagged "aproximada"). The teacher can edit the text between
+// the slashes at any time: the correction is remembered per word (ipa_custom)
+// and used first from then on. A transcription typed by hand is left as is.
 function wireAutoPronunciation(row) {
-  if (typeof lookupIpa !== 'function') return;
+  if (typeof lookupIpaDetailed !== 'function') return;
   const pronEl = row.querySelector('.sheet-pron');
-  pronEl.addEventListener('change', async () => {
-    const word = pronEl.value.replace(/\s*\/[^/]*\/\s*$/, '').trim();
-    if (!word) return;
-    if (pronEl.value.trim() !== word) {
-      if (pronEl.dataset.word === word) return;   // transcription already there
-      pronEl.value = word;                         // word was edited: look it up again
+  const hint = row.querySelector('.sheet-pron-hint');
+  const bar = row.querySelector('.sheet-ipa-bar');
+  const redo = row.querySelector('.sheet-pron-redo');
+  const idle = pronEl.placeholder;
+
+  const setHint = (kind) => {
+    if (kind === 'approx') {
+      hint.hidden = false; hint.className = 'sheet-pron-hint is-approx';
+      hint.textContent = '≈ aproximada — confira e corrija se precisar';
+    } else if (kind === 'custom') {
+      hint.hidden = false; hint.className = 'sheet-pron-hint is-custom';
+      hint.textContent = '✓ sua correção (salva para as próximas vezes)';
+    } else {
+      hint.hidden = true; hint.textContent = '';
     }
+  };
+  const remember = (raw, word, ipa) => {
     pronEl.dataset.word = word;
-    const old = pronEl.placeholder;
+    pronEl.dataset.filled = ipa || '';
+    pronEl.dataset.last = raw;
+  };
+
+  // A row restored from a saved sheet already shows "word /ipa/".
+  const first = ipaSplit(pronEl.value);
+  if (first.ipa && first.word) {
+    remember(pronEl.value.trim(), first.word, first.ipa);
+    if (getIpaCustom(first.word) === first.ipa) setHint('custom');
+    else if (first.ipa === ipaApprox(first.word)) setHint('approx');
+  }
+
+  async function lookup(word, fresh) {
+    const raw = pronEl.value.trim();
+    pronEl.dataset.word = word;
+    pronEl.dataset.last = raw;
     pronEl.placeholder = 'buscando…';
-    try {
-      const ipa = await lookupIpa(word);
-      if (pronEl.value.trim() === word) {
-        if (ipa) pronEl.value = word + ' ' + ipa;
-        else pronEl.placeholder = 'fonética não encontrada';
-      }
-    } catch (e) {
-      pronEl.placeholder = 'fonética indisponível';
+    let r = null;
+    try { r = await lookupIpaDetailed(word, { fresh }); } catch (e) { r = null; }
+    pronEl.placeholder = idle;
+    if (pronEl.value.trim() !== raw) return;                      // she kept typing: drop this answer
+    if (r && r.ipa) {
+      pronEl.value = word + ' ' + r.ipa;
+      remember(pronEl.value.trim(), word, r.ipa);
+      setHint(r.source === 'custom' ? 'custom' : r.approx ? 'approx' : null);
+    } else {
+      setHint(null);
     }
-    if (pronEl.placeholder === 'buscando…') pronEl.placeholder = old;
+  }
+
+  function process() {
+    const raw = pronEl.value.trim();
+    if (raw === (pronEl.dataset.last || '')) return;
+    if (!raw) { remember('', '', ''); delete pronEl.dataset.word; setHint(null); return; }
+    const sp = ipaSplit(raw);
+    if (!sp.word) { pronEl.dataset.last = raw; return; }           // only "/…/": nothing to look up
+    if (sp.ipa) {
+      const sameWord = pronEl.dataset.word === sp.word;
+      const untouched = !!pronEl.dataset.filled && sp.ipa === pronEl.dataset.filled;
+      if (sameWord || !untouched) {
+        // She typed or corrected the transcription: keep it and remember it for this word.
+        if (!(sameWord && untouched)) { saveIpaCustom(sp.word, sp.ipa); setHint('custom'); }
+        remember(raw, sp.word, sp.ipa);
+        return;
+      }
+      // Same old transcription but a new word: look the new word up.
+      pronEl.value = sp.word;
+    }
+    lookup(sp.word, false);
+  }
+  pronEl.addEventListener('change', process);
+  pronEl.addEventListener('blur', () => {
+    process();
+    setTimeout(() => { if (document.activeElement !== pronEl) bar.hidden = true; }, 160);
+  });
+  pronEl.addEventListener('focus', () => { bar.hidden = false; });
+
+  redo.addEventListener('click', () => {
+    const word = ipaSplit(pronEl.value).word;
+    if (!word) return;
+    removeIpaCustom(word);
+    pronEl.value = word;
+    lookup(word, true);
+  });
+
+  // IPA symbol buttons: insert at the cursor without taking focus from the field.
+  const keepFocus = (e) => { if (e.target.closest('.sheet-ipa-sym')) e.preventDefault(); };
+  bar.addEventListener('pointerdown', keepFocus);
+  bar.addEventListener('mousedown', keepFocus);
+  bar.addEventListener('click', (e) => {
+    const b = e.target.closest('.sheet-ipa-sym');
+    if (!b) return;
+    const sym = b.dataset.sym;
+    const s = pronEl.selectionStart == null ? pronEl.value.length : pronEl.selectionStart;
+    const en = pronEl.selectionEnd == null ? s : pronEl.selectionEnd;
+    pronEl.value = pronEl.value.slice(0, s) + sym + pronEl.value.slice(en);
+    pronEl.focus();
+    pronEl.setSelectionRange(s + sym.length, s + sym.length);
   });
 }
 

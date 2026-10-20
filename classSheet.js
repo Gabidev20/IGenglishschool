@@ -165,10 +165,11 @@ async function renderClassSheetCanvas(student, session) {
       measure.font = F(700, 31); const ww = measure.measureText(p.word).width;
       measure.font = F(500, 28); const iw = p.ipa ? measure.measureText(p.ipa).width : 0;
       const oneLine = !p.ipa || ww + 16 + iw <= HIN - 30;
-      return { ...p, oneLine, lines: oneLine ? [p.word] : wrap(F(700, 31), p.word, HIN - 30) };
+      const ipaLines = p.ipa && !oneLine ? wrap(F(500, 28), p.ipa, HIN - 30) : [];   // a long phrase's IPA wraps
+      return { ...p, oneLine, ipaLines, lines: oneLine ? [p.word] : wrap(F(700, 31), p.word, HIN - 30) };
     });
     const leftH = left.reduce((n, it) => n + it.lines.length * LINE + 12, 0);
-    const rightH = right.reduce((n, it) => n + it.lines.length * LINE + (it.ipa && !it.oneLine ? LINE - 6 : 0) + 12, 0);
+    const rightH = right.reduce((n, it) => n + it.lines.length * LINE + it.ipaLines.length * (LINE - 6) + 12, 0);
     wordsBlock = { left, right, bodyH: Math.max(leftH, rightH, LINE) };
   }
 
@@ -312,10 +313,10 @@ async function renderClassSheetCanvas(student, session) {
               measure.font = F(700, 31);
               ctx.fillText(it.ipa, x + CP + 30 + measure.measureText(it.word).width + 16, ry + LINE - 12);
             } else {
-              ctx.fillText(it.ipa, x + CP + 30, ry + (it.lines.length + 1) * LINE - 18);
+              it.ipaLines.forEach((l, i) => ctx.fillText(l, x + CP + 30, ry + it.lines.length * LINE + (i + 1) * (LINE - 6) - 12));
             }
           }
-          ry += it.lines.length * LINE + (it.ipa && !it.oneLine ? LINE - 6 : 0) + 12;
+          ry += it.lines.length * LINE + it.ipaLines.length * (LINE - 6) + 12;
         });
       });
     } else {

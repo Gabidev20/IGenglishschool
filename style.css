@@ -9456,3 +9456,23 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .stu-switch { margin-left: auto; }
 .stu-switch + .stu-help { margin-left: 6px; }
 @media (max-width: 480px) { .stu-header .stu-switch span { display: inline; font-size: 0.8rem; } .stu-header { flex-wrap: wrap; } }
+
+/* Class sheet — pronunciation cell: editable IPA, hint, symbol bar */
+.sheet-pron-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.sheet-pron-line { display: flex; align-items: center; gap: 4px; }
+.sheet-pron-btn {
+  flex: 0 0 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface);
+  color: var(--ink-soft); font-size: 0.9rem; line-height: 1; cursor: pointer; padding: 0;
+}
+.sheet-pron-btn:hover { border-color: var(--primary); color: var(--primary-dark); }
+.sheet-pron-edit { flex: 0 0 auto; color: var(--ink-faint); font-size: 0.8rem; cursor: help; }
+.sheet-pron-hint { font-size: 0.74rem; font-weight: 600; line-height: 1.2; }
+.sheet-pron-hint.is-approx { color: #b45309; }
+.sheet-pron-hint.is-custom { color: #15803d; }
+.sheet-ipa-bar { display: flex; flex-wrap: wrap; gap: 3px; }
+.sheet-ipa-bar[hidden], .sheet-pron-hint[hidden] { display: none; }
+.sheet-ipa-sym {
+  min-width: 28px; height: 28px; padding: 0 6px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--ink); font-size: 0.92rem; cursor: pointer;
+}
+.sheet-ipa-sym:hover, .sheet-ipa-sym:active { border-color: var(--primary); background: var(--b1b2-soft); }
