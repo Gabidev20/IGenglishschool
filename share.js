@@ -512,8 +512,8 @@ function renderStudentHome(shell, studentId) {
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
     prereader: ['review', 'colors', 'alphabet', 'drawing', 'feelings', 'weather', 'body', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
-    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'mistakes'],
-    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'alphabet', 'drawing', 'games', 'mistakes'],
+    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'audio', 'mistakes'],
+    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'drawing', 'games', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
     .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []))
@@ -524,7 +524,7 @@ function renderStudentHome(shell, studentId) {
   // The teacher's answers (a correction, a comment, a reply under an audio):
   // the student is told there is one until they have opened it on this device.
   const repliedTexts = (IGStore.getJSON('writing_' + student.id, []) || [])
-    .filter(w => w.correction && (w.correction.text || w.correction.note));
+    .filter(w => w.correction && (w.correction.text || w.correction.note || w.correction.audio));
   const seenReplies = shareSeenReplies(student.id);
   const newReplies = repliedTexts.filter(w => !seenReplies.includes(w.id));
   const markRepliesSeen = () => shareMarkRepliesSeen(student.id, repliedTexts.map(w => w.id));

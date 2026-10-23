@@ -25,7 +25,8 @@ function openAudioMessage(student) {
         ${list.slice(0, 4).map(w => `
           <div class="am-item">
             <audio controls preload="none" src="${igEscapeHtml(w.audio)}"></audio>
-            ${w.correction && w.correction.note ? `<p class="am-reply">💬 ${igEscapeHtml(w.correction.note)}</p>` : '<p class="am-wait">⏳</p>'}
+            ${w.correction && w.correction.audio ? `<p class="am-reply">🎙️ Teacher:</p><audio controls preload="none" src="${igEscapeHtml(w.correction.audio)}"></audio>` : ''}
+            ${w.correction && w.correction.note ? `<p class="am-reply">💬 ${igEscapeHtml(w.correction.note)}</p>` : (w.correction && w.correction.audio ? '' : '<p class="am-wait">⏳</p>')}
           </div>`).join('')}
       </div>`;
   }
@@ -131,4 +132,66 @@ function openAudioMessage(student) {
     </div>`, true);
   paint();
   say('Tap the microphone and talk to your teacher!');
+}
+
+
+// ---------------------------------------------------------------------------
+// The teacher's side: record a spoken answer to a student's message.
+// Same recorder settings as the student's (low bitrate, stored inside the
+// synced data). `result()` gives { audio, seconds } for what is on screen.
+// ---------------------------------------------------------------------------
+const AM_REPLY_MAX_SECONDS = 60;
+
+function amReplyRecorder(host, existing) {
+  let audio = existing || '', seconds = 0, rec = null, stream = null, chunks = [], started = 0, tick = null, recording = false;
+  const canRecord = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+
+  function paint(msg) {
+    if (!host || !document.body.contains(host)) return;
+    if (!canRecord) { host.innerHTML = '<p class="am-note">Este navegador não grava áudio. Use o Chrome.</p>'; return; }
+    host.innerHTML = `
+      <div class="am-reply-rec">
+        ${audio ? `<audio controls class="am-player" src="${audio}"></audio>` : ''}
+        <div class="game-btn-row">
+          ${recording
+            ? `<button type="button" class="game-btn" data-a="stop">⏹️ Parar <span class="am-time">0s</span></button>`
+            : `<button type="button" class="game-btn secondary" data-a="rec">${audio ? '🔄 Gravar de novo' : '🎤 Gravar resposta'}</button>`}
+          ${audio && !recording ? '<button type="button" class="game-btn secondary" data-a="del">🗑️ Remover áudio</button>' : ''}
+        </div>
+        ${msg ? `<p class="am-note">${msg}</p>` : ''}
+      </div>`;
+    const on = (k, fn) => { const b = host.querySelector(`[data-a="${k}"]`); if (b) b.addEventListener('click', fn); };
+    on('rec', start); on('stop', stop);
+    on('del', () => { audio = ''; seconds = 0; paint(); });
+  }
+
+  async function start() {
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) { paint('🎤 O microfone não foi liberado. Permita o microfone no cadeado ao lado do endereço.'); return; }
+    chunks = [];
+    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+    const mimeType = types.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+    rec = new MediaRecorder(stream, mimeType ? { mimeType, audioBitsPerSecond: 32000 } : { audioBitsPerSecond: 32000 });
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      stream = null; recording = false; clearInterval(tick);
+      const fr = new FileReader();
+      fr.onload = () => { audio = fr.result; paint(); };
+      fr.readAsDataURL(new Blob(chunks, { type: rec.mimeType || 'audio/webm' }));
+    };
+    rec.start();
+    started = Date.now(); recording = true;
+    paint();
+    tick = setInterval(() => {
+      if (!document.body.contains(host)) { try { rec.stop(); } catch (e) {} return; }
+      seconds = Math.round((Date.now() - started) / 1000);
+      const t = host.querySelector('.am-time'); if (t) t.textContent = seconds + 's';
+      if (seconds >= AM_REPLY_MAX_SECONDS) stop();
+    }, 250);
+  }
+  function stop() { seconds = Math.max(1, Math.round((Date.now() - started) / 1000)); try { rec.stop(); } catch (e) { /* already stopped */ } }
+
+  paint();
+  return { result: () => ({ audio, seconds }) };
 }

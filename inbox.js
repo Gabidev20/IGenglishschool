@@ -11,7 +11,7 @@ function inboxUnread() {
   if (typeof skAllSubmissions !== 'function') return 0;
   // Unread = not opened yet and not answered (texts corrected before the
   // inbox existed are not "new").
-  return skAllSubmissions().filter(w => !w.seen && !(w.correction && (w.correction.text || w.correction.note))).length;
+  return skAllSubmissions().filter(w => !w.seen && !(w.correction && (w.correction.text || w.correction.note || w.correction.audio))).length;
 }
 
 function refreshInboxBadge() {
