@@ -489,6 +489,7 @@ function renderStudentHome(shell, studentId) {
     speaking: () => tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta'),
     write: () => tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher'),
     audio: () => tile('audio', '🎙️', 'Talk to my teacher', 'Mandar um áudio para a teacher'),
+    manual: () => tile('manual', '📘', 'Student Manual', 'Manual do Aluno — como usar o curso e o site', 'stu-tile--review'),
     mistakes: () => tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente'),
   };
   // The picture games are tiles of their own; the teacher can switch each
@@ -500,7 +501,7 @@ function renderStudentHome(shell, studentId) {
     const focus = typeof teacherSkills === 'function' ? teacherSkills() : [];
     const lead = [...new Set(focus.flatMap(f => order[f] || []))];
     const rest = ['speaking', 'dictation', 'write', 'games', 'practice', 'writingPractice', 'audio'].filter(k => !lead.includes(k));
-    return ['homework', 'review'].concat(lead, rest, ['mistakes', 'progress']);
+    return ['homework', 'review'].concat(lead, rest, ['manual', 'mistakes', 'progress']);
   };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
@@ -597,6 +598,7 @@ function renderStudentHome(shell, studentId) {
     colors: () => openColorsGame(),
     alphabet: () => openAlphabetGame(),
     drawing: () => { if (typeof LiveTools !== 'undefined') LiveTools.openTool('drawing', { solo: true }); },
+    manual: () => { window.open('Manual-do-Aluno-digital.pdf', '_blank', 'noopener'); },
     audio: () => { markRepliesSeen(); openAudioMessage(student); },
     'writing-practice': () => openWritingPractice(student.id, practiceTopics),
     practice: () => {
