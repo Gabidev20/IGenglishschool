@@ -9476,3 +9476,46 @@ html.sl-open .modal-overlay { z-index: 2900; }
   background: var(--surface); color: var(--ink); font-size: 0.92rem; cursor: pointer;
 }
 .sheet-ipa-sym:hover, .sheet-ipa-sym:active { border-color: var(--primary); background: var(--b1b2-soft); }
+
+
+/* --- Phones: stop game boards squashing into each other ----------------------
+   Hangman's layout was allowed to shrink below its content inside the
+   scrolling game area, so the gallows, picture and category label were drawn
+   on top of each other. Keep its natural height and let the area scroll. */
+.game-mount > .hangman-layout { flex: 0 0 auto; min-height: auto; }
+.hangman-next-btn { margin-top: 12px; }
+@media (max-width: 640px) {
+  .game-toolbar { flex-wrap: wrap; }
+  .game-toolbar .game-btn-row { flex-wrap: wrap; }
+}
+
+/* --- Phones: an obvious way back from every activity -------------------------
+   Speaking, Talk to my teacher and the other full-screen activities had only
+   a small ✕; students reloaded the site to get home. */
+.modal-back { display: none; }
+@media (max-width: 640px) {
+  .modal-back {
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0; width: 100%;
+    padding: 12px 16px; border: none; border-bottom: 1px solid rgba(0,0,0,0.08);
+    background: var(--surface); color: var(--primary-dark);
+    font: 700 1rem var(--font-body, inherit); text-align: left; cursor: pointer;
+  }
+  .modal-close { width: 44px; height: 44px; top: 4px; right: 8px; font-size: 1.2rem; z-index: 5; }
+}
+
+/* --- Manual do Aluno (manualOnline.js) --------------------------------------- */
+.mn-wrap { padding: 10px clamp(8px, 2vw, 24px) 16px; }
+.mn-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 4px 44px 8px 4px; }
+.mn-bar h3 { margin: 0; }
+.mn-saved { font-size: 0.85rem; color: var(--ink-soft); }
+.mn-saved.flash { color: #3d7a45; font-weight: 700; }
+.mn-pages { display: flex; flex-direction: column; align-items: center; gap: 14px; overflow-y: auto; min-height: 0; flex: 1; }
+.mn-page { position: relative; width: 100%; max-width: 820px; container-type: inline-size; box-shadow: 0 2px 12px rgba(0,0,0,0.12); border-radius: 6px; overflow: hidden; background: #faf5ee; flex-shrink: 0; }
+.mn-page img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.mn-in { position: absolute; box-sizing: border-box; border: none; background: transparent; padding: 0 1%; margin: 0; color: #2f1f35; font-family: inherit; line-height: 1; outline: none; min-width: 0; }
+.mn-in:focus { background: rgba(255, 244, 190, 0.55); box-shadow: 0 0 0 1px rgba(207, 40, 70, 0.55); border-radius: 3px; }
+.mn-tick { position: absolute; box-sizing: border-box; padding: 0; border: none; background: transparent; cursor: pointer; border-radius: 4px; -webkit-tap-highlight-color: transparent; }
+.mn-tick::after { content: '✓'; position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: #cf2846; font-weight: 800; font-size: 2.6cqw; }
+.mn-tick.on::after { display: flex; }
+.mn-tick.on { background: rgba(207, 40, 70, 0.10); }

@@ -12,8 +12,14 @@ const SK_WRITING_PREFIX = 'writing_';   // studentId -> [submission]
 // ---------------------------------------------------------------------------
 function skEsc(s) { return igEscapeHtml(String(s == null ? '' : s)); }
 
+// Many phone voices (Android, iPhone) ignore `rate`, so "Devagar" still came
+// out fast. For slow requests the sentence is cut into 1-2 word pieces with a
+// real pause between them, which is slow on every device.
+let skSlowToken = 0;
 function skSpeak(text, rate) {
   if (!('speechSynthesis' in window)) return;
+  skSlowToken++;
+  if (rate && rate < 0.7) { skSpeakSlow(String(text), rate, skSlowToken); return; }
   try {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(String(text));
@@ -21,6 +27,27 @@ function skSpeak(text, rate) {
     u.rate = rate || 0.92;
     window.speechSynthesis.speak(u);
   } catch (e) { /* the browser refused; the text is still on screen */ }
+}
+
+function skSpeakSlow(text, rate, token) {
+  const words = text.split(/\s+/).filter(Boolean);
+  const chunks = [];
+  for (let i = 0; i < words.length; i += 2) chunks.push(words.slice(i, i + 2).join(' '));
+  try { window.speechSynthesis.cancel(); } catch (e) { return; }
+  let i = 0;
+  const next = () => {
+    if (token !== skSlowToken || i >= chunks.length) return;
+    const u = new SpeechSynthesisUtterance(chunks[i++]);
+    u.lang = 'en-US';
+    u.rate = Math.min(rate, 0.5);
+    let moved = false;
+    const go = () => { if (moved) return; moved = true; setTimeout(next, 450); };
+    u.onend = go;
+    u.onerror = go;
+    setTimeout(go, 600 + u.text.length * 260);   // some phones never fire onend
+    try { window.speechSynthesis.speak(u); } catch (e) { /* text is on screen */ }
+  };
+  setTimeout(next, 80);   // cancel() needs a beat on Android before speak()
 }
 
 // Comparing what was said or typed against the target is a word problem, not
@@ -123,6 +150,7 @@ const SkillsModules = (() => {
 
   function stopAll() {
     if (activeRec) { try { activeRec.abort(); } catch (e) {} activeRec = null; }
+    skSlowToken++;
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 

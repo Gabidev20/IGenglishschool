@@ -107,6 +107,9 @@ const RV_SETS = {
   number: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'],
   place: ['bedroom', 'bathroom', 'kitchen', 'living room', 'dining room', 'yard', 'garden', 'school', 'park', 'beach', 'zoo'],
   body: ['head', 'hair', 'nose', 'mouth', 'neck', 'tummy', 'face'],
+  uncountable: ['water', 'milk', 'juice', 'bread', 'cheese', 'rice', 'soup', 'chocolate', 'butter', 'coffee', 'tea', 'meat', 'fish', 'salad', 'pasta', 'cake', 'pizza', 'money', 'music', 'homework', 'candy'],
+  verb: ['run', 'swim', 'jump', 'sing', 'dance', 'read', 'write', 'sleep', 'eat', 'drink', 'play', 'walk', 'fly', 'climb', 'ride', 'paint', 'draw', 'listen', 'talk', 'cook', 'study', 'laugh', 'cry', 'smile', 'clap', 'stand up', 'sit down', 'open', 'close', 'speak', 'watch', 'wash', 'help', 'work', 'learn', 'brush my teeth', 'wake up', 'get up', 'go to school', 'have lunch', 'have breakfast', 'take a shower'],
+  adjective: ['big', 'small', 'fast', 'slow', 'tall', 'short', 'long', 'old', 'new', 'young', 'beautiful', 'ugly', 'funny', 'nice', 'kind', 'strong', 'clean', 'dirty', 'quiet', 'loud', 'easy', 'difficult', 'cheap', 'expensive', 'heavy', 'light', 'wet', 'dry', 'full', 'empty', 'happy', 'friendly'],
   bodies: ['eyes', 'ears', 'shoulders', 'arms', 'hands', 'fingers', 'legs', 'knees', 'feet', 'toes'],
 };
 
@@ -124,6 +127,16 @@ function reviewSentences(word) {
   if (is('place')) return [`This is the ${k}.`, `I'm in the ${k}.`];
   if (is('body')) return [`This is my ${k}.`, `Touch your ${k}!`];
   if (is('bodies')) return [`These are my ${k}.`, `Touch your ${k}!`];
+  const base = k.replace(/^to\s+/, '');
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  if (RV_SETS.verb.includes(base)) {
+    const third = /(s|sh|ch|x|o)$/.test(base) ? `${base}es` : /[^aeiou]y$/.test(base) ? `${base.slice(0, -1)}ies` : `${base}s`;
+    const multi = base.split(' ');
+    if (multi.length > 1 && /^(brush|wake|get|go|have|take|stand|sit)$/.test(multi[0])) return [`I ${base} every day.`, `Do you ${base.replace(/my/, 'your')}?`];
+    return [`I can ${base}.`, `She ${third} every day.`];
+  }
+  if (is('uncountable')) return [`I like ${k}.`, `I want some ${k}, please.`];
+  if (is('adjective')) return [`It's ${k}.`, `The dog is ${k}.`];
   // An expression or a verb ("to look forward to", "brush my teeth"): no
   // template fits, so the sentence is the expression itself, to repeat.
   if (/^to\s/i.test(w) || k.split(' ').length >= 3 || (/\s/.test(k) && !reviewLookup(w))) {

@@ -328,6 +328,8 @@ function closeModal() {
 }
 
 modalCloseBtn.addEventListener('click', closeModal);
+const modalBackBtn = document.getElementById('modalBackBtn');
+if (modalBackBtn) modalBackBtn.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => {
   if (e.target === modalOverlay) closeModal();
 });
@@ -524,6 +526,7 @@ function renderListenAndChoose(mount, topic) {
   const shuffle = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
   const say = (t, rate) => {
     if (!('speechSynthesis' in window)) return;
+    if (rate && rate < 0.7 && typeof skSpeak === 'function') { skSpeak(t, rate); return; }
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = rate || 0.8;
     window.speechSynthesis.speak(u);
@@ -1285,6 +1288,7 @@ const ArcadeGames = (() => {
 
     function speak(text, rate) {
       if (!('speechSynthesis' in window)) return;
+      if (rate && rate < 0.7 && typeof skSpeak === 'function') { skSpeak(text, rate); return; }
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'en-US';

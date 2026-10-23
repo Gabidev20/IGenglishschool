@@ -273,9 +273,9 @@ const GameEngine = (() => {
 
       let banner = '';
       if (state.status === 'won') {
-        banner = `<div class="game-end-banner win">🎉 You got it! <p>The word was <strong>${state.word.en}</strong>.</p></div>`;
+        banner = `<div class="game-end-banner win">🎉 You got it! <p>The word was <strong>${state.word.en}</strong>.</p><button type="button" class="game-btn hangman-next-btn" data-action="next-big">➡️ Next word / Próxima palavra</button></div>`;
       } else if (state.status === 'lost') {
-        banner = `<div class="game-end-banner lose">😅 So close! <p>The word was <strong>${state.word.en}</strong>.</p></div>`;
+        banner = `<div class="game-end-banner lose">😅 So close! <p>The word was <strong>${state.word.en}</strong>.</p><button type="button" class="game-btn hangman-next-btn" data-action="next-big">➡️ Next word / Próxima palavra</button></div>`;
       }
 
       container.innerHTML = `
@@ -311,6 +311,13 @@ const GameEngine = (() => {
       });
       container.querySelector('[data-action="next"]').addEventListener('click', () => newRound(false));
       container.querySelector('[data-action="restart"]').addEventListener('click', () => newRound(true));
+      const bigNext = container.querySelector('[data-action="next-big"]');
+      if (bigNext) {
+        bigNext.addEventListener('click', () => newRound(false));
+        // On a phone the banner sits below the fold: bring it (and its
+        // Next button) into view so the student sees how to go on.
+        try { bigNext.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { /* old browser */ }
+      }
       const ptBtn = container.querySelector('[data-action="hint-pt"]');
       if (ptBtn) ptBtn.addEventListener('click', () => { state.hintPt = true; paint(); });
     }

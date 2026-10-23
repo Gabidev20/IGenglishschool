@@ -234,6 +234,11 @@ const ShareMode = (() => {
           stickers: [...new Set((cur.stickers || []).concat(payload.progress.stickers || []))],
         });
       }
+      // The Student Manual's answers: the newest copy wins.
+      if (payload.manual && typeof payload.manual === 'object') {
+        const mine = IGStore.getJSON('manual_' + sid, {}) || {};
+        if ((payload.manual._t || 0) > (mine._t || 0)) IGStore.setJSON('manual_' + sid, payload.manual);
+      }
       if (payload.bank) {
         const cur = IGStore.getJSON('bank_' + sid, {}) || {};
         Object.keys(payload.bank).forEach(k => {
@@ -278,6 +283,7 @@ const ShareMode = (() => {
     const out = [['progress', 'state', {
       progress: IGStore.getJSON('progress_' + studentId, {}),
       bank: IGStore.getJSON('bank_' + studentId, {}),
+      manual: IGStore.getJSON('manual_' + studentId, {}),
     }]];
     (IGStore.getJSON('homework', []) || []).forEach(hw => {
       const tasks = (hw.tasks || [])
@@ -314,7 +320,7 @@ const ShareMode = (() => {
     IGStore.onWrite(key => {
       if (!studentId) return;
       if (key === 'homework' || key.startsWith('progress_') || key.startsWith('log_')
-        || key.startsWith('bank_') || key.startsWith('writing_')) scheduleFlush();
+        || key.startsWith('bank_') || key.startsWith('writing_') || key.startsWith('manual_')) scheduleFlush();
     });
     window.addEventListener('beforeunload', () => { try { flush(); } catch (e) {} });
   }
@@ -598,7 +604,7 @@ function renderStudentHome(shell, studentId) {
     colors: () => openColorsGame(),
     alphabet: () => openAlphabetGame(),
     drawing: () => { if (typeof LiveTools !== 'undefined') LiveTools.openTool('drawing', { solo: true }); },
-    manual: () => { window.open('Manual-do-Aluno-digital.pdf', '_blank', 'noopener'); },
+    manual: () => openStudentManual(student),
     audio: () => { markRepliesSeen(); openAudioMessage(student); },
     'writing-practice': () => openWritingPractice(student.id, practiceTopics),
     practice: () => {
