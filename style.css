@@ -9533,3 +9533,10 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .memory-face.front .memory-word-label { flex: 0 0 auto; }
 .memory-card--pic .memory-face.front .word-visual { background: transparent; }
 .memory-card--pic .memory-face.front { padding: 8px; }
+
+
+/* --- Balloon Pop for children who cannot read: pictures on the balloons ------ */
+.balloon-body--pic { padding: 4px; }
+.balloon-body--pic .word-visual.balloon-pic { width: 78%; height: 66%; background: rgba(255,255,255,0.88); border-radius: 50%; overflow: hidden; }
+.balloon-body--pic .word-visual.balloon-pic img { object-fit: contain; }
+.balloon-say { border: none; background: var(--primary); color: #fff; border-radius: 50%; width: 1.9em; height: 1.9em; font-size: 1em; cursor: pointer; vertical-align: middle; margin-left: 6px; }

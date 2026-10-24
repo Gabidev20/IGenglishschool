@@ -612,6 +612,14 @@ const GameEngine = (() => {
   const BALLOON_ROUND_SIZE = 10;
 
   function renderBalloon(container, topic) {
+    // A child who cannot read yet pops pictures, not words: the balloons carry
+    // the drawing and the word is said aloud (🔊 repeats it).
+    const student = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
+    const pictureMode = Boolean(student && typeof studentProfile === 'function' && studentProfile(student) === 'prereader');
+    const targetLabelHTML = () => pictureMode
+      ? `Pop the balloon with this word: <button type="button" class="balloon-say" data-say-target aria-label="Listen">🔊</button>`
+      : `Pop the balloon that says: <strong>${target.en}</strong>`;
+    const sayTarget = () => { if (pictureMode && target) ttsSay(target.en, 0.8); };
     const palette = ['#f05d77', '#b8953a', '#a9b4a4', '#8e6d86', '#c9435c'];
     let targetQueue, roundIndex, target, score, misses, spawnTimer, balloonSeq, ended;
 
@@ -652,15 +660,22 @@ const GameEngine = (() => {
         </div>
         <div class="balloon-progress"><div class="balloon-progress-fill" style="width:${(roundIndex / BALLOON_ROUND_SIZE) * 100}%"></div></div>
         <div class="balloon-stage" id="balloonStage">
-          <div class="balloon-target">Pop the balloon that says: <strong>${target.en}</strong></div>
+          <div class="balloon-target">${targetLabelHTML()}</div>
         </div>
       `;
       container.querySelector('[data-action="restart"]').addEventListener('click', restart);
+      bindTargetSpeaker();
+      sayTarget();
+    }
+
+    function bindTargetSpeaker() {
+      const b = container.querySelector('[data-say-target]');
+      if (b) b.addEventListener('click', e => { e.stopPropagation(); sayTarget(); });
     }
 
     function updateHUD() {
       const label = container.querySelector('.balloon-target');
-      if (label) label.innerHTML = `Pop the balloon that says: <strong>${target.en}</strong>`;
+      if (label) { label.innerHTML = targetLabelHTML(); bindTargetSpeaker(); }
       const pill = container.querySelector('.game-status-pill');
       if (pill) pill.textContent = `Word ${roundIndex + 1} of ${BALLOON_ROUND_SIZE} · ✅ ${score} · ❌ ${misses}`;
       const fill = container.querySelector('.balloon-progress-fill');
@@ -712,8 +727,10 @@ const GameEngine = (() => {
       el.style.left = `${5 + Math.random() * 80}%`;
       el.style.animationDuration = `${duration}s`;
       const color = palette[(balloonSeq++) % palette.length];
-      const size = balloonSizeFor(word.en);
-      el.innerHTML = `<div class="balloon-body" style="background:${color};width:${size.width}px;height:${size.height}px;font-size:${size.font}rem">${word.en}</div><div class="balloon-string"></div>`;
+      const size = pictureMode ? balloonSizeFor('') : balloonSizeFor(word.en);
+      if (pictureMode) { size.width = Math.round(size.width * 1.2); size.height = Math.round(size.height * 1.2); }
+      const inside = pictureMode ? wordVisualHTML(word, 'balloon-pic') : word.en;
+      el.innerHTML = `<div class="balloon-body${pictureMode ? ' balloon-body--pic' : ''}" style="background:${color};width:${size.width}px;height:${size.height}px;font-size:${size.font}rem">${inside}</div><div class="balloon-string"></div>`;
 
       // Correctness is judged live against the on-screen target, not at spawn
       // time, so it always matches what the balloon currently displays.
@@ -753,6 +770,7 @@ const GameEngine = (() => {
         } else {
           target = targetQueue[roundIndex];
           updateHUD();
+          setTimeout(sayTarget, 350);
         }
       } else {
         playWrong();
