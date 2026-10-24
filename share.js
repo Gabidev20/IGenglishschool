@@ -452,6 +452,7 @@ function shareMarkRepliesSeen(studentId, ids) {
 function renderStudentHome(shell, studentId) {
   const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === studentId);
   if (!student) return;
+  if (typeof applyGrownLook === 'function') applyGrownLook(student);
   const progress = loadProgress(student.id);
   const stats = typeof ldStats === 'function' ? ldStats(student.id) : null;
   const homework = typeof hwForStudent === 'function' ? hwForStudent(student.id) : [];

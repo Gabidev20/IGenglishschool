@@ -399,6 +399,7 @@ function renderProfileList() {
 
 function applyActiveStudent(student) {
   const greeting = document.getElementById('studentGreeting');
+  if (typeof applyGrownLook === 'function') applyGrownLook(student || null);
 
   if (!student) {
     document.documentElement.style.setProperty('--accent-color', 'var(--color-primary)');
