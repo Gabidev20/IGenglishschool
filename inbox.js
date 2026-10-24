@@ -10,8 +10,8 @@
 function inboxUnread() {
   if (typeof skAllSubmissions !== 'function') return 0;
   // Unread = not opened yet and not answered (texts corrected before the
-  // inbox existed are not "new").
-  return skAllSubmissions().filter(w => !w.seen && !(w.correction && (w.correction.text || w.correction.note || w.correction.audio))).length;
+  // inbox existed are not "new"). Messages from the teacher herself never count.
+  return skAllSubmissions().filter(w => !w.from && !w.seen && !(w.correction && (w.correction.text || w.correction.note || w.correction.audio))).length;
 }
 
 function refreshInboxBadge() {
@@ -39,7 +39,7 @@ function inboxToast(text, onClick) {
 (function initInbox() {
   if (window.IG_SHARE_MODE) return;             // the student's page has no inbox
   const btn = document.getElementById('inboxBtn');
-  if (btn) btn.addEventListener('click', () => { if (typeof openWritingDesk === 'function') openWritingDesk(); });
+  if (btn) btn.addEventListener('click', () => { if (typeof openTeacherInbox === 'function') openTeacherInbox(); else if (typeof openWritingDesk === 'function') openWritingDesk(); });
 
   // A new message or finished homework from a student's link.
   window.addEventListener('ig:student-activity', e => {
@@ -60,7 +60,7 @@ function inboxToast(text, onClick) {
     refreshInboxBadge();
     if (writers.length) {
       if (typeof IGSound !== 'undefined') IGSound.bell();
-      inboxToast(`📩 Nova mensagem de ${writers.join(', ')} — clique para ler`, () => openWritingDesk());
+      inboxToast(`📩 Nova mensagem de ${writers.join(', ')} — clique para ler`, () => (typeof openTeacherInbox === 'function' ? openTeacherInbox() : openWritingDesk()));
     } else if (homework.length) {
       inboxToast(`📚 ${homework.join(', ')} fez a lição de casa!`);
     } else if (books.length) {

@@ -546,13 +546,14 @@ function skAllSubmissions() {
   const students = typeof loadStudents === 'function' ? loadStudents() : [];
   const out = [];
   students.forEach(st => {
-    SkillsModules.loadWriting(st.id).forEach(w => out.push({ ...w, studentId: st.id, studentName: st.name, avatar: st.avatar }));
+    SkillsModules.loadWriting(st.id).filter(w => w.from !== 'teacher').forEach(w => out.push({ ...w, studentId: st.id, studentName: st.name, avatar: st.avatar }));
   });
   return out.sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt));
 }
 
-function openWritingDesk() {
-  const all = skAllSubmissions();
+function openWritingDesk(openStudentId, openId) {
+  // The desk is for written texts to correct; messages and voice notes live in the chat (chat.js).
+  const all = skAllSubmissions().filter(w => !w.audio && w.promptId !== 'chat');
   const pending = all.filter(w => !(w.correction && (w.correction.text || w.correction.note || w.correction.audio)));
 
   openModal(`
@@ -692,5 +693,5 @@ function openWritingDesk() {
     });
   }
 
-  paintList();
+  if (openStudentId && openId) paintEditor(openStudentId, openId); else paintList();
 }

@@ -292,7 +292,7 @@ const ShareMode = (() => {
       if (tasks.length) out.push(['homework_result', hw.id, { tasks }]);
     });
     (IGStore.getJSON('writing_' + studentId, []) || [])
-      .filter(w => !w.correction)
+      .filter(w => !w.correction && w.from !== 'teacher')
       .forEach(w => out.push(['writing', w.id, { submission: w }]));
     return out;
   }
@@ -323,6 +323,21 @@ const ShareMode = (() => {
         || key.startsWith('bank_') || key.startsWith('writing_') || key.startsWith('manual_')) scheduleFlush();
     });
     window.addEventListener('beforeunload', () => { try { flush(); } catch (e) {} });
+  }
+
+  // The chat asks for the teacher's newest messages while it is open.
+  // Server copy wins; messages only on this device (not delivered yet) stay.
+  async function refreshMessages() {
+    if (!cloud || !studentId || !code) return false;
+    const sb = await IGCloud.anonClient();
+    const { data, error } = await sb.rpc('igenglish_share_read', { p_code: code });
+    if (error || !data || !data.ok || !Array.isArray(data.writing)) return false;
+    const local = IGStore.getJSON('writing_' + studentId, []) || [];
+    const byId = new Map(data.writing.map(w => [w.id, w]));
+    local.forEach(w => { if (!byId.has(w.id)) byId.set(w.id, w); });
+    const merged = [...byId.values()].sort((a, b) => new Date(b.sentAt || 0) - new Date(a.sentAt || 0));
+    if (JSON.stringify(merged) !== JSON.stringify(local)) IGStore.setJSON('writing_' + studentId, merged);
+    return true;
   }
 
   // ---- boot ----------------------------------------------------------------
@@ -420,7 +435,7 @@ const ShareMode = (() => {
     document.body.appendChild(bar);
   }
 
-  return { claim, start, active, flush, applyActivityLocally, get studentId() { return studentId; }, get code() { return code; } };
+  return { claim, start, active, flush, refreshMessages, applyActivityLocally, get studentId() { return studentId; }, get code() { return code; } };
 })();
 
 // ---------------------------------------------------------------------------
@@ -494,7 +509,7 @@ function renderStudentHome(shell, studentId) {
     dictation: () => tile('dictation', '🎧', 'Dictation', 'Ditado — ouvir e escrever'),
     speaking: () => tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta'),
     write: () => tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher'),
-    audio: () => tile('audio', '🎙️', 'Talk to my teacher', 'Mandar um áudio para a teacher'),
+    audio: () => tile('audio', '💬', 'Messages', chatUnreadForStudent(student.id) ? `Mensagens — ${chatUnreadForStudent(student.id)} nova(s) da teacher` : 'Mensagens com a teacher — escrever ou mandar áudio', 'stu-tile--review'),
     manual: () => tile('manual', '📘', 'Student Manual', 'Manual do Aluno — como usar o curso e o site', 'stu-tile--review'),
     mistakes: () => tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente'),
   };
@@ -524,7 +539,7 @@ function renderStudentHome(shell, studentId) {
   // The teacher's answers (a correction, a comment, a reply under an audio):
   // the student is told there is one until they have opened it on this device.
   const repliedTexts = (IGStore.getJSON('writing_' + student.id, []) || [])
-    .filter(w => w.correction && (w.correction.text || w.correction.note || w.correction.audio));
+    .filter(w => w.from === 'teacher' || (w.correction && (w.correction.text || w.correction.note || w.correction.audio)));
   const seenReplies = shareSeenReplies(student.id);
   const newReplies = repliedTexts.filter(w => !seenReplies.includes(w.id));
   const markRepliesSeen = () => shareMarkRepliesSeen(student.id, repliedTexts.map(w => w.id));
@@ -550,7 +565,7 @@ function renderStudentHome(shell, studentId) {
             <b>💬 Your teacher answered you!</b>
             <small>A teacher respondeu — veja o que ela escreveu</small>
           </div>
-          <button class="btn btn-primary" data-go="${newReplies.some(w => w.audio) && !newReplies.some(w => !w.audio) ? 'audio' : 'writing'}">Read</button>
+          <button class="btn btn-primary" data-go="${newReplies.every(w => w.from === 'teacher' || w.audio || w.promptId === 'chat') ? 'audio' : 'writing'}">Read</button>
         </div>` : ''}
 
       ${pending.length ? `
@@ -605,7 +620,7 @@ function renderStudentHome(shell, studentId) {
     alphabet: () => openAlphabetGame(),
     drawing: () => { if (typeof LiveTools !== 'undefined') LiveTools.openTool('drawing', { solo: true }); },
     manual: () => openStudentManual(student),
-    audio: () => { markRepliesSeen(); openAudioMessage(student); },
+    audio: () => { markRepliesSeen(); openChat({ role: 'student', student }); },
     'writing-practice': () => openWritingPractice(student.id, practiceTopics),
     practice: () => {
       if (prof === 'reader' && typeof openKidsPractice === 'function') { openKidsPractice(practiceTopics); return; }
