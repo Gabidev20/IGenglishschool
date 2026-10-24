@@ -1,0 +1,869 @@
+{
+ "v": 1,
+ "book": "beyond",
+ "bimester": 3,
+ "id": "beyond:b3",
+ "title": "IG Beyond",
+ "ages": "12–14",
+ "color": "#c9435c",
+ "firstPage": 77,
+ "lastPage": 101,
+ "pageCount": 25,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 3"
+  },
+  {
+   "n": 7,
+   "title": "Unit 7 · Weather Report"
+  },
+  {
+   "n": 8,
+   "title": "Unit 8 · Stories"
+  }
+ ],
+ "stickerSheet": 101,
+ "pages": [
+  {
+   "n": 77,
+   "id": "p77",
+   "img": "p77.webp",
+   "thumb": "t77.webp",
+   "unit": 0,
+   "title": "Bimestre 3",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 78,
+   "id": "p78",
+   "img": "p78.webp",
+   "thumb": "t78.webp",
+   "unit": 7,
+   "title": "Unit 7 · Weather Report",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u7-warm-up",
+     "file": "u7-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 79,
+   "id": "p79",
+   "img": "p79.webp",
+   "thumb": "t79.webp",
+   "unit": 7,
+   "title": "Today’s Forecast",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 80,
+   "id": "p80",
+   "img": "p80.webp",
+   "thumb": "t80.webp",
+   "unit": 7,
+   "title": "Weather Words",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 81,
+   "id": "p81",
+   "img": "p81.webp",
+   "thumb": "t81.webp",
+   "unit": 7,
+   "title": "What’s the Temperature?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 82,
+   "id": "p82",
+   "img": "p82.webp",
+   "thumb": "t82.webp",
+   "unit": 7,
+   "title": "Practice Plus: Weather",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 83,
+   "id": "p83",
+   "img": "p83.webp",
+   "thumb": "t83.webp",
+   "unit": 7,
+   "title": "Seasons Around the World",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 84,
+   "id": "p84",
+   "img": "p84.webp",
+   "thumb": "t84.webp",
+   "unit": 7,
+   "title": "The Radio Forecast",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-radio-forecast",
+     "file": "u7-radio-forecast.mp3",
+     "title": "The Radio Forecast",
+     "available": true
+    },
+    {
+     "track": "u7-weekend",
+     "file": "u7-weekend.mp3",
+     "title": "Weekend forecast for Curitiba",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 85,
+   "id": "p85",
+   "img": "p85.webp",
+   "thumb": "t85.webp",
+   "unit": 7,
+   "title": "Be the Weather Reporter!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-reporter-model",
+     "file": "u7-reporter-model.mp3",
+     "title": "Be the Weather Reporter! Listen to a model report.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 86,
+   "id": "p86",
+   "img": "p86.webp",
+   "thumb": "t86.webp",
+   "unit": 7,
+   "title": "Write a Weather Report",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 87,
+   "id": "p87",
+   "img": "p87.webp",
+   "thumb": "t87.webp",
+   "unit": 7,
+   "title": "My Weather Mood",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 88,
+   "id": "p88",
+   "img": "p88.webp",
+   "thumb": "t88.webp",
+   "unit": 7,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 89,
+   "id": "p89",
+   "img": "p89.webp",
+   "thumb": "t89.webp",
+   "unit": 8,
+   "title": "Unit 8 · Stories",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u8-warm-up",
+     "file": "u8-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 90,
+   "id": "p90",
+   "img": "p90.webp",
+   "thumb": "t90.webp",
+   "unit": 8,
+   "title": "Lights Out!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-lights-out",
+     "file": "u8-lights-out.mp3",
+     "title": "Lights Out! Read and listen to the story.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 91,
+   "id": "p91",
+   "img": "p91.webp",
+   "thumb": "t91.webp",
+   "unit": 8,
+   "title": "I Was Cooking!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 92,
+   "id": "p92",
+   "img": "p92.webp",
+   "thumb": "t92.webp",
+   "unit": 8,
+   "title": "Was or Were?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 93,
+   "id": "p93",
+   "img": "p93.webp",
+   "thumb": "t93.webp",
+   "unit": 8,
+   "title": "Were You Sleeping?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 94,
+   "id": "p94",
+   "img": "p94.webp",
+   "thumb": "t94.webp",
+   "unit": 8,
+   "title": "Detective Questions",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-phone-call",
+     "file": "u8-phone-call.mp3",
+     "title": "Detective Questions",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 95,
+   "id": "p95",
+   "img": "p95.webp",
+   "thumb": "t95.webp",
+   "unit": 8,
+   "title": "When or While?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 96,
+   "id": "p96",
+   "img": "p96.webp",
+   "thumb": "t96.webp",
+   "unit": 8,
+   "title": "Mix It Up!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 97,
+   "id": "p97",
+   "img": "p97.webp",
+   "thumb": "t97.webp",
+   "unit": 8,
+   "title": "Alibi!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-alibi",
+     "file": "u8-alibi.mp3",
+     "title": "Alibi! Listen to Detective Kim and the three suspects.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 98,
+   "id": "p98",
+   "img": "p98.webp",
+   "thumb": "t98.webp",
+   "unit": 8,
+   "title": "Write a Story",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 99,
+   "id": "p99",
+   "img": "p99.webp",
+   "thumb": "t99.webp",
+   "unit": 8,
+   "title": "A Story From My Life",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 100,
+   "id": "p100",
+   "img": "p100.webp",
+   "thumb": "t100.webp",
+   "unit": 8,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 101,
+   "id": "p101",
+   "img": "p101.webp",
+   "thumb": "t101.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "reward1",
+   "img": "stickers/reward1.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    88,
+    100
+   ],
+   "targets": [
+    {
+     "page": 88,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 100,
+     "x": 0.8381,
+     "y": 0.6128
+    }
+   ],
+   "label": "p. 88, 100"
+  },
+  {
+   "id": "track1",
+   "img": "stickers/track1.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.034,
+   "wmm": 14.0,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "forecast1",
+   "img": "stickers/forecast1.webp",
+   "kind": "forecast",
+   "w": 0.1909,
+   "h": 0.0474,
+   "wmm": 40.1,
+   "hmm": 14.1,
+   "pages": [
+    87
+   ],
+   "targets": [
+    {
+     "page": 87,
+     "x": 0.5619,
+     "y": 0.1818
+    }
+   ],
+   "label": "p. 87"
+  },
+  {
+   "id": "reward2",
+   "img": "stickers/reward2.webp",
+   "kind": "reward",
+   "w": 0.1147,
+   "h": 0.0814,
+   "wmm": 24.1,
+   "hmm": 24.2,
+   "pages": [
+    88,
+    100
+   ],
+   "targets": [
+    {
+     "page": 88,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 100,
+     "x": 0.8381,
+     "y": 0.6128
+    }
+   ],
+   "label": "p. 88, 100"
+  },
+  {
+   "id": "track2",
+   "img": "stickers/track2.webp",
+   "kind": "track",
+   "w": 0.0671,
+   "h": 0.034,
+   "wmm": 14.1,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "plot1",
+   "img": "stickers/plot1.webp",
+   "kind": "plot",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    99
+   ],
+   "targets": [
+    {
+     "page": 99,
+     "x": 0.5238,
+     "y": 0.1953
+    }
+   ],
+   "label": "p. 99"
+  },
+  {
+   "id": "washi1",
+   "img": "stickers/washi1.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi2",
+   "img": "stickers/washi2.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi3",
+   "img": "stickers/washi3.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble1",
+   "img": "stickers/bubble1.webp",
+   "kind": "bubble",
+   "w": 0.1381,
+   "h": 0.0499,
+   "wmm": 29.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble2",
+   "img": "stickers/bubble2.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0499,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble3",
+   "img": "stickers/bubble3.webp",
+   "kind": "bubble",
+   "w": 0.1476,
+   "h": 0.0499,
+   "wmm": 31.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "bubble4",
+   "img": "stickers/bubble4.webp",
+   "kind": "bubble",
+   "w": 0.1286,
+   "h": 0.0499,
+   "wmm": 27.0,
+   "hmm": 14.8,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge1",
+   "img": "stickers/badge1.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge2",
+   "img": "stickers/badge2.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge3",
+   "img": "stickers/badge3.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge4",
+   "img": "stickers/badge4.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge5",
+   "img": "stickers/badge5.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge6",
+   "img": "stickers/badge6.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge7",
+   "img": "stickers/badge7.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge8",
+   "img": "stickers/badge8.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge9",
+   "img": "stickers/badge9.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge10",
+   "img": "stickers/badge10.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge11",
+   "img": "stickers/badge11.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge12",
+   "img": "stickers/badge12.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge13",
+   "img": "stickers/badge13.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "badge14",
+   "img": "stickers/badge14.webp",
+   "kind": "badge",
+   "w": 0.0714,
+   "h": 0.0511,
+   "wmm": 15.0,
+   "hmm": 15.2,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  }
+ ]
+}

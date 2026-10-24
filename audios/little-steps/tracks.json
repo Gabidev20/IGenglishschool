@@ -140,6 +140,114 @@
       "title": "Listen and color the shirts.",
       "subtitle": "Page 44",
       "file": "u6-color-family.mp3"
+    },
+    {
+      "id": "u7-animal-song",
+      "unit": 7,
+      "unitTitle": "Pet Planet & Dino Valley",
+      "title": "Animal Song",
+      "subtitle": "Page 51",
+      "file": "u7-animal-song.mp3"
+    },
+    {
+      "id": "u7-animals",
+      "unit": 7,
+      "title": "Animals! Listen, point and color.",
+      "subtitle": "Page 52",
+      "file": "u7-animals.mp3"
+    },
+    {
+      "id": "u7-what-is-it",
+      "unit": 7,
+      "title": "What is it? Listen and circle.",
+      "subtitle": "Page 53",
+      "file": "u7-what-is-it.mp3"
+    },
+    {
+      "id": "u7-sounds",
+      "unit": 7,
+      "title": "Animal sounds! Listen and match.",
+      "subtitle": "Page 54",
+      "file": "u7-sounds.mp3"
+    },
+    {
+      "id": "u7-right-or-wrong",
+      "unit": 7,
+      "title": "Right or wrong? Listen and circle.",
+      "subtitle": "Page 57",
+      "file": "u7-right-or-wrong.mp3"
+    },
+    {
+      "id": "u8-toy-song",
+      "unit": 8,
+      "unitTitle": "Toy Moon",
+      "title": "Toy Song",
+      "subtitle": "Page 58",
+      "file": "u8-toy-song.mp3"
+    },
+    {
+      "id": "u8-toys",
+      "unit": 8,
+      "title": "Toys! Listen, point and color.",
+      "subtitle": "Page 59",
+      "file": "u8-toys.mp3"
+    },
+    {
+      "id": "u8-what-toy",
+      "unit": 8,
+      "title": "Which toy? Listen and circle.",
+      "subtitle": "Page 60",
+      "file": "u8-what-toy.mp3"
+    },
+    {
+      "id": "u8-hide-and-seek",
+      "unit": 8,
+      "title": "Hide and seek! Listen, find and circle.",
+      "subtitle": "Page 61",
+      "file": "u8-hide-and-seek.mp3"
+    },
+    {
+      "id": "u8-pip-has",
+      "unit": 8,
+      "title": "What does Pip have? Listen and check.",
+      "subtitle": "Page 64",
+      "file": "u8-pip-has.mp3"
+    },
+    {
+      "id": "u9-tea-song",
+      "unit": 9,
+      "unitTitle": "Space Snack Time",
+      "title": "Snack Time Song",
+      "subtitle": "Page 65",
+      "file": "u9-tea-song.mp3"
+    },
+    {
+      "id": "u9-food",
+      "unit": 9,
+      "title": "Food! Listen, point and color.",
+      "subtitle": "Page 66",
+      "file": "u9-food.mp3"
+    },
+    {
+      "id": "u9-what-food",
+      "unit": 9,
+      "title": "What food? Listen and circle.",
+      "subtitle": "Page 67",
+      "file": "u9-what-food.mp3"
+    },
+    {
+      "id": "u9-like-dont-like",
+      "unit": 9,
+      "title": "I like… I don’t like… Listen and circle.",
+      "subtitle": "Page 68",
+      "file": "u9-like-dont-like.mp3"
+    },
+    {
+      "id": "u9-set-the-table",
+      "unit": 9,
+      "title": "Snack time! Listen and stick.",
+      "subtitle": "Page 69",
+      "file": "u9-set-the-table.mp3"
     }
   ]
 }

@@ -8,17 +8,25 @@
   {
    "n": 1,
    "path": "beyond/b1/manifest.json",
-   "pages": 29,
+   "pages": 39,
    "first": 1,
-   "last": 29,
+   "last": 39,
    "interactive": true
   },
   {
    "n": 2,
    "path": "beyond/b2/manifest.json",
-   "pages": 28,
-   "first": 30,
-   "last": 57,
+   "pages": 37,
+   "first": 40,
+   "last": 76,
+   "interactive": true
+  },
+  {
+   "n": 3,
+   "path": "beyond/b3/manifest.json",
+   "pages": 25,
+   "first": 77,
+   "last": 101,
    "interactive": true
   }
  ]

@@ -21,6 +21,14 @@
      "pages": 24,
      "first": 26,
      "last": 49,
+     "interactive": true
+    },
+    {
+     "n": 3,
+     "path": "little-steps/b3/manifest.json",
+     "pages": 24,
+     "first": 50,
+     "last": 73,
      "interactive": false
     }
    ]
@@ -45,6 +53,14 @@
      "pages": 23,
      "first": 25,
      "last": 47,
+     "interactive": true
+    },
+    {
+     "n": 3,
+     "path": "explorers/b3/manifest.json",
+     "pages": 23,
+     "first": 48,
+     "last": 70,
      "interactive": false
     }
    ]
@@ -69,7 +85,7 @@
      "pages": 26,
      "first": 28,
      "last": 53,
-     "interactive": false
+     "interactive": true
     }
    ]
   },
@@ -82,35 +98,26 @@
     {
      "n": 1,
      "path": "beyond/b1/manifest.json",
-     "pages": 29,
+     "pages": 39,
      "first": 1,
-     "last": 29,
+     "last": 39,
      "interactive": true
     },
     {
      "n": 2,
      "path": "beyond/b2/manifest.json",
-     "pages": 28,
-     "first": 30,
-     "last": 57,
-     "interactive": false
-    }
-   ]
-  },
-  {
-   "id": "a1",
-   "title": "Speak Up! A1+",
-   "ages": "15+",
-   "color": "#c7ac59",
-   "single": true,
-   "bimesters": [
+     "pages": 37,
+     "first": 40,
+     "last": 76,
+     "interactive": true
+    },
     {
-     "n": 1,
-     "path": "a1/b1/manifest.json",
-     "pages": 210,
-     "first": 1,
-     "last": 210,
-     "interactive": false
+     "n": 3,
+     "path": "beyond/b3/manifest.json",
+     "pages": 25,
+     "first": 77,
+     "last": 101,
+     "interactive": true
     }
    ]
   }

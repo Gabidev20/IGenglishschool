@@ -1,0 +1,684 @@
+{
+ "v": 1,
+ "book": "little-steps",
+ "bimester": 3,
+ "id": "little-steps:b3",
+ "title": "IG Little Steps",
+ "ages": "3–6",
+ "color": "#f05d77",
+ "firstPage": 50,
+ "lastPage": 73,
+ "pageCount": 24,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 3"
+  },
+  {
+   "n": 7,
+   "title": "Mission 7 · Pet Planet & Dino Valley"
+  },
+  {
+   "n": 8,
+   "title": "Mission 8 · Toy Moon"
+  },
+  {
+   "n": 9,
+   "title": "Mission 9 · Space Snack Time"
+  }
+ ],
+ "stickerSheet": 73,
+ "pages": [
+  {
+   "n": 50,
+   "id": "p50",
+   "img": "p50.webp",
+   "thumb": "t50.webp",
+   "unit": 0,
+   "title": "Bimestre 3",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 51,
+   "id": "p51",
+   "img": "p51.webp",
+   "thumb": "t51.webp",
+   "unit": 7,
+   "title": "Mission 7 · Pet Planet & Dino Valley",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u7-animal-song",
+     "file": "u7-animal-song.mp3",
+     "title": "Animal Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 52,
+   "id": "p52",
+   "img": "p52.webp",
+   "thumb": "t52.webp",
+   "unit": 7,
+   "title": "Animals",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-animals",
+     "file": "u7-animals.mp3",
+     "title": "Animals! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 53,
+   "id": "p53",
+   "img": "p53.webp",
+   "thumb": "t53.webp",
+   "unit": 7,
+   "title": "What is it?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-what-is-it",
+     "file": "u7-what-is-it.mp3",
+     "title": "What is it? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 54,
+   "id": "p54",
+   "img": "p54.webp",
+   "thumb": "t54.webp",
+   "unit": 7,
+   "title": "Animal sounds",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-sounds",
+     "file": "u7-sounds.mp3",
+     "title": "Animal sounds! Listen and match.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 55,
+   "id": "p55",
+   "img": "p55.webp",
+   "thumb": "t55.webp",
+   "unit": 7,
+   "title": "My pet home",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 56,
+   "id": "p56",
+   "img": "p56.webp",
+   "thumb": "t56.webp",
+   "unit": 7,
+   "title": "Letter G",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 57,
+   "id": "p57",
+   "img": "p57.webp",
+   "thumb": "t57.webp",
+   "unit": 7,
+   "title": "My animals",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-right-or-wrong",
+     "file": "u7-right-or-wrong.mp3",
+     "title": "Right or wrong? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 58,
+   "id": "p58",
+   "img": "p58.webp",
+   "thumb": "t58.webp",
+   "unit": 8,
+   "title": "Mission 8 · Toy Moon",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u8-toy-song",
+     "file": "u8-toy-song.mp3",
+     "title": "Toy Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 59,
+   "id": "p59",
+   "img": "p59.webp",
+   "thumb": "t59.webp",
+   "unit": 8,
+   "title": "Toys",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-toys",
+     "file": "u8-toys.mp3",
+     "title": "Toys! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 60,
+   "id": "p60",
+   "img": "p60.webp",
+   "thumb": "t60.webp",
+   "unit": 8,
+   "title": "Which toy?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-what-toy",
+     "file": "u8-what-toy.mp3",
+     "title": "Which toy? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 61,
+   "id": "p61",
+   "img": "p61.webp",
+   "thumb": "t61.webp",
+   "unit": 8,
+   "title": "Hide and seek!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-hide-and-seek",
+     "file": "u8-hide-and-seek.mp3",
+     "title": "Hide and seek! Listen, find and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 62,
+   "id": "p62",
+   "img": "p62.webp",
+   "thumb": "t62.webp",
+   "unit": 8,
+   "title": "My little house",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 63,
+   "id": "p63",
+   "img": "p63.webp",
+   "thumb": "t63.webp",
+   "unit": 8,
+   "title": "Letter H",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 64,
+   "id": "p64",
+   "img": "p64.webp",
+   "thumb": "t64.webp",
+   "unit": 8,
+   "title": "My toys",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-pip-has",
+     "file": "u8-pip-has.mp3",
+     "title": "What does Pip have? Listen and check.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 65,
+   "id": "p65",
+   "img": "p65.webp",
+   "thumb": "t65.webp",
+   "unit": 9,
+   "title": "Mission 9 · Space Snack Time",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u9-tea-song",
+     "file": "u9-tea-song.mp3",
+     "title": "Snack Time Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 66,
+   "id": "p66",
+   "img": "p66.webp",
+   "thumb": "t66.webp",
+   "unit": 9,
+   "title": "Food",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-food",
+     "file": "u9-food.mp3",
+     "title": "Food! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 67,
+   "id": "p67",
+   "img": "p67.webp",
+   "thumb": "t67.webp",
+   "unit": 9,
+   "title": "What food?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-what-food",
+     "file": "u9-what-food.mp3",
+     "title": "What food? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 68,
+   "id": "p68",
+   "img": "p68.webp",
+   "thumb": "t68.webp",
+   "unit": 9,
+   "title": "I like it!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-like-dont-like",
+     "file": "u9-like-dont-like.mp3",
+     "title": "I like… I don’t like… Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 69,
+   "id": "p69",
+   "img": "p69.webp",
+   "thumb": "t69.webp",
+   "unit": 9,
+   "title": "Snack time!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-set-the-table",
+     "file": "u9-set-the-table.mp3",
+     "title": "Snack time! Listen and stick.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 70,
+   "id": "p70",
+   "img": "p70.webp",
+   "thumb": "t70.webp",
+   "unit": 9,
+   "title": "Letter I",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 71,
+   "id": "p71",
+   "img": "p71.webp",
+   "thumb": "t71.webp",
+   "unit": 9,
+   "title": "Review game",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 72,
+   "id": "p72",
+   "img": "p72.webp",
+   "thumb": "t72.webp",
+   "unit": 9,
+   "title": "I can do it!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 73,
+   "id": "p73",
+   "img": "p73.webp",
+   "thumb": "t73.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "m7-map",
+   "img": "stickers/m7-map.webp",
+   "kind": "m7-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "m7-reward",
+   "img": "stickers/m7-reward.webp",
+   "kind": "m7-reward",
+   "w": 0.1333,
+   "h": 0.0946,
+   "wmm": 28.0,
+   "hmm": 28.1,
+   "pages": [
+    57
+   ],
+   "targets": [
+    {
+     "page": 57,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 57"
+  },
+  {
+   "id": "m7-dog",
+   "img": "stickers/m7-dog.webp",
+   "kind": "m7-dog",
+   "w": 0.0825,
+   "h": 0.0586,
+   "wmm": 17.3,
+   "hmm": 17.4,
+   "pages": [
+    55
+   ],
+   "targets": [
+    {
+     "page": 55,
+     "x": 0.2048,
+     "y": 0.4276
+    }
+   ],
+   "label": "p. 55"
+  },
+  {
+   "id": "m7-fish",
+   "img": "stickers/m7-fish.webp",
+   "kind": "m7-fish",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    55
+   ],
+   "targets": [
+    {
+     "page": 55,
+     "x": 0.5,
+     "y": 0.404
+    }
+   ],
+   "label": "p. 55"
+  },
+  {
+   "id": "m7-bird",
+   "img": "stickers/m7-bird.webp",
+   "kind": "m7-bird",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    55
+   ],
+   "targets": [
+    {
+     "page": 55,
+     "x": 0.7952,
+     "y": 0.3838
+    }
+   ],
+   "label": "p. 55"
+  },
+  {
+   "id": "m8-map",
+   "img": "stickers/m8-map.webp",
+   "kind": "m8-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "m8-reward",
+   "img": "stickers/m8-reward.webp",
+   "kind": "m8-reward",
+   "w": 0.1333,
+   "h": 0.0948,
+   "wmm": 28.0,
+   "hmm": 28.2,
+   "pages": [
+    64
+   ],
+   "targets": [
+    {
+     "page": 64,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 64"
+  },
+  {
+   "id": "m8-doll",
+   "img": "stickers/m8-doll.webp",
+   "kind": "m8-doll",
+   "w": 0.0825,
+   "h": 0.0586,
+   "wmm": 17.3,
+   "hmm": 17.4,
+   "pages": [
+    62
+   ],
+   "targets": [
+    {
+     "page": 62,
+     "x": 0.2333,
+     "y": 0.4057
+    }
+   ],
+   "label": "p. 62"
+  },
+  {
+   "id": "m8-teddy",
+   "img": "stickers/m8-teddy.webp",
+   "kind": "m8-teddy",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    62
+   ],
+   "targets": [
+    {
+     "page": 62,
+     "x": 0.2619,
+     "y": 0.5067
+    }
+   ],
+   "label": "p. 62"
+  },
+  {
+   "id": "m8-ball",
+   "img": "stickers/m8-ball.webp",
+   "kind": "m8-ball",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    62
+   ],
+   "targets": [
+    {
+     "page": 62,
+     "x": 0.7143,
+     "y": 0.436
+    }
+   ],
+   "label": "p. 62"
+  },
+  {
+   "id": "m9-map",
+   "img": "stickers/m9-map.webp",
+   "kind": "m9-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "m9-reward",
+   "img": "stickers/m9-reward.webp",
+   "kind": "m9-reward",
+   "w": 0.1333,
+   "h": 0.0946,
+   "wmm": 28.0,
+   "hmm": 28.1,
+   "pages": [
+    72
+   ],
+   "targets": [
+    {
+     "page": 72,
+     "x": 0.1905,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 72"
+  },
+  {
+   "id": "m9-cake",
+   "img": "stickers/m9-cake.webp",
+   "kind": "m9-cake",
+   "w": 0.0825,
+   "h": 0.0586,
+   "wmm": 17.3,
+   "hmm": 17.4,
+   "pages": [
+    69
+   ],
+   "targets": [
+    {
+     "page": 69,
+     "x": 0.5,
+     "y": 0.4108
+    }
+   ],
+   "label": "p. 69"
+  },
+  {
+   "id": "m9-apple",
+   "img": "stickers/m9-apple.webp",
+   "kind": "m9-apple",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    69
+   ],
+   "targets": [
+    {
+     "page": 69,
+     "x": 0.2952,
+     "y": 0.5185
+    }
+   ],
+   "label": "p. 69"
+  },
+  {
+   "id": "m9-juice",
+   "img": "stickers/m9-juice.webp",
+   "kind": "m9-juice",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    69
+   ],
+   "targets": [
+    {
+     "page": 69,
+     "x": 0.7143,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 69"
+  }
+ ]
+}

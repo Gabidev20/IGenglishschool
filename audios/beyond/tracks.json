@@ -11,34 +11,184 @@
       "file": "u1-warm-up.mp3"
     },
     {
+      "id": "u1x-new-student",
+      "unit": 1,
+      "title": "A New Student. Listen to Davi and Sofia.",
+      "subtitle": "Page 11",
+      "file": "u1x-new-student.mp3"
+    },
+    {
       "id": "u2-warm-up",
       "unit": 2,
       "unitTitle": "My World",
       "title": "Warm-up. Ask and answer with your teacher.",
-      "subtitle": "Page 11",
+      "subtitle": "Page 15",
       "file": "u2-warm-up.mp3"
     },
     {
       "id": "u2-room-tour",
       "unit": 2,
       "title": "Room Tour! Read the room tour.",
-      "subtitle": "Page 12",
+      "subtitle": "Page 16",
       "file": "u2-room-tour.mp3"
+    },
+    {
+      "id": "u2x-neighborhood",
+      "unit": 2,
+      "title": "My Neighborhood. Listen to the forum posts.",
+      "subtitle": "Page 17",
+      "file": "u2x-neighborhood.mp3"
     },
     {
       "id": "u3-warm-up",
       "unit": 3,
       "unitTitle": "Daily Life",
       "title": "Warm-up. Ask and answer with your teacher.",
-      "subtitle": "Page 19",
+      "subtitle": "Page 26",
       "file": "u3-warm-up.mp3"
     },
     {
       "id": "u3-listen-to-maria",
       "unit": 3,
       "title": "How Often? Listen to Maria.",
-      "subtitle": "Page 22",
+      "subtitle": "Page 31",
       "file": "u3-listen-to-maria.mp3"
+    },
+    {
+      "id": "u3x-swimmer",
+      "unit": 3,
+      "title": "Up at 5:15! Listen to the interview.",
+      "subtitle": "Page 28",
+      "file": "u3x-swimmer.mp3"
+    },
+    {
+      "id": "u4-warm-up",
+      "unit": 4,
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 41",
+      "file": "u4-warm-up.mp3"
+    },
+    {
+      "id": "u4-voice-message",
+      "unit": 4,
+      "title": "I’m Playing Right Now! Listen to Theo’s voice message.",
+      "subtitle": "Page 44",
+      "file": "u4-voice-message.mp3"
+    },
+    {
+      "id": "u4x-phone-call",
+      "unit": 4,
+      "title": "Simple or Continuous? Listen to the phone call and check.",
+      "subtitle": "Page 47",
+      "file": "u4x-phone-call.mp3"
+    },
+    {
+      "id": "u5-warm-up",
+      "unit": 5,
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 52",
+      "file": "u5-warm-up.mp3"
+    },
+    {
+      "id": "u5-at-the-cafe",
+      "unit": 5,
+      "title": "At the Café. Listen and complete the conversation.",
+      "subtitle": "Page 59",
+      "file": "u5-at-the-cafe.mp3"
+    },
+    {
+      "id": "u5x-corner-market",
+      "unit": 5,
+      "title": "Store Practice Plus. Listen to Kai at the Corner Market.",
+      "subtitle": "Page 58",
+      "file": "u5x-corner-market.mp3"
+    },
+    {
+      "id": "u6-warm-up",
+      "unit": 6,
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 63",
+      "file": "u6-warm-up.mp3"
+    },
+    {
+      "id": "u6-ella-fitzgerald",
+      "unit": 6,
+      "title": "First Lady of Song. Read and listen to the biography.",
+      "subtitle": "Page 64",
+      "file": "u6-ella-fitzgerald.mp3"
+    },
+    {
+      "id": "u6-story",
+      "unit": 6,
+      "title": "Story Time! Listen to Bia’s story.",
+      "subtitle": "Page 70",
+      "file": "u6-story.mp3"
+    },
+    {
+      "id": "u6x-grandpa-13",
+      "unit": 6,
+      "title": "Grandpa at 13. Read and listen to the interview.",
+      "subtitle": "Page 65",
+      "file": "u6x-grandpa-13.mp3"
+    },
+    {
+      "id": "u7-warm-up",
+      "unit": 7,
+      "unitTitle": "Weather Report",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 78",
+      "file": "u7-warm-up.mp3"
+    },
+    {
+      "id": "u7-radio-forecast",
+      "unit": 7,
+      "title": "The Radio Forecast. Listen to the weather in three cities.",
+      "subtitle": "Page 84",
+      "file": "u7-radio-forecast.mp3"
+    },
+    {
+      "id": "u7-weekend",
+      "unit": 7,
+      "title": "Weekend forecast for Curitiba. Listen and circle.",
+      "subtitle": "Page 84",
+      "file": "u7-weekend.mp3"
+    },
+    {
+      "id": "u7-reporter-model",
+      "unit": 7,
+      "title": "Be the Weather Reporter! Listen to a model report.",
+      "subtitle": "Page 85",
+      "file": "u7-reporter-model.mp3"
+    },
+    {
+      "id": "u8-warm-up",
+      "unit": 8,
+      "unitTitle": "Stories",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 89",
+      "file": "u8-warm-up.mp3"
+    },
+    {
+      "id": "u8-lights-out",
+      "unit": 8,
+      "title": "Lights Out! Read and listen to the story.",
+      "subtitle": "Page 90",
+      "file": "u8-lights-out.mp3"
+    },
+    {
+      "id": "u8-phone-call",
+      "unit": 8,
+      "title": "Detective Questions. Listen to the phone call.",
+      "subtitle": "Page 94",
+      "file": "u8-phone-call.mp3"
+    },
+    {
+      "id": "u8-alibi",
+      "unit": 8,
+      "title": "Alibi! Listen to Detective Kim and the three suspects.",
+      "subtitle": "Page 97",
+      "file": "u8-alibi.mp3"
     }
-  ]
+  ],
+  "_pagesV2": true
 }

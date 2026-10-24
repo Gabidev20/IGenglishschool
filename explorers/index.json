@@ -20,6 +20,14 @@
    "first": 25,
    "last": 47,
    "interactive": true
+  },
+  {
+   "n": 3,
+   "path": "explorers/b3/manifest.json",
+   "pages": 23,
+   "first": 48,
+   "last": 70,
+   "interactive": false
   }
  ]
 }

@@ -1,0 +1,574 @@
+{
+ "v": 1,
+ "book": "explorers",
+ "bimester": 3,
+ "id": "explorers:b3",
+ "title": "IG Explorers",
+ "ages": "7–8",
+ "color": "#6f7d68",
+ "firstPage": 48,
+ "lastPage": 70,
+ "pageCount": 23,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 3"
+  },
+  {
+   "n": 7,
+   "title": "Unit 7 · Robot Factory"
+  },
+  {
+   "n": 8,
+   "title": "Unit 8 · Animal Rescue Island"
+  },
+  {
+   "n": 9,
+   "title": "Unit 9 · Food Truck Street"
+  }
+ ],
+ "stickerSheet": 70,
+ "pages": [
+  {
+   "n": 48,
+   "id": "p48",
+   "img": "p48.webp",
+   "thumb": "t48.webp",
+   "unit": 0,
+   "title": "Bimestre 3",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 49,
+   "id": "p49",
+   "img": "p49.webp",
+   "thumb": "t49.webp",
+   "unit": 7,
+   "title": "Unit 7 · Robot Factory",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u7-robot-chant",
+     "file": "u7-robot-chant.mp3",
+     "title": "The Robot Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 50,
+   "id": "p50",
+   "img": "p50.webp",
+   "thumb": "t50.webp",
+   "unit": 7,
+   "title": "Discover: robot parts",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-robot-parts",
+     "file": "u7-robot-parts.mp3",
+     "title": "Robot parts",
+     "available": true
+    },
+    {
+     "track": "u7-big-small",
+     "file": "u7-big-small.mp3",
+     "title": "Long, short, big, small",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 51,
+   "id": "p51",
+   "img": "p51.webp",
+   "thumb": "t51.webp",
+   "unit": 7,
+   "title": "Practice: have or has",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 52,
+   "id": "p52",
+   "img": "p52.webp",
+   "thumb": "t52.webp",
+   "unit": 7,
+   "title": "Practice: which robot?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-which-robot",
+     "file": "u7-which-robot.mp3",
+     "title": "Which Robot? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 53,
+   "id": "p53",
+   "img": "p53.webp",
+   "thumb": "t53.webp",
+   "unit": 7,
+   "title": "Use: build my robot",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 54,
+   "id": "p54",
+   "img": "p54.webp",
+   "thumb": "t54.webp",
+   "unit": 7,
+   "title": "Play: robot games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 55,
+   "id": "p55",
+   "img": "p55.webp",
+   "thumb": "t55.webp",
+   "unit": 7,
+   "title": "Review: robot check",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-listen-and-write",
+     "file": "u7-listen-and-write.mp3",
+     "title": "Listen and write.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 56,
+   "id": "p56",
+   "img": "p56.webp",
+   "thumb": "t56.webp",
+   "unit": 8,
+   "title": "Unit 8 · Animal Rescue Island",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u8-rescue-chant",
+     "file": "u8-rescue-chant.mp3",
+     "title": "The Rescue Island Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 57,
+   "id": "p57",
+   "img": "p57.webp",
+   "thumb": "t57.webp",
+   "unit": 8,
+   "title": "Discover: island animals",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-animals",
+     "file": "u8-animals.mp3",
+     "title": "Island animals",
+     "available": true
+    },
+    {
+     "track": "u8-actions",
+     "file": "u8-actions.mp3",
+     "title": "Fly, swim, run, jump",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 58,
+   "id": "p58",
+   "img": "p58.webp",
+   "thumb": "t58.webp",
+   "unit": 8,
+   "title": "Practice: it can, it can’t",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 59,
+   "id": "p59",
+   "img": "p59.webp",
+   "thumb": "t59.webp",
+   "unit": 8,
+   "title": "Practice: can it?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-can-it",
+     "file": "u8-can-it.mp3",
+     "title": "Can It? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 60,
+   "id": "p60",
+   "img": "p60.webp",
+   "thumb": "t60.webp",
+   "unit": 8,
+   "title": "Use: my fact card",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 61,
+   "id": "p61",
+   "img": "p61.webp",
+   "thumb": "t61.webp",
+   "unit": 8,
+   "title": "Play: rescue games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 62,
+   "id": "p62",
+   "img": "p62.webp",
+   "thumb": "t62.webp",
+   "unit": 8,
+   "title": "Review: rescue check",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-listen-and-write",
+     "file": "u8-listen-and-write.mp3",
+     "title": "Listen and write.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 63,
+   "id": "p63",
+   "img": "p63.webp",
+   "thumb": "t63.webp",
+   "unit": 9,
+   "title": "Unit 9 · Food Truck Street",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u9-food-truck-chant",
+     "file": "u9-food-truck-chant.mp3",
+     "title": "The Food Truck Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 64,
+   "id": "p64",
+   "img": "p64.webp",
+   "thumb": "t64.webp",
+   "unit": 9,
+   "title": "Discover: food and drinks",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-foods",
+     "file": "u9-foods.mp3",
+     "title": "Food",
+     "available": true
+    },
+    {
+     "track": "u9-drinks",
+     "file": "u9-drinks.mp3",
+     "title": "Drinks",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 65,
+   "id": "p65",
+   "img": "p65.webp",
+   "thumb": "t65.webp",
+   "unit": 9,
+   "title": "Practice: I like, I don’t like",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 66,
+   "id": "p66",
+   "img": "p66.webp",
+   "thumb": "t66.webp",
+   "unit": 9,
+   "title": "Practice: do you like?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-do-you-like",
+     "file": "u9-do-you-like.mp3",
+     "title": "Do You Like…? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 67,
+   "id": "p67",
+   "img": "p67.webp",
+   "thumb": "t67.webp",
+   "unit": 9,
+   "title": "Use: my food truck menu",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 68,
+   "id": "p68",
+   "img": "p68.webp",
+   "thumb": "t68.webp",
+   "unit": 9,
+   "title": "Review Camp: board game",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-listen-and-write",
+     "file": "u9-listen-and-write.mp3",
+     "title": "Listen and write.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 69,
+   "id": "p69",
+   "img": "p69.webp",
+   "thumb": "t69.webp",
+   "unit": 9,
+   "title": "Review Camp: check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 70,
+   "id": "p70",
+   "img": "p70.webp",
+   "thumb": "t70.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "map7",
+   "img": "stickers/map7.webp",
+   "kind": "map7",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.35,
+     "y": 0.5976
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "power7",
+   "img": "stickers/power7.webp",
+   "kind": "power7",
+   "w": 0.0667,
+   "h": 0.0474,
+   "wmm": 14.0,
+   "hmm": 14.1,
+   "pages": [
+    53
+   ],
+   "targets": [
+    {
+     "page": 53,
+     "x": 0.1476,
+     "y": 0.5791
+    }
+   ],
+   "label": "p. 53"
+  },
+  {
+   "id": "reward7",
+   "img": "stickers/reward7.webp",
+   "kind": "reward7",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    55
+   ],
+   "targets": [
+    {
+     "page": 55,
+     "x": 0.4762,
+     "y": 0.8451
+    }
+   ],
+   "label": "p. 55"
+  },
+  {
+   "id": "map8",
+   "img": "stickers/map8.webp",
+   "kind": "map8",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6119,
+     "y": 0.5976
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "rex8",
+   "img": "stickers/rex8.webp",
+   "kind": "rex8",
+   "w": 0.1048,
+   "h": 0.0609,
+   "wmm": 22.0,
+   "hmm": 18.1,
+   "pages": [
+    60
+   ],
+   "targets": [
+    {
+     "page": 60,
+     "x": 0.2762,
+     "y": 0.6061
+    }
+   ],
+   "label": "p. 60"
+  },
+  {
+   "id": "reward8",
+   "img": "stickers/reward8.webp",
+   "kind": "reward8",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    62
+   ],
+   "targets": [
+    {
+     "page": 62,
+     "x": 0.4762,
+     "y": 0.8451
+    }
+   ],
+   "label": "p. 62"
+  },
+  {
+   "id": "map9",
+   "img": "stickers/map9.webp",
+   "kind": "map9",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.8738,
+     "y": 0.5976
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "truck9",
+   "img": "stickers/truck9.webp",
+   "kind": "truck9",
+   "w": 0.1429,
+   "h": 0.0744,
+   "wmm": 30.0,
+   "hmm": 22.1,
+   "pages": [
+    67
+   ],
+   "targets": [
+    {
+     "page": 67,
+     "x": 0.219,
+     "y": 0.3636
+    }
+   ],
+   "label": "p. 67"
+  },
+  {
+   "id": "reward9",
+   "img": "stickers/reward9.webp",
+   "kind": "reward9",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    69
+   ],
+   "targets": [
+    {
+     "page": 69,
+     "x": 0.419,
+     "y": 0.862
+    }
+   ],
+   "label": "p. 69"
+  }
+ ]
+}

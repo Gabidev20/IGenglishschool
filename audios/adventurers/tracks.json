@@ -46,6 +46,65 @@
       "title": "Sam’s Family. A · Listen and write.",
       "subtitle": "Page 20",
       "file": "u3-sams-family.mp3"
+    },
+    {
+      "id": "u4-club-chant",
+      "unit": 4,
+      "unitTitle": "Science Academy",
+      "title": "Club Chant: Science Academy!",
+      "subtitle": "Page 29",
+      "file": "u4-club-chant.mp3"
+    },
+    {
+      "id": "u4-listen-and-number",
+      "unit": 4,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 30",
+      "file": "u4-listen-and-number.mp3"
+    },
+    {
+      "id": "u5-club-chant",
+      "unit": 5,
+      "unitTitle": "Detective Case",
+      "title": "Club Chant: Who Is It?",
+      "subtitle": "Page 37",
+      "file": "u5-club-chant.mp3"
+    },
+    {
+      "id": "u5-listen-and-number",
+      "unit": 5,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 38",
+      "file": "u5-listen-and-number.mp3"
+    },
+    {
+      "id": "u5-comic",
+      "unit": 5,
+      "title": "The Missing Camera (comic)",
+      "subtitle": "Page 41",
+      "file": "u5-comic.mp3"
+    },
+    {
+      "id": "u6-club-chant",
+      "unit": 6,
+      "unitTitle": "Animal Rescue",
+      "title": "Club Chant: Animal Rescue!",
+      "subtitle": "Page 45",
+      "file": "u6-club-chant.mp3"
+    },
+    {
+      "id": "u6-listen-and-number",
+      "unit": 6,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 46",
+      "file": "u6-listen-and-number.mp3"
+    },
+    {
+      "id": "u6-fact-files",
+      "unit": 6,
+      "title": "Animal Fact Files",
+      "subtitle": "Page 49",
+      "file": "u6-fact-files.mp3"
     }
   ]
 }

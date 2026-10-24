@@ -56,8 +56,8 @@
     {
      "track": "u4-club-chant",
      "file": "u4-club-chant.mp3",
-     "title": "Level 4 opener (Science Academy) – “Club Chant: Science Acad",
-     "available": false
+     "title": "Club Chant: Science Academy!",
+     "available": true
     }
    ],
    "interactive": null
@@ -74,8 +74,8 @@
     {
      "track": "u4-listen-and-number",
      "file": "u4-listen-and-number.mp3",
-     "title": "Lesson 1 · Discover – “School Subjects”, exercise A (Listen ",
-     "available": false
+     "title": "A · Listen and number.",
+     "available": true
     }
    ],
    "interactive": null
@@ -158,8 +158,8 @@
     {
      "track": "u5-club-chant",
      "file": "u5-club-chant.mp3",
-     "title": "Level 5 opener (Detective Case) – “Club Chant: Who Is It?” b",
-     "available": false
+     "title": "Club Chant: Who Is It?",
+     "available": true
     }
    ],
    "interactive": null
@@ -176,8 +176,8 @@
     {
      "track": "u5-listen-and-number",
      "file": "u5-listen-and-number.mp3",
-     "title": "Lesson 1 · Discover – “Looks”, exercise A (Listen and number",
-     "available": false
+     "title": "A · Listen and number.",
+     "available": true
     }
    ],
    "interactive": null
@@ -188,7 +188,7 @@
    "img": "p39.webp",
    "thumb": "t39.webp",
    "unit": 5,
-   "title": "Practice: have got and has got",
+   "title": "Practice: have and has",
    "kind": "page",
    "audio": [],
    "interactive": null
@@ -216,8 +216,8 @@
     {
      "track": "u5-comic",
      "file": "u5-comic.mp3",
-     "title": "Lesson 3 · Use – “The Missing Camera” comic (Listen and read",
-     "available": false
+     "title": "The Missing Camera (comic)",
+     "available": true
     }
    ],
    "interactive": null
@@ -267,8 +267,8 @@
     {
      "track": "u6-club-chant",
      "file": "u6-club-chant.mp3",
-     "title": "Level 6 opener (Animal Rescue) – “Club Chant: Animal Rescue!",
-     "available": false
+     "title": "Club Chant: Animal Rescue!",
+     "available": true
     }
    ],
    "interactive": null
@@ -285,8 +285,8 @@
     {
      "track": "u6-listen-and-number",
      "file": "u6-listen-and-number.mp3",
-     "title": "Lesson 1 · Discover – “Amazing Animals”, exercise A (Listen ",
-     "available": false
+     "title": "A · Listen and number.",
+     "available": true
     }
    ],
    "interactive": null
@@ -325,8 +325,8 @@
     {
      "track": "u6-fact-files",
      "file": "u6-fact-files.mp3",
-     "title": "Lesson 3 · Use – “Animal Fact Files” (Listen and read the fa",
-     "available": false
+     "title": "Animal Fact Files",
+     "available": true
     }
    ],
    "interactive": null

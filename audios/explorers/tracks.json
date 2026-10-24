@@ -196,6 +196,114 @@
       "title": "Review Camp. Listen and write.",
       "subtitle": "Page 45",
       "file": "u6-listen-and-write.mp3"
+    },
+    {
+      "id": "u7-robot-chant",
+      "unit": 7,
+      "unitTitle": "Robot Factory",
+      "title": "The Robot Chant",
+      "subtitle": "Page 49",
+      "file": "u7-robot-chant.mp3"
+    },
+    {
+      "id": "u7-robot-parts",
+      "unit": 7,
+      "title": "Robot parts. Listen, point and say.",
+      "subtitle": "Page 50",
+      "file": "u7-robot-parts.mp3"
+    },
+    {
+      "id": "u7-big-small",
+      "unit": 7,
+      "title": "Long, short, big, small. Listen, point and say.",
+      "subtitle": "Page 50",
+      "file": "u7-big-small.mp3"
+    },
+    {
+      "id": "u7-which-robot",
+      "unit": 7,
+      "title": "Which Robot? Listen and circle.",
+      "subtitle": "Page 52",
+      "file": "u7-which-robot.mp3"
+    },
+    {
+      "id": "u7-listen-and-write",
+      "unit": 7,
+      "title": "Listen and write.",
+      "subtitle": "Page 55",
+      "file": "u7-listen-and-write.mp3"
+    },
+    {
+      "id": "u8-rescue-chant",
+      "unit": 8,
+      "unitTitle": "Animal Rescue Island",
+      "title": "The Rescue Island Chant",
+      "subtitle": "Page 56",
+      "file": "u8-rescue-chant.mp3"
+    },
+    {
+      "id": "u8-animals",
+      "unit": 8,
+      "title": "Island animals. Listen, point and say.",
+      "subtitle": "Page 57",
+      "file": "u8-animals.mp3"
+    },
+    {
+      "id": "u8-actions",
+      "unit": 8,
+      "title": "Fly, swim, run, jump. Listen, point and say.",
+      "subtitle": "Page 57",
+      "file": "u8-actions.mp3"
+    },
+    {
+      "id": "u8-can-it",
+      "unit": 8,
+      "title": "Can It? Listen and circle.",
+      "subtitle": "Page 59",
+      "file": "u8-can-it.mp3"
+    },
+    {
+      "id": "u8-listen-and-write",
+      "unit": 8,
+      "title": "Listen and write.",
+      "subtitle": "Page 62",
+      "file": "u8-listen-and-write.mp3"
+    },
+    {
+      "id": "u9-food-truck-chant",
+      "unit": 9,
+      "unitTitle": "Food Truck Street",
+      "title": "The Food Truck Chant",
+      "subtitle": "Page 63",
+      "file": "u9-food-truck-chant.mp3"
+    },
+    {
+      "id": "u9-foods",
+      "unit": 9,
+      "title": "Food. Listen, point and say.",
+      "subtitle": "Page 64",
+      "file": "u9-foods.mp3"
+    },
+    {
+      "id": "u9-drinks",
+      "unit": 9,
+      "title": "Drinks. Listen, point and say.",
+      "subtitle": "Page 64",
+      "file": "u9-drinks.mp3"
+    },
+    {
+      "id": "u9-do-you-like",
+      "unit": 9,
+      "title": "Do You Like…? Listen and circle.",
+      "subtitle": "Page 66",
+      "file": "u9-do-you-like.mp3"
+    },
+    {
+      "id": "u9-listen-and-write",
+      "unit": 9,
+      "title": "Listen and write.",
+      "subtitle": "Page 68",
+      "file": "u9-listen-and-write.mp3"
     }
   ]
 }

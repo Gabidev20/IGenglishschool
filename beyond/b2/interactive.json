@@ -5,7 +5,7 @@
  "bimester": 2,
  "note": "Auto-checked exercises (phase 2). Positions from the book sources (ix_b2_beyond.py); answers from the teacher's guide.",
  "pages": {
-  "32": {
+  "42": {
    "items": [
     {
      "id": "tf1",
@@ -165,7 +165,227 @@
     }
    ]
   },
-  "33": {
+  "43": {
+   "items": [
+    {
+     "id": "tf1",
+     "type": "fill",
+     "x": 98,
+     "y": 182.6,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf2",
+     "type": "fill",
+     "x": 98,
+     "y": 190.8,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf3",
+     "type": "fill",
+     "x": 98,
+     "y": 199,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf4",
+     "type": "fill",
+     "x": 98,
+     "y": 207.2,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf5",
+     "type": "fill",
+     "x": 98,
+     "y": 215.4,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf6",
+     "type": "fill",
+     "x": 98,
+     "y": 223.6,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "a1",
+     "type": "fill",
+     "x": 113.2,
+     "y": 187.8,
+     "w": 81.6,
+     "h": 5.6,
+     "accept": [
+      "a racing game",
+      "racing game",
+      "a racing game on his tablet",
+      "racing",
+      "Davi is playing a racing game",
+      "He is playing a racing game",
+      "He's playing a racing game"
+     ],
+     "size": 4.2,
+     "hint": "1. What is Davi playing?"
+    },
+    {
+     "id": "a2",
+     "type": "fill",
+     "x": 113.2,
+     "y": 199.0,
+     "w": 81.6,
+     "h": 5.6,
+     "accept": [
+      "Maya",
+      "Maya is",
+      "Maya is baking cookies",
+      "Maya and her grandma",
+      "Maya with her grandma"
+     ],
+     "size": 4.2,
+     "hint": "2. Who is baking cookies?"
+    },
+    {
+     "id": "a3",
+     "type": "fill",
+     "x": 113.2,
+     "y": 210.2,
+     "w": 81.6,
+     "h": 5.6,
+     "accept": [
+      "a soccer game",
+      "soccer game",
+      "soccer",
+      "a soccer game with his dad",
+      "soccer with his dad",
+      "Kai is watching a soccer game",
+      "He is watching a soccer game",
+      "He's watching a soccer game"
+     ],
+     "size": 4.2,
+     "hint": "3. What is Kai watching?"
+    },
+    {
+     "id": "a4",
+     "type": "fill",
+     "x": 113.2,
+     "y": 221.4,
+     "w": 81.6,
+     "h": 5.6,
+     "accept": [
+      "5:00",
+      "at 5:00",
+      "5",
+      "at 5",
+      "5 o'clock",
+      "at 5 o'clock",
+      "5:00 PM",
+      "at 5:00 PM",
+      "5 PM",
+      "at 5 PM",
+      "five",
+      "at five"
+     ],
+     "size": 4.2,
+     "hint": "4. What time do they want to play?"
+    },
+    {
+     "id": "w1",
+     "type": "fill",
+     "x": 74,
+     "y": 252.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "b"
+     ],
+     "size": 5,
+     "hint": "Write a (Bia), b (Davi), c (Kai) or d (Maya)"
+    },
+    {
+     "id": "w2",
+     "type": "fill",
+     "x": 166,
+     "y": 252.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "d"
+     ],
+     "size": 5,
+     "hint": "Write a (Bia), b (Davi), c (Kai) or d (Maya)"
+    },
+    {
+     "id": "w3",
+     "type": "fill",
+     "x": 74,
+     "y": 260.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "a"
+     ],
+     "size": 5,
+     "hint": "Write a (Bia), b (Davi), c (Kai) or d (Maya)"
+    },
+    {
+     "id": "w4",
+     "type": "fill",
+     "x": 166,
+     "y": 260.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "c"
+     ],
+     "size": 5,
+     "hint": "Write a (Bia), b (Davi), c (Kai) or d (Maya)"
+    }
+   ]
+  },
+  "44": {
    "items": [
     {
      "id": "ing1",
@@ -360,7 +580,421 @@
     }
    ]
   },
-  "34": {
+  "45": {
+   "items": [
+    {
+     "id": "k1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 33.97,
+       "y": 57.4,
+       "w": 13.91,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 50.52,
+       "y": 57.4,
+       "w": 16.05,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 124.16,
+       "y": 57.4,
+       "w": 13.89,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 140.7,
+       "y": 57.4,
+       "w": 15.39,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 33.93,
+       "y": 63.9,
+       "w": 18.33,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 54.9,
+       "y": 63.9,
+       "w": 15.86,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 127.25,
+       "y": 63.9,
+       "w": 16.87,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 146.76,
+       "y": 63.9,
+       "w": 14.7,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 32.44,
+       "y": 70.4,
+       "w": 16.67,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 51.75,
+       "y": 70.4,
+       "w": 14.3,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 127.27,
+       "y": 70.4,
+       "w": 17.1,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 147.02,
+       "y": 70.4,
+       "w": 19.47,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k7",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 32.91,
+       "y": 76.9,
+       "w": 12.93,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 48.49,
+       "y": 76.9,
+       "w": 15.16,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k8",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 126.11,
+       "y": 76.9,
+       "w": 16.0,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 144.76,
+       "y": 76.9,
+       "w": 18.37,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "b1",
+     "type": "fill",
+     "x": 36.78,
+     "y": 104.2,
+     "w": 26.03,
+     "h": 6.16,
+     "accept": [
+      "is playing",
+      "'s playing"
+     ],
+     "size": 3.9,
+     "hint": "1. Kai __________ (play) soccer."
+    },
+    {
+     "id": "b2",
+     "type": "fill",
+     "x": 131.48,
+     "y": 104.2,
+     "w": 26.03,
+     "h": 5.9,
+     "accept": [
+      "is reading",
+      "'s reading"
+     ],
+     "size": 3.9,
+     "hint": "2. Nina __________ (read) a book."
+    },
+    {
+     "id": "b3",
+     "type": "fill",
+     "x": 40.56,
+     "y": 114.4,
+     "w": 26.04,
+     "h": 6.16,
+     "accept": [
+      "is cooking",
+      "'s cooking"
+     ],
+     "size": 3.9,
+     "hint": "3. Hugo __________ (cook) pasta."
+    },
+    {
+     "id": "b4",
+     "type": "fill",
+     "x": 130.99,
+     "y": 114.4,
+     "w": 26.03,
+     "h": 5.9,
+     "accept": [
+      "is taking",
+      "'s taking"
+     ],
+     "size": 3.9,
+     "hint": "4. Yuki __________ (take) photos."
+    },
+    {
+     "id": "b5",
+     "type": "fill",
+     "x": 59.82,
+     "y": 124.6,
+     "w": 26.03,
+     "h": 6.16,
+     "accept": [
+      "are singing",
+      "'re singing"
+     ],
+     "size": 3.9,
+     "hint": "5. Mateo and Luna __________ (sing)."
+    },
+    {
+     "id": "b6",
+     "type": "fill",
+     "x": 124.96,
+     "y": 124.6,
+     "w": 26.03,
+     "h": 6.16,
+     "accept": [
+      "am playing",
+      "'m playing"
+     ],
+     "size": 3.9,
+     "hint": "6. I __________ (play) a game."
+    },
+    {
+     "id": "c1",
+     "type": "fill",
+     "x": 143.2,
+     "y": 151.3,
+     "w": 51.6,
+     "h": 5.6,
+     "accept": [
+      "Yes, she is",
+      "Yes she is"
+     ],
+     "size": 4.4,
+     "hint": "1. Is Mia watching TV?"
+    },
+    {
+     "id": "c2",
+     "type": "fill",
+     "x": 139.2,
+     "y": 156.85,
+     "w": 55.6,
+     "h": 5.6,
+     "accept": [
+      "No, he isn't",
+      "No, he is not",
+      "No he isn't",
+      "No he is not"
+     ],
+     "size": 4.4,
+     "hint": "2. Is Lucas reading?"
+    },
+    {
+     "id": "c3",
+     "type": "fill",
+     "x": 143.8,
+     "y": 162.4,
+     "w": 51.0,
+     "h": 5.6,
+     "accept": [
+      "No, she isn't",
+      "No, she is not",
+      "No she isn't",
+      "No she is not"
+     ],
+     "size": 4.4,
+     "hint": "3. Is Ana watching TV?"
+    },
+    {
+     "id": "c4",
+     "type": "fill",
+     "x": 137.7,
+     "y": 167.95,
+     "w": 57.1,
+     "h": 5.6,
+     "accept": [
+      "Yes, he is",
+      "Yes he is"
+     ],
+     "size": 4.4,
+     "hint": "4. Is Theo reading?"
+    },
+    {
+     "id": "c5",
+     "type": "fill",
+     "x": 152.6,
+     "y": 173.5,
+     "w": 42.2,
+     "h": 5.6,
+     "accept": [
+      "Yes, he is",
+      "Yes he is"
+     ],
+     "size": 4.4,
+     "hint": "5. Is Lucas playing a game?"
+    },
+    {
+     "id": "c6",
+     "type": "fill",
+     "x": 153.1,
+     "y": 179.05,
+     "w": 41.7,
+     "h": 5.6,
+     "accept": [
+      "No, they aren't",
+      "No, they are not",
+      "No they aren't",
+      "No they are not"
+     ],
+     "size": 4.4,
+     "hint": "6. Are Ana and Mia reading?"
+    },
+    {
+     "id": "o1",
+     "type": "fill",
+     "x": 93.2,
+     "y": 206.5,
+     "w": 101.6,
+     "h": 5.6,
+     "accept": [
+      "Maya is watching a video",
+      "Maya's watching a video"
+     ],
+     "size": 4.2,
+     "hint": "1. watching / Maya / is / a / video"
+    },
+    {
+     "id": "o2",
+     "type": "fill",
+     "x": 93.2,
+     "y": 214.1,
+     "w": 101.6,
+     "h": 5.6,
+     "accept": [
+      "Theo isn't doing his homework",
+      "Theo is not doing his homework"
+     ],
+     "size": 4.2,
+     "hint": "2. isn't / his / Theo / doing / homework"
+    },
+    {
+     "id": "o3",
+     "type": "fill",
+     "x": 93.2,
+     "y": 221.7,
+     "w": 101.6,
+     "h": 5.6,
+     "accept": [
+      "The dogs are playing outside"
+     ],
+     "size": 4.2,
+     "hint": "3. are / playing / The / dogs / outside"
+    },
+    {
+     "id": "o4",
+     "type": "fill",
+     "x": 93.2,
+     "y": 229.3,
+     "w": 101.6,
+     "h": 5.6,
+     "accept": [
+      "Are you chatting online"
+     ],
+     "size": 4.2,
+     "hint": "4. chatting / you / Are / online"
+    },
+    {
+     "id": "o5",
+     "type": "fill",
+     "x": 93.2,
+     "y": 236.9,
+     "w": 101.6,
+     "h": 5.6,
+     "accept": [
+      "I'm not watching TV",
+      "I am not watching TV"
+     ],
+     "size": 4.2,
+     "hint": "5. I'm / TV / watching / not"
+    }
+   ]
+  },
+  "46": {
    "items": [
     {
      "id": "k1",
@@ -577,7 +1211,444 @@
     }
    ]
   },
-  "38": {
+  "47": {
+   "items": [
+    {
+     "id": "s1",
+     "type": "fill",
+     "x": 50,
+     "y": 57.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "C"
+     ],
+     "size": 5,
+     "hint": "these days: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s2",
+     "type": "fill",
+     "x": 94.5,
+     "y": 57.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "S"
+     ],
+     "size": 5,
+     "hint": "usually: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s3",
+     "type": "fill",
+     "x": 139,
+     "y": 57.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "C"
+     ],
+     "size": 5,
+     "hint": "Look!: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s4",
+     "type": "fill",
+     "x": 183.5,
+     "y": 57.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "S"
+     ],
+     "size": 5,
+     "hint": "every day: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s5",
+     "type": "fill",
+     "x": 50,
+     "y": 65.7,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "C"
+     ],
+     "size": 5,
+     "hint": "at the moment: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s6",
+     "type": "fill",
+     "x": 94.5,
+     "y": 65.7,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "S"
+     ],
+     "size": 5,
+     "hint": "never: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s7",
+     "type": "fill",
+     "x": 139,
+     "y": 65.7,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "C"
+     ],
+     "size": 5,
+     "hint": "right now: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "s8",
+     "type": "fill",
+     "x": 183.5,
+     "y": 65.7,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "S"
+     ],
+     "size": 5,
+     "hint": "on weekends: S (present simple) or C (present continuous)?"
+    },
+    {
+     "id": "k1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47.01,
+       "y": 94.8,
+       "w": 10.55,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 60.09,
+       "y": 94.8,
+       "w": 18.72,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 30.49,
+       "y": 101.2,
+       "w": 11.42,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 44.44,
+       "y": 101.2,
+       "w": 19.61,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 28.56,
+       "y": 107.6,
+       "w": 20.72,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 51.81,
+       "y": 107.6,
+       "w": 12.64,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 41.41,
+       "y": 114.0,
+       "w": 9.64,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 53.59,
+       "y": 114.0,
+       "w": 22.77,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 20.54,
+       "y": 120.4,
+       "w": 7.88,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 30.96,
+       "y": 120.4,
+       "w": 6.76,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 53.25,
+       "y": 126.8,
+       "w": 21.09,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 76.87,
+       "y": 126.8,
+       "w": 12.94,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "c1a",
+     "type": "fill",
+     "x": 63.62,
+     "y": 154.36,
+     "w": 15.68,
+     "h": 5.63,
+     "accept": [
+      "are"
+     ],
+     "size": 3.8,
+     "hint": "LunaHi, Mateo! What ______ you ____________ (do) right now?"
+    },
+    {
+     "id": "c1b",
+     "type": "fill",
+     "x": 86.32,
+     "y": 154.36,
+     "w": 30.16,
+     "h": 5.63,
+     "accept": [
+      "doing"
+     ],
+     "size": 3.8,
+     "hint": "LunaHi, Mateo! What ______ you ____________ (do) right now?"
+    },
+    {
+     "id": "c2",
+     "type": "fill",
+     "x": 53.91,
+     "y": 161.06,
+     "w": 34.99,
+     "h": 5.63,
+     "accept": [
+      "'m watching",
+      "am watching",
+      "I'm watching"
+     ],
+     "size": 3.8,
+     "hint": "MateoHi, Luna! I ______________ (watch) a soccer game with my dad."
+    },
+    {
+     "id": "c3",
+     "type": "fill",
+     "x": 44.76,
+     "y": 167.76,
+     "w": 15.68,
+     "h": 5.63,
+     "accept": [
+      "Do"
+     ],
+     "size": 3.8,
+     "hint": "LunaCool! ______ you play soccer, too?"
+    },
+    {
+     "id": "c4",
+     "type": "fill",
+     "x": 63.24,
+     "y": 174.46,
+     "w": 34.99,
+     "h": 5.63,
+     "accept": [
+      "'m not playing",
+      "am not playing",
+      "I'm not playing"
+     ],
+     "size": 3.8,
+     "hint": "MateoYes, but today I ______________ (not / play). It’s raining!"
+    },
+    {
+     "id": "c5a",
+     "type": "fill",
+     "x": 49.88,
+     "y": 181.16,
+     "w": 20.51,
+     "h": 5.63,
+     "accept": [
+      "want"
+     ],
+     "size": 3.8,
+     "hint": "LunaOh no! I ________ (want) to go out, but my sister ____________ (use) my bike!"
+    },
+    {
+     "id": "c5b",
+     "type": "fill",
+     "x": 122.35,
+     "y": 181.16,
+     "w": 30.17,
+     "h": 5.63,
+     "accept": [
+      "is using"
+     ],
+     "size": 3.8,
+     "hint": "LunaOh no! I ________ (want) to go out, but my sister ____________ (use) my bike!"
+    },
+    {
+     "id": "c6",
+     "type": "fill",
+     "x": 81.14,
+     "y": 187.86,
+     "w": 20.52,
+     "h": 5.63,
+     "accept": [
+      "know"
+     ],
+     "size": 3.8,
+     "hint": "MateoLet’s play a game online! I ________ (know) a great one."
+    },
+    {
+     "id": "c7",
+     "type": "fill",
+     "x": 45.61,
+     "y": 194.56,
+     "w": 20.51,
+     "h": 5.63,
+     "accept": [
+      "love"
+     ],
+     "size": 3.8,
+     "hint": "LunaYes! I ________ (love) video games. See you at 4:00!"
+    },
+    {
+     "id": "m1",
+     "type": "fill",
+     "x": 103.2,
+     "y": 221.9,
+     "w": 91.6,
+     "h": 5.6,
+     "accept": [
+      "wants",
+      "Ana wants a new tablet"
+     ],
+     "size": 4.2,
+     "hint": "1. Ana is wanting a new tablet.  (is wanting ->)"
+    },
+    {
+     "id": "m2",
+     "type": "fill",
+     "x": 103.2,
+     "y": 229.2,
+     "w": 91.6,
+     "h": 5.6,
+     "accept": [
+      "is playing",
+      "My brother is playing a game",
+      "Look! My brother is playing a game"
+     ],
+     "size": 4.2,
+     "hint": "2. Look! My brother plays a game.  (plays ->)"
+    },
+    {
+     "id": "m3",
+     "type": "fill",
+     "x": 103.2,
+     "y": 236.5,
+     "w": 91.6,
+     "h": 5.6,
+     "accept": [
+      "are watching",
+      "We are watching a funny video"
+     ],
+     "size": 4.2,
+     "hint": "3. We are watch a funny video.  (are watch ->)"
+    },
+    {
+     "id": "m4",
+     "type": "fill",
+     "x": 103.2,
+     "y": 243.8,
+     "w": 91.6,
+     "h": 5.6,
+     "accept": [
+      "I don't know",
+      "don't know",
+      "I do not know",
+      "do not know",
+      "I don't know the answer"
+     ],
+     "size": 4.2,
+     "hint": "4. I'm not knowing the answer.  (I'm not knowing ->)"
+    },
+    {
+     "id": "m5",
+     "type": "fill",
+     "x": 103.2,
+     "y": 251.1,
+     "w": 91.6,
+     "h": 5.6,
+     "accept": [
+      "Are you playing",
+      "Are you playing online right now"
+     ],
+     "size": 4.2,
+     "hint": "5. Do you playing online right now?  (Do you playing ->)"
+    }
+   ],
+   "listen": [
+    {
+     "track": "u4x-phone-call",
+     "x": 169.93,
+     "y": 139.32,
+     "r": 4.5
+    }
+   ]
+  },
+  "51": {
    "items": [
     {
      "id": "q1",
@@ -707,7 +1778,7 @@
     }
    ]
   },
-  "40": {
+  "53": {
    "items": [
     {
      "id": "tf1",
@@ -849,7 +1920,240 @@
     }
    ]
   },
-  "41": {
+  "54": {
+   "items": [
+    {
+     "id": "tf1",
+     "type": "fill",
+     "x": 94,
+     "y": 181.3,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf2",
+     "type": "fill",
+     "x": 94,
+     "y": 188.9,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf3",
+     "type": "fill",
+     "x": 94,
+     "y": 196.5,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf4",
+     "type": "fill",
+     "x": 94,
+     "y": 204.1,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf5",
+     "type": "fill",
+     "x": 94,
+     "y": 211.7,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf6",
+     "type": "fill",
+     "x": 94,
+     "y": 219.3,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "ans1",
+     "type": "fill",
+     "x": 111.2,
+     "y": 182.7,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "milk",
+      "they drink milk",
+      "the students drink milk"
+     ],
+     "size": 4.2,
+     "hint": "1. What do the students at Yuki's school drink?"
+    },
+    {
+     "id": "ans2",
+     "type": "fill",
+     "x": 111.2,
+     "y": 193.1,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "water",
+      "he drinks water",
+      "he drinks a lot of water",
+      "a lot of water"
+     ],
+     "size": 4.2,
+     "hint": "2. What does Davi drink a lot of?"
+    },
+    {
+     "id": "ans3",
+     "type": "fill",
+     "x": 111.2,
+     "y": 203.5,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "an apple",
+      "apple",
+      "she brings an apple",
+      "apples",
+      "some apples"
+     ],
+     "size": 4.2,
+     "hint": "3. What fruit does Maya bring?"
+    },
+    {
+     "id": "ans4",
+     "type": "fill",
+     "x": 111.2,
+     "y": 213.9,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "chicken",
+      "chicken with some potatoes",
+      "chicken with potatoes",
+      "he eats chicken",
+      "he eats chicken with some potatoes",
+      "he eats chicken with potatoes",
+      "some chicken"
+     ],
+     "size": 4.2,
+     "hint": "4. What does Hugo eat after the salad?"
+    },
+    {
+     "id": "w1",
+     "type": "fill",
+     "x": 28.05,
+     "y": 247.96,
+     "w": 15.68,
+     "h": 5.63,
+     "accept": [
+      "serve"
+     ],
+     "size": 3.81,
+     "hint": "1. They ______ the food in the classroom."
+    },
+    {
+     "id": "w2",
+     "type": "fill",
+     "x": 61.53,
+     "y": 255.16,
+     "w": 15.69,
+     "h": 5.63,
+     "accept": [
+      "free"
+     ],
+     "size": 3.81,
+     "hint": "2. Lunch at Davi’s school is ______."
+    },
+    {
+     "id": "w3",
+     "type": "fill",
+     "x": 70.97,
+     "y": 262.36,
+     "w": 15.68,
+     "h": 5.63,
+     "accept": [
+      "cafeteria"
+     ],
+     "size": 3.81,
+     "hint": "3. Maya’s friends buy fries in the ______."
+    },
+    {
+     "id": "w4",
+     "type": "fill",
+     "x": 134.18,
+     "y": 247.96,
+     "w": 15.69,
+     "h": 5.63,
+     "accept": [
+      "noisy"
+     ],
+     "size": 3.81,
+     "hint": "4. “Shh! It’s too ______ in here!”"
+    },
+    {
+     "id": "w5",
+     "type": "fill",
+     "x": 137.39,
+     "y": 255.16,
+     "w": 15.69,
+     "h": 5.63,
+     "accept": [
+      "clean"
+     ],
+     "size": 3.81,
+     "hint": "5. After lunch, we ______ the classroom."
+    },
+    {
+     "id": "w6",
+     "type": "fill",
+     "x": 146.5,
+     "y": 262.36,
+     "w": 15.69,
+     "h": 5.63,
+     "accept": [
+      "dessert"
+     ],
+     "size": 3.81,
+     "hint": "6. Bananas are a good ______."
+    }
+   ]
+  },
+  "55": {
    "items": [
     {
      "id": "cu1",
@@ -1087,7 +2391,402 @@
     }
    ]
   },
-  "42": {
+  "56": {
+   "items": [
+    {
+     "id": "od1",
+     "type": "fill",
+     "x": 85.2,
+     "y": 58.9,
+     "w": 17.6,
+     "h": 5.8,
+     "accept": [
+      "rice"
+     ],
+     "size": 4.4,
+     "hint": "Odd one out: 1. apple · banana · rice · egg"
+    },
+    {
+     "id": "od2",
+     "type": "fill",
+     "x": 85.2,
+     "y": 65.5,
+     "w": 17.6,
+     "h": 5.8,
+     "accept": [
+      "cookie"
+     ],
+     "size": 4.4,
+     "hint": "Odd one out: 2. milk · water · juice · cookie"
+    },
+    {
+     "id": "od3",
+     "type": "fill",
+     "x": 85.2,
+     "y": 72.1,
+     "w": 17.6,
+     "h": 5.8,
+     "accept": [
+      "bread"
+     ],
+     "size": 4.4,
+     "hint": "Odd one out: 3. sandwich · tomato · carrot · bread"
+    },
+    {
+     "id": "od4",
+     "type": "fill",
+     "x": 85.2,
+     "y": 78.7,
+     "w": 17.6,
+     "h": 5.8,
+     "accept": [
+      "potato"
+     ],
+     "size": 4.4,
+     "hint": "Odd one out: 4. cheese · butter · sugar · potato"
+    },
+    {
+     "id": "od5",
+     "type": "fill",
+     "x": 85.2,
+     "y": 85.3,
+     "w": 17.6,
+     "h": 5.8,
+     "accept": [
+      "honey"
+     ],
+     "size": 4.4,
+     "hint": "Odd one out: 5. grape · lemon · kiwi · honey"
+    },
+    {
+     "id": "od6",
+     "type": "fill",
+     "x": 85.2,
+     "y": 91.9,
+     "w": 17.6,
+     "h": 5.8,
+     "accept": [
+      "egg"
+     ],
+     "size": 4.4,
+     "hint": "Odd one out: 6. egg · salt · flour · rice"
+    },
+    {
+     "id": "k1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 124.53,
+       "y": 59.16,
+       "w": 3.82,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 130.55,
+       "y": 59.16,
+       "w": 5.93,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 137.05,
+       "y": 65.76,
+       "w": 10.64,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 149.89,
+       "y": 65.76,
+       "w": 7.97,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 136.54,
+       "y": 72.36,
+       "w": 10.64,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 149.38,
+       "y": 72.36,
+       "w": 7.97,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 124.3,
+       "y": 78.96,
+       "w": 3.81,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 130.31,
+       "y": 78.96,
+       "w": 10.64,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 125.73,
+       "y": 85.56,
+       "w": 3.82,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 131.75,
+       "y": 85.56,
+       "w": 5.93,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 129.95,
+       "y": 92.16,
+       "w": 3.82,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 135.97,
+       "y": 92.16,
+       "w": 7.97,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "cb1",
+     "type": "fill",
+     "x": 40.92,
+     "y": 131.56,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "slice"
+     ],
+     "size": 3.81,
+     "hint": "1. Can I have a ______ of pizza, please?"
+    },
+    {
+     "id": "cb2",
+     "type": "fill",
+     "x": 37.45,
+     "y": 138.56,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "bag"
+     ],
+     "size": 3.81,
+     "hint": "2. We need a ______ of potatoes for dinner."
+    },
+    {
+     "id": "cb3",
+     "type": "fill",
+     "x": 41.59,
+     "y": 145.56,
+     "w": 15.27,
+     "h": 5.63,
+     "accept": [
+      "bowl"
+     ],
+     "size": 3.81,
+     "hint": "3. He’s eating a ______ of rice and beans."
+    },
+    {
+     "id": "cb4",
+     "type": "fill",
+     "x": 141.22,
+     "y": 131.56,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "cup"
+     ],
+     "size": 3.81,
+     "hint": "4. My mom makes a ______ of hot chocolate."
+    },
+    {
+     "id": "cb5",
+     "type": "fill",
+     "x": 122.73,
+     "y": 138.56,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "bottle"
+     ],
+     "size": 3.81,
+     "hint": "5. Take a ______ of water to the game."
+    },
+    {
+     "id": "cb6",
+     "type": "fill",
+     "x": 130.65,
+     "y": 145.56,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "can"
+     ],
+     "size": 3.81,
+     "hint": "6. Dad buys a ______ of tuna for the sandwiches."
+    },
+    {
+     "id": "yn1",
+     "type": "fill",
+     "x": 70,
+     "y": 206.7,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "N",
+      "no"
+     ],
+     "size": 5,
+     "hint": "Ana's kitchen: Is there any juice?  (write Y or N)"
+    },
+    {
+     "id": "yn2",
+     "type": "fill",
+     "x": 70,
+     "y": 213.9,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "Y",
+      "yes"
+     ],
+     "size": 5,
+     "hint": "Ana's kitchen: Are there any eggs?  (write Y or N)"
+    },
+    {
+     "id": "yn3",
+     "type": "fill",
+     "x": 70,
+     "y": 221.1,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "N",
+      "no"
+     ],
+     "size": 5,
+     "hint": "Ana's kitchen: Is there any sugar?  (write Y or N)"
+    },
+    {
+     "id": "yn4",
+     "type": "fill",
+     "x": 70,
+     "y": 228.3,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "Y",
+      "yes"
+     ],
+     "size": 5,
+     "hint": "Ana's kitchen: Is there any cheese?  (write Y or N)"
+    },
+    {
+     "id": "yn5",
+     "type": "fill",
+     "x": 70,
+     "y": 235.5,
+     "w": 6.5,
+     "h": 6.5,
+     "accept": [
+      "Y",
+      "yes"
+     ],
+     "size": 5,
+     "hint": "Ana's kitchen: Are there any tomatoes?  (write Y or N)"
+    },
+    {
+     "id": "ia1",
+     "type": "fill",
+     "x": 121.23,
+     "y": 207.36,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "are"
+     ],
+     "size": 3.81,
+     "hint": "6. There ______ three cans of beans."
+    },
+    {
+     "id": "ia2",
+     "type": "fill",
+     "x": 120.91,
+     "y": 214.36,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "is"
+     ],
+     "size": 3.81,
+     "hint": "7. There ______ some bread."
+    },
+    {
+     "id": "ia3",
+     "type": "fill",
+     "x": 121.31,
+     "y": 221.36,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "are"
+     ],
+     "size": 3.81,
+     "hint": "8. There ______ two cartons of milk."
+    }
+   ]
+  },
+  "57": {
    "items": [
     {
      "id": "k1",
@@ -1282,7 +2981,369 @@
     }
    ]
   },
-  "43": {
+  "58": {
+   "items": [
+    {
+     "id": "l1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 57.14,
+       "y": 71.06,
+       "w": 11.2,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 70.54,
+       "y": 71.06,
+       "w": 10.93,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "l2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 55.28,
+       "y": 84.06,
+       "w": 10.93,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 68.41,
+       "y": 84.06,
+       "w": 11.2,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "l3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 85.01,
+       "y": 97.06,
+       "w": 10.64,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 97.84,
+       "y": 97.06,
+       "w": 7.98,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "l4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 56.27,
+       "y": 103.56,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 69.39,
+       "y": 103.56,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "l5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 58.02,
+       "y": 110.06,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 71.43,
+       "y": 110.06,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "tot",
+     "type": "fill",
+     "x": 74.22,
+     "y": 116.36,
+     "w": 15.28,
+     "h": 5.63,
+     "accept": [
+      "20",
+      "twenty"
+     ],
+     "size": 3.81,
+     "hint": "eggs 10 + 2 cartons x 5"
+    },
+    {
+     "id": "tt1",
+     "type": "fill",
+     "x": 165.2,
+     "y": 163.3,
+     "w": 29.6,
+     "h": 6.0,
+     "accept": [
+      "17"
+     ],
+     "size": 4.6,
+     "hint": "1. Sofia: a loaf of bread (5) + a package of cheese (12)"
+    },
+    {
+     "id": "tt2",
+     "type": "fill",
+     "x": 165.2,
+     "y": 170.4,
+     "w": 29.6,
+     "h": 6.0,
+     "accept": [
+      "25"
+     ],
+     "size": 4.6,
+     "hint": "2. Theo: two bags of rice (2x8) + orange juice (9)"
+    },
+    {
+     "id": "tt3",
+     "type": "fill",
+     "x": 165.2,
+     "y": 177.5,
+     "w": 29.6,
+     "h": 6.0,
+     "accept": [
+      "22"
+     ],
+     "size": 4.6,
+     "hint": "3. Bia: three cartons of milk (3x5) + a bag of apples (7)"
+    },
+    {
+     "id": "tt4",
+     "type": "fill",
+     "x": 165.2,
+     "y": 184.6,
+     "w": 29.6,
+     "h": 6.0,
+     "accept": [
+      "16"
+     ],
+     "size": 4.6,
+     "hint": "4. Davi: a box of eggs (10) + a bag of bananas (6)"
+    },
+    {
+     "id": "k1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 28.16,
+       "y": 208.06,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 41.28,
+       "y": 208.06,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 44.61,
+       "y": 214.56,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 57.73,
+       "y": 214.56,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 36.58,
+       "y": 221.06,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 49.7,
+       "y": 221.06,
+       "w": 13.75,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 28.57,
+       "y": 227.56,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 41.69,
+       "y": 227.56,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "k5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 49.57,
+       "y": 234.06,
+       "w": 10.92,
+       "h": 5.03,
+       "ok": false
+      },
+      {
+       "x": 62.69,
+       "y": 234.06,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "k6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 32.02,
+       "y": 240.56,
+       "w": 13.75,
+       "h": 5.03,
+       "ok": true
+      },
+      {
+       "x": 47.97,
+       "y": 240.56,
+       "w": 11.21,
+       "h": 5.03,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "wo1",
+     "type": "fill",
+     "x": 111.2,
+     "y": 212.4,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "How much is a box of eggs"
+     ],
+     "size": 4.2,
+     "hint": "1. a box / How / is / much / of eggs / ?"
+    },
+    {
+     "id": "wo2",
+     "type": "fill",
+     "x": 111.2,
+     "y": 222.2,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "How many bananas are there"
+     ],
+     "size": 4.2,
+     "hint": "2. many / bananas / How / are / there / ?"
+    },
+    {
+     "id": "wo3",
+     "type": "fill",
+     "x": 111.2,
+     "y": 232.0,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "There isn't much juice in the fridge",
+      "There is not much juice in the fridge"
+     ],
+     "size": 4.2,
+     "hint": "3. much / There / isn't / juice / in the fridge / ."
+    },
+    {
+     "id": "wo4",
+     "type": "fill",
+     "x": 111.2,
+     "y": 241.8,
+     "w": 83.6,
+     "h": 6.0,
+     "accept": [
+      "Luna eats a lot of fruit"
+     ],
+     "size": 4.2,
+     "hint": "4. a lot of / eats / Luna / fruit / ."
+    }
+   ],
+   "listen": [
+    {
+     "track": "u5x-corner-market",
+     "x": 158.95,
+     "y": 51.42,
+     "r": 4.5
+    }
+   ]
+  },
+  "59": {
    "items": [
     {
      "id": "c1",
@@ -1335,20 +3396,20 @@
       "many"
      ],
      "size": 3.57,
-     "hint": "Hmm… How (4) _________ pão de queijo are in a portion?"
+     "hint": "Hmm… How (4) _________ pão de queijo are in an order?"
     },
     {
      "id": "c5",
      "type": "fill",
-     "x": 80.93,
+     "x": 77.85,
      "y": 121.02,
-     "w": 20.44,
+     "w": 20.45,
      "h": 5.37,
      "accept": [
       "much"
      ],
      "size": 3.57,
-     "hint": "Great! One portion, please. How (5) _________ is it?"
+     "hint": "Great! One order, please. How (5) _________ is it?"
     },
     {
      "id": "c6",
@@ -1367,7 +3428,7 @@
     }
    ]
   },
-  "46": {
+  "62": {
    "items": [
     {
      "id": "q1",
@@ -1497,7 +3558,7 @@
     }
    ]
   },
-  "48": {
+  "64": {
    "items": [
     {
      "id": "tf1",
@@ -1675,7 +3736,238 @@
     }
    ]
   },
-  "49": {
+  "65": {
+   "items": [
+    {
+     "id": "tf1",
+     "type": "fill",
+     "x": 88,
+     "y": 170.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf2",
+     "type": "fill",
+     "x": 88,
+     "y": 177.7,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf3",
+     "type": "fill",
+     "x": 88,
+     "y": 185.3,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf4",
+     "type": "fill",
+     "x": 88,
+     "y": 192.9,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "F",
+      "false"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf5",
+     "type": "fill",
+     "x": 88,
+     "y": 200.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "tf6",
+     "type": "fill",
+     "x": 88,
+     "y": 208.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "T",
+      "true"
+     ],
+     "size": 5,
+     "hint": "Write T (true) or F (false)"
+    },
+    {
+     "id": "ans1",
+     "type": "fill",
+     "x": 111.2,
+     "y": 175.1,
+     "w": 81.6,
+     "h": 6.0,
+     "accept": [
+      "in the street",
+      "the street",
+      "on the street",
+      "in the street every afternoon",
+      "he played soccer in the street"
+     ],
+     "size": 4.2,
+     "hint": "1. Where did Paulo play soccer?"
+    },
+    {
+     "id": "ans2",
+     "type": "fill",
+     "x": 111.2,
+     "y": 186.5,
+     "w": 81.6,
+     "h": 6.0,
+     "accept": [
+      "in the living room",
+      "the living room",
+      "it was in the living room"
+     ],
+     "size": 4.2,
+     "hint": "2. Where was the family's phone?"
+    },
+    {
+     "id": "ans3",
+     "type": "fill",
+     "x": 111.2,
+     "y": 197.9,
+     "w": 81.6,
+     "h": 6.0,
+     "accept": [
+      "three months",
+      "for three months",
+      "3 months",
+      "for 3 months",
+      "he saved his money for three months"
+     ],
+     "size": 4.2,
+     "hint": "3. How long did he save his money?"
+    },
+    {
+     "id": "ans4",
+     "type": "fill",
+     "x": 111.2,
+     "y": 209.3,
+     "w": 81.6,
+     "h": 6.0,
+     "accept": [
+      "a bike",
+      "his bike",
+      "bike",
+      "his bike from old bike parts",
+      "a bike from old bike parts",
+      "Paulo's bike",
+      "he made a bike",
+      "he made his bike",
+      "a bike from old parts"
+     ],
+     "size": 4.2,
+     "hint": "4. What did Paulo's dad make?"
+    },
+    {
+     "id": "mt1",
+     "type": "fill",
+     "x": 62,
+     "y": 238.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "b"
+     ],
+     "size": 5,
+     "hint": "Then and now: 1. a letter -> which NOW (a-e)?"
+    },
+    {
+     "id": "mt2",
+     "type": "fill",
+     "x": 62,
+     "y": 245.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "d"
+     ],
+     "size": 5,
+     "hint": "Then and now: 2. a radio -> which NOW (a-e)?"
+    },
+    {
+     "id": "mt3",
+     "type": "fill",
+     "x": 62,
+     "y": 252.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "a"
+     ],
+     "size": 5,
+     "hint": "Then and now: 3. a paper map -> which NOW (a-e)?"
+    },
+    {
+     "id": "mt4",
+     "type": "fill",
+     "x": 62,
+     "y": 259.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "e"
+     ],
+     "size": 5,
+     "hint": "Then and now: 4. a camera with film -> which NOW (a-e)?"
+    },
+    {
+     "id": "mt5",
+     "type": "fill",
+     "x": 62,
+     "y": 266.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "c"
+     ],
+     "size": 5,
+     "hint": "Then and now: 5. a phone at home -> which NOW (a-e)?"
+    }
+   ],
+   "listen": [
+    {
+     "track": "u6x-grandpa-13",
+     "x": 158.95,
+     "y": 51.42,
+     "r": 4.5
+    }
+   ]
+  },
+  "66": {
    "items": [
     {
      "id": "pf1",
@@ -1900,7 +4192,477 @@
     }
    ]
   },
-  "50": {
+  "67": {
+   "items": [
+    {
+     "id": "sp1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 34.52,
+       "y": 57.9,
+       "w": 13.21,
+       "h": 5.3,
+       "ok": true
+      },
+      {
+       "x": 50.27,
+       "y": 57.9,
+       "w": 15.61,
+       "h": 5.3,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "sp2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 92.53,
+       "y": 57.9,
+       "w": 13.21,
+       "h": 5.3,
+       "ok": false
+      },
+      {
+       "x": 108.28,
+       "y": 57.9,
+       "w": 15.61,
+       "h": 5.3,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "sp3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 151.27,
+       "y": 57.9,
+       "w": 12.01,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 165.81,
+       "y": 57.9,
+       "w": 10.92,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "sp4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 33.54,
+       "y": 65.1,
+       "w": 14.0,
+       "h": 5.3,
+       "ok": false
+      },
+      {
+       "x": 50.08,
+       "y": 65.1,
+       "w": 16.41,
+       "h": 5.3,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "sp5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 95.5,
+       "y": 65.1,
+       "w": 16.21,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 114.25,
+       "y": 65.1,
+       "w": 15.21,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "sp6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 152.74,
+       "y": 65.1,
+       "w": 13.55,
+       "h": 5.3,
+       "ok": true
+      },
+      {
+       "x": 168.82,
+       "y": 65.1,
+       "w": 15.85,
+       "h": 5.3,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "od1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 20.42,
+       "y": 91.7,
+       "w": 17.74,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 40.8,
+       "y": 91.7,
+       "w": 14.44,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 57.89,
+       "y": 91.7,
+       "w": 14.51,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "od2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 20.6,
+       "y": 98.6,
+       "w": 15.68,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 38.93,
+       "y": 98.6,
+       "w": 15.57,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 57.14,
+       "y": 98.6,
+       "w": 15.9,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "od3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 20.53,
+       "y": 105.5,
+       "w": 16.47,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 39.65,
+       "y": 105.5,
+       "w": 16.47,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 58.77,
+       "y": 105.5,
+       "w": 15.14,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "od4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 112.88,
+       "y": 91.7,
+       "w": 14.22,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 129.74,
+       "y": 91.7,
+       "w": 16.24,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 148.63,
+       "y": 91.7,
+       "w": 15.67,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "od5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 112.68,
+       "y": 98.6,
+       "w": 15.65,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 130.98,
+       "y": 98.6,
+       "w": 15.75,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 149.37,
+       "y": 98.6,
+       "w": 16.06,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "od6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 112.64,
+       "y": 105.5,
+       "w": 11.89,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 127.18,
+       "y": 105.5,
+       "w": 15.32,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 145.14,
+       "y": 105.5,
+       "w": 10.75,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "ms1",
+     "type": "fill",
+     "x": 107.54,
+     "y": 132.3,
+     "w": 31.83,
+     "h": 5.9,
+     "accept": [
+      "cleaned"
+     ],
+     "size": 4.05,
+     "hint": "1. Mateo ____________ his room."
+    },
+    {
+     "id": "ms2",
+     "type": "fill",
+     "x": 101.32,
+     "y": 138.8,
+     "w": 31.83,
+     "h": 6.16,
+     "accept": [
+      "watched"
+     ],
+     "size": 4.28,
+     "hint": "2. He ____________ a soccer game."
+    },
+    {
+     "id": "ms3",
+     "type": "fill",
+     "x": 101.25,
+     "y": 145.3,
+     "w": 31.83,
+     "h": 5.9,
+     "accept": [
+      "didn't cook",
+      "did not cook"
+     ],
+     "size": 4.05,
+     "hint": "3. He ____________ dinner."
+    },
+    {
+     "id": "ms4",
+     "type": "fill",
+     "x": 101.59,
+     "y": 151.8,
+     "w": 31.83,
+     "h": 6.16,
+     "accept": [
+      "didn't visit",
+      "did not visit"
+     ],
+     "size": 4.28,
+     "hint": "4. He ____________ his grandma."
+    },
+    {
+     "id": "ms5",
+     "type": "fill",
+     "x": 101.4,
+     "y": 158.3,
+     "w": 31.83,
+     "h": 6.16,
+     "accept": [
+      "practiced"
+     ],
+     "size": 4.28,
+     "hint": "5. He ____________ the guitar."
+    },
+    {
+     "id": "dy1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 57.31,
+       "y": 200.9,
+       "w": 20.44,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 80.4,
+       "y": 200.9,
+       "w": 27.31,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "dy2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 45.43,
+       "y": 207.2,
+       "w": 20.43,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 68.51,
+       "y": 207.2,
+       "w": 27.32,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "dy3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 59.81,
+       "y": 213.5,
+       "w": 30.24,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 92.7,
+       "y": 213.5,
+       "w": 28.22,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "dy4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 53.21,
+       "y": 219.8,
+       "w": 19.55,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 75.41,
+       "y": 219.8,
+       "w": 31.51,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "dy5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 61.49,
+       "y": 226.1,
+       "w": 15.07,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 79.21,
+       "y": 226.1,
+       "w": 16.31,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "68": {
    "items": [
     {
      "id": "d1",
@@ -2008,7 +4770,386 @@
     }
    ]
   },
-  "54": {
+  "69": {
+   "items": [
+    {
+     "id": "mv1",
+     "type": "fill",
+     "x": 41,
+     "y": 71.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "d"
+     ],
+     "size": 5,
+     "hint": "Past form of come? (a-h)"
+    },
+    {
+     "id": "mv2",
+     "type": "fill",
+     "x": 85.5,
+     "y": 71.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "b"
+     ],
+     "size": 5,
+     "hint": "Past form of give? (a-h)"
+    },
+    {
+     "id": "mv3",
+     "type": "fill",
+     "x": 130,
+     "y": 71.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "h"
+     ],
+     "size": 5,
+     "hint": "Past form of run? (a-h)"
+    },
+    {
+     "id": "mv4",
+     "type": "fill",
+     "x": 174.5,
+     "y": 71.5,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "f"
+     ],
+     "size": 5,
+     "hint": "Past form of meet? (a-h)"
+    },
+    {
+     "id": "mv5",
+     "type": "fill",
+     "x": 41,
+     "y": 80.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "g"
+     ],
+     "size": 5,
+     "hint": "Past form of drink? (a-h)"
+    },
+    {
+     "id": "mv6",
+     "type": "fill",
+     "x": 85.5,
+     "y": 80.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "e"
+     ],
+     "size": 5,
+     "hint": "Past form of swim? (a-h)"
+    },
+    {
+     "id": "mv7",
+     "type": "fill",
+     "x": 130,
+     "y": 80.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "a"
+     ],
+     "size": 5,
+     "hint": "Past form of find? (a-h)"
+    },
+    {
+     "id": "mv8",
+     "type": "fill",
+     "x": 174.5,
+     "y": 80.1,
+     "w": 6.2,
+     "h": 6.2,
+     "accept": [
+      "c"
+     ],
+     "size": 5,
+     "hint": "Past form of know? (a-h)"
+    },
+    {
+     "id": "bl1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 58.4,
+       "y": 106.0,
+       "w": 9.01,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 70.05,
+       "y": 106.0,
+       "w": 10.71,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "bl2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 41.85,
+       "y": 112.9,
+       "w": 9.01,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 53.5,
+       "y": 112.9,
+       "w": 10.71,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "bl3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 38.55,
+       "y": 119.8,
+       "w": 9.01,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 50.21,
+       "y": 119.8,
+       "w": 10.71,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "bl4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 40.27,
+       "y": 126.7,
+       "w": 13.87,
+       "h": 5.56,
+       "ok": true
+      },
+      {
+       "x": 56.79,
+       "y": 126.7,
+       "w": 15.57,
+       "h": 5.56,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "bl5",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 27.66,
+       "y": 133.6,
+       "w": 13.87,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 44.18,
+       "y": 133.6,
+       "w": 15.57,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "bl6",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 20.64,
+       "y": 140.5,
+       "w": 9.62,
+       "h": 5.56,
+       "ok": false
+      },
+      {
+       "x": 32.91,
+       "y": 140.5,
+       "w": 11.31,
+       "h": 5.56,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "dl1",
+     "type": "fill",
+     "x": 48.13,
+     "y": 178.0,
+     "w": 22.18,
+     "h": 6.16,
+     "accept": [
+      "Did"
+     ],
+     "size": 4.28,
+     "hint": "Dialogue blank (1): use the box"
+    },
+    {
+     "id": "dl2",
+     "type": "fill",
+     "x": 41.16,
+     "y": 184.6,
+     "w": 22.18,
+     "h": 6.16,
+     "accept": [
+      "did"
+     ],
+     "size": 4.28,
+     "hint": "Dialogue blank (2): use the box"
+    },
+    {
+     "id": "dl3",
+     "type": "fill",
+     "x": 65.99,
+     "y": 191.2,
+     "w": 22.17,
+     "h": 6.16,
+     "accept": [
+      "see"
+     ],
+     "size": 4.28,
+     "hint": "Dialogue blank (3): use the box"
+    },
+    {
+     "id": "dl4",
+     "type": "fill",
+     "x": 37.31,
+     "y": 197.8,
+     "w": 22.18,
+     "h": 6.16,
+     "accept": [
+      "saw"
+     ],
+     "size": 4.28,
+     "hint": "Dialogue blank (4): use the box"
+    },
+    {
+     "id": "dl5",
+     "type": "fill",
+     "x": 122.64,
+     "y": 197.8,
+     "w": 22.18,
+     "h": 6.16,
+     "accept": [
+      "was"
+     ],
+     "size": 4.28,
+     "hint": "Dialogue blank (5): use the box"
+    },
+    {
+     "id": "dl6",
+     "type": "fill",
+     "x": 40.35,
+     "y": 211.0,
+     "w": 22.18,
+     "h": 6.16,
+     "accept": [
+      "didn't",
+      "did not"
+     ],
+     "size": 4.28,
+     "hint": "Dialogue blank (6): use the box"
+    },
+    {
+     "id": "fx1",
+     "type": "fill",
+     "x": 91.2,
+     "y": 236.4,
+     "w": 103.6,
+     "h": 6.0,
+     "accept": [
+      "Yuki came home late last night"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: 1. Yuki comed home late last night."
+    },
+    {
+     "id": "fx2",
+     "type": "fill",
+     "x": 91.2,
+     "y": 243.8,
+     "w": 103.6,
+     "h": 6.0,
+     "accept": [
+      "Did you see the new movie"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: 2. Did you saw the new movie?"
+    },
+    {
+     "id": "fx3",
+     "type": "fill",
+     "x": 91.2,
+     "y": 251.2,
+     "w": 103.6,
+     "h": 6.0,
+     "accept": [
+      "Ana didn't eat her lunch",
+      "Ana did not eat her lunch"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: 3. Ana didn't ate her lunch."
+    },
+    {
+     "id": "fx4",
+     "type": "fill",
+     "x": 91.2,
+     "y": 258.6,
+     "w": 103.6,
+     "h": 6.0,
+     "accept": [
+      "Were you at school on Monday"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: 4. Was you at school on Monday?"
+    },
+    {
+     "id": "fx5",
+     "type": "fill",
+     "x": 91.2,
+     "y": 266.0,
+     "w": 103.6,
+     "h": 6.0,
+     "accept": [
+      "I bought a new backpack last week"
+     ],
+     "size": 4.2,
+     "hint": "Fix it: 5. I buyed a new backpack last week."
+    }
+   ]
+  },
+  "73": {
    "items": [
     {
      "id": "q1",
@@ -2138,7 +5279,7 @@
     }
    ]
   },
-  "56": {
+  "75": {
    "items": [
     {
      "id": "f1",
@@ -2330,5 +5471,6 @@
     }
    ]
   }
- }
+ },
+ "_pagesV2": true
 }

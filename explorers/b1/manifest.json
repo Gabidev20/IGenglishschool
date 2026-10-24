@@ -6,6 +6,8 @@
  "title": "IG Explorers",
  "ages": "7–8",
  "color": "#6f7d68",
+ "firstPage": 1,
+ "lastPage": 24,
  "pageCount": 24,
  "imgW": 1500,
  "imgH": 2123,

@@ -781,7 +781,7 @@
     {
      "id": "B1a",
      "type": "fill",
-     "x": 74.4,
+     "x": 65.9,
      "y": 180.9,
      "w": 26.8,
      "h": 7.0,
@@ -789,12 +789,12 @@
       "red"
      ],
      "size": 4.8,
-     "hint": "1. Mia has got long, __ hair and green eyes."
+     "hint": "1. Mia has long, __ hair and green eyes."
     },
     {
      "id": "B1b",
      "type": "fill",
-     "x": 134.6,
+     "x": 126.1,
      "y": 180.9,
      "w": 26.8,
      "h": 7.0,
@@ -802,12 +802,12 @@
       "eyes"
      ],
      "size": 4.8,
-     "hint": "1. Mia has got long, red hair and green __."
+     "hint": "1. Mia has long, red hair and green __."
     },
     {
      "id": "B2",
      "type": "fill",
-     "x": 76.1,
+     "x": 67.6,
      "y": 193.1,
      "w": 26.8,
      "h": 7.0,
@@ -815,12 +815,12 @@
       "curly"
      ],
      "size": 4.8,
-     "hint": "2. Leo has got short, __, black hair and brown eyes."
+     "hint": "2. Leo has short, __, black hair and brown eyes."
     },
     {
      "id": "B3a",
      "type": "fill",
-     "x": 95.1,
+     "x": 86.6,
      "y": 205.3,
      "w": 26.8,
      "h": 7.0,
@@ -828,25 +828,25 @@
       "brown"
      ],
      "size": 4.8,
-     "hint": "3. Aiko has got long, straight, __ hair and brown eyes."
+     "hint": "3. Aiko has long, straight, __ hair and brown eyes."
     },
     {
      "id": "B3b",
      "type": "fill",
-     "x": 141.7,
+     "x": 133.3,
      "y": 205.3,
-     "w": 26.8,
+     "w": 26.7,
      "h": 7.0,
      "accept": [
       "brown"
      ],
      "size": 4.8,
-     "hint": "3. Aiko has got long, straight, brown hair and __ eyes."
+     "hint": "3. Aiko has long, straight, brown hair and __ eyes."
     },
     {
      "id": "B4a",
      "type": "fill",
-     "x": 78.3,
+     "x": 69.8,
      "y": 217.5,
      "w": 26.8,
      "h": 7.0,
@@ -855,20 +855,20 @@
       "blonde"
      ],
      "size": 4.8,
-     "hint": "4. Sam has got short, __ hair and blue eyes."
+     "hint": "4. Sam has short, __ hair and blue eyes."
     },
     {
      "id": "B4b",
      "type": "fill",
-     "x": 125.0,
+     "x": 116.5,
      "y": 217.5,
-     "w": 26.7,
+     "w": 26.8,
      "h": 7.0,
      "accept": [
       "blue"
      ],
      "size": 4.8,
-     "hint": "4. Sam has got short, blond hair and __ eyes."
+     "hint": "4. Sam has short, blond hair and __ eyes."
     }
    ]
   },
@@ -1008,11 +1008,11 @@
      "w": 108.6,
      "h": 7.0,
      "accept": [
-      "Leo hasn't got straight hair",
-      "Leo has not got straight hair"
+      "Leo doesn't have straight hair",
+      "Leo does not have straight hair"
      ],
      "size": 4.4,
-     "hint": "Make it negative: Leo has got straight hair."
+     "hint": "Make it negative: Leo has straight hair."
     },
     {
      "id": "B2",
@@ -1022,11 +1022,11 @@
      "w": 108.6,
      "h": 7.0,
      "accept": [
-      "I haven't got a hat",
-      "I have not got a hat"
+      "I don't have a hat",
+      "I do not have a hat"
      ],
      "size": 4.4,
-     "hint": "Make it negative: I have got a hat."
+     "hint": "Make it negative: I have a hat."
     },
     {
      "id": "B3",
@@ -1036,11 +1036,11 @@
      "w": 108.6,
      "h": 7.0,
      "accept": [
-      "Mia hasn't got glasses",
-      "Mia has not got glasses"
+      "Mia doesn't have glasses",
+      "Mia does not have glasses"
      ],
      "size": 4.4,
-     "hint": "Make it negative: Mia has got glasses."
+     "hint": "Make it negative: Mia has glasses."
     },
     {
      "id": "B4",
@@ -1050,11 +1050,11 @@
      "w": 108.6,
      "h": 7.0,
      "accept": [
-      "They haven't got boots",
-      "They have not got boots"
+      "They don't have boots",
+      "They do not have boots"
      ],
      "size": 4.4,
-     "hint": "Make it negative: They have got boots."
+     "hint": "Make it negative: They have boots."
     }
    ]
   },
@@ -1229,7 +1229,7 @@
       "Ella"
      ],
      "size": 4.8,
-     "hint": "1. She's got a hat and a dress. Who is it?"
+     "hint": "1. She has a hat and a dress. Who is it?"
     },
     {
      "id": "D2",
@@ -1242,7 +1242,7 @@
       "Theo"
      ],
      "size": 4.8,
-     "hint": "2. He's got a cap and a jacket. Who is it?"
+     "hint": "2. He has a cap and a jacket. Who is it?"
     },
     {
      "id": "D3",
@@ -1255,7 +1255,7 @@
       "Lara"
      ],
      "size": 4.8,
-     "hint": "3. She's got glasses, a sweater and a scarf. Who is it?"
+     "hint": "3. She has glasses, a sweater and a scarf. Who is it?"
     },
     {
      "id": "D4",
@@ -1268,7 +1268,7 @@
       "Davi"
      ],
      "size": 4.8,
-     "hint": "4. He's got curly hair and a T-shirt. Who is it?"
+     "hint": "4. He has curly hair and a T-shirt. Who is it?"
     }
    ]
   },
@@ -1317,15 +1317,15 @@
      "w": 82.6,
      "h": 7.0,
      "accept": [
-      "no, she hasn't",
-      "no, she has not",
-      "no, she hasn't got white hair",
-      "no, she hasn't got white hair. she's got gray hair",
+      "no, she doesn't",
+      "no, she does not",
+      "no, she doesn't have white hair",
+      "no, she doesn't have white hair. she has gray hair",
       "no",
-      "no, she hasn't. she's got gray hair"
+      "no, she doesn't. she has gray hair"
      ],
      "size": 4.4,
-     "hint": "3. Has Ms. Bell got white hair?"
+     "hint": "3. Does Ms. Bell have white hair?"
     },
     {
      "id": "R4",
@@ -1353,11 +1353,11 @@
      "accept": [
       "snowy",
       "snowy has",
-      "snowy has got the camera",
-      "snowy has got it"
+      "snowy has the camera",
+      "snowy has it"
      ],
      "size": 4.4,
-     "hint": "5. Who has got the camera?"
+     "hint": "5. Who has the camera?"
     },
     {
      "id": "R6",
@@ -1433,7 +1433,7 @@
       {
        "x": 55.67,
        "y": 91.2,
-       "w": 12.38,
+       "w": 11.39,
        "h": 7.2,
        "ok": false
       }
@@ -1447,14 +1447,14 @@
       {
        "x": 22.6,
        "y": 106.2,
-       "w": 13.69,
+       "w": 15.98,
        "h": 7.2,
        "ok": true
       },
       {
-       "x": 37.99,
+       "x": 40.28,
        "y": 106.2,
-       "w": 15.98,
+       "w": 13.69,
        "h": 7.2,
        "ok": false
       },
@@ -1475,21 +1475,21 @@
       {
        "x": 114.6,
        "y": 76.2,
-       "w": 18.85,
+       "w": 21.15,
        "h": 7.2,
        "ok": true
       },
       {
-       "x": 135.15,
+       "x": 137.45,
        "y": 76.2,
        "w": 15.49,
        "h": 7.2,
        "ok": false
       },
       {
-       "x": 152.35,
+       "x": 154.64,
        "y": 76.2,
-       "w": 21.15,
+       "w": 16.56,
        "h": 7.2,
        "ok": false
       }
@@ -1998,7 +1998,7 @@
       "giraffe"
      ],
      "size": 4.8,
-     "hint": "1. It has got a long neck and four long legs."
+     "hint": "1. It has a long neck and four long legs."
     },
     {
      "id": "B2",
@@ -2011,7 +2011,7 @@
       "penguin"
      ],
      "size": 4.8,
-     "hint": "2. It has got black and white feathers. It lives on the ice."
+     "hint": "2. It has black and white feathers. It lives on the ice."
     },
     {
      "id": "B3",
@@ -2024,7 +2024,7 @@
       "elephant"
      ],
      "size": 4.8,
-     "hint": "3. It has got a trunk and big ears."
+     "hint": "3. It has a trunk and big ears."
     },
     {
      "id": "B4",
@@ -2037,7 +2037,7 @@
       "turtle"
      ],
      "size": 4.8,
-     "hint": "4. It has got a shell. It's very slow."
+     "hint": "4. It has a shell. It's very slow."
     },
     {
      "id": "B5",
@@ -2050,7 +2050,7 @@
       "lion"
      ],
      "size": 4.8,
-     "hint": "5. It has got yellow fur and a big mane."
+     "hint": "5. It has yellow fur and a big mane."
     },
     {
      "id": "B6",
@@ -2063,7 +2063,7 @@
       "frog"
      ],
      "size": 4.8,
-     "hint": "6. It has got green skin and long legs. It lives in a pond."
+     "hint": "6. It has green skin and long legs. It lives in a pond."
     }
    ]
   },
