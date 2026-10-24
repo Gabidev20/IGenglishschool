@@ -489,7 +489,8 @@ function renderStudentHome(shell, studentId) {
   const T = {
     slides: () => tile('slides', '📝', 'Slides da aula', 'Class slides — rever o que vimos na aula', 'stu-tile--slides'),
     book: () => (myBook ? tile('book', '📖', 'My book', 'Meu livro — fazer as páginas do livro aqui', 'stu-tile--book') : ''),
-    progress: () => tile('progress', '📈', 'My progress', 'Meu progresso — estrelas e figurinhas'),
+    progress: () => tile('progress', '📈', 'My progress', typeof igGrownLook === 'function' && igGrownLook(student)
+      ? 'Meu progresso — o que já pratiquei' : 'Meu progresso — estrelas e figurinhas'),
     homework: () => tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉'),
     review: () => (review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
     games: () => tile('games', '🎮', prof === 'adult' ? 'Topics & games' : 'Games', prof === 'adult' ? 'Vocabulário, leitura e jogos dos meus tópicos' : 'Jogos com as palavras do meu nível'),
@@ -552,7 +553,7 @@ function renderStudentHome(shell, studentId) {
         <span class="stu-avatar">${shareEsc(student.avatar || '🙂')}</span>
         <div>
           <h1>Hello, ${shareEsc((typeof saRecord === 'function' && saRecord(student.id).fn) || student.name)}! 👋</h1>
-          <p>${shareEsc(student.levelLabel || (typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : ''))}
+          <p>${shareEsc(igLevelText(student))}
              · ${progress.xp || 0} XP · ${progress.stars || 0} ⭐
              ${stats && stats.streak ? ` · 🔥 ${stats.streak} day${stats.streak === 1 ? '' : 's'}` : ''}</p>
         </div>

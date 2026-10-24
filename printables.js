@@ -329,7 +329,7 @@ function openPrintables() {
 function prCertificateHTML(student, opts) {
   const o = opts || {};
   const progress = typeof loadProgress === 'function' ? loadProgress(student.id) : { stars: 0, xp: 0 };
-  const level = o.level || (typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : student.levelLabel);
+  const level = o.level || (typeof igLevelText === 'function' ? igLevelText(student) : student.levelLabel);
   const date = new Date();
   return `
     <div class="pr-cert">
@@ -353,14 +353,23 @@ function prCertificateHTML(student, opts) {
     </div>`;
 }
 
+// "Teacher Isa" for the teacher whose account is open; empty when accounts
+// are off, so the certificate never carries another teacher's name.
+function prSignedInTeacher() {
+  const t = typeof IGCloud !== 'undefined' && IGCloud.teacher;
+  const name = t && t.name ? String(t.name).trim() : '';
+  if (!name) return '';
+  return /^teacher\b/i.test(name) ? name : 'Teacher ' + name;
+}
+
 function openCertificate(studentId) {
   const students = typeof loadStudents === 'function' ? loadStudents() : [];
   const id = studentId || (typeof getActiveStudentId === 'function' ? getActiveStudentId() : null);
   const state = {
     id: id || (students[0] && students[0].id),
     // The signature she typed last time (synced, and sent to the student's
-    // link), else the school's teacher.
-    teacher: (typeof IGStore !== 'undefined' && IGStore.getJSON('cert_signature', '')) || 'Teacher Gabriela Oliveira',
+    // link), else the name of the teacher who is signed in.
+    teacher: (typeof IGStore !== 'undefined' && IGStore.getJSON('cert_signature', '')) || prSignedInTeacher(),
     text: '',
     level: '',
   };
@@ -397,7 +406,7 @@ function openCertificate(studentId) {
           </label>
           <label class="exam-field small">
             <span class="exam-label">Nível no certificado</span>
-            <input type="text" id="prCertLevel" placeholder="${prEsc(typeof levelOption === 'function' ? levelOption(student.levelId).levelLabel : '')}" value="${prEsc(state.level)}" />
+            <input type="text" id="prCertLevel" placeholder="${prEsc(typeof igLevelText === 'function' ? igLevelText(student) : '')}" value="${prEsc(state.level)}" />
           </label>
           <label class="exam-field small">
             <span class="exam-label">Assinatura</span>

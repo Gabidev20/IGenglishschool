@@ -9,8 +9,7 @@ function spEsc(s) { return igEscapeHtml(String(s == null ? '' : s)); }
 
 function spLevelLabel(student) {
   if (!student) return '';
-  const opt = typeof levelOption === 'function' ? levelOption(student.levelId) : null;
-  return opt ? opt.levelLabel : (student.levelLabel || '');
+  return typeof igLevelText === 'function' ? igLevelText(student) : (student.levelLabel || '');
 }
 
 // A week of practice as a row of bars: height from the day's attempts, the
@@ -61,6 +60,8 @@ function paintStudentProgress(mount, student) {
   const stickers = typeof getStickers === 'function' ? getStickers(student.id) : [];
   const earned = stickers.filter(s => (progress.stickers || []).indexOf(s.id) !== -1);
   const next = stickers.find(s => (progress.stickers || []).indexOf(s.id) === -1);
+  // Stickers are for children; learners of 14+ see their progress without them.
+  const grownLook = typeof igGrownLook === 'function' && igGrownLook(student);
   const homework = typeof hwForStudent === 'function' ? hwForStudent(student.id) : [];
   const pending = homework.filter(h => typeof hwIsDone === 'function' && !hwIsDone(h));
   const writings = typeof SkillsModules !== 'undefined' ? SkillsModules.loadWriting(student.id) : [];
@@ -141,7 +142,7 @@ function paintStudentProgress(mount, student) {
         </div>
       </div>` : ''}
 
-    <div class="sp-panel">
+    ${grownLook ? '' : `<div class="sp-panel">
       <h4 class="watch-h">🏅 Minhas figurinhas <small>${earned.length}/${stickers.length}</small></h4>
       <div class="sp-stickers">
         ${stickers.map(s => {
@@ -150,7 +151,7 @@ function paintStudentProgress(mount, student) {
         }).join('')}
       </div>
       ${next ? `<p class="sp-next">Faltam <b>${Math.max(0, next.threshold - (progress.stars || 0))} ⭐</b> para ganhar ${spEsc(next.emoji)} ${spEsc(next.name)}.</p>` : '<p class="sp-next">Você ganhou todas! 🎉</p>'}
-    </div>
+    </div>`}
 
     ${corrected.length ? `
       <div class="sp-panel">

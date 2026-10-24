@@ -944,7 +944,9 @@ const ArcadeGames = (() => {
 
   function renderShell() {
     const meta = GAME_META[kind];
-    const tm = grownMode ? { icon: '💼', label: 'Teens & Adults' } : ((typeof tierMeta === 'function') ? tierMeta(tier) : { icon: '🎓', label: '' });
+    // The pill names the learner's level, never an age band (Kids, Juniors…).
+    const who = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
+    const tm = { icon: '🎓', label: who && typeof igLevelText === 'function' ? igLevelText(who) : 'All levels' };
 
     openModal(`
       <div class="modal-content-pad arcade-modal">
@@ -1015,22 +1017,18 @@ const ArcadeGames = (() => {
   function renderWordMatch(container, topic, tierId) {
     let pairs, leftOrder, rightOrder, selectedLeft, selectedRight, connected, mistakes;
 
-    const CONTEXT_TEMPLATES = [
-      (w) => `I can see the ${w.toLowerCase()}.`,
-      (w) => `Look at that ${w.toLowerCase()}!`,
-      (w) => `This is my ${w.toLowerCase()}.`,
-      (w) => `Do you like ${w.toLowerCase()}?`,
-    ];
-    function contextPhrase(en) {
-      let sum = 0; for (const c of en) sum += c.charCodeAt(0);
-      return CONTEXT_TEMPLATES[sum % CONTEXT_TEMPLATES.length](en);
+    // Older learners match the English word to its meaning in Portuguese.
+    // (It used to be the same word inside a fixed sentence, which made the
+    // pairs obvious and the English wrong for verbs: "This is my have lunch.")
+    // A word with no translation falls back to the picture, as for children.
+    function byMeaning(word) {
+      return tierId === 'teens' && Boolean(word.pt);
     }
-
     function leftVisual(word) {
-      return tierId === 'teens' ? `<span class="wordmatch-term">${word.en}</span>` : arcadeWordVisual(word);
+      return byMeaning(word) ? `<span class="wordmatch-term">${word.en}</span>` : arcadeWordVisual(word);
     }
     function rightLabel(word) {
-      return tierId === 'teens' ? contextPhrase(word.en) : word.en;
+      return byMeaning(word) ? word.pt : word.en;
     }
 
     function setup() {

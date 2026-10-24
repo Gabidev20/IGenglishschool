@@ -65,22 +65,86 @@ const ROUTINE_SONGS = {
   },
 };
 
-const WARMUP_QUESTIONS = [
-  'What was the highlight of your week?',
-  'If you could travel anywhere right now, where would you go?',
-  "What's a movie or show you've watched recently?",
-  'If you could have any superpower, what would it be?',
-  "What's your favorite way to spend a weekend?",
-  'Tell me about something that made you laugh this week.',
-  'If you could learn any new skill instantly, what would it be?',
-  "What's a goal you're working on right now?",
-  'Would you rather live in the mountains or by the beach? Why?',
-  "What's the best meal you've eaten recently?",
-];
-let warmupDeck = [];
-function drawWarmupQuestion() {
-  if (warmupDeck.length === 0) warmupDeck = lsShuffle(WARMUP_QUESTIONS);
-  return warmupDeck.shift();
+// One bank per level, written with the grammar the learner already has:
+// A0 "be" and likes, A1 present simple and can, A2 past and plans,
+// B1 present perfect and opinions, B2/C1 hypotheticals and debate.
+const WARMUP_QUESTIONS = {
+  a0: [
+    'How are you today?',
+    "What's your favorite color?",
+    "What's your favorite food?",
+    'Do you have a pet? What is its name?',
+    'Is it hot or cold today where you are?',
+    'Do you like music? What kind?',
+    'How many people are in your family?',
+    "What's your favorite day of the week?",
+    'Are you tired or happy today?',
+    'Do you like coffee or tea?',
+    "What's your favorite movie?",
+    'What color is your phone?',
+  ],
+  a1: [
+    'What do you usually do on Saturdays?',
+    'What time do you get up during the week?',
+    'What do you have for breakfast?',
+    'Can you cook? What can you make?',
+    'What do you do in your free time?',
+    'Who is your best friend? What is he or she like?',
+    'What is your favorite place in your city?',
+    'What music do you listen to?',
+    'How do you get to school or work?',
+    'What do you like to watch on TV or online?',
+    'What sports can you play?',
+    'Describe your bedroom in three words.',
+  ],
+  a2: [
+    'What did you do last weekend?',
+    'What are you going to do after class today?',
+    'Tell me about a good movie or series you watched recently.',
+    'Where did you go on your last holiday?',
+    'What was the best part of your week?',
+    'Which is better: the beach or the mountains? Why?',
+    'What did you eat yesterday?',
+    'What are your plans for the next holiday?',
+    'Who was your favorite teacher at school? Why?',
+    'What is the most interesting app on your phone?',
+    'Is your city bigger or smaller than you would like?',
+    'What did you want to be when you were a child?',
+  ],
+  b1: [
+    "What's something you've never done but would like to try?",
+    'Have you ever met someone famous? What happened?',
+    "What's a goal you're working on right now?",
+    'If you could travel anywhere next month, where would you go?',
+    "What's the best advice anyone has ever given you?",
+    'Do you think social media makes people happier? Why or why not?',
+    'Tell me about something that made you laugh this week.',
+    'What skill would you like to learn this year, and why?',
+    "What's a habit you'd like to change?",
+    "How has your city changed since you were a child?",
+    "What's a book, series or song you'd recommend to me?",
+    'Would you rather work from home or in an office? Why?',
+  ],
+  b1b2: [
+    'If you could change one thing about the world, what would it be?',
+    'What would you have done differently if you had started learning English earlier?',
+    'Is it better to be good at many things or excellent at one? Why?',
+    'Should schools teach more practical skills? Which ones?',
+    "What's an opinion you used to have that you've changed?",
+    'How do you think artificial intelligence will change everyday life?',
+    "What's something people often misunderstand about your generation?",
+    'If you could have dinner with anyone, past or present, who would it be?',
+    'Is it ever okay to tell a white lie? Give an example.',
+    "What makes a city a great place to live?",
+    'Do you think travel really changes people? How?',
+    'What would your perfect day look like, from morning to night?',
+  ],
+};
+const warmupDecks = {};
+function drawWarmupQuestion(levelId) {
+  const id = WARMUP_QUESTIONS[levelId] ? levelId : 'a1';
+  if (!warmupDecks[id] || warmupDecks[id].length === 0) warmupDecks[id] = lsShuffle(WARMUP_QUESTIONS[id]);
+  return warmupDecks[id].shift();
 }
 
 // The full "Lição de Casa" section lives inside the live-class cockpit while a
@@ -133,7 +197,7 @@ function refreshLiveClassCockpit() {
               <button class="cockpit-pick" type="button" data-pick-student="${escapeHtmlLite(s.id)}" style="--accent-color:${escapeHtmlLite(s.color)}">
                 <span class="cockpit-pick-avatar" style="background:${escapeHtmlLite(s.color)}">${escapeHtmlLite(s.avatar)}</span>
                 <span class="cockpit-pick-name">${escapeHtmlLite(s.name)}</span>
-                <small>${todayIds.includes(s.id) ? '📅 hoje · ' : ''}${escapeHtmlLite(s.levelLabel || '')}</small>
+                <small>${todayIds.includes(s.id) ? '📅 hoje · ' : ''}${escapeHtmlLite(igLevelText(s))}</small>
               </button>`).join('')}
           </div>` : `
           <button class="btn btn-primary" id="cockpitAddStudent" type="button">+ Cadastrar o primeiro aluno</button>`}
@@ -168,7 +232,7 @@ function refreshLiveClassCockpit() {
       <span class="cockpit-avatar" style="background:${student.color}">${student.avatar}</span>
       <div class="cockpit-student-info">
         <h3>${escapeHtmlLite(student.name)}</h3>
-        <p>${student.age ? student.age + ' yrs · ' : ''}${escapeHtmlLite(student.levelLabel)}</p>
+        <p>${student.age ? student.age + ' yrs · ' : ''}${escapeHtmlLite(igLevelText(student))}</p>
         ${typeof groupMemberNames === 'function' && groupMemberNames(student.id).length ? `<p class="cockpit-group-members">👥 ${groupMemberNames(student.id).map(escapeHtmlLite).join(' · ')}</p>` : ''}
       </div>
     </div>
@@ -183,7 +247,7 @@ function refreshLiveClassCockpit() {
       ` : `
         <div class="warmup-card">
           <p class="routine-label">💬 Warm-up · Daily Chit-Chat <span class="warmup-timer-hint">~2 min</span></p>
-          <p class="warmup-question" id="warmupQuestion">${drawWarmupQuestion()}</p>
+          <p class="warmup-question" id="warmupQuestion">${drawWarmupQuestion(student.levelId)}</p>
           <button class="game-btn secondary" id="newWarmupBtn">🔄 New Question</button>
         </div>
       `}
@@ -208,7 +272,7 @@ function refreshLiveClassCockpit() {
     });
   } else {
     document.getElementById('newWarmupBtn').addEventListener('click', () => {
-      document.getElementById('warmupQuestion').textContent = drawWarmupQuestion();
+      document.getElementById('warmupQuestion').textContent = drawWarmupQuestion(student.levelId);
     });
   }
 

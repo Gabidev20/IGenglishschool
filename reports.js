@@ -166,7 +166,7 @@ function getFormDefaults(student, quarterId, quarterLabel) {
     quarterLabel,
     name: student.name,
     age: student.age,
-    levelLabel: student.levelLabel,
+    levelLabel: typeof igLevelText === 'function' ? igLevelText(student) : student.levelLabel,
     period: quarterLabel,
     attendanceText: stats.totalClasses
       ? `${stats.presentCount} de ${stats.totalClasses} aulas concluídas - ${stats.attendanceRate}% de frequência`

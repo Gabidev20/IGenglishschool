@@ -426,7 +426,7 @@ const LiveTools = (() => {
         <div class="gm-form-field">
           <label for="sbStudent">Student</label>
           <select id="sbStudent">
-            ${students.map(st => `<option value="${igEscapeHtml(st.id)}" ${st.id === student.id ? 'selected' : ''}>${igEscapeHtml(st.name)} — ${igEscapeHtml(st.levelLabel || '')}</option>`).join('')}
+            ${students.map(st => `<option value="${igEscapeHtml(st.id)}" ${st.id === student.id ? 'selected' : ''}>${igEscapeHtml(st.name)} — ${igEscapeHtml(igLevelText(st))}</option>`).join('')}
           </select>
         </div>
 
@@ -819,7 +819,7 @@ const LiveTools = (() => {
               <span class="links-avatar" style="background:${igEscapeHtml(s.color || '#8e6d86')}22">${igEscapeHtml(s.avatar || '🙂')}</span>
               <div class="links-who">
                 <strong>${igEscapeHtml(s.name)}</strong>
-                <span>${igEscapeHtml(s.levelLabel || '')}</span>
+                <span>${igEscapeHtml(igLevelText(s))}</span>
               </div>
               ${kinds.map(k => `
                 <input class="gm-input links-input" type="url" inputmode="url" data-kind="${k}"

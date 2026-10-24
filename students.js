@@ -25,15 +25,25 @@ const DEFAULT_STUDENTS = [
 // The 4 curriculum levels a student can be placed at. Editing a student's
 // level here also drives which tier (kids/juniors/teens) their Live Class
 // routine bar and curriculum tab defaults to.
+// `levelText` is what the screen shows: the level alone, with no Kids /
+// Juniors / Teens / Adults name. `levelLabel` (with the name) is still saved
+// on each student, because older records and the cloud rows carry it.
 const LEVEL_OPTIONS = [
-  { id: 'a0', label: 'Kids A0', tier: 'kids', levelLabel: 'Kids (A0)' },
-  { id: 'a1', label: 'Juniors A1', tier: 'juniors', levelLabel: 'Juniors (A1)' },
-  { id: 'a2', label: 'Teens A2', tier: 'teens', levelLabel: 'Teens (A2)' },
-  { id: 'b1', label: 'Teens B1', tier: 'teens', levelLabel: 'Teens (B1)' },
-  { id: 'b1b2', label: 'Advanced B2/C1', tier: 'teens', levelLabel: 'Advanced (B2/C1)' },
+  { id: 'a0', label: 'A0 · Starter', tier: 'kids', levelLabel: 'Kids (A0)', levelText: 'A0 · Starter' },
+  { id: 'a1', label: 'A1 · Elementary', tier: 'juniors', levelLabel: 'Juniors (A1)', levelText: 'A1 · Elementary' },
+  { id: 'a2', label: 'A2 · Pre-Intermediate', tier: 'teens', levelLabel: 'Teens (A2)', levelText: 'A2 · Pre-Intermediate' },
+  { id: 'b1', label: 'B1 · Intermediate', tier: 'teens', levelLabel: 'Teens (B1)', levelText: 'B1 · Intermediate' },
+  { id: 'b1b2', label: 'B2/C1 · Advanced', tier: 'teens', levelLabel: 'Advanced (B2/C1)', levelText: 'B2/C1 · Advanced' },
 ];
 function levelOption(levelId) {
   return LEVEL_OPTIONS.find(o => o.id === levelId) || LEVEL_OPTIONS[0];
+}
+// The level as shown on screen, e.g. "A1 · Elementary".
+function igLevelText(student) {
+  if (!student) return '';
+  if (student.levelId) return levelOption(student.levelId).levelText;
+  const m = /\(([^)]+)\)/.exec(student.levelLabel || '');
+  return m ? m[1] : (student.levelLabel || '');
 }
 
 // Backfills `levelId` for student records saved before this field existed,
@@ -359,7 +369,7 @@ function renderProfileList() {
         <span class="option-avatar" style="background:${s.color}">${s.avatar}</span>
         <span>
           <span class="option-name">${escapeHtmlLite(s.name)}</span>
-          <span class="option-level">${escapeHtmlLite(s.levelLabel)}${groupTagHTML(s.id)}</span>
+          <span class="option-level">${escapeHtmlLite(igLevelText(s))}${groupTagHTML(s.id)}</span>
         </span>
       </button>
       <button class="profile-edit-btn" data-edit-student="${s.id}" aria-label="Edit ${escapeHtmlLite(s.name)}" title="Edit student">✏️</button>
@@ -418,14 +428,13 @@ function applyActiveStudent(student) {
   document.documentElement.style.setProperty('--accent-color', student.color);
   document.getElementById('profileAvatar').textContent = student.avatar;
   document.getElementById('profileName').textContent = student.name;
-  document.getElementById('profileLevel').textContent = student.levelLabel;
+  document.getElementById('profileLevel').textContent = igLevelText(student);
 
   if (greeting) {
-    const meta = tierMeta(student.tier);
     const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
     greeting.classList.remove('is-empty');
     greeting.style.setProperty('--accent-color', student.color);
-    greeting.innerHTML = `<span class="greeting-avatar">${student.avatar}</span> Hi <strong>${escapeHtmlLite(student.name)}</strong>! ${grown ? "Ready for today's English class?" : `Ready for some ${meta.label} English today?`} <span class="greeting-stars" id="greetingStars"></span>`;
+    greeting.innerHTML = `<span class="greeting-avatar">${student.avatar}</span> Hi <strong>${escapeHtmlLite(student.name)}</strong>! ${grown ? "Ready for today's English class?" : 'Ready for some English today?'} <span class="greeting-stars" id="greetingStars"></span>`;
     renderGreetingStars(student.id);
   }
 }
@@ -503,7 +512,7 @@ function paintStudentManagerGrid() {
       <span class="student-card-avatar" style="background:${s.color}">${s.avatar}</span>
       <div class="student-card-info">
         <strong>${escapeHtmlLite(s.name)}</strong>
-        <span>${s.age ? s.age + ' yrs · ' : ''}${escapeHtmlLite(s.levelLabel)}${groupTagHTML(s.id)}</span>
+        <span>${s.age ? s.age + ' yrs · ' : ''}${escapeHtmlLite(igLevelText(s))}${groupTagHTML(s.id)}</span>
       </div>
       <div class="student-card-actions">
         <button class="gm-remove-row" data-share-student="${s.id}" aria-label="Link do aluno" title="Link do aluno">🔗</button>
