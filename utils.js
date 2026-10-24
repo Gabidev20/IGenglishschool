@@ -757,9 +757,32 @@ const IGSound = (() => {
     // here IS a click, so resuming is allowed — but it returns a promise we
     // deliberately ignore, because the notes below are scheduled on the
     // context clock and will simply play a few ms later.
-    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    if (ctx.state !== 'running') ctx.resume().catch(() => {});   // 'interrupted' on iPhone after a call or lock
     return ctx;
   }
+
+  // Phones keep the sound off until the page has been touched, and an iPhone
+  // with the side switch on silent also mutes anything the page plays as
+  // "ambient" sound. On the first touch: tell Safari this is playback, wake
+  // the audio context, and play one silent buffer so the first real sound is
+  // not swallowed.
+  let unlocked = false;
+  function unlock() {
+    if (unlocked) return;
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* older Safari */ }
+    const c = audio();
+    if (!c) return;
+    try {
+      const src = c.createBufferSource();
+      src.buffer = c.createBuffer(1, 1, 22050);
+      src.connect(c.destination);
+      src.start(0);
+    } catch (e) { /* ignore */ }
+    if (c.state === 'running') unlocked = true;
+  }
+  ['touchstart', 'touchend', 'pointerdown', 'click', 'keydown'].forEach(ev =>
+    document.addEventListener(ev, unlock, { capture: true, passive: true }));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && ctx && ctx.state !== 'running') ctx.resume().catch(() => {}); });
 
   // One note. `start` is an offset in seconds from now, so a whole phrase can
   // be scheduled in a single synchronous pass.

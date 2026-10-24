@@ -409,6 +409,10 @@ const GameEngine = (() => {
   // -------------------------------------------------------------------------
   function renderMemory(container, topic) {
     const words = pickN(topic.words, Math.min(6, topic.words.length));
+    // A child who cannot read yet matches two identical pictures — no words
+    // on the cards — and hears the word when a card turns over.
+    const student = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
+    const pictureOnly = Boolean(student && typeof studentProfile === 'function' && studentProfile(student) === 'prereader');
 
     let cards, flipped, matched, lock, moves;
 
@@ -416,7 +420,7 @@ const GameEngine = (() => {
       const pool = [];
       words.forEach(w => {
         pool.push({ uid: `${w.id}-img`, matchId: w.id, kind: 'visual', word: w });
-        pool.push({ uid: `${w.id}-txt`, matchId: w.id, kind: 'text', word: w });
+        pool.push({ uid: `${w.id}-txt`, matchId: w.id, kind: pictureOnly ? 'visual' : 'text', word: w });
       });
       cards = shuffle(pool);
       flipped = [];
@@ -443,7 +447,7 @@ const GameEngine = (() => {
         <div class="memory-grid-wrapper">
           <div class="memory-grid">
             ${cards.map((card, i) => `
-              <button class="memory-card ${flipped.includes(i) || matched.has(i) ? 'flipped' : ''} ${matched.has(i) ? 'matched' : ''}" data-index="${i}">
+              <button class="memory-card ${pictureOnly ? 'memory-card--pic' : ''} ${flipped.includes(i) || matched.has(i) ? 'flipped' : ''} ${matched.has(i) ? 'matched' : ''}" data-index="${i}">
                 <div class="memory-card-inner">
                   <div class="memory-face back">❓</div>
                   <div class="memory-face front">${cardFaceFront(card)}</div>
@@ -470,6 +474,7 @@ const GameEngine = (() => {
       if (lock || matched.has(index) || flipped.includes(index)) return;
       flipped.push(index);
       IGSound.flip();
+      if (pictureOnly) ttsSay(cards[index].word.en, 0.8);
       if (flipped.length === 1) { paint(); return; }
 
       moves++;

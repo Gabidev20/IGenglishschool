@@ -9519,3 +9519,17 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .mn-tick::after { content: '✓'; position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: #cf2846; font-weight: 800; font-size: 2.6cqw; }
 .mn-tick.on::after { display: flex; }
 .mn-tick.on { background: rgba(207, 40, 70, 0.10); }
+
+
+/* --- Memory: pictures always whole, on every phone ---------------------------
+   The picture box used height:70% inside a grid cell with no height of its
+   own; Safari resolves that to a sliver and the picture came out cropped.
+   The card face is now a flex column and the picture box takes what is left. */
+.memory-face.front { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px; }
+.memory-face.front .word-visual { flex: 1 1 0; width: 100%; height: auto; min-height: 0; background: transparent; border-radius: 0; overflow: visible; }
+.memory-face.front .word-visual img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; }
+.memory-face.front .word-visual img.ig-emoji--word { width: 80%; height: 80%; }
+.memory-face.front .word-visual .ig-emoji-scene { width: 100%; height: 100%; }
+.memory-face.front .memory-word-label { flex: 0 0 auto; }
+.memory-card--pic .memory-face.front .word-visual { background: transparent; }
+.memory-card--pic .memory-face.front { padding: 8px; }
