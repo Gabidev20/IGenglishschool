@@ -120,20 +120,20 @@ const InstrumentSound = (() => {
   }
   function piano(vol) {
     const c = ctx(), t0 = c.currentTime + 0.02;
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
-      const t = t0 + i * 0.24;
+    [523.25, 659.25, 783.99, 1046.5, 783.99, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => {
+      const t = t0 + i * 0.36;
       [[f, 'triangle', 1], [f * 2, 'sine', 0.3]].forEach(([freq, type, m]) => {
         const o = c.createOscillator(), g = c.createGain();
         o.type = type; o.frequency.value = freq;
-        env(g, t, vol * m, 0.01, 0.9);
+        env(g, t, vol * m, 0.01, i === 8 ? 1.4 : 1.1);
         o.connect(g).connect(c.destination);
-        o.start(t); o.stop(t + 1);
+        o.start(t); o.stop(t + (i === 8 ? 1.5 : 1.2));
       });
     });
   }
   function drum(vol) {
     const c = ctx(), t0 = c.currentTime + 0.02;
-    [0, 0.3, 0.6, 0.75, 0.9].forEach((dt, i) => {
+    [0, 0.3, 0.6, 0.75, 0.9, 1.2, 1.5, 1.8, 1.95, 2.1, 2.4, 2.55, 2.7, 2.85, 3.0, 3.15].forEach((dt, i) => {
       const t = t0 + dt;
       const o = c.createOscillator(), g = c.createGain();
       o.frequency.setValueAtTime(160, t);
@@ -156,24 +156,24 @@ const InstrumentSound = (() => {
   }
   function guitar(vol) {
     const c = ctx(), t0 = c.currentTime + 0.02;
-    [0, 0.6].forEach(st => {
+    [0, 0.9, 1.8, 2.7].forEach(st => {
       [196, 246.94, 293.66, 392].forEach((f, i) => {
         const t = t0 + st + i * 0.035;
         const o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter();
         o.type = 'sawtooth'; o.frequency.value = f;
         lp.type = 'lowpass';
         lp.frequency.setValueAtTime(3200, t);
-        lp.frequency.exponentialRampToValueAtTime(500, t + 0.8);
-        env(g, t, vol, 0.004, 1.1);
+        lp.frequency.exponentialRampToValueAtTime(500, t + 1.2);
+        env(g, t, vol, 0.004, 1.5);
         o.connect(lp).connect(g).connect(c.destination);
-        o.start(t); o.stop(t + 1.2);
+        o.start(t); o.stop(t + 1.6);
       });
     });
   }
   function violin(vol) {
     const c = ctx(), t0 = c.currentTime + 0.02;
-    [659.25, 783.99, 880].forEach((f, i) => {
-      const t = t0 + i * 0.45;
+    [659.25, 783.99, 880, 783.99, 659.25, 880, 1046.5].forEach((f, i) => {
+      const t = t0 + i * 0.55;
       const o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter();
       const lfo = c.createOscillator(), lg = c.createGain();
       o.type = 'sawtooth'; o.frequency.value = f;
@@ -182,20 +182,20 @@ const InstrumentSound = (() => {
       lp.type = 'lowpass'; lp.frequency.value = 2600;
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(vol, t + 0.12);
-      g.gain.setValueAtTime(vol, t + 0.38);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+      g.gain.setValueAtTime(vol, t + 0.45);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
       o.connect(lp).connect(g).connect(c.destination);
-      o.start(t); lfo.start(t); o.stop(t + 0.6); lfo.stop(t + 0.6);
+      o.start(t); lfo.start(t); o.stop(t + 0.75); lfo.stop(t + 0.75);
     });
   }
   const players = { piano, drum, guitar, violin };
   function play(id) {
-    if (typeof IGSound !== 'undefined' && IGSound.muted()) return 1300;
+    if (typeof IGSound !== 'undefined' && IGSound.muted()) return 3800;
     try {
       const inst = instrumentById(id);
       const vol = { piano: 0.32, drum: 0.75, guitar: 0.06, violin: 0.045 }[id];
       players[id](vol);
-      return inst ? 1300 : 0;
+      return inst ? 3800 : 0;
     } catch (e) { return 0; }
   }
   return { play };
