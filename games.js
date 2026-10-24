@@ -470,16 +470,30 @@ const GameEngine = (() => {
       }
     }
 
+    // Turning a card only touches that card (and the counter): rebuilding the
+    // whole board on every tap re-created every picture and made the tap feel
+    // late. The full repaint is kept for starting over and for winning.
+    function syncBoard() {
+      container.querySelectorAll('.memory-card').forEach(el => {
+        const i = Number(el.dataset.index);
+        el.classList.toggle('flipped', flipped.includes(i) || matched.has(i));
+        el.classList.toggle('matched', matched.has(i));
+        el.classList.remove('shake');
+      });
+      const pill = container.querySelector('.game-status-pill');
+      if (pill) pill.textContent = `${matched.size / 2} / ${words.length} pairs · ${moves} moves`;
+    }
+
     function flipCard(index) {
       if (lock || matched.has(index) || flipped.includes(index)) return;
       flipped.push(index);
       IGSound.flip();
       if (pictureOnly) ttsSay(cards[index].word.en, 0.8);
-      if (flipped.length === 1) { paint(); return; }
+      if (flipped.length === 1) { syncBoard(); return; }
 
       moves++;
       lock = true;
-      paint();
+      syncBoard();
 
       const [a, b] = flipped;
       const isMatch = cards[a].matchId === cards[b].matchId;
@@ -496,8 +510,11 @@ const GameEngine = (() => {
         }
         flipped = [];
         lock = false;
-        paint();
-      }, isMatch ? 500 : 800);
+        if (matched.size === cards.length) { paint(); return; }
+        // Let the shake play, then turn the pair back over.
+        setTimeout(syncBoard, isMatch ? 0 : 350);
+        if (isMatch) syncBoard();
+      }, isMatch ? 350 : 700);
       trackTimer(timer);
     }
 

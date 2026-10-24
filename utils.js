@@ -55,7 +55,7 @@ function igImageHTML(src, emoji, alt, opts) {
   if (!src) return `<span class="emoji-fallback">${igEscapeHtml(emoji || '🖼️')}</span>`;
   const o = typeof opts === 'string' ? { attrs: opts } : (opts || {});
   return `<img src="${igEscapeHtml(src)}" alt="${igEscapeHtml(alt || '')}"
-    loading="${o.lazy ? 'lazy' : 'eager'}" decoding="async"
+    loading="${o.lazy ? 'lazy' : 'eager'}" decoding="sync"
     data-fallback="${igEscapeHtml(emoji || '🖼️')}"
     onerror="igImageFallback(this)" ${o.attrs || ''} />`;
 }
@@ -129,7 +129,7 @@ function igEmojiImgHTML(emoji, cls) {
   const e = String(emoji || '').trim();
   if (!e) return '';
   return `<img class="${cls || 'ig-emoji'}" src="${IG_TWEMOJI_BASE}${igEmojiCode(e)}.svg" alt="${igEscapeHtml(e)}" draggable="false"
-    decoding="async" data-fallback="${igEscapeHtml(e)}" onerror="igImageFallback(this)" />`;
+    decoding="sync" data-fallback="${igEscapeHtml(e)}" onerror="igImageFallback(this)" />`;
 }
 
 const igSvgUri = (body, viewBox) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(

@@ -9540,3 +9540,13 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .balloon-body--pic .word-visual.balloon-pic { width: 78%; height: 66%; background: rgba(255,255,255,0.88); border-radius: 50%; overflow: hidden; }
 .balloon-body--pic .word-visual.balloon-pic img { object-fit: contain; }
 .balloon-say { border: none; background: var(--primary); color: #fff; border-radius: 50%; width: 1.9em; height: 1.9em; font-size: 1em; cursor: pointer; vertical-align: middle; margin-left: 6px; }
+
+
+/* --- Taps answer at once -------------------------------------------------------
+   touch-action:manipulation removes the wait phones add for a possible
+   double-tap zoom; the :active press gives feedback before the game logic runs. */
+button, [role="button"], .key-btn, .memory-card, .balloon, .matchup-item, .wordmatch-item, .cg-choice, .stu-tile, a, label, select, summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.key-btn:active:not(:disabled), .game-btn:active, .cg-choice:active, .matchup-item:active, .wordmatch-item:active, .stu-tile:active { transform: scale(0.95); transition-duration: 0.05s; }
