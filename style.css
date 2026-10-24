@@ -9606,3 +9606,80 @@ button, [role="button"], .key-btn, .memory-card, .balloon, .matchup-item, .wordm
   .chat-wrap { height: calc(100dvh - 47px); }
   .chat-bubble { max-width: 88%; }
 }
+
+/* ==========================================================================
+   GROWN-UP LOOK (html.ig-grown) — teenagers 14+ and adults
+   The school's own identity, as on the public site: plum and coral, Fraunces
+   headings over Plus Jakarta Sans, calmer corners and shadows. Set by
+   applyGrownLook() (teacherSetup.js); the children's look is untouched.
+   ========================================================================== */
+html.ig-grown {
+  --color-primary: #6F4863;        /* plum */
+  --color-background: #FBF8FA;     /* paper with a plum tint */
+  --color-secondary: #D9CCD5;      /* soft plum grey for support elements */
+  --color-accent-soft: #F7E3AC;    /* butter */
+  --color-accent-pop: #CE2C46;     /* coral, dark enough for white text */
+  --color-text-dark: #2E1E2C;      /* ink */
+  --color-accent-pop-deep: #B32239;
+  --color-accent-soft-deep: #A07A1F;
+
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-heading: 'Fraunces', Georgia, serif;
+
+  --radius-xl: 22px;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 4px rgba(46, 30, 44, 0.06);
+  --shadow-md: 0 10px 24px -12px rgba(46, 30, 44, 0.18);
+  --shadow-lg: 0 20px 48px -20px rgba(46, 30, 44, 0.28);
+}
+html.ig-grown h1,
+html.ig-grown h2,
+html.ig-grown .stu-header h1 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+/* The greeting band and the student header take the school's mist, not each
+   student's playful colour. */
+html.ig-grown .student-greeting { --accent-color: var(--color-primary); background: #F5F0F7; }
+html.ig-grown .stu-tile span { font-size: 1.35rem; }
+html.ig-grown .stu-tile { border-width: 1.5px; }
+html.ig-grown .stu-tile:hover { transform: translateY(-1px); }
+/* The student's header becomes the school's deep plum band, as on the site. */
+html.ig-grown .stu-header { background: #432C3E; border: 0; }
+html.ig-grown .stu-header h1 { color: #FFFFFF; }
+html.ig-grown .stu-header p { color: rgba(255, 255, 255, 0.78); }
+
+/* ---- Games in the grown-up look ------------------------------------------
+   A clean "study app" feel instead of a toy box: flat chips, a plum score
+   bar, crisp answer cards, coral for the move you make and a calm green only
+   for what is right. */
+html.ig-grown .arcade-modal .modal-head h3 { font-family: var(--font-heading); font-weight: 600; font-size: 1.6rem; }
+html.ig-grown .modal-head-thumb--icon { background: #432C3E; border-radius: var(--radius-md); }
+html.ig-grown .arcade-tier-pill { background: #F5F0F7 !important; color: var(--color-primary) !important; border-radius: 6px; }
+html.ig-grown .arcade-topic-picker { gap: 6px; }
+html.ig-grown .arcade-topic-chip { border-radius: 8px; border-width: 1.5px; font-weight: 600; padding: 6px 12px; }
+html.ig-grown .arcade-topic-chip .ig-emoji { display: none; }
+html.ig-grown .arcade-topic-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #FFFFFF; }
+html.ig-grown .game-status-pill { background: #432C3E; color: #FFFFFF; border-radius: 8px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+html.ig-grown .game-btn { border-radius: 10px; font-weight: 650; }
+html.ig-grown .game-btn.secondary { background: var(--surface); border-width: 1.5px; }
+html.ig-grown .wordmatch-item,
+html.ig-grown .quiz-option { border-width: 1.5px; border-radius: 10px; font-weight: 600; box-shadow: var(--shadow-sm); }
+html.ig-grown .wordmatch-item.selected { border-color: var(--color-accent-pop); background: #FCE4E8; }
+html.ig-grown .wordmatch-item.matched,
+html.ig-grown .quiz-option.correct { border-color: #2F7D5B; background: #E3F1EA; color: #1F5A40; opacity: 1; }
+html.ig-grown .quiz-option.wrong { border-color: var(--color-accent-pop); background: #FCE4E8; color: var(--color-accent-pop-deep); }
+html.ig-grown .wordmatch-term { font-family: var(--font-body); font-weight: 700; }
+html.ig-grown .game-end-banner { border-radius: var(--radius-md); font-family: var(--font-heading); font-weight: 600; }
+html.ig-grown .game-end-banner.win { background: #E3F1EA; color: #1F5A40; }
+html.ig-grown .game-end-banner.lose { background: #FCE4E8; color: var(--color-accent-pop-deep); }
+html.ig-grown .listen-speaker-btn { background: #432C3E; animation: none; box-shadow: var(--shadow-md); }
+html.ig-grown .listen-speed-btn,
+html.ig-grown .listen-mode-btn { border-radius: 8px; }
+html.ig-grown .listen-speed-btn.active,
+html.ig-grown .listen-mode-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: #FFFFFF; }
+html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; }

@@ -116,6 +116,23 @@ function applyTeacherAudience() {
   const cl = document.body.classList;
   cl.toggle('ig-no-young', !teacherHasYoungKids());
   cl.toggle('ig-adult-only', teacherAdultOnly());
+  applyGrownLook();
+}
+
+// GROWN-UP LOOK — the school's sober theme (plum and coral, Fraunces and
+// Plus Jakarta Sans) for learners of 14+, the age the school's teen course
+// starts. Only the look changes here; content still follows igIsGrownup (15+).
+function igGrownLook(student) {
+  return Boolean(student) && Number(student.age) >= 14;
+}
+
+// `student` is the learner on screen; with nobody selected the teacher's own
+// setup decides. The class sits on <html> so it also reaches the student link.
+function applyGrownLook(student) {
+  const s = student !== undefined ? student
+    : (typeof getActiveStudent === 'function' ? getActiveStudent() : null);
+  const grown = s ? igGrownLook(s) : teacherAdultOnly();
+  document.documentElement.classList.toggle('ig-grown', grown);
 }
 
 // ---------------------------------------------------------------------------

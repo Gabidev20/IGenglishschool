@@ -363,7 +363,7 @@ function dashPaintWeek(pane) {
                       <span class="dash-class-avatar">${igEscapeHtml(s.avatar || '🙂')}</span>
                       <span class="dash-class-text">
                         <span class="dash-class-name">${igEscapeHtml(s.name)}</span>
-                        <span class="dash-class-meta">${sched.time ? igEscapeHtml(sched.time) + ' · ' : ''}${igEscapeHtml(s.levelLabel || '')}${typeof groupMemberNames === 'function' && groupMemberNames(s.id).length ? ' · 👥 ' + groupMemberNames(s.id).length : ''}</span>
+                        <span class="dash-class-meta">${sched.time ? igEscapeHtml(sched.time) + ' · ' : ''}${igEscapeHtml(igLevelText(s))}${typeof groupMemberNames === 'function' && groupMemberNames(s.id).length ? ' · 👥 ' + groupMemberNames(s.id).length : ''}</span>
                       </span>
                     </button>
                     <label class="dash-check" title="Marcar como preparada">
@@ -502,7 +502,7 @@ function dashOpenScheduleEditor() {
                 <span class="sched-avatar" style="background:${igEscapeHtml(s.color || '#8e6d86')}22">${igEscapeHtml(s.avatar || '🙂')}</span>
                 <div>
                   <strong>${igEscapeHtml(s.name)}</strong>
-                  <span>${igEscapeHtml(s.levelLabel || '')}</span>
+                  <span>${igEscapeHtml(igLevelText(s))}</span>
                 </div>
               </div>
               <div class="sched-days">
