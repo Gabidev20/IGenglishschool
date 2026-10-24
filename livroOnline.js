@@ -391,6 +391,7 @@ const LivroOnline = (() => {
 
     return {
       open, mark, flush, refresh,
+      isDirty(id) { return dirty.has(id); },
       onStatus(fn) { listeners.add(fn); fn(lastStatus); return () => listeners.delete(fn); },
       get mode() { return mode; },
     };
@@ -1314,6 +1315,24 @@ const LivroOnline = (() => {
       if (answering) closeAnswer(false);
       if (!ro && o.sync) o.sync.flush();
     }
+    // ---- live view -------------------------------------------------------------
+    // The other side (student at home / teacher in class) may draw on the page that is open
+    // right now: every few seconds take the newer cloud copy, unless this side is drawing,
+    // typing, answering or has unsaved changes (a local, newer copy always wins).
+    const liveTimer = setInterval(() => {
+      if (!root.isConnected) { clearInterval(liveTimer); return; }
+      if (ro || !o.sync || !o.sync.refresh || document.visibilityState === 'hidden') return;
+      if (act || editing || answering || pinch || pts.size) return;
+      const opened = pg, id = pid(m, opened.n);
+      if (o.sync.isDirty && o.sync.isDirty(id)) return;
+      o.sync.refresh(id).then(fresh => {
+        if (!fresh || o.pages[idx] !== opened || act || editing || answering || pts.size) return;
+        data = normalize(fresh);
+        hist = []; redoStack = []; selected = null;
+        render();
+      }).catch(() => {});
+    }, 4000);
+
     function goto(i, wantPart) {
       if (i < 0 || i >= o.pages.length) return;
       leavePage();
