@@ -106,8 +106,11 @@ function playerSVG(id, playing) {
 const InstrumentSound = (() => {
   let ac = null;
   const ctx = () => {
+    // Share the site's audio context: it is the one unlocked by the first
+    // touch on phones (see IGSound.unlock in utils.js).
+    if (typeof IGSound !== 'undefined' && IGSound.context) { const shared = IGSound.context(); if (shared) return shared; }
     if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
-    if (ac.state === 'suspended') ac.resume();
+    if (ac.state !== 'running') ac.resume();
     return ac;
   };
   function env(g, t, peak, attack, decay) {

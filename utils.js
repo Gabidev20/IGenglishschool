@@ -988,7 +988,7 @@ const IGSound = (() => {
     bell: play(() => bell(1175, 0, 0.18)),
   };
 
-  return { stars, starsDown, sticker, muted, setMuted, note, noise, wash, slide, ...sfx };
+  return { stars, starsDown, sticker, muted, setMuted, context: audio, note, noise, wash, slide, ...sfx };
 })();
 
 window.IGSound = IGSound;
