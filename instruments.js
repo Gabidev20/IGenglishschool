@@ -118,8 +118,8 @@ const InstrumentSound = (() => {
     g.gain.exponentialRampToValueAtTime(peak, t + attack);
     g.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay);
   }
-  function piano(vol) {
-    const c = ctx(), t0 = c.currentTime + 0.02;
+  function piano(vol, ctxOverride) {
+    const c = ctxOverride || ctx(), t0 = c.currentTime + 0.02;
     [523.25, 659.25, 783.99, 1046.5, 783.99, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => {
       const t = t0 + i * 0.36;
       [[f, 'triangle', 1], [f * 2, 'sine', 0.3]].forEach(([freq, type, m]) => {
@@ -131,8 +131,8 @@ const InstrumentSound = (() => {
       });
     });
   }
-  function drum(vol) {
-    const c = ctx(), t0 = c.currentTime + 0.02;
+  function drum(vol, ctxOverride) {
+    const c = ctxOverride || ctx(), t0 = c.currentTime + 0.02;
     [0, 0.3, 0.6, 0.75, 0.9, 1.2, 1.5, 1.8, 1.95, 2.1, 2.4, 2.55, 2.7, 2.85, 3.0, 3.15].forEach((dt, i) => {
       const t = t0 + dt;
       const o = c.createOscillator(), g = c.createGain();
@@ -154,8 +154,8 @@ const InstrumentSound = (() => {
       }
     });
   }
-  function guitar(vol) {
-    const c = ctx(), t0 = c.currentTime + 0.02;
+  function guitar(vol, ctxOverride) {
+    const c = ctxOverride || ctx(), t0 = c.currentTime + 0.02;
     [0, 0.9, 1.8, 2.7].forEach(st => {
       [196, 246.94, 293.66, 392].forEach((f, i) => {
         const t = t0 + st + i * 0.035;
@@ -170,8 +170,8 @@ const InstrumentSound = (() => {
       });
     });
   }
-  function violin(vol) {
-    const c = ctx(), t0 = c.currentTime + 0.02;
+  function violin(vol, ctxOverride) {
+    const c = ctxOverride || ctx(), t0 = c.currentTime + 0.02;
     [659.25, 783.99, 880, 783.99, 659.25, 880, 1046.5].forEach((f, i) => {
       const t = t0 + i * 0.55;
       const o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter();
@@ -189,16 +189,65 @@ const InstrumentSound = (() => {
     });
   }
   const players = { piano, drum, guitar, violin };
+  const VOL = { piano: 0.32, drum: 0.75, guitar: 0.06, violin: 0.045 };
+  const LENGTH_MS = 3800;
+
+  // On an iPhone, sound made with Web Audio is silenced by the side switch
+  // (and by a phone call or lock), while spoken text and <audio> players are
+  // not — which is why only "I'm playing the…" was heard. So each instrument
+  // is rendered once into a WAV file and played with an <audio> element, the
+  // way a normal sound would be. Web Audio stays as the fallback.
+  const clips = {};          // id -> { el, ready }
+  function wavFromBuffer(buf) {
+    const data = buf.getChannelData(0), n = data.length, rate = buf.sampleRate;
+    const out = new DataView(new ArrayBuffer(44 + n * 2));
+    const str = (o, t) => { for (let i = 0; i < t.length; i++) out.setUint8(o + i, t.charCodeAt(i)); };
+    str(0, 'RIFF'); out.setUint32(4, 36 + n * 2, true); str(8, 'WAVEfmt ');
+    out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, 1, true);
+    out.setUint32(24, rate, true); out.setUint32(28, rate * 2, true); out.setUint16(32, 2, true); out.setUint16(34, 16, true);
+    str(36, 'data'); out.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) out.setInt16(44 + i * 2, Math.max(-1, Math.min(1, data[i])) * 32767, true);
+    return new Blob([out], { type: 'audio/wav' });
+  }
+  function prepare(id) {
+    if (clips[id] || !players[id]) return;
+    const Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!Off || !window.Audio) return;
+    clips[id] = { el: null, ready: false };
+    try {
+      const rate = 22050, off = new Off(1, Math.ceil(rate * (LENGTH_MS + 400) / 1000), rate);
+      players[id](VOL[id], off);
+      const done = buf => {
+        const el = new Audio(URL.createObjectURL(wavFromBuffer(buf)));
+        el.preload = 'auto';
+        clips[id].el = el; clips[id].ready = true;
+      };
+      const p = off.startRendering();
+      if (p && p.then) p.then(done).catch(() => { delete clips[id]; });
+      else off.oncomplete = e => done(e.renderedBuffer);
+    } catch (e) { delete clips[id]; }
+  }
+  function prepareAll() { Object.keys(players).forEach(prepare); }
+
   function play(id) {
-    if (typeof IGSound !== 'undefined' && IGSound.muted()) return 3800;
+    if (typeof IGSound !== 'undefined' && IGSound.muted()) return LENGTH_MS;
     try {
       const inst = instrumentById(id);
-      const vol = { piano: 0.32, drum: 0.75, guitar: 0.06, violin: 0.045 }[id];
-      players[id](vol);
-      return inst ? 3800 : 0;
+      Object.values(clips).forEach(c => { if (c.el) { try { c.el.pause(); } catch (e) {} } });
+      const clip = clips[id];
+      if (clip && clip.ready) {
+        clip.el.currentTime = 0;
+        const p = clip.el.play();
+        // Refused (very old browser, or no touch yet): fall back to Web Audio.
+        if (p && p.catch) p.catch(() => { try { players[id](VOL[id]); } catch (e) {} });
+      } else {
+        players[id](VOL[id]);
+        prepare(id);
+      }
+      return inst ? LENGTH_MS : 0;
     } catch (e) { return 0; }
   }
-  return { play };
+  return { play, prepareAll };
 })();
 
 function instrumentFor(word) {

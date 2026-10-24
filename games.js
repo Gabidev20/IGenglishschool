@@ -3119,6 +3119,7 @@ const GameEngine = (() => {
   // into the right box; tapping a card plays it so the child can listen.
   // -------------------------------------------------------------------------
   function renderInstruments(container, topic) {
+    if (typeof InstrumentSound !== 'undefined' && InstrumentSound.prepareAll) InstrumentSound.prepareAll();
     const seen = new Set();
     const insts = [];
     (topic.words || []).forEach(w => { const i = instrumentFor(w); if (i && !seen.has(i.id)) { seen.add(i.id); insts.push(i); } });
