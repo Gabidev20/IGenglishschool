@@ -773,6 +773,18 @@ const SlidesAula = (() => {
     saveMeta(sid, d, { v: 1, title: title || 'Apresentação', slideIds: [s], bg: { color: '#ffffff' }, createdAt: t, updatedAt: t });
     return d;
   }
+  // A ready-made deck (slidesModelos.js) becomes a normal, editable deck.
+  function importModel(sid, model) {
+    if (!model || localDecks(sid).length >= MAX_DECKS) return null;
+    const d = rid(), t = nowMs();
+    const ids = model.slides.map(() => rid());
+    model.slides.forEach((s, k) => {
+      writeRec(sid, slideRecId(d, ids[k]), normSlide({ ...s, updatedAt: t }));
+      Sync.mark(sid, slideRecId(d, ids[k]));
+    });
+    saveMeta(sid, d, { v: 1, title: model.title, slideIds: ids, bg: { color: '#ffffff' }, createdAt: t, updatedAt: t });
+    return d;
+  }
   // The deck as the editor needs it: meta + every slide, cloud copy merged first.
   async function loadDeck(sid, deckId) {
     await Sync.pullDeck(sid, deckId);
@@ -1040,6 +1052,7 @@ const SlidesAula = (() => {
           ${teacher ? visibilityHTML(student) : ''}
           ${teacher ? `<div class="sl-home-actions">
               <button type="button" class="sl-btn sl-btn--ok" data-a="new">✨ Nova apresentação</button>
+              ${(window.SLIDES_MODELOS || []).length ? '<button type="button" class="sl-btn" data-a="model">📥 Modelo pronto</button>' : ''}
               <button type="button" class="sl-btn" data-a="switch">🔄 Trocar aluno</button>
             </div>` : ''}
           ${loading ? '<p class="sl-empty">Abrindo os slides…</p>'
@@ -1076,6 +1089,26 @@ const SlidesAula = (() => {
       const a = b.dataset.a;
       if (a === 'back') { back(); return; }
       if (a === 'switch') { closeAllViews(); openPicker(); return; }
+      if (a === 'model') {
+        const ms = window.SLIDES_MODELOS || [];
+        const d = document.createElement('div');
+        d.className = 'sl-dlg';
+        d.innerHTML = `<div class="sl-dlg-box" role="dialog" aria-label="Modelo pronto">
+          <h4>Importar modelo para ${esc(student.name)}</h4>
+          <div class="sl-dlg-list">${ms.map((m, i) => `<button type="button" class="sl-btn sl-dlg-pick" data-i="${i}">📥 ${esc(m.title)}</button>`).join('')}</div>
+          <div class="sl-dlg-row"><button type="button" class="sl-btn" data-x="cancel">Cancelar</button></div></div>`;
+        root.appendChild(d);
+        d.addEventListener('click', ev => {
+          if (ev.target.closest('[data-x]') || ev.target === d) { d.remove(); return; }
+          const p = ev.target.closest('[data-i]');
+          if (!p) return;
+          d.remove();
+          const nd = importModel(sid, ms[Number(p.dataset.i)]);
+          if (!nd) { toast(root, `Limite de ${MAX_DECKS} apresentações por aluno.`); return; }
+          paint(); toast(root, 'Modelo importado ✓');
+        });
+        return;
+      }
       if (a === 'new') {
         const title = await ask(root, { title: 'Nome da apresentação', value: `Aula de ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}`, ok: 'Criar' });
         if (!title) return;
