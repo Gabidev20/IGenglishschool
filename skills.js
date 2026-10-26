@@ -110,7 +110,7 @@ function skScore(target, said) {
 // examples, else the graded sentences the exam generators are built on.
 function skSentences(opts) {
   const o = opts || {};
-  if (Array.isArray(o.lines) && o.lines.length) return o.lines.slice(0, 12);
+  if (Array.isArray(o.lines) && o.lines.length) return o.lines.slice(0, o.max || 12);
   if (o.topic && typeof lkSentences === 'function') {
     const own = lkSentences(o.topic);
     if (own.length >= 3) return own.slice(0, 10);
@@ -167,12 +167,13 @@ const SkillsModules = (() => {
       mount.innerHTML = `
         <div class="sk-shell">
           <div class="ex-head">
-            <span class="ex-count">Frase ${index + 1} de ${deck.length}</span>
+            <span class="ex-count">${o.itemLabel || 'Frase'} ${index + 1} de ${deck.length}</span>
             <span class="ex-score">${scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) + '% em média' : 'Leia em voz alta'}</span>
           </div>
           <div class="ex-bar"><div class="ex-bar-fill" style="width:${(index / deck.length) * 100}%"></div></div>
 
           <p class="sk-target">${s.marked || skEsc(line)}</p>
+          ${o.hints && o.hints[line] ? `<p class="sk-ipa">${skEsc(o.hints[line])}</p>` : ''}
 
           <div class="sk-actions">
             <button class="game-btn secondary" data-action="listen">🔊 Ouvir</button>
@@ -193,7 +194,7 @@ const SkillsModules = (() => {
 
           <div class="game-btn-row ex-actions">
             <button class="btn btn-primary" data-action="next" ${s.done ? '' : 'hidden'}>
-              ${index + 1 === deck.length ? 'Ver resultado →' : 'Próxima frase →'}
+              ${index + 1 === deck.length ? 'Ver resultado →' : `Próxima ${(o.itemLabel || 'frase').toLowerCase()} →`}
             </button>
           </div>
         </div>`;

@@ -23,6 +23,8 @@ function loadSessions(studentId) {
 }
 function saveSessions(studentId, list) {
   IGStore.setJSON(sessionKey(studentId), list);
+  // The student's link gets this class's words and phrases (speakingHub.js).
+  if (typeof saRefreshSoon === 'function') saRefreshSoon();
 }
 
 function loadCurrentSessionAccumulator(studentId) {

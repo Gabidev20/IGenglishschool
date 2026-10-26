@@ -638,7 +638,10 @@ function renderStudentHome(shell, studentId) {
     // Dictation and Speaking read sentences from the topics this student
     // has been given, not from the whole bank.
     dictation: () => openDictationModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
-    speaking: () => openSpeakingModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
+    // Speaking: Pronunciation · My book · Class takeaway (speakingHub.js).
+    speaking: () => (typeof openSpeakingHub === 'function'
+      ? openSpeakingHub(student, shareLinesFor(topics))
+      : openSpeakingModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) })),
     writing: () => (markRepliesSeen(), typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
   };
   shell.querySelectorAll('[data-go]').forEach(btn => {
