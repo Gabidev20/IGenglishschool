@@ -6,6 +6,8 @@
    is marked done just because somebody clicked "I did it".
    ========================================================================== */
 
+const hwSay = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 const HW_KEY = 'homework';
 
 const HW_TASK_TYPES = [
@@ -39,6 +41,44 @@ const hwPagesLabel = pages => {
   return pages.length > 1 && consecutive ? `p. ${pages[0]}–${pages[pages.length - 1]}` : `p. ${pages.join(', ')}`;
 };
 const hwTaskMeta = id => HW_TASK_TYPES.find(t => t.id === id) || HW_TASK_TYPES[0];
+
+// Display only: the task labels, hints and titles above are stored in
+// Portuguese; a 14+ learner sees them in English on screen.
+const HW_TASK_EN = {
+  exam: ['Short test', 'Questions from your topics'],
+  review: ['Review my mistakes', 'The questions you got wrong and still need to practice'],
+  dictation: ['Dictation', 'Listen to the sentence and write it'],
+  speaking: ['Speaking', 'Read sentences out loud'],
+  writing: ['Writing', 'Write a text for your teacher to correct'],
+  study: ['Study a topic', 'Video, reading and flashcards for the topic'],
+  book: ['Book pages', 'Opens your book on the right page'],
+  free: ['Free task', 'A task from your teacher — mark it when you finish'],
+};
+function hwTaskName(t) {
+  const meta = hwTaskMeta(t.type);
+  const label = t.label || meta.label;
+  const en = HW_TASK_EN[meta.id];
+  if (en && label === meta.label) return hwSay(label, en[0]);
+  const book = label.match(/^Livro (p\. .*)$/);
+  if (book) return hwSay(label, `Book ${book[1]}`);
+  return label;
+}
+const hwTaskHint = meta => hwSay(meta.hint, (HW_TASK_EN[meta.id] || [meta.hint, meta.hint])[1]);
+function hwTitleText(hw) {
+  const title = String(hw.title || '');
+  if (title === 'Lição de casa') return hwSay(title, 'Homework');
+  if (title.startsWith('Lição de casa · ')) return hwSay(title, 'Homework · ' + title.slice('Lição de casa · '.length));
+  return title;
+}
+// hwDueLabel stays Portuguese (it is compared); this is what the screen shows.
+function hwDueText(hw) {
+  const pt = hwDueLabel(hw);
+  if (!pt) return '';
+  const fixed = { entregue: 'done', atrasada: 'late', 'para hoje': 'due today', 'para amanhã': 'due tomorrow' };
+  if (fixed[pt]) return hwSay(pt, fixed[pt]);
+  const days = pt.match(/^em (\d+) dias$/);
+  return days ? hwSay(pt, `due in ${days[1]} days`) : pt;
+}
 
 // ---------------------------------------------------------------------------
 // STORE
@@ -162,19 +202,19 @@ function renderHomework(container) {
           <div class="hw-student-head">
             <span class="hw-avatar" style="background:${igEscapeHtml(active.color || '#8e6d86')}">${igEscapeHtml(active.avatar || '🙂')}</span>
             <div>
-              <h3>Lição de casa de ${igEscapeHtml(active.name)}</h3>
-              <p>${mine.filter(h => !hwIsDone(h)).length} pendente(s) · ${mine.filter(hwIsDone).length} entregue(s)</p>
+              <h3>${hwSay('Lição de casa de ', 'Homework for ')}${igEscapeHtml(active.name)}</h3>
+              <p>${mine.filter(h => !hwIsDone(h)).length} ${hwSay('pendente(s)', 'to do')} · ${mine.filter(hwIsDone).length} ${hwSay('entregue(s)', 'done')}</p>
             </div>
-            <button class="game-btn" id="hwMyProgress">📈 Meu progresso</button>
+            <button class="game-btn" id="hwMyProgress">📈 ${hwSay('Meu progresso', 'My progress')}</button>
             <button class="game-btn secondary" id="hwShareLink">🔗 Link do aluno</button>
-            <button class="game-btn secondary" id="hwStudentBook">📖 Livro</button>
+            <button class="game-btn secondary" id="hwStudentBook">📖 ${hwSay('Livro', 'Book')}</button>
             <button class="game-btn secondary" id="hwStudentSlides">🖼️ Slides</button>
           </div>
           ${mine.length ? `
             <div class="hw-card-grid">
               ${mine.map(h => hwCardHTML(h, true)).join('')}
             </div>` : `
-            <p class="quiz-empty">Nenhuma lição para ${igEscapeHtml(active.name)} ainda.</p>`}
+            <p class="quiz-empty">${hwSay(`Nenhuma lição para ${igEscapeHtml(active.name)} ainda.`, `No homework for ${igEscapeHtml(active.name)} yet.`)}</p>`}
         </div>` : `
         <p class="hw-hint">👆 Escolha um aluno no topo da página para ver a lição de casa dele.</p>`}
 
@@ -243,21 +283,21 @@ function hwCardHTML(hw, studentView) {
   return `
     <div class="hw-card ${done ? 'is-done' : ''}">
       <div class="hw-card-top">
-        <b>${igEscapeHtml(hw.title)}</b>
+        <b>${igEscapeHtml(hwTitleText(hw))}</b>
         ${studentView ? '' : `<span class="hw-who">${igEscapeHtml(hw.studentName || '')}</span>`}
       </div>
       <div class="hw-task-chips">
-        ${hw.tasks.map(t => `<span class="hw-chip ${t.result ? 'ok' : ''}">${hwTaskMeta(t.type).icon} ${igEscapeHtml(t.label || hwTaskMeta(t.type).label)}</span>`).join('')}
+        ${hw.tasks.map(t => `<span class="hw-chip ${t.result ? 'ok' : ''}">${hwTaskMeta(t.type).icon} ${igEscapeHtml(hwTaskName(t))}</span>`).join('')}
       </div>
       <div class="hw-bar"><div class="hw-bar-fill" style="width:${p.pct}%"></div></div>
       <div class="hw-card-meta">
-        <span>${p.done}/${p.total} feitas${score !== null ? ` · ${score}%` : ''}</span>
-        <span class="hw-due ${hwDueLabel(hw) === 'atrasada' ? 'late' : ''}">${hwDueLabel(hw)}</span>
+        <span>${p.done}/${p.total} ${hwSay('feitas', 'done')}${score !== null ? ` · ${score}%` : ''}</span>
+        <span class="hw-due ${hwDueLabel(hw) === 'atrasada' ? 'late' : ''}">${hwDueText(hw)}</span>
       </div>
       <div class="hw-card-actions">
         ${done
-          ? `<button class="game-btn secondary" data-hw-result="${hw.id}">📊 Ver resultado</button>`
-          : `<button class="game-btn" data-hw-open="${hw.id}">▶️ ${studentView ? 'Fazer agora' : 'Abrir'}</button>`}
+          ? `<button class="game-btn secondary" data-hw-result="${hw.id}">📊 ${hwSay('Ver resultado', 'See result')}</button>`
+          : `<button class="game-btn" data-hw-open="${hw.id}">▶️ ${studentView ? hwSay('Fazer agora', 'Do it now') : 'Abrir'}</button>`}
         ${studentView ? '' : `
           <button class="game-btn secondary" data-hw-share="${hw.id}">📱 Copiar</button>
           <button class="game-btn secondary danger" data-hw-del="${hw.id}">🗑️</button>`}
@@ -502,8 +542,8 @@ function openHomeworkBuilder(existing, onSaved) {
 function openHomeworkRunner(hw, onChanged) {
   openModal(`
     <div class="modal-content-pad">
-      <h3 id="modalTitle">📚 ${igEscapeHtml(hw.title)}</h3>
-      <p class="modal-head-sub"><span class="modal-head-desc">${igEscapeHtml(hw.studentName || '')}${hw.dueDate ? ' · ' + hwDueLabel(hw) : ''}</span></p>
+      <h3 id="modalTitle">📚 ${igEscapeHtml(hwTitleText(hw))}</h3>
+      <p class="modal-head-sub"><span class="modal-head-desc">${igEscapeHtml(hw.studentName || '')}${hw.dueDate ? ' · ' + hwDueText(hw) : ''}</span></p>
       <div id="hwRun"></div>
     </div>`, true);
 
@@ -528,7 +568,7 @@ function openHomeworkRunner(hw, onChanged) {
     mount.innerHTML = `
       ${hw.note ? `<p class="hw-note">💬 ${igEscapeHtml(hw.note)}</p>` : ''}
       <div class="hw-bar big"><div class="hw-bar-fill" style="width:${p.pct}%"></div></div>
-      <p class="lt-count-note">${p.done} de ${p.total} tarefas concluídas</p>
+      <p class="lt-count-note">${hwSay(`${p.done} de ${p.total} tarefas concluídas`, `${p.done} of ${p.total} ${p.total === 1 ? 'task' : 'tasks'} done`)}</p>
       <div class="hw-run-list">
         ${hw.tasks.map((t, i) => {
           const meta = hwTaskMeta(t.type);
@@ -537,20 +577,20 @@ function openHomeworkRunner(hw, onChanged) {
             <div class="hw-run-task ${r ? 'done' : ''}">
               <span class="hw-run-icon">${meta.icon}</span>
               <div class="hw-run-text">
-                <b>${igEscapeHtml(t.label || meta.label)}</b>
-                <small>${r ? (typeof r.pct === 'number' ? `feito · ${r.pct}%` : 'feito ✅')
-                  : t.type === 'free' ? 'Faça e depois toque em “Já fiz” para marcar como feita'
-                  : t.type === 'book' ? `${hwPagesLabel(t.pages || hwParsePages(t.pagesText))} · ${t.pagesDone ? `${t.pagesDone} de ${(t.pages || []).length} feita(s) · ` : ''}toque em “Terminei esta página ✓” em cada uma`
-                  : meta.hint}</small>
+                <b>${igEscapeHtml(hwTaskName(t))}</b>
+                <small>${r ? (typeof r.pct === 'number' ? `${hwSay('feito', 'done')} · ${r.pct}%` : hwSay('feito ✅', 'done ✅'))
+                  : t.type === 'free' ? hwSay('Faça e depois toque em “Já fiz” para marcar como feita', 'Do it, then tap “I did it” to check it off')
+                  : t.type === 'book' ? `${hwPagesLabel(t.pages || hwParsePages(t.pagesText))} · ${t.pagesDone ? hwSay(`${t.pagesDone} de ${(t.pages || []).length} feita(s) · `, `${t.pagesDone} of ${(t.pages || []).length} done · `) : ''}${hwSay('toque em “Terminei esta página ✓” em cada uma', 'tap “I finished this page ✓” on each page')}`
+                  : hwTaskHint(meta)}</small>
               </div>
-              <button class="game-btn ${r ? 'secondary' : ''}" data-run="${i}">${r ? '🔁 Refazer' : t.type === 'free' ? '✅ Já fiz' : '▶️ Começar'}</button>
+              <button class="game-btn ${r ? 'secondary' : ''}" data-run="${i}">${r ? hwSay('🔁 Refazer', '🔁 Do it again') : t.type === 'free' ? hwSay('✅ Já fiz', '✅ I did it') : hwSay('▶️ Começar', '▶️ Start')}</button>
             </div>`;
         }).join('')}
       </div>
       ${p.done === p.total ? `
         <div class="game-end-banner win" style="margin-top:16px">
-          🎉 Lição completa!
-          <p>${hwScore(hw) !== null ? hwScore(hw) + '% de acerto' : 'Muito bem!'}</p>
+          ${hwSay('🎉 Lição completa!', '🎉 Homework done!')}
+          <p>${hwScore(hw) !== null ? hwScore(hw) + hwSay('% de acerto', '% correct') : hwSay('Muito bem!', 'Great job!')}</p>
         </div>` : ''}`;
 
     mount.querySelectorAll('[data-run]').forEach(btn => {
@@ -573,7 +613,7 @@ function openHomeworkRunner(hw, onChanged) {
       const exam = topics.length && typeof exBuildExam === 'function'
         ? exBuildExam({ topics, count: Math.max(4, task.count || 8), min: 4, title: task.label || hw.title })
         : null;
-      if (!exam) { alert('Esta lição não tem tópicos reconhecidos para gerar a prova.'); return; }
+      if (!exam) { alert(hwSay('Esta lição não tem tópicos reconhecidos para gerar a prova.', 'This homework has no topics for a test.')); return; }
       openExamRunner(exam, { studentId, source: 'homework', onDone: r => done({ pct: r.pct, correct: r.correct, total: r.total }) });
       return;
     }
@@ -581,7 +621,7 @@ function openHomeworkRunner(hw, onChanged) {
     if (task.type === 'review') {
       const exam = typeof ldReviewExam === 'function' ? ldReviewExam(studentId, 10) : null;
       if (!exam) {
-        alert('Nada para revisar — este aluno não tem erros pendentes. 🎉');
+        alert(hwSay('Nada para revisar — este aluno não tem erros pendentes. 🎉', 'Nothing to review — you have no mistakes to practice. 🎉'));
         done({ pct: 100, correct: 0, total: 0, empty: true });
         return;
       }
@@ -607,8 +647,8 @@ function openHomeworkRunner(hw, onChanged) {
     if (task.type === 'book') {
       const pages = task.pages && task.pages.length ? task.pages : hwParsePages(task.pagesText);
       const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === studentId);
-      if (!pages.length || !student || typeof LivroOnline === 'undefined') { alert('Esta tarefa não tem páginas do livro. 📖'); return; }
-      if (!LivroOnline.bookFor(student)) { alert('A teacher ainda não escolheu um livro para você. 📖'); return; }
+      if (!pages.length || !student || typeof LivroOnline === 'undefined') { alert(hwSay('Esta tarefa não tem páginas do livro. 📖', 'This task has no book pages. 📖')); return; }
+      if (!LivroOnline.bookFor(student)) { alert(hwSay('A teacher ainda não escolheu um livro para você. 📖', 'Your teacher has not chosen a book for you yet. 📖')); return; }
       closeModal();
       LivroOnline.openHomeworkPages(student, {
         pages, bim: task.bim, label: hwPagesLabel(pages),
@@ -624,14 +664,14 @@ function openHomeworkRunner(hw, onChanged) {
 
     // free — whatever the teacher wrote; the student says when it is done.
     if (task.type === 'free') {
-      if (confirm(`${task.label}\n\nJá fez esta tarefa?`)) done({ pct: null, self: true });
+      if (confirm(`${hwTaskName(task)}\n\n${hwSay('Já fez esta tarefa?', 'Did you do this task?')}`)) done({ pct: null, self: true });
       return;
     }
 
     // study — the only task without a score: reading and watching is the task,
     // so the student says when it is done, and it is worth no percentage.
     if (task.type === 'study') {
-      if (confirm('Abra o tópico, assista ao vídeo e veja os flashcards.\n\nJá terminou de estudar?')) {
+      if (confirm(hwSay('Abra o tópico, assista ao vídeo e veja os flashcards.\n\nJá terminou de estudar?', 'Open the topic, watch the video and look at the flashcards.\n\nDid you finish studying?'))) {
         done({ pct: null, studied: true });
       }
       return;
@@ -648,12 +688,12 @@ function openHomeworkResult(hw) {
   const score = hwScore(hw);
   openModal(`
     <div class="modal-content-pad">
-      <h3 id="modalTitle">📊 ${igEscapeHtml(hw.title)}</h3>
+      <h3 id="modalTitle">📊 ${igEscapeHtml(hwTitleText(hw))}</h3>
       <p class="modal-head-sub"><span class="modal-head-desc">${igEscapeHtml(hw.studentName || '')}</span></p>
       <div class="ex-result ${score !== null && score >= 70 ? 'good' : ''}">
         <span class="ex-result-emoji">${score === null ? '✅' : score >= 90 ? '🏆' : score >= 70 ? '🎉' : '💪'}</span>
-        <h3>${score === null ? 'Entregue' : score + '%'}</h3>
-        <p>${hw.tasks.length} tarefa(s) concluída(s)</p>
+        <h3>${score === null ? hwSay('Entregue', 'Done') : score + '%'}</h3>
+        <p>${hwSay(`${hw.tasks.length} tarefa(s) concluída(s)`, `${hw.tasks.length} ${hw.tasks.length === 1 ? 'task' : 'tasks'} done`)}</p>
       </div>
       <div class="hw-run-list">
         ${hw.tasks.map(t => {
@@ -663,15 +703,15 @@ function openHomeworkResult(hw) {
             <div class="hw-run-task done">
               <span class="hw-run-icon">${meta.icon}</span>
               <div class="hw-run-text">
-                <b>${igEscapeHtml(t.label || meta.label)}</b>
-                <small>${typeof r.pct === 'number' ? `${r.pct}%${r.total ? ` · ${r.correct}/${r.total}` : ''}` : 'concluída'}
-                  ${r.at ? ' · ' + new Date(r.at).toLocaleDateString('pt-BR') : ''}</small>
+                <b>${igEscapeHtml(hwTaskName(t))}</b>
+                <small>${typeof r.pct === 'number' ? `${r.pct}%${r.total ? ` · ${r.correct}/${r.total}` : ''}` : hwSay('concluída', 'done')}
+                  ${r.at ? ' · ' + new Date(r.at).toLocaleDateString(hwSay('pt-BR', 'en-US')) : ''}</small>
               </div>
             </div>`;
         }).join('')}
       </div>
       <div class="game-btn-row ex-actions">
-        <button class="game-btn secondary" id="hwResultClose">Fechar</button>
+        <button class="game-btn secondary" id="hwResultClose">${hwSay('Fechar', 'Close')}</button>
       </div>
     </div>`, true);
   document.getElementById('hwResultClose').addEventListener('click', closeModal);

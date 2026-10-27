@@ -7,6 +7,10 @@
 
 const SK_WRITING_PREFIX = 'writing_';   // studentId -> [submission]
 
+// Portuguese for children, simple English for learners aged 14+ (igSay lives
+// in teacherSetup.js, which loads after this file).
+const skSay = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 // ---------------------------------------------------------------------------
 // SHARED HELPERS
 // ---------------------------------------------------------------------------
@@ -161,14 +165,18 @@ const SkillsModules = (() => {
     let index = 0;
     let scores = [];
 
+    // Callers pass the item label in Portuguese ('Palavra', 'Frase'); English is display-only.
+    const itemPt = o.itemLabel || 'Frase';
+    const itemEn = ({ Palavra: 'Word', Frase: 'Sentence', Item: 'Item' })[itemPt] || itemPt;
+
     function paint(state) {
       const line = deck[index];
       const s = state || {};
       mount.innerHTML = `
         <div class="sk-shell">
           <div class="ex-head">
-            <span class="ex-count">${o.itemLabel || 'Frase'} ${index + 1} de ${deck.length}</span>
-            <span class="ex-score">${scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) + '% em média' : 'Leia em voz alta'}</span>
+            <span class="ex-count">${skSay(`${itemPt} ${index + 1} de ${deck.length}`, `${itemEn} ${index + 1} of ${deck.length}`)}</span>
+            <span class="ex-score">${scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) + skSay('% em média', '% on average') : skSay('Leia em voz alta', 'Read it out loud')}</span>
           </div>
           <div class="ex-bar"><div class="ex-bar-fill" style="width:${(index / deck.length) * 100}%"></div></div>
 
@@ -176,25 +184,25 @@ const SkillsModules = (() => {
           ${o.hints && o.hints[line] ? `<p class="sk-ipa">${skEsc(o.hints[line])}</p>` : ''}
 
           <div class="sk-actions">
-            <button class="game-btn secondary" data-action="listen">🔊 Ouvir</button>
-            <button class="game-btn secondary" data-action="slow">🐢 Devagar</button>
+            <button class="game-btn secondary" data-action="listen">${skSay('🔊 Ouvir', '🔊 Listen')}</button>
+            <button class="game-btn secondary" data-action="slow">${skSay('🐢 Devagar', '🐢 Slow')}</button>
             ${supported
-              ? `<button class="game-btn ${s.listening ? 'is-recording' : ''}" data-action="rec">${s.listening ? '🔴 Gravando…' : '🎤 Falar'}</button>`
+              ? `<button class="game-btn ${s.listening ? 'is-recording' : ''}" data-action="rec">${s.listening ? skSay('🔴 Gravando…', '🔴 Recording…') : skSay('🎤 Falar', '🎤 Speak')}</button>`
               : ''}
           </div>
 
           ${s.feedback || ''}
 
           ${!supported ? `
-            <p class="sk-note">🎧 Este navegador não reconhece fala. Ouça o modelo, repita em voz alta e marque você mesmo:</p>
+            <p class="sk-note">${skSay('🎧 Este navegador não reconhece fala. Ouça o modelo, repita em voz alta e marque você mesmo:', '🎧 This browser can’t hear you. Listen, say it out loud, then choose:')}</p>
             <div class="sk-actions">
-              <button class="game-btn" data-self="1">😀 Falei bem</button>
-              <button class="game-btn secondary" data-self="0">😕 Preciso treinar</button>
+              <button class="game-btn" data-self="1">${skSay('😀 Falei bem', '😀 I said it well')}</button>
+              <button class="game-btn secondary" data-self="0">${skSay('😕 Preciso treinar', '😕 I need more practice')}</button>
             </div>` : ''}
 
           <div class="game-btn-row ex-actions">
             <button class="btn btn-primary" data-action="next" ${s.done ? '' : 'hidden'}>
-              ${index + 1 === deck.length ? 'Ver resultado →' : `Próxima ${(o.itemLabel || 'frase').toLowerCase()} →`}
+              ${index + 1 === deck.length ? skSay('Ver resultado →', 'See results →') : skSay(`Próxima ${(o.itemLabel || 'frase').toLowerCase()} →`, `Next ${itemEn.toLowerCase()} →`)}
             </button>
           </div>
         </div>`;
@@ -221,9 +229,9 @@ const SkillsModules = (() => {
         done: true,
         feedback: `
           <div class="sk-feedback ${result.pct >= 70 ? 'good' : 'bad'}">
-            <strong>${result.pct}%</strong> das palavras saíram certinhas.
-            <p class="sk-heard">Ouvi: “${skEsc(said || '—')}”</p>
-            ${result.pct >= 70 ? '<p>Muito bom! 👏</p>' : '<p>As palavras em vermelho são as que faltaram — ouça o modelo e tente de novo.</p>'}
+            <strong>${result.pct}%</strong> ${skSay('das palavras saíram certinhas.', 'of the words were right.')}
+            <p class="sk-heard">${skSay('Ouvi', 'I heard')}: “${skEsc(said || '—')}”</p>
+            ${result.pct >= 70 ? skSay('<p>Muito bom! 👏</p>', '<p>Very good! 👏</p>') : skSay('<p>As palavras em vermelho são as que faltaram — ouça o modelo e tente de novo.</p>', '<p>The red words are missing. Listen again and try again.</p>')}
           </div>`,
       });
     }
@@ -245,7 +253,7 @@ const SkillsModules = (() => {
         };
         rec.onerror = () => {
           activeRec = null;
-          paint({ feedback: '<div class="sk-feedback bad">Não consegui ouvir. Verifique o microfone e tente de novo.</div>' });
+          paint({ feedback: `<div class="sk-feedback bad">${skSay('Não consegui ouvir. Verifique o microfone e tente de novo.', 'I couldn’t hear you. Check your microphone and try again.')}</div>` });
         };
         rec.onend = () => { if (activeRec === rec) { activeRec = null; paint({}); } };
         try { rec.start(); } catch (e) { activeRec = null; paint({}); }
@@ -259,7 +267,7 @@ const SkillsModules = (() => {
             ldRecord({ kind: 'speak', prompt: deck[index], correct: deck[index], topic: o.topicLabel || 'Speaking' },
               ok, { studentId: o.studentId, source: 'speaking' });
           }
-          paint({ done: true, feedback: `<div class="sk-feedback ${ok ? 'good' : 'bad'}">${ok ? 'Boa! Anotado. 👏' : 'Anotado — vale repetir esta frase.'}</div>` });
+          paint({ done: true, feedback: `<div class="sk-feedback ${ok ? 'good' : 'bad'}">${ok ? skSay('Boa! Anotado. 👏', 'Great! Saved. 👏') : skSay('Anotado — vale repetir esta frase.', 'Saved. Practice this one again.')}</div>` });
         });
       });
       on('next', () => {
@@ -276,10 +284,10 @@ const SkillsModules = (() => {
       if (typeof awardProgress === 'function') awardProgress(scores.length * 4, stars);
       mount.innerHTML = `
         <div class="game-end-banner ${avg >= 60 ? 'win' : 'lose'}">
-          🎤 ${avg}% de acerto na pronúncia
+          🎤 ${skSay(`${avg}% de acerto na pronúncia`, `${avg}% pronunciation score`)}
           <p>${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</p>
           <div class="game-btn-row" style="justify-content:center;margin-top:12px">
-            <button class="btn btn-primary" data-action="again">🔄 Treinar de novo</button>
+            <button class="btn btn-primary" data-action="again">${skSay('🔄 Treinar de novo', '🔄 Practice again')}</button>
           </div>
         </div>`;
       if (typeof exConfetti === 'function') exConfetti(mount.querySelector('.game-end-banner'));
@@ -305,28 +313,28 @@ const SkillsModules = (() => {
       mount.innerHTML = `
         <div class="sk-shell">
           <div class="ex-head">
-            <span class="ex-count">Ditado ${index + 1} de ${deck.length}</span>
-            <span class="ex-score">${correct} certas</span>
+            <span class="ex-count">${skSay(`Ditado ${index + 1} de ${deck.length}`, `Dictation ${index + 1} of ${deck.length}`)}</span>
+            <span class="ex-score">${skSay(`${correct} certas`, `${correct} right`)}</span>
           </div>
           <div class="ex-bar"><div class="ex-bar-fill" style="width:${(index / deck.length) * 100}%"></div></div>
 
           <div class="sk-actions sk-actions--center">
-            <button class="game-btn" data-action="play">🔊 Ouvir a frase</button>
-            <button class="game-btn secondary" data-action="slow">🐢 Devagar</button>
+            <button class="game-btn" data-action="play">${skSay('🔊 Ouvir a frase', '🔊 Listen')}</button>
+            <button class="game-btn secondary" data-action="slow">${skSay('🐢 Devagar', '🐢 Slow')}</button>
           </div>
 
           <div class="exg-type-row">
-            <input type="text" class="exg-input" id="skInput" placeholder="Escreva o que você ouviu…"
+            <input type="text" class="exg-input" id="skInput" placeholder="${skSay('Escreva o que você ouviu…', 'Write what you hear…')}"
                    autocomplete="off" autocapitalize="off" spellcheck="false" ${s.done ? 'disabled' : ''}
                    value="${skEsc(s.value || '')}" />
-            <button class="game-btn" data-action="check" ${s.done ? 'disabled' : ''}>Checar</button>
+            <button class="game-btn" data-action="check" ${s.done ? 'disabled' : ''}>${skSay('Checar', 'Check')}</button>
           </div>
 
-          ${s.feedback || '<p class="sk-note">Dica: ouça quantas vezes quiser antes de escrever.</p>'}
+          ${s.feedback || skSay('<p class="sk-note">Dica: ouça quantas vezes quiser antes de escrever.</p>', '<p class="sk-note">Tip: listen as many times as you want before you write.</p>')}
 
           <div class="game-btn-row ex-actions">
             <button class="btn btn-primary" data-action="next" ${s.done ? '' : 'hidden'}>
-              ${index + 1 === deck.length ? 'Ver resultado →' : 'Próxima →'}
+              ${index + 1 === deck.length ? skSay('Ver resultado →', 'See results →') : skSay('Próxima →', 'Next →')}
             </button>
           </div>
         </div>`;
@@ -354,9 +362,9 @@ const SkillsModules = (() => {
         done: true, value: typed,
         feedback: `
           <div class="sk-feedback ${right ? 'good' : 'bad'}">
-            ${right ? 'Perfeito! 🎉' : 'Quase — veja o que mudou:'}
+            ${right ? skSay('Perfeito! 🎉', 'Perfect! 🎉') : skSay('Quase — veja o que mudou:', 'Almost! Look at the changes:')}
             <p class="sk-diff">${skDiffHTML(skDiff(typed, line))}</p>
-            <p class="sk-heard">Frase certa: “${skEsc(line)}”</p>
+            <p class="sk-heard">${skSay('Frase certa', 'Correct sentence')}: “${skEsc(line)}”</p>
           </div>`,
       });
     }
@@ -382,10 +390,10 @@ const SkillsModules = (() => {
       if (typeof awardProgress === 'function') awardProgress(correct * 5, stars);
       mount.innerHTML = `
         <div class="game-end-banner ${pct >= 50 ? 'win' : 'lose'}">
-          🎧 ${correct} / ${deck.length} frases certas (${pct}%)
+          🎧 ${correct} / ${deck.length} ${skSay('frases certas', `right sentence${deck.length === 1 ? '' : 's'}`)} (${pct}%)
           <p>${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</p>
           <div class="game-btn-row" style="justify-content:center;margin-top:12px">
-            <button class="btn btn-primary" data-action="again">🔄 De novo</button>
+            <button class="btn btn-primary" data-action="again">${skSay('🔄 De novo', '🔄 Again')}</button>
           </div>
         </div>`;
       if (typeof exConfetti === 'function') exConfetti(mount.querySelector('.game-end-banner'));
@@ -434,27 +442,27 @@ const SkillsModules = (() => {
         <div class="sk-shell">
           <p class="exg-topic">Writing</p>
           <p class="sk-target">${skEsc(task.prompt)}</p>
-          ${task.help && task.help.length ? `<p class="sk-note">💡 Comece assim: ${task.help.map(h => `<em>${skEsc(h)}</em>`).join(' · ')}</p>` : ''}
+          ${task.help && task.help.length ? `<p class="sk-note">💡 ${skSay('Comece assim:', 'Start like this:')} ${task.help.map(h => `<em>${skEsc(h)}</em>`).join(' · ')}</p>` : ''}
 
-          <textarea class="sk-textarea" id="skText" rows="8" placeholder="Escreva aqui em inglês…" ${s.sent ? 'disabled' : ''}>${skEsc(text)}</textarea>
+          <textarea class="sk-textarea" id="skText" rows="8" placeholder="${skSay('Escreva aqui em inglês…', 'Write here in English…')}" ${s.sent ? 'disabled' : ''}>${skEsc(text)}</textarea>
           <div class="sk-meter">
-            <span class="${count >= task.words ? 'ok' : ''}">${count} palavra${count === 1 ? '' : 's'}</span>
-            <span>meta: ${task.words}</span>
+            <span class="${count >= task.words ? 'ok' : ''}">${skSay(`${count} palavra${count === 1 ? '' : 's'}`, `${count} word${count === 1 ? '' : 's'}`)}</span>
+            <span>${skSay('meta', 'goal')}: ${task.words}</span>
           </div>
 
           ${s.sent ? `
             <div class="sk-feedback good">
-              Enviado para a professora! ✅
-              <p>Ela vai corrigir e você vai ver as correções aqui.</p>
+              ${skSay('Enviado para a professora! ✅', 'Sent to your teacher! ✅')}
+              <p>${skSay('Ela vai corrigir e você vai ver as correções aqui.', 'Your teacher will correct it, and you will see the corrections here.')}</p>
             </div>` : `
             <div class="game-btn-row ex-actions">
-              <button class="game-btn secondary" data-action="read">🔊 Ouvir o que escrevi</button>
-              <button class="btn btn-primary" data-action="send" ${count < 5 ? 'disabled' : ''}>📨 Enviar para a professora</button>
+              <button class="game-btn secondary" data-action="read">${skSay('🔊 Ouvir o que escrevi', '🔊 Listen to my text')}</button>
+              <button class="btn btn-primary" data-action="send" ${count < 5 ? 'disabled' : ''}>${skSay('📨 Enviar para a professora', '📨 Send to my teacher')}</button>
             </div>`}
 
           ${previous.length ? `
             <div class="sk-history">
-              <h4 class="watch-h">📝 Entregas anteriores</h4>
+              <h4 class="watch-h">${skSay('📝 Entregas anteriores', '📝 My earlier texts')}</h4>
               ${previous.slice(0, 3).map(w => skSubmissionHTML(w)).join('')}
             </div>` : ''}
         </div>`;
@@ -466,7 +474,7 @@ const SkillsModules = (() => {
           const meter = mount.querySelector('.sk-meter span');
           const n = text.trim() ? text.trim().split(/\s+/).length : 0;
           if (meter) {
-            meter.textContent = `${n} palavra${n === 1 ? '' : 's'}`;
+            meter.textContent = skSay(`${n} palavra${n === 1 ? '' : 's'}`, `${n} word${n === 1 ? '' : 's'}`);
             meter.classList.toggle('ok', n >= task.words);
           }
           const send = mount.querySelector('[data-action="send"]');
@@ -476,7 +484,7 @@ const SkillsModules = (() => {
       const on = (sel, fn) => { const el = mount.querySelector(`[data-action="${sel}"]`); if (el) el.addEventListener('click', fn); };
       on('read', () => skSpeak(text || task.prompt, 0.95));
       on('send', () => {
-        if (!studentId) { alert('Escolha o aluno antes de enviar.'); return; }
+        if (!studentId) { alert(skSay('Escolha o aluno antes de enviar.', 'Choose the student before you send.')); return; }
         const list = skLoadWriting(studentId);
         list.unshift({
           id: 'w' + Date.now().toString(36),
@@ -509,17 +517,17 @@ const SkillsModules = (() => {
       <div class="sk-submission">
         <div class="sk-submission-head">
           <b>${skEsc(w.prompt)}</b>
-          <span>${new Date(w.sentAt).toLocaleDateString('pt-BR')} · ${w.words} palavras ·
-            ${corrected ? '<i class="sk-tag done">corrigido</i>' : '<i class="sk-tag wait">aguardando</i>'}</span>
+          <span>${new Date(w.sentAt).toLocaleDateString('pt-BR')} · ${skSay(`${w.words} palavras`, `${w.words} word${w.words === 1 ? '' : 's'}`)} ·
+            ${corrected ? skSay('<i class="sk-tag done">corrigido</i>', '<i class="sk-tag done">corrected</i>') : skSay('<i class="sk-tag wait">aguardando</i>', '<i class="sk-tag wait">waiting</i>')}</span>
         </div>
         <p class="sk-written">${skEsc(w.text)}</p>
         ${corrected ? `
-          <p class="sk-label">Correção da professora:</p>
+          <p class="sk-label">${skSay('Correção da professora:', 'Your teacher’s correction:')}</p>
           <p class="sk-diff">${skDiffHTML(skDiff(w.text, w.correction.text))}</p>
           ${w.correction.note ? `<p class="sk-teacher-note">💬 ${skEsc(w.correction.note)}</p>` : ''}
-          ${w.correction.grade ? `<p class="sk-grade">Nota: <b>${skEsc(w.correction.grade)}</b></p>` : ''}
+          ${w.correction.grade ? `<p class="sk-grade">${skSay('Nota', 'Grade')}: <b>${skEsc(w.correction.grade)}</b></p>` : ''}
         ` : ''}
-        ${w.correction && w.correction.audio ? `<p class="sk-label">🎙️ Resposta da teacher em áudio:</p><audio controls preload="none" class="am-player" src="${skEsc(w.correction.audio)}"></audio>` : ''}
+        ${w.correction && w.correction.audio ? `<p class="sk-label">${skSay('🎙️ Resposta da teacher em áudio:', '🎙️ Your teacher’s voice reply:')}</p><audio controls preload="none" class="am-player" src="${skEsc(w.correction.audio)}"></audio>` : ''}
       </div>`;
   }
 
@@ -528,15 +536,15 @@ const SkillsModules = (() => {
 
 // Openers used by the homework runner, the topic modal and the student hub.
 function openSpeakingModal(opts) {
-  openModal(`<div class="modal-content-pad"><h3 id="modalTitle">🎤 Speaking — fale em inglês</h3><div id="skMount" class="game-mount"></div></div>`, true);
+  openModal(`<div class="modal-content-pad"><h3 id="modalTitle">🎤 Speaking — ${skSay('fale em inglês', 'speak in English')}</h3><div id="skMount" class="game-mount"></div></div>`, true);
   SkillsModules.speaking(document.getElementById('skMount'), opts || {});
 }
 function openDictationModal(opts) {
-  openModal(`<div class="modal-content-pad"><h3 id="modalTitle">🎧 Ditado — ouça e escreva</h3><div id="skMount" class="game-mount"></div></div>`, true);
+  openModal(`<div class="modal-content-pad"><h3 id="modalTitle">${skSay('🎧 Ditado — ouça e escreva', '🎧 Dictation — listen and write')}</h3><div id="skMount" class="game-mount"></div></div>`, true);
   SkillsModules.dictation(document.getElementById('skMount'), opts || {});
 }
 function openWritingModal(opts) {
-  openModal(`<div class="modal-content-pad"><h3 id="modalTitle">✍️ Writing — escreva em inglês</h3><div id="skMount" class="game-mount"></div></div>`, true);
+  openModal(`<div class="modal-content-pad"><h3 id="modalTitle">✍️ Writing — ${skSay('escreva em inglês', 'write in English')}</h3><div id="skMount" class="game-mount"></div></div>`, true);
   SkillsModules.writing(document.getElementById('skMount'), opts || {});
 }
 

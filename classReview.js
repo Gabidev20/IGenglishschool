@@ -11,6 +11,8 @@
    link (see supabase-share.sql).
    ========================================================================== */
 
+const crSay = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 const reviewKey = sid => `review_${sid}`;
 function loadReviews(studentId) {
   const map = IGStore.getJSON(reviewKey(studentId), {});
@@ -319,7 +321,7 @@ function openClassReviewPlayer(review, opts) {
         <span class="modal-head-thumb modal-head-thumb--icon">🧠</span>
         <div class="modal-head-text">
           <h3 id="modalTitle">Class review</h3>
-          <p class="modal-head-sub"><span class="modal-head-desc">${igEscapeHtml(review.title || '')}${review.date ? ` · ${new Date(review.date + 'T12:00').toLocaleDateString('pt-BR')}` : ''}</span></p>
+          <p class="modal-head-sub"><span class="modal-head-desc">${igEscapeHtml(review.title || '')}${review.date ? ` · ${new Date(review.date + 'T12:00').toLocaleDateString(crSay('pt-BR', 'en-US'))}` : ''}</span></p>
         </div>
       </div>
       ${o.preview ? `<p class="rv-preview-note">👀 Pré-visualização — é assim que o aluno vê. <button class="rv-link" data-rv="edit">✏️ Voltar à edição</button></p>` : ''}

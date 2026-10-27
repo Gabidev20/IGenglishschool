@@ -1041,7 +1041,9 @@ const LivroOnline = (() => {
         return;
       }
       const done = root.querySelector('[data-a="done"]');
-      done.textContent = data.done ? '✓ Página feita!' : 'Terminei esta página ✓';
+      // 14+ read it in English (igSay, teacherSetup.js).
+      const say = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+      done.textContent = data.done ? say('✓ Página feita!', '✓ Page done!') : say('Terminei esta página ✓', 'I finished this page ✓');
       done.classList.toggle('is-done', data.done);
       root.querySelector('[data-a="undo"]').disabled = !hist.length;
       root.querySelector('[data-a="redo"]').disabled = !redoStack.length;
@@ -2458,7 +2460,9 @@ const LivroOnline = (() => {
         return;
       }
       openAt(m, first, {
-        subtitle: `📚 Lição de casa: ${esc(hwk.label)} — faça e toque em “Terminei esta página ✓”`,
+        subtitle: typeof igSay === 'function'
+          ? igSay(`📚 Lição de casa: ${esc(hwk.label)} — faça e toque em “Terminei esta página ✓”`, `📚 Homework: ${esc(hwk.label)}. Do it and tap “I finished this page ✓”`)
+          : `📚 Lição de casa: ${esc(hwk.label)} — faça e toque em “Terminei esta página ✓”`,
         leave: () => { if (root.isConnected && stack[stack.length - 1].el === root) back(); },
       });
       return;
