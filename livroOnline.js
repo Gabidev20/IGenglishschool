@@ -1263,6 +1263,22 @@ const LivroOnline = (() => {
       $('ansq').textContent = it.hint || 'Escreva a resposta / Write the answer';
       sheet.hidden = false;
       setTimeout(() => { try { input.focus({ preventScroll: true }); input.select(); } catch (e) { input.focus(); } }, 30);
+      // The sheet sits at the top and the keyboard takes the bottom: slide the
+      // page so the box being answered is in the free band between them, and
+      // do it again once the keyboard has finished opening.
+      [120, 450].forEach(ms => setTimeout(() => revealAnswerTarget(it), ms));
+    }
+    function revealAnswerTarget(it) {
+      if (answering !== it) return;
+      const sheet = $('ans'), el = $('ix') && $('ix').querySelector(`.lo-ix-fill[data-q="${CSS.escape(it.id)}"]`);
+      if (!sheet || sheet.hidden || !el) return;
+      const sr = stageRect(), sh = sheet.getBoundingClientRect(), r = el.getBoundingClientRect();
+      const freeTop = sh.bottom + 10, freeBottom = sr.bottom - 10;
+      if (freeBottom - freeTop < 40) return;
+      const mid = (r.top + r.bottom) / 2;
+      if (r.top >= freeTop && r.bottom <= freeBottom) return;            // already in the clear
+      ty += (freeTop + (freeBottom - freeTop) * 0.4) - mid;
+      applyView();
     }
     function closeAnswer(check) {
       const sheet = $('ans'), input = $('ansin');
@@ -1863,9 +1879,34 @@ const LivroOnline = (() => {
     }
     let pinch = null;
 
+    // The boxes of an exercise are printed small (6.5 mm = about 11 px on a phone):
+    // a finger lands beside them. On the 👆 tool a tap goes to the nearest box
+    // within ~22 px of the touch (inside a box wins; between boxes, the closer
+    // centre wins) instead of needing a pixel-perfect hit.
+    const IX_TOUCH_SLOP = 22;
+    function nearestIxHit(cx, cy) {
+      const layer = $('ix');
+      if (!layer) return null;
+      let best = null, bestScore = Infinity;
+      layer.querySelectorAll('.lo-ix-hit:not(.lo-ix-listen)').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (!r.width && !r.height) return;
+        const dx = Math.max(r.left - cx, 0, cx - r.right), dy = Math.max(r.top - cy, 0, cy - r.bottom);
+        const edge = Math.hypot(dx, dy);
+        if (edge > IX_TOUCH_SLOP) return;
+        const centre = Math.hypot(cx - (r.left + r.right) / 2, cy - (r.top + r.bottom) / 2);
+        const score = edge * 1000 + centre;       // inside (edge 0) first, then nearest centre
+        if (score < bestScore) { bestScore = score; best = el; }
+      });
+      return best;
+    }
+
     stage.addEventListener('pointerdown', e => {
       if (e.target.closest('.lo-zoom, .lo-textsheet, .lo-toast, .lo-anssheet')) return;
-      const ixHit = e.target.closest && e.target.closest('.lo-ix-hit');
+      let ixHit = e.target.closest && e.target.closest('.lo-ix-hit');
+      if (!ro && tool === 'tap' && hasIx() && !(ixHit && ixHit.classList.contains('lo-ix-listen'))) {
+        ixHit = nearestIxHit(e.clientX, e.clientY) || ixHit;
+      }
       if (ixHit && pts.size === 0 && (ixHit.classList.contains('lo-ix-listen') || (!ro && tool === 'tap'))) {
         e.preventDefault();
         onIx(ixHit);
