@@ -9688,3 +9688,6 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 @media (max-width: 400px) {
   .profile-dropdown { position: fixed; top: calc(var(--header-h, 76px) + 4px); left: 8px; right: 8px; width: auto; }
 }
+
+/* The box being answered in the book (one letter per box). */
+.lo-ix-fill.is-active { fill: rgba(255, 214, 90, .45) !important; stroke: #e0334c !important; stroke-width: .7; stroke-dasharray: none; }

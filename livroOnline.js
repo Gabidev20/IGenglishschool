@@ -1131,7 +1131,7 @@ const LivroOnline = (() => {
           const x = f2(it.x), y = f2(it.y), w = f2(it.w), hh = f2(it.h);
           const fs = f2(it.size || Math.min(hh * 0.78, 6));
           const tx = f2(x + w / 2), ty = f2(y + hh * 0.5 + fs * 0.35);
-          h += `<rect class="lo-ix-hit lo-ix-fill${a.ok ? ' is-ok' : a.v ? ' is-bad' : ''}" data-q="${esc(it.id)}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1"/>`;
+          h += `<rect class="lo-ix-hit lo-ix-fill${a.ok ? ' is-ok' : a.v ? ' is-bad' : ''}${answering && answering.id === it.id ? ' is-active' : ''}" data-q="${esc(it.id)}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1"/>`;
           if (a.v) h += `<text class="lo-ix-txt${a.ok ? ' is-ok' : ' is-bad'}" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc(a.v)}</text>`;
           else if (key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
           if (a.v && !a.ok && key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${f2(y - 0.6)}" font-size="${f2(fs * 0.7)}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
@@ -1259,9 +1259,13 @@ const LivroOnline = (() => {
       if (!sheet) return;
       answering = it;
       const a = answerOf(it.id);
-      input.value = a && a.v ? a.v : '';
-      $('ansq').textContent = it.hint || 'Escreva a resposta / Write the answer';
+      const letter = isLetterBox(it);
+      input.maxLength = letter ? 1 : 80;
+      // A wrong letter is cleared so the next key press is simply the next try.
+      input.value = a && a.v && (a.ok || !letter) ? a.v : '';
+      $('ansq').textContent = it.hint || (letter ? 'Escreva a letra / Write the letter' : 'Escreva a resposta / Write the answer');
       sheet.hidden = false;
+      renderIx();
       setTimeout(() => { try { input.focus({ preventScroll: true }); input.select(); } catch (e) { input.focus(); } }, 30);
       // The sheet sits at the top and the keyboard takes the bottom: slide the
       // page so the box being answered is in the free band between them, and
@@ -1280,6 +1284,37 @@ const LivroOnline = (() => {
       ty += (freeTop + (freeBottom - freeTop) * 0.4) - mid;
       applyView();
     }
+    // "Uma letra em cada quadradinho": boxes whose every accepted answer is one character.
+    const isLetterBox = it => it && it.type === 'fill' && (it.accept || []).length > 0 && (it.accept || []).every(x => String(x).length === 1);
+    // The next letter box (in the page's order) that is not right yet.
+    function nextLetterBox(from) {
+      const list = ixItems().filter(isLetterBox);
+      const i = list.findIndex(x => x.id === from.id);
+      const order = list.slice(i + 1).concat(list.slice(0, i + 1));
+      return order.find(x => x.id !== from.id && !(answerOf(x.id) || {}).ok) || null;
+    }
+    // One key press = the answer: check it, and move on to the next box with the keyboard still open.
+    function submitLetter() {
+      const input = $('ansin');
+      if (!answering || !isLetterBox(answering)) return;
+      const v = input.value.replace(/\s+/g, '').trim();
+      if (!v) return;
+      const it = answering;
+      const a = answerOf(it.id) || { t: 0 };
+      const ok = (it.accept || []).some(x => normAns(x) === normAns(v));
+      if (ok) {
+        ixCommit(it.id, { ok: true, v, t: a.t || 0 });
+        const nxt = nextLetterBox(it);
+        if (nxt) openAnswer(nxt); else closeAnswer(false);
+      } else {
+        ixCommit(it.id, { ok: false, v, t: (a.t || 0) + 1 });
+        const el = $('ix').querySelector(`.lo-ix-fill[data-q="${CSS.escape(it.id)}"]`);
+        if (el) ixFlash(el, 'lo-shake');
+        tryAgain();
+        input.value = '';
+        try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); }
+      }
+    }
     function closeAnswer(check) {
       const sheet = $('ans'), input = $('ansin');
       if (!sheet || !answering) return;
@@ -1287,6 +1322,7 @@ const LivroOnline = (() => {
       answering = null;
       sheet.hidden = true;
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      renderIx();
       if (!check) return;
       const v = input.value.replace(/\s+/g, ' ').trim();
       const a = answerOf(it.id) || { t: 0 };
@@ -1308,6 +1344,7 @@ const LivroOnline = (() => {
         const b = e.target.closest('[data-ans]');
         if (b) closeAnswer(b.dataset.ans === 'ok');
       });
+      $('ansin').addEventListener('input', () => submitLetter());
       $('ansin').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); closeAnswer(true); }
         else if (e.key === 'Escape') { e.preventDefault(); closeAnswer(false); }
