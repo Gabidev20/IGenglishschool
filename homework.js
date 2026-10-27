@@ -87,13 +87,64 @@ function hwLoad() {
   const list = IGStore.getJSON(HW_KEY, []);
   return Array.isArray(list) ? list : [];
 }
-function hwSave(list) { IGStore.setJSON(HW_KEY, list.slice(0, 200)); }
+// Room for a group's copies too (one per member, see GROUPS below).
+function hwSave(list) { IGStore.setJSON(HW_KEY, list.slice(0, 400)); }
 function hwUpsert(hw) {
-  const list = hwLoad().filter(h => h.id !== hw.id);
+  let list = hwLoad().filter(h => h.id !== hw.id);
   list.unshift(hw);
+  list = hwWithGroupCopies(list, hw);
   hwSave(list);
 }
-function hwDelete(id) { hwSave(hwLoad().filter(h => h.id !== id)); }
+// Deleting a group's homework deletes its members' copies with it.
+function hwDelete(id) { hwSave(hwLoad().filter(h => h.id !== id && h.groupHw !== id)); }
+
+// ---------------------------------------------------------------------------
+// GROUPS — a group that shares one link (groupLink.js) has each member as a
+// student of their own, and the member's link only shows homework saved under
+// the member's id. So homework given to the group is copied to every member:
+// one copy each (id `<group hw id>_m_<member id>`, `groupHw` = the group's
+// id), so each member does it and is scored on their own. Re-saving the
+// group's homework updates the copies and keeps what each member already did.
+// ---------------------------------------------------------------------------
+function hwGroupMembers(groupId) {
+  if (typeof studentGroupId !== 'function' || typeof loadStudents !== 'function') return [];
+  return loadStudents().filter(s => s.id !== groupId && studentGroupId(s.id) === groupId);
+}
+function hwCopyFor(groupHw, member, prev) {
+  return {
+    ...groupHw,
+    id: `${groupHw.id}_m_${member.id}`, groupHw: groupHw.id, fromQuick: undefined,
+    studentId: member.id, studentName: member.name,
+    // A task left as it was keeps the member's own answer.
+    tasks: groupHw.tasks.map(t => {
+      const own = prev && prev.tasks.find(p => p.type === t.type && p.label === t.label);
+      const { result, ...task } = t;
+      return own ? { ...task, result: own.result } : task;
+    }),
+  };
+}
+// The list with `hw`'s member copies added or refreshed (unchanged list when
+// `hw` is not a group's homework or is itself a copy).
+function hwWithGroupCopies(list, hw) {
+  if (!hw || hw.groupHw) return list;
+  const members = hwGroupMembers(hw.studentId);
+  if (!members.length) return list;
+  const copies = members.map(m => hwCopyFor(hw, m, list.find(h => h.id === `${hw.id}_m_${m.id}`)));
+  const ids = new Set(copies.map(c => c.id));
+  // A member who left the group loses the copy they had not started.
+  const rest = list.filter(h => !ids.has(h.id) && !(h.groupHw === hw.id && !h.tasks.some(t => t.result)));
+  const at = rest.findIndex(h => h.id === hw.id);
+  rest.splice(at + 1, 0, ...copies);
+  return rest;
+}
+// Homework given to a group before copies existed: copy it now. Saves only
+// when something changed, so it is cheap to call on every render.
+function hwSyncGroupCopies() {
+  const before = hwLoad();
+  let list = before;
+  before.filter(h => !h.groupHw && hwGroupMembers(h.studentId).length).forEach(h => { list = hwWithGroupCopies(list, h); });
+  if (JSON.stringify(list) !== JSON.stringify(before)) hwSave(list);
+}
 function hwForStudent(studentId) { return hwLoad().filter(h => h.studentId === studentId); }
 function hwPendingFor(studentId) {
   return hwForStudent(studentId).filter(h => h.tasks.some(t => !t.result));
@@ -189,7 +240,10 @@ function hwRemoveTask(hwId, index) {
 // ---------------------------------------------------------------------------
 function renderHomework(container) {
   if (!container) return;
-  const all = hwLoad();
+  hwSyncGroupCopies();
+  // The teacher's list shows a group's homework once; each member's copy is
+  // in that member's own panel.
+  const all = hwLoad().filter(h => !h.groupHw);
   const activeId = typeof getActiveStudentId === 'function' ? getActiveStudentId() : null;
   const students = typeof loadStudents === 'function' ? loadStudents() : [];
   const active = students.find(s => s.id === activeId);
