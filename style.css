@@ -9683,3 +9683,8 @@ html.ig-grown .listen-mode-btn { border-radius: 8px; }
 html.ig-grown .listen-speed-btn.active,
 html.ig-grown .listen-mode-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: #FFFFFF; }
 html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; }
+
+/* Teacher profile menu on very narrow phones (320px): it opened 24px off the left edge. */
+@media (max-width: 400px) {
+  .profile-dropdown { position: fixed; top: calc(var(--header-h, 76px) + 4px); left: 8px; right: 8px; width: auto; }
+}
