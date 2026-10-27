@@ -58,6 +58,54 @@ const BOOK_SPEAKING = {
       phrases: ["I'm hungry!", "I like apples.", "I don't like milk.", "I like pizza.", "It's snack time!", "Yum, yum, yum!", "Are you hungry?", "I, I, igloo!"],
     },
   },
+  // IG Explorers
+  "explorers": {
+    1: {
+      title: "Unit 1 · Base Camp",
+      words: ["hello", "goodbye", "good morning", "good afternoon", "name", "spell", "alphabet", "explorer", "passport", "nice to meet you", "how are you", "see you"],
+      phrases: ["Hello, Explorer!", "Good morning! I'm Kiko.", "My name is Tina.", "What's your name?", "How do you spell it?", "T - I - N - A.", "Nice to meet you!", "Nice to meet you, too!", "How are you?", "I'm fine, thank you!", "Goodbye! See you!"],
+    },
+    2: {
+      title: "Unit 2 · Explorer’s Backpack",
+      words: ["red", "blue", "yellow", "green", "orange", "purple", "pink", "brown", "black", "white", "pen", "pencil", "map", "flashlight", "bottle"],
+      phrases: ["It's a red apple!", "It's a red pen.", "It's a pink eraser.", "It's an orange pencil.", "It's a brown backpack.", "What's in my backpack?", "What color is it?", "It's yellow.", "Is it a pencil?", "No, it isn't.", "Yes, it is!", "It's a yellow flashlight!"],
+    },
+    3: {
+      title: "Unit 3 · Pirate Ship",
+      words: ["one", "two", "three", "five", "eight", "ten", "eleven", "twelve", "thirteen", "fifteen", "twenty", "coins", "treasure", "ship", "how many"],
+      phrases: ["One, two, three... treasure!", "How many coins?", "Three coins.", "How old are you?", "I'm eight!", "I'm seven!", "I'm seven years old.", "Kiko is eight.", "Twelve coins.", "It's a blue book."],
+    },
+    4: {
+      title: "Unit 4 · The Airport",
+      words: ["Brazil", "the USA", "the UK", "Japan", "China", "Italy", "France", "Argentina", "Brazilian", "country", "city", "age", "ID card", "airport"],
+      phrases: ["Hello! I'm from Brazil!", "Where are you from?", "I'm from Japan!", "I'm Brazilian.", "How old are you?", "I'm 7.", "You're 8.", "You're my friend.", "What city are you from?", "I'm from Manaus.", "I am happy."],
+    },
+    5: {
+      title: "Unit 5 · Family Picnic",
+      words: ["grandma", "grandpa", "mom", "dad", "brother", "sister", "baby", "family", "dog", "cat", "fish", "bird", "he", "she"],
+      phrases: ["This is my family!", "This is my mom.", "This is my brother.", "He's ten.", "She's five.", "This is my dog.", "He is brown.", "She is green.", "Who is this?", "How old is he?", "And this is me, Lily!"],
+    },
+    6: {
+      title: "Unit 6 · Science Lab",
+      words: ["ruler", "scissors", "glue", "crayon", "notebook", "pencil case", "desk", "chair", "board", "clock", "magnifying glass", "test tube", "microscope", "plant", "window"],
+      phrases: ["What's this?", "It's a microscope!", "It's a ruler.", "What's that?", "It's a clock.", "It's a chair.", "It's a window.", "It's an eraser.", "What color is it?", "This is my desk."],
+    },
+    7: {
+      title: "Unit 7 · Robot Factory",
+      words: ["robot", "head", "eyes", "nose", "mouth", "arms", "legs", "long arms", "short arms", "big eyes", "small eyes", "have", "has"],
+      phrases: ["I have a robot!", "It has long arms!", "I have two eyes.", "He has long arms.", "It has a nose.", "I have a head.", "It has short legs.", "He has a big mouth.", "This is my robot.", "Tell me about your robot."],
+    },
+    8: {
+      title: "Unit 8 · Animal Rescue Island",
+      words: ["puppy", "kitten", "bunny", "horse", "frog", "T. rex", "fly", "swim", "run", "jump", "can", "can't"],
+      phrases: ["Let's help them!", "It can run.", "It can swim.", "It can't fly.", "The frog can jump.", "It is a T. rex.", "What is it?", "What can it do?", "It can jump.", "A frog can swim."],
+    },
+    9: {
+      title: "Unit 9 · Food Truck Street",
+      words: ["pizza", "sandwiches", "apples", "bananas", "rice", "salad", "ice cream", "cookies", "juice", "milk", "water", "lemonade", "food truck"],
+      phrases: ["I like pizza!", "I don't like salad.", "Do you like pizza?", "Yes, I do.", "No, I don't.", "Do you like it?", "Do you like apples?", "I like ice cream.", "I don't like milk.", "Tell me about your menu."],
+    },
+  },
   // IG Adventurers
   "adventurers": {
     1: {
