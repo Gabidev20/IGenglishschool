@@ -69,5 +69,52 @@
     list(['✅  I sang “Touch”.', '✅  I learned 6 expressions.', '✅  I can use them in real life.'], 230, 44, true),
     T(70, 560, 1140, 'Homework (optional): write 3 sentences with your favorite expressions. 💜', 32, '#faefc2')]));
 
-  window.SLIDES_MODELOS = [{ id: 'touch-katseye', title: 'Touch (KATSEYE) — 30 min', slides }];
+  // ---- Weather Forecast — Guaratuba: speaking practice for STUDENT 1 ----
+  const wf = [];
+  wf.push(slide('dark', [tag('Speaking practice', true), T(70, 190, 1140, 'Weather Forecast 🌦️', 100, '#ffffff', { b: true }),
+    T(70, 340, 1140, 'Guaratuba — Paraná', 56, '#faefc2'), T(70, 450, 1140, 'You are STUDENT 1 ⭐\nRead, listen to the cue, and speak!', 40, '#ffffff')]));
+  wf.push(slide('cream', [tag('How to practice'), title('3 steps for each slide'),
+    list(['1️⃣  Read your lines out loud, slowly.', '2️⃣  Look at the cue 👂 — that is what Student 2 says before you.', '3️⃣  Cover the English and say it again using only the Portuguese.'], 220, 38)]));
+  wf.push(slide('rose', [tag('Hard words first'), title('Say these words 🗣️'),
+    T(90, 210, 540, 'forecast\nhumid\nthroughout\nCelsius\nAtlantic', 44), T(650, 210, 540, 'umbrella\nraincoat\nsunscreen\nscenery\nwildlife', 44),
+    T(70, 620, 1140, 'Repeat each word 3 times. 🔁', 30, '#8e6d86', { b: true })]));
+
+  const turn = (n, name, cue, pairs, extra) => {
+    const objs = [tag(`Part ${n} · ${name}`), R(990, 36, 240, 44, '#f05d77'), T(990, 42, 240, 'STUDENT 1 ⭐', 24, '#ffffff', { b: true, al: 'center' })];
+    let y = 100;
+    if (cue) {
+      objs.push(R(70, y, 1140, 130, '#ffffff', { op: 0.75 }), T(95, y + 10, 1090, '👂 Student 2 says before you:\n' + cue, 22, '#6b6b6b', { i: true }));
+      y += 150;
+    }
+    pairs.forEach(([en, pt]) => {
+      const fs = pairs.length > 1 ? 36 : 40;
+      const lines = Math.ceil(en.length * fs * 0.52 / 1080);
+      objs.push(T(80, y, 1100, en, fs, '#2e2b2e', { b: true }));
+      y += Math.round(lines * fs * 1.4) + 8;
+      objs.push(T(80, y, 1100, '🇧🇷 ' + pt, 24, '#8e6d86'));
+      y += Math.round(Math.ceil((pt.length + 3) * 24 * 0.52 / 1080) * 24 * 1.4) + 26;
+    });
+    if (extra) objs.push(T(80, y, 1100, extra, 40, '#f05d77', { b: true }));
+    wf.push(slide(n % 2 ? 'cream' : 'rose', objs));
+  };
+  turn(1, 'Greeting', null, [['Good morning, everyone! Welcome to our weather forecast!', 'Bom dia a todos! Bem-vindos à nossa previsão do tempo!'], ['My name is [your name].', 'Meu nome é [seu nome].']]);
+  turn(2, 'Weather report', 'And my name is [name]. Today, we are going to talk about the weather and tourism in Guaratuba, Paraná.',
+    [['Guaratuba is a coastal city in the south of Brazil. The weather is usually warm and humid, and it can rain throughout the year.', 'Guaratuba é uma cidade litorânea no sul do Brasil. O tempo geralmente é quente e úmido, e pode chover durante todo o ano.']]);
+  turn(2, 'Weather report', 'Today, the weather in Guaratuba is [sunny, cloudy, or rainy]. The temperature is [temperature] degrees Celsius, and the maximum temperature is [temperature] degrees.',
+    [["Don't forget to check the weather before going to the beach!", 'Não se esqueça de conferir a previsão do tempo antes de ir à praia!']]);
+  turn(3, 'Geography', 'Guaratuba is located in the state of Paraná, in the South region of Brazil. It is next to the Atlantic Ocean.',
+    [['The city has beautiful beaches, a bay, rivers, and areas of Atlantic Forest. Its climate is humid, with warm summers and mild winters.', 'A cidade tem belas praias, uma baía, rios e áreas de Mata Atlântica. Seu clima é úmido, com verões quentes e invernos amenos.']]);
+  turn(4, 'Tourism', 'One of the main attractions is Central Beach, also known as Praia Central. Tourists can walk along the beach, relax, and enjoy the sea.',
+    [['Another beautiful place is Guaratuba Bay. Visitors can enjoy the natural scenery and learn more about the local wildlife.', 'Outro lugar bonito é a Baía de Guaratuba. Os visitantes podem apreciar a paisagem natural e conhecer melhor a fauna local.']]);
+  turn(5, 'Clothes and activities', 'On sunny days, you should wear light clothes, sunglasses, and sunscreen.',
+    [['On rainy days, you should take an umbrella or a raincoat. Comfortable shoes are also a good idea for walking around the city.', 'Em dias chuvosos, você deve levar um guarda-chuva ou uma capa de chuva. Calçados confortáveis também são uma boa ideia para passear pela cidade.']]);
+  turn(6, 'Goodbye', "That's all for today's weather forecast! We hope you enjoyed learning about Guaratuba.",
+    [['Thank you for watching! Have a great day, and enjoy Guaratuba!', 'Obrigada por assistir! Tenham um ótimo dia e aproveitem Guaratuba!']], 'BOTH: Goodbye! 👋');
+  wf.push(slide('dark', [tag('Finish', true), title('You did it! 🌟', true),
+    list(['✅  I know my lines.', '✅  I know when to start (the cues).', '✅  Next: say it all again without looking!'], 230, 44, true)]));
+
+  window.SLIDES_MODELOS = [
+    { id: 'touch-katseye', title: 'Touch (KATSEYE) — 30 min', slides },
+    { id: 'weather-guaratuba-s1', title: 'Weather Forecast — Guaratuba (Student 1)', slides: wf },
+  ];
 })();
