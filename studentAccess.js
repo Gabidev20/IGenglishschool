@@ -112,8 +112,24 @@ function saRefreshTaughtAll() {
       map[s.id] = { ...(map[s.id] || {}), custom: map[s.id] && Array.isArray(map[s.id].custom) ? map[s.id].custom : null, taught };
       changed = true;
     }
+    // The Speaking tabs of the link (speakingHub.js): the words and phrases
+    // of every class, and the book unit the class log points at.
+    if (typeof spClassesFor === 'function') {
+      const sp = { classes: spClassesFor(s), unitAuto: spUnitAuto(s) };
+      const cur = map[s.id] || {};
+      if (JSON.stringify(sp.classes) !== JSON.stringify(cur.classes || []) || sp.unitAuto !== (cur.unitAuto || null)) {
+        map[s.id] = { custom: null, taught: [], ...cur, ...sp };
+        changed = true;
+      }
+    }
   });
   if (changed) IGStore.setJSON(STUDENT_ACCESS_KEY, map);
+}
+// After a class is saved, edited or deleted. Cloud pulls save many lists in
+// a row, so the refresh waits for the last one.
+function saRefreshSoon() {
+  clearTimeout(saRefreshSoon._t);
+  saRefreshSoon._t = setTimeout(() => { try { saRefreshTaughtAll(); } catch (e) { console.error(e); } }, 400);
 }
 
 // ---------------------------------------------------------------------------
@@ -223,6 +239,8 @@ function saEditorHTML(student) {
         ${young ? 'e dos níveis anteriores' : ''} e só a gramática que já apareceu no registro das aulas
         (<span class="sa-tag sa-tag--ok">já dado</span>). Marque ou desmarque para escolher você mesma.</p>
 
+      ${typeof spUnitPickerHTML === 'function' ? spUnitPickerHTML(student) : ''}
+
       ${young || prof === 'writer' ? `
         <p class="sa-group-label">🎮 Jogos com figuras</p>
         <div class="sa-grid">${SA_READY_GAMES.filter(g => young || g.id === 'alphabet' || g.id === 'drawing').map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
@@ -265,6 +283,11 @@ function saWireEditor(root, student, onChange) {
     const mode = ed.querySelector('.sa-mode');
     if (mode) { mode.textContent = '✋ escolhido por você'; mode.classList.add('is-custom'); }
     if (onChange) onChange();
+  });
+  const unit = ed.querySelector('#saSpeakUnit');
+  if (unit) unit.addEventListener('change', () => {
+    saWrite(student.id, { speakUnit: Number(unit.value) || null });
+    flash(unit.value ? '✅ Salvo — o Speaking do livro usa esta unidade.' : '⚙️ Unidade automática, pelo Today\'s Class.');
   });
   ed.querySelector('#saAuto').addEventListener('click', () => {
     saWrite(student.id, { custom: null, taught: saComputeTaught(student) });
