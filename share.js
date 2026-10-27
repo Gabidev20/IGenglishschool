@@ -486,14 +486,21 @@ function renderStudentHome(shell, studentId) {
   const myBook = typeof LivroOnline !== 'undefined' ? LivroOnline.bookFor(student) : null;
   // "Slides da aula" (slidesAula.js): only when the teacher turned it on for this student.
   const slidesOn = typeof SlidesAula !== 'undefined' && SlidesAula.visibleFor(student.id);
+  // Learners of 14+ get the page in English only: every word is input.
+  // Children keep the Portuguese line underneath, for them and their parents.
+  const en = typeof igGrownLook === 'function' && igGrownLook(student);
+  const say = (pt, eng) => (en ? eng : pt);
   const T = {
-    slides: () => tile('slides', '📝', 'Slides da aula', 'Class slides — rever o que vimos na aula', 'stu-tile--slides'),
-    book: () => (myBook ? tile('book', '📖', 'My book', 'Meu livro — fazer as páginas do livro aqui', 'stu-tile--book') : ''),
-    progress: () => tile('progress', '📈', 'My progress', typeof igGrownLook === 'function' && igGrownLook(student)
-      ? 'Meu progresso — o que já pratiquei' : 'Meu progresso — estrelas e figurinhas'),
-    homework: () => tile('homework', '📚', 'My homework', pending.length ? `Minha lição — ${pending.length} pendente(s)` : 'Minha lição — tudo em dia 🎉'),
-    review: () => (review ? tile('review-class', '🧠', 'Class review', `Revisão da aula — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
-    games: () => tile('games', '🎮', prof === 'adult' ? 'Topics & games' : 'Games', prof === 'adult' ? 'Vocabulário, leitura e jogos dos meus tópicos' : 'Jogos com as palavras do meu nível'),
+    slides: () => tile('slides', '📝', say('Slides da aula', 'Class slides'), say('Class slides — rever o que vimos na aula', 'Look back at what we did in class'), 'stu-tile--slides'),
+    book: () => (myBook ? tile('book', '📖', 'My book', say('Meu livro — fazer as páginas do livro aqui', 'Do the pages of your book here'), 'stu-tile--book') : ''),
+    progress: () => tile('progress', '📈', 'My progress', say('Meu progresso — estrelas e figurinhas', 'See what you have practiced')),
+    homework: () => tile('homework', '📚', 'My homework', pending.length
+      ? say(`Minha lição — ${pending.length} pendente(s)`, `${pending.length} to do`)
+      : say('Minha lição — tudo em dia 🎉', 'All done 🎉')),
+    review: () => (review ? tile('review-class', '🧠', 'Class review', `${say('Revisão da aula', 'Review the class')} — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
+    games: () => tile('games', '🎮', prof === 'adult' ? 'Topics & games' : 'Games', prof === 'adult'
+      ? say('Vocabulário, leitura e jogos dos meus tópicos', 'Vocabulary, reading and games for your topics')
+      : say('Jogos com as palavras do meu nível', 'Games with the words of your level')),
     colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
     drawing: () => tile('drawing', '🖍️', 'Drawing Challenge', 'Desenho surpresa — abra a caixa e desenhe', 'stu-tile--review'),
     alphabet: () => tile('alphabet', '🔤', 'ABC', 'Alfabeto — ouvir e falar as letras'),
@@ -506,14 +513,18 @@ function renderStudentHome(shell, studentId) {
     weather: () => tile('weather', '🌦️', 'Weather', 'Clima'),
     body: () => tile('body', '🧍', 'My body', 'Partes do corpo'),
     practice: () => (practiceTopics && !practiceTopics.length ? '' : tile('practice', '⚡', 'Practice',
-      `Treinar — ${shareEsc((practiceTopics || []).slice(0, 3).map(t => t.label.split(' (')[0]).join(', ') || 'exercícios do meu nível')}${practiceTopics && practiceTopics.length > 3 ? '…' : ''}`)),
-    writingPractice: () => (practiceTopics && !practiceTopics.length ? '' : tile('writing-practice', '📝', 'Writing practice', 'Treinar a escrita — completar e montar frases')),
-    dictation: () => tile('dictation', '🎧', 'Dictation', 'Ditado — ouvir e escrever'),
-    speaking: () => tile('speaking', '🎤', 'Speaking', 'Falar — ler em voz alta'),
-    write: () => tile('writing', '✍️', 'Write to my teacher', 'Escrever uma mensagem para a teacher'),
-    audio: () => tile('audio', '💬', 'Messages', chatUnreadForStudent(student.id) ? `Mensagens — ${chatUnreadForStudent(student.id)} nova(s) da teacher` : 'Mensagens com a teacher — escrever ou mandar áudio', 'stu-tile--review'),
-    manual: () => tile('manual', '📘', 'Student Manual', 'Manual do Aluno — como usar o curso e o site', 'stu-tile--review'),
-    mistakes: () => tile('review', '🔁', 'My mistakes', mistakes ? `Meus erros — ${mistakes} para revisar` : 'Meus erros — nada pendente'),
+      `${say('Treinar — ', '')}${shareEsc((practiceTopics || []).slice(0, 3).map(t => t.label.split(' (')[0]).join(', ') || say('exercícios do meu nível', 'exercises for your level'))}${practiceTopics && practiceTopics.length > 3 ? '…' : ''}`)),
+    writingPractice: () => (practiceTopics && !practiceTopics.length ? '' : tile('writing-practice', '📝', 'Writing practice', say('Treinar a escrita — completar e montar frases', 'Complete and build sentences'))),
+    dictation: () => tile('dictation', '🎧', 'Dictation', say('Ditado — ouvir e escrever', 'Listen and write')),
+    speaking: () => tile('speaking', '🎤', 'Speaking', say('Falar — ler em voz alta', 'Read aloud and record yourself')),
+    write: () => tile('writing', '✍️', 'Write to my teacher', say('Escrever uma mensagem para a teacher', 'Write a message to your teacher')),
+    audio: () => tile('audio', '💬', 'Messages', chatUnreadForStudent(student.id)
+      ? say(`Mensagens — ${chatUnreadForStudent(student.id)} nova(s) da teacher`, `${chatUnreadForStudent(student.id)} new from your teacher`)
+      : say('Mensagens com a teacher — escrever ou mandar áudio', 'Chat with your teacher: text or audio'), 'stu-tile--review'),
+    manual: () => tile('manual', '📘', 'Student Manual', say('Manual do Aluno — como usar o curso e o site', 'How the course and this site work'), 'stu-tile--review'),
+    mistakes: () => tile('review', '🔁', 'My mistakes', mistakes
+      ? say(`Meus erros — ${mistakes} para revisar`, `${mistakes} to review`)
+      : say('Meus erros — nada pendente', 'Nothing to review')),
   };
   // The picture games are tiles of their own; the teacher can switch each
   // one off in the link window.
@@ -557,15 +568,15 @@ function renderStudentHome(shell, studentId) {
              · ${progress.xp || 0} XP · ${progress.stars || 0} ⭐
              ${stats && stats.streak ? ` · 🔥 ${stats.streak} day${stats.streak === 1 ? '' : 's'}` : ''}</p>
         </div>
- ${groupHome ? '<button class="stu-help stu-switch" id="stuSwitchBtn" type="button" title="Voltar para a escolha do grupo">👥 <span>Trocar de pessoa</span></button>' : ''}
-        <button class="stu-help" id="stuHelpBtn" type="button" title="Ver o tutorial de novo">❓ <span>Ajuda</span></button>
+ ${groupHome ? `<button class="stu-help stu-switch" id="stuSwitchBtn" type="button" title="${say('Voltar para a escolha do grupo', 'Back to the group')}">👥 <span>${say('Trocar de pessoa', 'Switch person')}</span></button>` : ''}
+        <button class="stu-help" id="stuHelpBtn" type="button" title="${say('Ver o tutorial de novo', 'See the tour again')}">❓ <span>${say('Ajuda', 'Help')}</span></button>
       </header>
 
       ${newReplies.length ? `
         <div class="stu-alert reply">
           <div>
             <b>💬 Your teacher answered you!</b>
-            <small>A teacher respondeu — veja o que ela escreveu</small>
+            <small>${say('A teacher respondeu — veja o que ela escreveu', 'See what she wrote')}</small>
           </div>
           <button class="btn btn-primary" data-go="${newReplies.every(w => w.from === 'teacher' || w.audio || w.promptId === 'chat') ? 'audio' : 'writing'}">Read</button>
         </div>` : ''}
@@ -574,7 +585,7 @@ function renderStudentHome(shell, studentId) {
         <div class="stu-alert">
           <div>
             <b>📚 You have homework!</b>
-            <small>Você tem ${pending.length} lição(ões) esperando por você</small>
+            <small>${say(`Você tem ${pending.length} lição(ões) esperando por você`, `${pending.length} ${pending.length === 1 ? 'task is' : 'tasks are'} waiting for you`)}</small>
           </div>
           <button class="btn btn-primary" data-go="homework">Let's go!</button>
         </div>` : ''}
@@ -583,7 +594,7 @@ function renderStudentHome(shell, studentId) {
         <div class="stu-alert soft">
           <div>
             <b>🔁 ${mistakes} word${mistakes === 1 ? '' : 's'} to review</b>
-            <small>As que você errou — revisar hoje faz elas grudarem</small>
+            <small>${say('As que você errou — revisar hoje faz elas grudarem', 'The ones you got wrong. Review them today and they will stick.')}</small>
           </div>
           <button class="btn btn-primary" data-go="review">Review</button>
         </div>` : ''}
@@ -592,7 +603,7 @@ function renderStudentHome(shell, studentId) {
         ${tilesFor(prof).join('')}
       </div>
 
-      <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br><small>a teacher vê o que você faz aqui</small><br><small class="stu-credit">Emoji graphics: Twemoji (CC-BY 4.0)</small></p>
+      <p class="stu-foot">IG English School · your teacher sees what you do here ✨<br>${en ? '' : '<small>a teacher vê o que você faz aqui</small><br>'}<small class="stu-credit">Emoji graphics: Twemoji (CC-BY 4.0)</small></p>
     </div>`;
 
   const switchBtn = shell.querySelector('#stuSwitchBtn');
@@ -604,7 +615,7 @@ function renderStudentHome(shell, studentId) {
     progress: () => openStudentProgress(student.id),
     homework: () => {
       const hw = pending[0] || homework[0];
-      if (!hw) { alert('Nenhuma lição por enquanto. 🎉'); return; }
+      if (!hw) { alert(say('Nenhuma lição por enquanto. 🎉', 'No homework right now. 🎉')); return; }
       openHomeworkRunner(hw, () => renderStudentHome(shell, studentId));
     },
     review: () => openMistakes(student.id),
