@@ -7,6 +7,8 @@
    the synced data, not as a file.
    ========================================================================== */
 
+const amSay = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 const AM_MAX_SECONDS = 30;
 
 function openAudioMessage(student) {
@@ -37,7 +39,7 @@ function openAudioMessage(student) {
     const m = mount();
     if (!m) { stopStream(); clearInterval(tick); return; }
     if (!canRecord) {
-      m.innerHTML = `<p class="am-note">Este aparelho não grava áudio pelo navegador. Tente pelo Chrome no celular ou no computador.</p>`;
+      m.innerHTML = `<p class="am-note">${amSay('Este aparelho não grava áudio pelo navegador. Tente pelo Chrome no celular ou no computador.', 'This device can’t record audio in the browser. Try Chrome on your phone or computer.')}</p>`;
       return;
     }
     const body = {
@@ -50,7 +52,7 @@ function openAudioMessage(student) {
                 <button class="cg-big cg-big--ok" data-a="send" aria-label="Send">📤</button>
               </div>`,
       sent: `<div class="rv-done"><span class="rv-done-emoji">📨</span><p class="rv-done-title">Sent!</p>
-             <p class="rv-done-sub">Enviado para a teacher ✅</p></div>
+             <p class="rv-done-sub">${amSay('Enviado para a teacher ✅', 'Sent to your teacher ✅')}</p></div>
              <button class="cg-big" data-a="again" aria-label="New message">🎤</button>`,
     }[state];
     m.innerHTML = `<div class="am-stage">${body}</div>${previous()}`;
@@ -66,7 +68,7 @@ function openAudioMessage(student) {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
-      mount().innerHTML = `<p class="am-note">🎤 O microfone não foi liberado. Toque no cadeado ao lado do endereço do site e permita o microfone.</p>`;
+      mount().innerHTML = `<p class="am-note">${amSay('🎤 O microfone não foi liberado. Toque no cadeado ao lado do endereço do site e permita o microfone.', '🎤 The microphone is blocked. Tap the lock next to the website address and allow the microphone.')}</p>`;
       return;
     }
     chunks = [];
@@ -125,7 +127,7 @@ function openAudioMessage(student) {
         <span class="modal-head-thumb modal-head-thumb--icon">🎤</span>
         <div class="modal-head-text">
           <h3 id="modalTitle">Talk to my teacher</h3>
-          <p class="modal-head-sub"><span class="modal-head-desc">Mandar um áudio para a teacher</span></p>
+          <p class="modal-head-sub"><span class="modal-head-desc">${amSay('Mandar um áudio para a teacher', 'Send a voice message to your teacher')}</span></p>
         </div>
       </div>
       <div id="amMount"></div>

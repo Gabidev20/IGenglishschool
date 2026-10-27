@@ -18,6 +18,9 @@
    simply shown as a centred card, so a tour never breaks.
    ========================================================================== */
 
+// Student-facing text: simple English for learners aged 14+ (igSay, from teacherSetup.js).
+const tuSay = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 const IGTour = (() => {
   let state = null;
 
@@ -58,19 +61,22 @@ const IGTour = (() => {
     const list = steps.filter(Boolean);
     if (!list.length) return;
     const o = opts || {};
+    // Button labels: Portuguese by default (teacher tour); a tour can pass its own.
+    o.labels = Object.assign({ closeAria: 'Fechar o tutorial', close: 'Fechar', prev: '← Voltar', next: 'Próximo →', of: 'de' }, o.labels || {});
+    const L = o.labels;
     const root = document.createElement('div');
     root.className = 'tour-root';
     root.innerHTML = `
       <div class="tour-dim"></div>
       <div class="tour-ring" hidden></div>
       <div class="tour-card" role="dialog" aria-modal="true" aria-live="polite">
-        <button class="tour-x" type="button" aria-label="Fechar o tutorial" title="Fechar">✕</button>
+        <button class="tour-x" type="button" aria-label="${esc(L.closeAria)}" title="${esc(L.close)}">✕</button>
         <div class="tour-body"></div>
         <div class="tour-foot">
           <span class="tour-dots"></span>
           <div class="tour-btns">
-            <button class="game-btn secondary tour-prev" type="button">← Voltar</button>
-            <button class="btn btn-primary tour-next" type="button">Próximo →</button>
+            <button class="game-btn secondary tour-prev" type="button">${esc(L.prev)}</button>
+            <button class="btn btn-primary tour-next" type="button">${esc(L.next)}</button>
           </div>
         </div>
       </div>`;
@@ -107,9 +113,9 @@ const IGTour = (() => {
       ${step.icon ? `<span class="tour-icon">${step.icon}</span>` : ''}
       <h3 class="tour-title">${esc(step.title)}</h3>
       <div class="tour-text">${step.html || ''}</div>`;
-    card.querySelector('.tour-dots').innerHTML = `${state.i + 1} de ${state.steps.length}`;
+    card.querySelector('.tour-dots').innerHTML = `${state.i + 1} ${esc(state.opts.labels.of)} ${state.steps.length}`;
     card.querySelector('.tour-prev').hidden = state.i === 0;
-    card.querySelector('.tour-next').textContent = state.i === state.steps.length - 1 ? (state.opts.doneLabel || '✅ Entendi!') : 'Próximo →';
+    card.querySelector('.tour-next').textContent = state.i === state.steps.length - 1 ? (state.opts.doneLabel || '✅ Entendi!') : state.opts.labels.next;
 
     const els = resolve(step.target);
     state.els = els;
@@ -205,80 +211,109 @@ const StudentTour = (() => {
     const teen = prof === 'writer';
     const adult = prof === 'adult';
     const has = sel => Boolean(document.querySelector(sel));
+    // Parent-only notes are dropped (empty English) when the learner is 14+.
     const family = kid
-      ? '<p class="tour-parent">👨‍👩‍👧 <b>Para os pais:</b> este passo a passo leva 1 minuto e mostra como ajudar em casa. Vale fazer junto com a criança.</p>'
-      : teen ? '<p class="tour-parent">👨‍👩‍👧 Pais e responsáveis também podem acompanhar por aqui.</p>' : '';
+      ? tuSay('<p class="tour-parent">👨‍👩‍👧 <b>Para os pais:</b> este passo a passo leva 1 minuto e mostra como ajudar em casa. Vale fazer junto com a criança.</p>', '')
+      : teen ? tuSay('<p class="tour-parent">👨‍👩‍👧 Pais e responsáveis também podem acompanhar por aqui.</p>', '') : '';
 
     const list = [];
     list.push({
-      icon: '👋', title: `${adult ? 'Olá' : 'Oi'}, ${student.name}! Bem-vindo(a)`,
-      html: `<p>Este é o <b>seu cantinho de inglês</b> da IG English School. Aqui você pratica o que vimos nas aulas,
+      icon: '👋', title: tuSay(`${adult ? 'Olá' : 'Oi'}, ${student.name}! Bem-vindo(a)`, `Hi, ${student.name}! Welcome`),
+      html: tuSay(`<p>Este é o <b>seu cantinho de inglês</b> da IG English School. Aqui você pratica o que vimos nas aulas,
                faz a lição de casa e manda mensagens para a teacher.</p>
              ${family}
              <p class="tour-small">Use <b>Próximo →</b> para seguir. Dá para fechar quando quiser no ✕.</p>`,
+        `<p>This is <b>your English corner</b> at IG English School. Here you practice what we see in class,
+               do your homework and send messages to your teacher.</p>
+             ${family}
+             <p class="tour-small">Tap <b>Next →</b> to continue. You can close this at any time with the ✕.</p>`),
     });
     list.push({
-      target: '.stu-header', icon: '⭐', title: 'Seu nível e suas conquistas',
-      html: `<p>Aqui em cima aparecem o seu <b>nível</b>, o seu <b>XP</b> e as <b>estrelas</b> ⭐.
+      target: '.stu-header', icon: '⭐', title: tuSay('Seu nível e suas conquistas', 'Your level and your stars'),
+      html: tuSay(`<p>Aqui em cima aparecem o seu <b>nível</b>, o seu <b>XP</b> e as <b>estrelas</b> ⭐.
              ${kid ? 'Cada jogo e exercício feito dá estrelas — e estrelas viram <b>figurinhas</b> no álbum!' : 'Cada atividade feita soma pontos e mostra o seu progresso.'}</p>`,
+        `<p>Up here you can see your <b>level</b>, your <b>XP</b> and your <b>stars</b> ⭐.
+             ${kid ? 'Every game and exercise gives you stars — and stars become <b>stickers</b> in your album!' : 'Every activity you do gives you points and shows your progress.'}</p>`),
     });
     if (has('.stu-alert [data-go="homework"]') || has(T('homework'))) list.push({
-      target: ['.stu-alert [data-go="homework"]', T('homework')], icon: '📚', title: 'Lição de casa',
-      html: `<p>Quando a teacher manda lição, ela aparece aqui${has('.stu-alert') ? ' — e um aviso aparece no topo' : ''}.
+      target: ['.stu-alert [data-go="homework"]', T('homework')], icon: '📚', title: tuSay('Lição de casa', 'My homework'),
+      html: tuSay(`<p>Quando a teacher manda lição, ela aparece aqui${has('.stu-alert') ? ' — e um aviso aparece no topo' : ''}.
              Toque, faça as atividades e o resultado <b>vai direto para a teacher</b>, sem precisar mandar foto.</p>
              ${kid ? '<p class="tour-parent">👨‍👩‍👧 Ajude a criança a abrir a lição nos dias combinados. Não precisa acertar tudo: os erros mostram para a teacher o que revisar.</p>' : ''}`,
+        `<p>When your teacher sends homework, it is here${has('.stu-alert') ? ' — and you see a message at the top' : ''}.
+             Tap it, do the activities, and your answers <b>go straight to your teacher</b>. No photos needed.</p>`),
     });
     if (has(T('review-class'))) list.push({
-      target: T('review-class'), icon: '🧠', title: 'Revisão da aula',
-      html: '<p>Depois de cada aula, a teacher pode deixar aqui uma <b>revisão com cartões</b> do que foi visto. É ótimo fazer no dia seguinte, rapidinho.</p>',
+      target: T('review-class'), icon: '🧠', title: tuSay('Revisão da aula', 'Class review'),
+      html: tuSay('<p>Depois de cada aula, a teacher pode deixar aqui uma <b>revisão com cartões</b> do que foi visto. É ótimo fazer no dia seguinte, rapidinho.</p>',
+        '<p>After each class, your teacher can leave <b>flashcards</b> here with what you studied. Do it the next day: it is quick!</p>'),
     });
     const pictures = ['colors', 'alphabet', 'feelings', 'weather', 'body', 'animals', 'instruments', 'house', 'prepositions', 'backpack'].filter(g => has(T(g)));
     if (pictures.length) list.push({
-      target: { all: pictures.map(T).join(', ') }, icon: '🎨', title: 'Jogos com figuras',
-      html: `<p>Jogos de <b>tocar, arrastar e ouvir</b>: cores, alfabeto, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler.</p>
+      target: { all: pictures.map(T).join(', ') }, icon: '🎨', title: tuSay('Jogos com figuras', 'Picture games'),
+      html: tuSay(`<p>Jogos de <b>tocar, arrastar e ouvir</b>: cores, alfabeto, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler.</p>
              ${prof === 'prereader' ? '<p class="tour-parent">👨‍👩‍👧 Ao tocar em um botão a criança <b>ouve o nome</b> dele. Deixe o som ligado. 🔊</p>' : ''}`,
+        '<p>Games where you <b>tap, drag and listen</b>: colors, the alphabet, feelings, weather, the body, animals, music, the house…</p>'),
     });
     if (has(T('games'))) list.push({
       target: T('games'), icon: '🎮', title: adult ? 'Topics & games' : 'Games',
-      html: `<p>Os <b>tópicos que você já está estudando</b>, com jogos (Memory, Hangman, Match-up…)${adult ? ', leitura e vocabulário' : ''}.
+      html: tuSay(`<p>Os <b>tópicos que você já está estudando</b>, com jogos (Memory, Hangman, Match-up…)${adult ? ', leitura e vocabulário' : ''}.
              A teacher escolhe o que aparece aqui, então os tópicos vão aumentando conforme as aulas.</p>`,
+        `<p>The <b>topics you are studying now</b>, with games (Memory, Hangman, Match-up…)${adult ? ', reading and vocabulary' : ''}.
+             Your teacher chooses what is here, so you get more topics after each class.</p>`),
     });
     const practice = ['practice', 'writing-practice'].filter(g => has(T(g)));
     if (practice.length) list.push({
-      target: { all: practice.map(T).join(', ') }, icon: '⚡', title: 'Treinar',
-      html: `<p><b>Practice</b> tem jogos rápidos de exercícios${practice.includes('writing-practice') ? ' e <b>Writing practice</b> treina a escrita: completar e montar frases' : ''}.
+      target: { all: practice.map(T).join(', ') }, icon: '⚡', title: tuSay('Treinar', 'Practice'),
+      html: tuSay(`<p><b>Practice</b> tem jogos rápidos de exercícios${practice.includes('writing-practice') ? ' e <b>Writing practice</b> treina a escrita: completar e montar frases' : ''}.
              Bom para fazer 10 minutinhos antes da aula.</p>`,
+        `<p><b>Practice</b> has quick exercise games${practice.includes('writing-practice') ? '. <b>Writing practice</b> helps you write: complete sentences and put words in order' : ''}.
+             Great for 10 minutes before class.</p>`),
     });
     const skills = ['dictation', 'speaking'].filter(g => has(T(g)));
     if (skills.length) list.push({
-      target: { all: skills.map(T).join(', ') }, icon: '🎧', title: 'Ouvir e falar',
-      html: `<p>${skills.includes('dictation') ? '<b>Dictation</b>: você ouve a frase e escreve. ' : ''}${skills.includes('speaking') ? '<b>Speaking</b>: você lê a frase em voz alta e o site mostra quais palavras ele entendeu.' : ''}</p>
+      target: { all: skills.map(T).join(', ') }, icon: '🎧', title: tuSay('Ouvir e falar', 'Listening and speaking'),
+      html: tuSay(`<p>${skills.includes('dictation') ? '<b>Dictation</b>: você ouve a frase e escreve. ' : ''}${skills.includes('speaking') ? '<b>Speaking</b>: você lê a frase em voz alta e o site mostra quais palavras ele entendeu.' : ''}</p>
              <p class="tour-parent">🎤 Na primeira vez, o navegador pergunta se pode usar o <b>microfone</b> — toque em <b>Permitir</b>. Funciona melhor no Google Chrome.</p>`,
+        `<p>${skills.includes('dictation') ? '<b>Dictation</b>: listen to the sentence and write it. ' : ''}${skills.includes('speaking') ? '<b>Speaking</b>: read the sentence out loud, and the site shows the words it understood.' : ''}</p>
+             <p class="tour-parent">🎤 The first time, the browser asks to use your <b>microphone</b>. Tap <b>Allow</b>. It works best in Google Chrome.</p>`),
     });
     const talk = ['writing', 'audio'].filter(g => has(T(g)));
     if (talk.length) list.push({
-      target: { all: talk.map(T).join(', ') }, icon: '💌', title: 'Falar com a teacher',
-      html: `<p>${talk.includes('writing') ? '<b>Write to my teacher</b>: escreva um texto em inglês — a teacher corrige e a correção aparece aqui. ' : ''}${talk.includes('audio') ? '<b>Talk to my teacher</b>: grave um áudio em inglês para ela ouvir.' : ''}</p>`,
+      target: { all: talk.map(T).join(', ') }, icon: '💌', title: tuSay('Falar com a teacher', 'Talk to your teacher'),
+      html: tuSay(`<p>${talk.includes('writing') ? '<b>Write to my teacher</b>: escreva um texto em inglês — a teacher corrige e a correção aparece aqui. ' : ''}${talk.includes('audio') ? '<b>Talk to my teacher</b>: grave um áudio em inglês para ela ouvir.' : ''}</p>`,
+        `<p>${talk.includes('writing') ? '<b>Write to my teacher</b>: write a text in English. Your teacher corrects it, and you see the corrections here. ' : ''}${talk.includes('audio') ? '<b>Talk to my teacher</b>: record a voice message in English for your teacher.' : ''}</p>`),
     });
     if (has(T('review'))) list.push({
-      target: T('review'), icon: '🔁', title: 'Meus erros',
-      html: '<p>As palavras que você errou nos jogos ficam guardadas aqui para revisar. Revisar no dia seguinte faz elas <b>grudarem na memória</b>!</p>',
+      target: T('review'), icon: '🔁', title: tuSay('Meus erros', 'My mistakes'),
+      html: tuSay('<p>As palavras que você errou nos jogos ficam guardadas aqui para revisar. Revisar no dia seguinte faz elas <b>grudarem na memória</b>!</p>',
+        '<p>The words you get wrong in the games stay here, so you can review them. Review them the next day, and you <b>remember them better</b>!</p>'),
     });
     if (has(T('progress'))) list.push({
-      target: T('progress'), icon: '📈', title: 'Meu progresso',
-      html: `<p>Veja tudo o que você já fez: estrelas, ${kid ? 'figurinhas, ' : ''}dias seguidos praticando 🔥 e as atividades de cada semana.</p>`,
+      target: T('progress'), icon: '📈', title: tuSay('Meu progresso', 'My progress'),
+      html: tuSay(`<p>Veja tudo o que você já fez: estrelas, ${kid ? 'figurinhas, ' : ''}dias seguidos praticando 🔥 e as atividades de cada semana.</p>`,
+        `<p>See everything you did: stars, ${kid ? 'stickers, ' : ''}days in a row of practice 🔥 and your activities each week.</p>`),
     });
     list.push({
-      target: '#stuHelpBtn', icon: '❓', title: 'Pronto! Precisa de ajuda?',
-      html: `<p>Sempre que quiser ver este passo a passo de novo, toque em <b>❓ Ajuda</b>, aqui em cima.</p>
+      target: '#stuHelpBtn', icon: '❓', title: tuSay('Pronto! Precisa de ajuda?', 'All done! Need help?'),
+      html: tuSay(`<p>Sempre que quiser ver este passo a passo de novo, toque em <b>❓ Ajuda</b>, aqui em cima.</p>
              <p class="tour-small">💡 Dica: salve este link nos <b>favoritos</b> ou na <b>tela inicial do celular</b> (menu do navegador → "Adicionar à tela inicial").
              Tudo o que ${kid ? 'a criança faz' : 'você faz'} aqui chega para a teacher. Have fun, ${name}! ✨</p>`,
+        `<p>Do you want to see this tour again? Tap <b>❓ Help</b>, up here.</p>
+             <p class="tour-small">💡 Tip: save this link in your <b>bookmarks</b> or on your <b>phone's home screen</b> (browser menu → "Add to Home screen").
+             Your teacher sees everything you do here. Have fun, ${name}! ✨</p>`),
     });
     return list;
   }
 
   function run(student, prof) {
-    IGTour.start(steps(student, prof), { onEnd: () => markSeen(student.id), doneLabel: "✅ Let's go!" });
+    IGTour.start(steps(student, prof), {
+      onEnd: () => markSeen(student.id), doneLabel: "✅ Let's go!",
+      labels: {
+        closeAria: tuSay('Fechar o tutorial', 'Close the tour'), close: tuSay('Fechar', 'Close'),
+        prev: tuSay('← Voltar', '← Back'), next: tuSay('Próximo →', 'Next →'), of: tuSay('de', 'of'),
+      },
+    });
   }
 
   // Called by share.js every time the student's home screen is drawn.

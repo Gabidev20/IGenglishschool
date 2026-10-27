@@ -135,6 +135,14 @@ function applyGrownLook(student) {
   document.documentElement.classList.toggle('ig-grown', grown);
 }
 
+// The words a learner reads: English only for 14+ (every word is input),
+// Portuguese for children and their parents. It follows the look, so it is
+// right wherever html.ig-grown is: the student link and the teacher's screen
+// with that learner selected.
+function igSay(pt, en) {
+  return document.documentElement.classList.contains('ig-grown') ? en : pt;
+}
+
 // ---------------------------------------------------------------------------
 // ONBOARDING — the three questions
 // ---------------------------------------------------------------------------

@@ -9,6 +9,9 @@
    Loaded after learnerData.js.
    ========================================================================== */
 
+// (msSay is already the read-aloud helper below.)
+const msPtEn = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 const MS_KINDS = ['vocab', 'sentence'];
 
 // Called by the games. `word` is a word-bank entry ({ en, pt, image,
@@ -87,7 +90,7 @@ const msPracticedToday = c => c.right > 0 && c.due && new Date(c.due).getTime() 
 // ---------------------------------------------------------------------------
 function openMistakes(studentId) {
   const id = studentId || (typeof getActiveStudentId === 'function' ? getActiveStudentId() : null);
-  if (!id) { alert('Escolha um aluno primeiro.'); return; }
+  if (!id) { alert(msPtEn('Escolha um aluno primeiro.', 'Choose a student first.')); return; }
   // Children who can't read yet tap the right picture instead of typing.
   const who = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === id);
   const prereader = typeof studentProfile === 'function' && who && studentProfile(who) === 'prereader';
@@ -98,7 +101,7 @@ function openMistakes(studentId) {
         <span class="modal-head-thumb modal-head-thumb--icon">🔁</span>
         <div class="modal-head-text">
           <h3 id="modalTitle">My mistakes</h3>
-          <p class="modal-head-sub"><span class="modal-head-desc">Meus erros — vamos revisar!</span></p>
+          <p class="modal-head-sub"><span class="modal-head-desc">${msPtEn('Meus erros — vamos revisar!', 'Let’s review them!')}</span></p>
         </div>
       </div>
       <div id="msMount"></div>
@@ -113,7 +116,7 @@ function openMistakes(studentId) {
         <div class="rv-done">
           <span class="rv-done-emoji">🌟</span>
           <p class="rv-done-title">No mistakes!</p>
-          <p class="rv-done-sub">Nenhum erro para revisar. Jogue os jogos — o que você errar aparece aqui.</p>
+          <p class="rv-done-sub">${msPtEn('Nenhum erro para revisar. Jogue os jogos — o que você errar aparece aqui.', 'Nothing to review. Play the games — your mistakes will show up here.')}</p>
         </div>`;
       return;
     }
@@ -295,7 +298,7 @@ function openMistakes(studentId) {
           if (heard.some(h => h === want || h.includes(want) || want.includes(h) && h.length >= want.length * 0.7)) advance();
           else { IGSound.wrong(); feedback = `🤔 I heard "${igEscapeHtml(heard[0] || '…')}". Try again!`; paintStep(); }
         };
-        rec.onerror = () => { feedback = 'Use “✅ I said it!” se o microfone não funcionar.'; paintStep(); };
+        rec.onerror = () => { feedback = msPtEn('Use “✅ I said it!” se o microfone não funcionar.', 'If the microphone doesn’t work, tap “✅ I said it!”.'); paintStep(); };
         rec.onend = () => { if (btn.isConnected) { btn.textContent = '🎤 Speak'; btn.classList.remove('is-recording'); } };
         try { rec.start(); } catch (e) { /* already listening */ }
       });

@@ -12,6 +12,8 @@
    the correction desk.
    ========================================================================== */
 
+const chatSay = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+
 const CHAT_MAX_SECONDS = 60;
 
 const chatEsc = s => igEscapeHtml(String(s == null ? '' : s));
@@ -48,7 +50,7 @@ function chatMessages(studentId) {
 
 function chatFmtTime(iso) {
   const d = new Date(iso || Date.now());
-  return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleTimeString(chatSay('pt-BR', 'en-US'), { hour: '2-digit', minute: '2-digit' });
 }
 function chatFmtDay(iso) {
   const d = new Date(iso || Date.now());
@@ -57,6 +59,13 @@ function chatFmtDay(iso) {
   if (diff === 0) return 'Hoje';
   if (diff === 1) return 'Ontem';
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
+}
+// What the conversation shows (chatFmtDay stays Portuguese: the inbox compares it).
+function chatFmtDayShown(iso) {
+  const pt = chatFmtDay(iso);
+  if (pt === 'Hoje') return chatSay(pt, 'Today');
+  if (pt === 'Ontem') return chatSay(pt, 'Yesterday');
+  return chatSay(pt, new Date(iso || Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }));
 }
 const chatFmtSecs = s => `${Math.floor((s || 0) / 60)}:${String(Math.round((s || 0) % 60)).padStart(2, '0')}`;
 
@@ -119,8 +128,8 @@ function openChat(opts) {
   if (!student) return;
   const sid = student.id;
   const me = role;                       // whose bubbles go on the right
-  const title = role === 'teacher' ? `${student.avatar || '🙂'} ${student.name}` : '👩‍🏫 Minha teacher';
-  const sub = role === 'teacher' ? 'Conversa com o aluno' : 'Escreva ou mande um áudio';
+  const title = role === 'teacher' ? `${student.avatar || '🙂'} ${student.name}` : chatSay('👩‍🏫 Minha teacher', '👩‍🏫 My teacher');
+  const sub = role === 'teacher' ? 'Conversa com o aluno' : chatSay('Escreva ou mande um áudio', 'Write or send a voice message');
 
   const rec = chatRecorder();
   let recTimer = null, recording = false, lastCount = -1, lastSig = '';
@@ -155,16 +164,16 @@ function openChat(opts) {
     const side = m.mine === me ? 'out' : 'in';
     let body = '';
     if (m.essay) {
-      body += `<div class="chat-essay"><b>✍️ ${chatEsc(m.essay.prompt || 'Texto')}</b>
+      body += `<div class="chat-essay"><b>✍️ ${chatEsc(m.essay.prompt || chatSay('Texto', 'Text'))}</b>
         <p>${chatEsc(m.text || '').slice(0, 280)}${(m.text || '').length > 280 ? '…' : ''}</p>
-        <small>${m.essay.words || 0} palavras${m.essay.corrected ? ' · corrigido ✅' : ''}</small>
+        <small>${m.essay.words || 0} ${chatSay('palavras', m.essay.words === 1 ? 'word' : 'words')}${m.essay.corrected ? chatSay(' · corrigido ✅', ' · corrected ✅') : ''}</small>
         ${role === 'teacher' ? `<button type="button" class="chat-essay-btn" data-essay="${chatEsc(m.essay.id)}">${m.essay.corrected ? '👁️ Ver correção' : '🖊️ Corrigir'}</button>` : ''}</div>`;
     } else if (m.correction) {
-      body += `<div class="chat-fix"><b>✏️ Correção</b>
+      body += `<div class="chat-fix"><b>✏️ ${chatSay('Correção', 'Correction')}</b>
         <p class="sk-diff">${typeof skDiffHTML === 'function' ? skDiffHTML(skDiff(m.correction.original, m.correction.fixed)) : chatEsc(m.correction.fixed)}</p>
-        ${m.correction.grade ? `<small>Nota: <b>${chatEsc(m.correction.grade)}</b></small>` : ''}</div>`;
+        ${m.correction.grade ? `<small>${chatSay('Nota:', 'Grade:')} <b>${chatEsc(m.correction.grade)}</b></small>` : ''}</div>`;
     } else if (m.audio) {
-      body += `<div class="chat-audio"><button type="button" class="ca-play" aria-label="Ouvir">▶︎</button>
+      body += `<div class="chat-audio"><button type="button" class="ca-play" aria-label="${chatSay('Ouvir', 'Listen')}">▶︎</button>
         <div class="ca-bar"><i></i></div><span class="ca-time">${chatFmtSecs(m.seconds)}</span>
         <audio preload="none" src="${chatEsc(m.audio)}"></audio></div>`;
     } else if (m.text) {
@@ -182,11 +191,11 @@ function openChat(opts) {
     const nearBottom = listEl.scrollHeight - listEl.scrollTop - listEl.clientHeight < 80;
     lastSig = sig;
     if (!msgs.length) {
-      listEl.innerHTML = `<div class="chat-empty"><span>💬</span><p>${role === 'teacher' ? 'Ainda não há mensagens com este aluno.' : 'Mande uma mensagem ou um áudio para a sua teacher!'}</p></div>`;
+      listEl.innerHTML = `<div class="chat-empty"><span>💬</span><p>${role === 'teacher' ? 'Ainda não há mensagens com este aluno.' : chatSay('Mande uma mensagem ou um áudio para a sua teacher!', 'Send a message or a voice message to your teacher!')}</p></div>`;
     } else {
       let day = '';
       listEl.innerHTML = msgs.map(m => {
-        const d = chatFmtDay(m.at);
+        const d = chatFmtDayShown(m.at);
         const sep = d !== day ? `<div class="chat-day"><span>${chatEsc(d)}</span></div>` : '';
         day = d;
         return sep + bubbleHTML(m);
@@ -220,23 +229,23 @@ function openChat(opts) {
   function paintComposer(note) {
     if (recording) {
       composer.innerHTML = `
-        <button type="button" class="chat-cancel" id="chatCancel" aria-label="Cancelar">🗑️</button>
-        <div class="chat-recording"><span class="chat-rec-dot"></span><b id="chatRecTime">0:00</b><small>gravando… toque em ➤ para enviar</small></div>
-        <button type="button" class="chat-send" id="chatSendRec" aria-label="Enviar áudio">➤</button>`;
+        <button type="button" class="chat-cancel" id="chatCancel" aria-label="${chatSay('Cancelar', 'Cancel')}">🗑️</button>
+        <div class="chat-recording"><span class="chat-rec-dot"></span><b id="chatRecTime">0:00</b><small>${chatSay('gravando… toque em ➤ para enviar', 'recording… tap ➤ to send')}</small></div>
+        <button type="button" class="chat-send" id="chatSendRec" aria-label="${chatSay('Enviar áudio', 'Send voice message')}">➤</button>`;
       composer.querySelector('#chatCancel').addEventListener('click', () => stopRecording(true));
       composer.querySelector('#chatSendRec').addEventListener('click', () => stopRecording(false));
       return;
     }
     composer.innerHTML = `
       ${note ? `<p class="chat-note">${chatEsc(note)}</p>` : ''}
-      <textarea id="chatInput" rows="1" placeholder="${role === 'teacher' ? 'Escreva uma mensagem…' : 'Write a message…'}" aria-label="Mensagem"></textarea>
-      <button type="button" class="chat-send chat-send--mic" id="chatAction" aria-label="Gravar áudio">🎤</button>`;
+      <textarea id="chatInput" rows="1" placeholder="${role === 'teacher' ? 'Escreva uma mensagem…' : 'Write a message…'}" aria-label="${chatSay('Mensagem', 'Message')}"></textarea>
+      <button type="button" class="chat-send chat-send--mic" id="chatAction" aria-label="${chatSay('Gravar áudio', 'Record a voice message')}">🎤</button>`;
     const input = composer.querySelector('#chatInput');
     const action = composer.querySelector('#chatAction');
     const sync = () => {
       const has = input.value.trim().length > 0;
       action.textContent = has ? '➤' : '🎤';
-      action.setAttribute('aria-label', has ? 'Enviar' : 'Gravar áudio');
+      action.setAttribute('aria-label', has ? chatSay('Enviar', 'Send') : chatSay('Gravar áudio', 'Record a voice message'));
       action.classList.toggle('chat-send--mic', !has);
       input.style.height = 'auto';
       input.style.height = Math.min(input.scrollHeight, 120) + 'px';
@@ -252,9 +261,9 @@ function openChat(opts) {
   }
 
   async function startRecording() {
-    if (!rec.supported) { paintComposer('Este aparelho não grava áudio pelo navegador. Tente pelo Chrome ou Safari atualizado.'); return; }
+    if (!rec.supported) { paintComposer(chatSay('Este aparelho não grava áudio pelo navegador. Tente pelo Chrome ou Safari atualizado.', 'This device can’t record audio in the browser. Try an updated Chrome or Safari.')); return; }
     try { await rec.start(); }
-    catch (e) { paintComposer('🎤 O microfone não foi liberado. Toque no cadeado ao lado do endereço do site e permita o microfone.'); return; }
+    catch (e) { paintComposer(chatSay('🎤 O microfone não foi liberado. Toque no cadeado ao lado do endereço do site e permita o microfone.', '🎤 The microphone is blocked. Tap the lock next to the website address and allow the microphone.')); return; }
     recording = true;
     paintComposer();
     clearInterval(recTimer);

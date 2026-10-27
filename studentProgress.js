@@ -123,7 +123,7 @@ function paintStudentProgress(mount, student) {
             <div class="sp-hw-row">
               <div>
                 <b>${spEsc(h.title)}</b>
-                <small>${p.done}/${p.total} ${say('tarefas', 'tasks')} · ${hwDueLabel(h)}</small>
+                <small>${p.done}/${p.total} ${say('tarefas', 'tasks')} · ${typeof hwDueText === 'function' ? hwDueText(h) : hwDueLabel(h)}</small>
               </div>
               <button class="game-btn" data-hw="${h.id}">▶️ ${say('Fazer', 'Start')}</button>
             </div>`;
