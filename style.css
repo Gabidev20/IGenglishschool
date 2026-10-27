@@ -9691,3 +9691,5 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 
 /* The box being answered in the book (one letter per box). */
 .lo-ix-fill.is-active { fill: rgba(255, 214, 90, .45) !important; stroke: #e0334c !important; stroke-width: .7; stroke-dasharray: none; }
+
+.lo-ix-txt.is-live { fill: #2e2b2e; }

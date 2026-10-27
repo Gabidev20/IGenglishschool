@@ -1110,6 +1110,21 @@ const LivroOnline = (() => {
       return { ok, total };
     }
 
+    // How many printed squares a fill-in row has (0 = not a row of squares).
+    // One accepted answer of exactly that length must exist ("ucas" in 4 squares).
+    let liveVal = '';
+    function fillCells(it) {
+      if (!it || it.type !== 'fill') return 0;
+      const acc = (it.accept || []).map(x => normAns(x).replace(/\s/g, '')).filter(Boolean);
+      if (!acc.length) return 0;
+      if (acc.every(x => x.length === 1)) return 1;
+      const w = num(it.w, 0), hh = num(it.h, 0);
+      if (!w || !hh) return 0;
+      const n = Math.round(w / hh);
+      if (n < 2 || n > 12 || Math.abs(w / (n * hh) - 1) > 0.3) return 0;
+      return acc.some(x => x.length === n) ? n : 0;
+    }
+
     function renderIx() {
       const layer = $('ix');
       if (!layer) return;
@@ -1132,7 +1147,16 @@ const LivroOnline = (() => {
           const fs = f2(it.size || Math.min(hh * 0.78, 6));
           const tx = f2(x + w / 2), ty = f2(y + hh * 0.5 + fs * 0.35);
           h += `<rect class="lo-ix-hit lo-ix-fill${a.ok ? ' is-ok' : a.v ? ' is-bad' : ''}${answering && answering.id === it.id ? ' is-active' : ''}" data-q="${esc(it.id)}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1"/>`;
-          if (a.v) h += `<text class="lo-ix-txt${a.ok ? ' is-ok' : ' is-bad'}" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc(a.v)}</text>`;
+          const cells = fillCells(it);
+          const typing = answering && answering.id === it.id;
+          if (cells > 1 && (typing || a.v)) {
+            // One letter in each square of the printed row.
+            const word = typing ? liveVal : String(a.v || '');
+            const cls = typing ? ' is-live' : a.ok ? ' is-ok' : ' is-bad';
+            [...word].slice(0, cells).forEach((ch, ci) => {
+              h += `<text class="lo-ix-txt${cls}" x="${f2(x + (ci + 0.5) * w / cells)}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc(ch)}</text>`;
+            });
+          } else if (a.v) h += `<text class="lo-ix-txt${a.ok ? ' is-ok' : ' is-bad'}" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc(a.v)}</text>`;
           else if (key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
           if (a.v && !a.ok && key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${f2(y - 0.6)}" font-size="${f2(fs * 0.7)}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
         } else if (it.type === 'match') {
@@ -1259,11 +1283,12 @@ const LivroOnline = (() => {
       if (!sheet) return;
       answering = it;
       const a = answerOf(it.id);
-      const letter = isLetterBox(it);
-      input.maxLength = letter ? 1 : 80;
-      // A wrong letter is cleared so the next key press is simply the next try.
-      input.value = a && a.v && (a.ok || !letter) ? a.v : '';
-      $('ansq').textContent = it.hint || (letter ? 'Escreva a letra / Write the letter' : 'Escreva a resposta / Write the answer');
+      const cells = fillCells(it);
+      input.maxLength = cells || 80;
+      // A wrong try is cleared so the next key press is simply the next try.
+      input.value = a && a.v && (a.ok || !cells) ? a.v : '';
+      liveVal = cells > 1 ? input.value : '';
+      $('ansq').textContent = it.hint || (cells > 1 ? 'Escreva as letras / Write the letters' : cells === 1 ? 'Escreva a letra / Write the letter' : 'Escreva a resposta / Write the answer');
       sheet.hidden = false;
       renderIx();
       setTimeout(() => { try { input.focus({ preventScroll: true }); input.select(); } catch (e) { input.focus(); } }, 30);
@@ -1285,7 +1310,7 @@ const LivroOnline = (() => {
       applyView();
     }
     // "Uma letra em cada quadradinho": boxes whose every accepted answer is one character.
-    const isLetterBox = it => it && it.type === 'fill' && (it.accept || []).length > 0 && (it.accept || []).every(x => String(x).length === 1);
+    const isLetterBox = it => fillCells(it) > 0;
     // The next letter box (in the page's order) that is not right yet.
     function nextLetterBox(from) {
       const list = ixItems().filter(isLetterBox);
@@ -1298,7 +1323,10 @@ const LivroOnline = (() => {
       const input = $('ansin');
       if (!answering || !isLetterBox(answering)) return;
       const v = input.value.replace(/\s+/g, '').trim();
-      if (!v) return;
+      const n = fillCells(answering);
+      liveVal = v;
+      if (n > 1) renderIx();                 // show the letters in the squares as they are typed
+      if (!v || v.length < n) return;
       const it = answering;
       const a = answerOf(it.id) || { t: 0 };
       const ok = (it.accept || []).some(x => normAns(x) === normAns(v));
@@ -1312,6 +1340,8 @@ const LivroOnline = (() => {
         if (el) ixFlash(el, 'lo-shake');
         tryAgain();
         input.value = '';
+        liveVal = '';
+        renderIx();
         try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); }
       }
     }
@@ -1320,6 +1350,7 @@ const LivroOnline = (() => {
       if (!sheet || !answering) return;
       const it = answering;
       answering = null;
+      liveVal = '';
       sheet.hidden = true;
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       renderIx();
