@@ -504,7 +504,7 @@ function renderStudentHome(shell, studentId) {
     colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
     drawing: () => tile('drawing', '🖍️', 'Drawing Challenge', 'Desenho surpresa — abra a caixa e desenhe', 'stu-tile--review'),
     alphabet: () => tile('alphabet', '🔤', 'ABC', 'Alfabeto — ouvir e falar as letras'),
-    maze: () => tile('maze', '🟡', 'Maze Muncher', 'Labirinto come-come — sozinho ou com um amigo'),
+    maze: () => tile('maze', typeof mzPacIcon === 'function' ? mzPacIcon('stu-pac') : '🟡', 'Maze Muncher', 'Labirinto come-come — sozinho ou com um amigo'),
     backpack: () => tile('backpack', '🎒', 'Backpack', 'Mochila — school objects'),
     house: () => tile('house', '🏠', 'House', 'Casa — parts of the house'),
     animals: () => tile('animals', '🦁', 'Animals', 'Animais'),

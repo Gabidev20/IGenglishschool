@@ -111,10 +111,10 @@ function renderReadyGames(container) {
         </span>
       </button>
       <button class="gamemaker-ready-card" type="button" data-open-maze>
-        <span class="gamemaker-ready-art ab-art">🟡</span>
+        <span class="gamemaker-ready-art ab-art">${mzPacIcon('gm-pac')}</span>
         <span class="gamemaker-ready-text">
-          <b>🟡 Maze Muncher</b>
-          <small>Um come-come no labirinto: cada criança escolhe o avatar (dinosaur, monkey, butterfly, Pac-Man, frog) e você escolhe a comida — moedas, frutas, legumes, letras, números, cores, doces. A palavra é falada quando é comida. Dá para jogar 2 ao mesmo tempo.</small>
+          <b>Maze Muncher</b>
+          <small>Um come-come no labirinto: cada criança escolhe o avatar (dinosaur, monkey, butterfly, Pac-Man, frog) e você escolhe a comida — moedas, frutas, legumes, material escolar, letras, números, cores, doces. Cuidado com as aranhas! A palavra é falada quando é comida. Dá para jogar 2 ao mesmo tempo.</small>
           <span class="game-btn">▶ Play</span>
         </span>
       </button>

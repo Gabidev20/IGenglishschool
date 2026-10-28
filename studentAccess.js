@@ -27,7 +27,7 @@ const STUDENT_ACCESS_KEY = 'student_access';
 const SA_READY_GAMES = [
   { id: 'colors', icon: '🎨', label: 'Colors' },
   { id: 'alphabet', icon: '🔤', label: 'ABC — Alphabet' },
-  { id: 'maze', icon: '🟡', label: 'Maze Muncher' },
+  { id: 'maze', icon: typeof mzPacIcon === 'function' ? mzPacIcon('sa-pac') : '🟡', label: 'Maze Muncher' },
   { id: 'feelings', icon: '😊', label: 'Feelings' },
   { id: 'weather', icon: '🌦️', label: 'Weather' },
   { id: 'body', icon: '🧍', label: 'Body Parts' },

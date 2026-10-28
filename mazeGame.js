@@ -1,15 +1,16 @@
 /* ==========================================================================
-   IGenglishschool — 🟡 Maze Muncher (a Pac-Man for the class)
+   IGenglishschool — Maze Muncher (a Pac-Man for the class)
    --------------------------------------------------------------------------
    One or two players run through a maze eating the food the teacher chose:
-   coins, fruits, vegetables, letters, numbers, colors, sweets. Every word
+   coins, fruits, vegetables, school objects, letters, numbers, colors,
+   sweets. Every word
    food is spoken when it is eaten ("banana!", "B!", "seven!"), so the game
    is vocabulary practice disguised as a race.
 
      • avatars: dinosaur, monkey, butterfly, Pac-Man, frog — each player picks
      • 2 players at once on one screen: Player 1 = W A S D, Player 2 = arrows,
        and a touch pad for each one under the maze (tablets, the class TV)
-     • friendly ghosts (0, 2 or 4): a touch sends the player back to start
+     • spiders (0, 2 or 4): a touch sends the player back to start
      • when the food is gone, the one who ate more wins
 
    Everything is drawn on one canvas; the emoji come from Twemoji (utils.js)
@@ -67,20 +68,28 @@ const MZ_FOODS = [
     ['🍬', 'candy'], ['🍭', 'lollipop'], ['🍪', 'cookie'], ['🧁', 'cupcake'], ['🍩', 'donut'], ['🍫', 'chocolate'],
     ['🍦', 'ice cream'], ['🎂', 'cake'],
   ].map(([emoji, say]) => ({ emoji, say })) },
+  // School objects: the same drawings as the Backpack game (schoolObjects.js).
+  { id: 'school', en: 'School objects', pt: 'Material escolar', icon: '🎒', items: () =>
+    (typeof SCHOOL_OBJECTS_TOPIC !== 'undefined' && SCHOOL_OBJECTS_TOPIC.words.length
+      ? SCHOOL_OBJECTS_TOPIC.words.map(w => ({ src: w.image, say: String(w.en).toLowerCase() }))
+      : [['✏️', 'pencil'], ['🖊️', 'pen'], ['📕', 'book'], ['📓', 'notebook'], ['📏', 'ruler'], ['✂️', 'scissors'],
+        ['🖍️', 'crayon'], ['🖌️', 'paint brush'], ['🎒', 'backpack']].map(([emoji, say]) => ({ emoji, say }))) },
   { id: 'stars', en: 'Stars', pt: 'Estrelas', icon: '⭐', items: () => [{ emoji: '⭐' }] },
 ];
 const MZ_BUBBLE = ['#e5484d', '#f08a24', '#e0a800', '#3fae5a', '#3d7bd9', '#8e5fc2', '#f05d77', '#14a3a3'];
 const MZ_PLAYER_COLORS = ['#3d7bd9', '#e5484d'];
 const MZ_SETTINGS_KEY = 'ig_maze_settings';
 
-// Twemoji images, loaded once per emoji and reused for every frame.
+// Images, loaded once and reused for every frame: an emoji (from Twemoji)
+// or a picture's own address (the school objects' drawings).
 const MZ_IMAGES = {};
 function mzImage(emoji) {
   if (!emoji) return null;
   if (!MZ_IMAGES[emoji]) {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
-    if (typeof IG_TWEMOJI_BASE !== 'undefined' && typeof igEmojiCode === 'function') {
+    if (/^(data:|https?:|\/)/.test(emoji)) img.src = emoji;
+    else if (typeof IG_TWEMOJI_BASE !== 'undefined' && typeof igEmojiCode === 'function') {
+      img.crossOrigin = 'anonymous';
       img.src = `${IG_TWEMOJI_BASE}${igEmojiCode(emoji)}.svg`;
     }
     MZ_IMAGES[emoji] = img;
@@ -104,10 +113,19 @@ function mzLoadSettings() {
 }
 function mzSaveSettings(s) { try { localStorage.setItem(MZ_SETTINGS_KEY, JSON.stringify(s)); } catch (e) {} }
 
+// Pac-Man himself: the game's icon everywhere (student tile, menus, Game
+// Maker) and Player's avatar.
+function mzPacIcon(cls) {
+  return `<svg viewBox="0 0 40 40" class="${cls || 'mz-av-img'}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20,20 L37,11 A19,19 0 1,0 37,29 Z" fill="#ffd400" stroke="#2e2b2e" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M9,13 A14,14 0 0,1 17,7" fill="none" stroke="#fff6b0" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="21" cy="11" r="2.8" fill="#2e2b2e"/></svg>`;
+}
+
 // The little picture of an avatar for the setup buttons and the score bar.
 function mzAvatarHTML(id) {
   const a = MZ_AVATARS.find(x => x.id === id) || MZ_AVATARS[0];
-  if (!a.emoji) return '<svg viewBox="0 0 40 40" class="mz-av-img" aria-hidden="true"><path d="M20,20 L36,10 A18,18 0 1,0 36,30 Z" fill="#ffd166" stroke="#2e2b2e" stroke-width="2"/><circle cx="22" cy="11" r="2.6" fill="#2e2b2e"/></svg>';
+  if (!a.emoji) return mzPacIcon('mz-av-img');
   return typeof igEmojiImgHTML === 'function' ? igEmojiImgHTML(a.emoji, 'mz-av-img') : `<span class="mz-av-img">${a.emoji}</span>`;
 }
 
@@ -118,7 +136,7 @@ function openMazeGame() {
   openModal(`
     <div class="modal-content-pad mz">
       <div class="modal-head">
-        <span class="modal-head-thumb modal-head-thumb--icon">🟡</span>
+        <span class="modal-head-thumb modal-head-thumb--icon">${mzPacIcon('mz-head-pac')}</span>
         <div class="modal-head-text">
           <h3 id="modalTitle">Maze Muncher</h3>
           <p class="modal-head-sub"><span class="modal-head-desc">Eat the food in the maze! · 1 or 2 players</span></p>
@@ -163,9 +181,9 @@ function openMazeGame() {
           </div>
         </div>
         <div class="mz-row">
-          <span class="mz-row-label">Ghosts</span>
+          <span class="mz-row-label">Spiders</span>
           <div class="mz-opts">
-            ${[0, 2, 4].map(n => `<button type="button" class="mz-opt mz-opt--wide${settings.ghosts === n ? ' on' : ''}" data-ghosts="${n}">${n ? '👻'.repeat(n / 2) + ' ' + n : '🚫 none'}</button>`).join('')}
+            ${[0, 2, 4].map(n => `<button type="button" class="mz-opt mz-opt--wide${settings.ghosts === n ? ' on' : ''}" data-ghosts="${n}">${n ? (typeof igEmojiImgHTML === 'function' ? igEmojiImgHTML('🕷️', 'mz-opt-spider') : '🕷️').repeat(n / 2) + ' ' + n : '🚫 none'}</button>`).join('')}
             <button type="button" class="mz-opt mz-opt--wide${settings.speak ? ' on' : ''}" data-speak>🔊 Say the words</button>
           </div>
         </div>
@@ -212,7 +230,7 @@ function openMazeGame() {
       if (food.id === 'letters') order = pool;      // letters go round A to Z
       items.set(c.join(','), order[i % order.length]);
     });
-    pool.forEach(it => { if (it.emoji) mzImage(it.emoji); });
+    pool.forEach(it => { if (it.emoji || it.src) mzImage(it.emoji || it.src); });
 
     const mkPlayer = (i, start) => ({
       i, color: MZ_PLAYER_COLORS[i], avatar: MZ_AVATARS.find(a => a.id === settings.avatars[i]) || MZ_AVATARS[0],
@@ -223,7 +241,7 @@ function openMazeGame() {
     if (two) players.push(mkPlayer(1, find('2')));
     else players[0].start = players[0].cell = players[0].to = find('1');
     players.forEach(p => { if (p.avatar.emoji) mzImage(p.avatar.emoji); });
-    mzImage('👻');
+    mzImage('🕷️');
 
     const ghostStart = find('G');
     const GHOST_TINTS = ['#ff8fb1', '#7fd3ff', '#ffb347', '#b39ddb'];
@@ -365,7 +383,9 @@ function openMazeGame() {
         } else mzSay(word);
       }
       if (word) {
-        saidEl.innerHTML = `<span style="color:${p.color}">${it.emoji && typeof igEmojiImgHTML === 'function' ? igEmojiImgHTML(it.emoji, 'mz-said-img') : ''}${igEscapeHtml(it.letter || it.text || word)}</span>`;
+        const pic = it.src ? `<img class="mz-said-img" src="${it.src}" alt="">`
+          : it.emoji && typeof igEmojiImgHTML === 'function' ? igEmojiImgHTML(it.emoji, 'mz-said-img') : '';
+        saidEl.innerHTML = `<span style="color:${p.color}">${pic}${igEscapeHtml(it.letter || it.text || word)}</span>`;
         saidEl.classList.remove('pop'); void saidEl.offsetWidth; saidEl.classList.add('pop');
       }
       if (!left) finish();
@@ -402,7 +422,11 @@ function openMazeGame() {
     function drawItem(it, x, y, now) {
       const cx = (x + 0.5) * cell, cy = (y + 0.5) * cell;
       const bob = Math.sin(now / 300 + x + y) * cell * 0.04;
-      if (it.emoji) {
+      if (it.src) {
+        const s = cell * 0.86;
+        const img = mzImage(it.src);
+        if (img && img.complete && img.naturalWidth) ctx.drawImage(img, cx - s / 2, cy - s / 2 + bob, s, s);
+      } else if (it.emoji) {
         const s = cell * (food.id === 'coins' || food.id === 'stars' ? 0.5 : 0.78);
         const img = mzImage(it.emoji);
         if (img && img.complete && img.naturalWidth) ctx.drawImage(img, cx - s / 2, cy - s / 2 + bob, s, s);
@@ -444,11 +468,13 @@ function openMazeGame() {
     function drawGhost(g, now) {
       const [fx, fy] = pos(g);
       const cx = fx * cell, cy = fy * cell, s = cell * 0.86;
-      ctx.beginPath(); ctx.arc(cx, cy, cell * 0.42, 0, Math.PI * 2); ctx.fillStyle = g.tint + '66'; ctx.fill();
-      const img = mzImage('👻');
+      // A light disc with a coloured rim: a black spider shows on the dark floor.
+      ctx.beginPath(); ctx.arc(cx, cy, cell * 0.46, 0, Math.PI * 2); ctx.fillStyle = '#fff4f8'; ctx.fill();
+      ctx.lineWidth = Math.max(2, cell * 0.08); ctx.strokeStyle = g.tint; ctx.stroke();
+      const img = mzImage('🕷️');
       const wob = Math.sin(now / 160 + g.speed * 10) * cell * 0.05;
       if (img && img.complete && img.naturalWidth) ctx.drawImage(img, cx - s / 2, cy - s / 2 + wob, s, s);
-      else { ctx.font = `${s * 0.85}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👻', cx, cy + wob); }
+      else { ctx.font = `${s * 0.85}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('🕷️', cx, cy + wob); }
     }
 
     // ---- the loop --------------------------------------------------------------

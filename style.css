@@ -9774,3 +9774,12 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
   .mz-pad { grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 38px); }
   .mz-pads.two { gap: 8px; }
 }
+
+/* Maze Muncher — the Pac-Man icon wherever the game is listed */
+.mz-head-pac { width: 34px; height: 34px; display: block; }
+.mz-opt-spider { width: 22px; height: 22px; }
+.stu-pac { width: 1em; height: 1em; display: inline-block; vertical-align: -0.1em; }
+.sa-pac { width: 1.2em; height: 1.2em; display: inline-block; vertical-align: -0.25em; }
+.gs-pac { width: 2rem; height: 2rem; display: block; }
+.pg-pac { width: 1em; height: 1em; display: inline-block; vertical-align: -0.1em; }
+.gm-pac { width: 84px; height: 84px; display: block; margin: auto; }

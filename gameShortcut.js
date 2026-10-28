@@ -10,7 +10,7 @@
 
 const GS_CLASS_GAMES = [
   { icon: '🕵️', en: 'Who am I?', pt: 'Adivinhação', open: () => openWhoAmI() },
-  { icon: '🟡', en: 'Maze Muncher', pt: 'Come-come · 2 jogadores', open: () => openMazeGame() },
+  { icon: typeof mzPacIcon === 'function' ? mzPacIcon('gs-pac') : '🟡', en: 'Maze Muncher', pt: 'Come-come · 2 jogadores', open: () => openMazeGame() },
   { icon: '🎨', en: 'Drawing Challenge', pt: 'Desenhe e adivinhe', open: () => LiveTools.openTool('drawing') },
   { icon: '🎡', en: 'Wheel of Fortune', pt: 'Roleta', open: () => LiveTools.openTool('wheel') },
   { icon: '🏅', en: 'Scoreboard', pt: 'Placar', open: () => LiveTools.openTool('scoreboard') },
