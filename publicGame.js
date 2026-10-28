@@ -30,6 +30,7 @@ const PUBLIC_GAME_WORKSPACE = 'public_game';
 const PUBLIC_GAMES = {
   colors:   { emoji: '🎨', title: 'Colors',        pt: 'Cores',                 open: () => openColorsGame() },
   abc:      { emoji: '🔤', title: 'ABC',           pt: 'O alfabeto',            open: () => openAlphabetGame() },
+  maze:     { emoji: '🟡', title: 'Maze Muncher',  pt: 'Labirinto come-come',   open: () => openMazeGame() },
   backpack: { emoji: '🎒', title: 'School Objects', pt: 'Objetos da escola',     open: () => openBackpackGame() },
   house:    { emoji: '🏠', title: 'My House',      pt: 'As partes da casa',     open: () => openHouseGame() },
   animals:  { emoji: '🦁', title: 'Animals',       pt: 'Animais',               open: () => openAnimalGame() },

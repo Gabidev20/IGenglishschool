@@ -110,6 +110,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-maze>
+        <span class="gamemaker-ready-art ab-art">🟡</span>
+        <span class="gamemaker-ready-text">
+          <b>🟡 Maze Muncher</b>
+          <small>Um come-come no labirinto: cada criança escolhe o avatar (dinosaur, monkey, butterfly, Pac-Man, frog) e você escolhe a comida — moedas, frutas, legumes, letras, números, cores, doces. A palavra é falada quando é comida. Dá para jogar 2 ao mesmo tempo.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-alphabet>
         <span class="gamemaker-ready-art ab-art"><b style="color:#e5484d">A</b><b style="color:#3d7bd9">B</b><b style="color:#3fae5a">C</b></span>
         <span class="gamemaker-ready-text">
@@ -137,6 +145,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
   container.querySelectorAll('[data-open-body]').forEach(btn => btn.addEventListener('click', openBodyGame));
   container.querySelectorAll('[data-open-alphabet]').forEach(btn => btn.addEventListener('click', openAlphabetGame));
+  container.querySelectorAll('[data-open-maze]').forEach(btn => btn.addEventListener('click', openMazeGame));
 }
 
 // ---------------------------------------------------------------------------

@@ -9711,3 +9711,66 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .lo-ix-fill.is-active { fill: rgba(255, 214, 90, .45) !important; stroke: #e0334c !important; stroke-width: .7; stroke-dasharray: none; }
 
 .lo-ix-txt.is-live { fill: #2e2b2e; }
+
+/* ==========================================================================
+   🟡 Maze Muncher (mazeGame.js)
+   ========================================================================== */
+.mz-setup { display: flex; flex-direction: column; gap: 12px; }
+.mz-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mz-row-label { min-width: 84px; font-family: var(--font-display); font-weight: 800; color: var(--pc, var(--ink)); }
+.mz-opts { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+.mz-opt {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 78px; padding: 8px 10px;
+  border: 3px solid var(--border); border-radius: var(--radius-md); background: var(--surface);
+  font-family: inherit; font-weight: 700; color: var(--ink); cursor: pointer; transition: transform .12s ease, border-color .12s ease;
+}
+.mz-opt:hover { transform: translateY(-2px); }
+.mz-opt.on { border-color: var(--pc, var(--primary)); background: color-mix(in srgb, var(--pc, var(--primary)) 12%, var(--surface)); }
+.mz-opt small { font-size: .78rem; }
+.mz-opt .mz-pt { font-weight: 600; color: var(--ink-faint); font-size: .7rem; }
+.mz-opt--wide { flex-direction: row; min-width: 0; padding: 8px 14px; }
+.mz-av-img { width: 40px; height: 40px; display: block; }
+.mz-start { align-self: center; font-size: 1.15rem; padding: 12px 34px; }
+.mz-keys { text-align: center; color: var(--ink-soft); font-size: .88rem; margin: 0; }
+
+.mz-game { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.mz-scores { display: flex; align-items: center; gap: 12px; width: 100%; flex-wrap: wrap; }
+.mz-score {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 6px; border-radius: 999px;
+  background: color-mix(in srgb, var(--pc) 14%, var(--surface)); border: 3px solid var(--pc);
+}
+.mz-score .mz-av-img { width: 32px; height: 32px; }
+.mz-score b { font-family: var(--font-display); font-size: 1.5rem; color: var(--pc); min-width: 1.5ch; text-align: center; }
+.mz-score.big .mz-av-img { width: 52px; height: 52px; }
+.mz-score.big b { font-size: 2.4rem; }
+.mz-score.win { box-shadow: 0 0 0 4px #ffd166; }
+.mz-left { margin-left: auto; font-weight: 800; color: var(--ink-soft); }
+.mz-said { min-height: 2.2rem; font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; line-height: 1; display: flex; align-items: center; }
+.mz-said span { display: inline-flex; align-items: center; gap: 8px; }
+.mz-said.pop span { animation: fe-pop .4s cubic-bezier(.3,1.6,.6,1); }
+.mz-said-img { width: 34px; height: 34px; }
+.mz-canvas { display: block; border-radius: 12px; box-shadow: var(--shadow-md); touch-action: none; max-width: 100%; }
+
+.mz-pads { display: flex; justify-content: center; gap: 40px; width: 100%; }
+.mz-pads.two { justify-content: space-between; max-width: 760px; }
+.mz-pad {
+  display: grid; grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(3, 44px); gap: 4px;
+  grid-template-areas: ". up ." "left mid right" ". down .";
+}
+.mz-pad button {
+  border: none; border-radius: 12px; background: var(--pc); color: #fff; font-size: 1.2rem; cursor: pointer;
+  touch-action: none; user-select: none; box-shadow: 0 3px 0 color-mix(in srgb, var(--pc) 60%, #000);
+}
+.mz-pad button:active { transform: translateY(2px); box-shadow: none; }
+.mz-pad-up { grid-area: up; } .mz-pad-left { grid-area: left; } .mz-pad-right { grid-area: right; } .mz-pad-down { grid-area: down; }
+.mz-pad-mid { grid-area: mid; display: flex; align-items: center; justify-content: center; }
+.mz-pad-mid .mz-av-img { width: 32px; height: 32px; }
+
+.mz-end { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(16, 26, 58, .55); border-radius: 12px; }
+.mz-end-card { background: var(--surface); border-radius: var(--radius-lg); padding: 22px 28px; text-align: center; box-shadow: var(--shadow-lg); }
+.mz-end-title { font-family: var(--font-display); font-weight: 900; font-size: 2rem; margin: 0 0 12px; }
+.mz-end-scores { display: flex; gap: 14px; justify-content: center; margin-bottom: 16px; }
+@media (max-width: 560px) {
+  .mz-pad { grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 38px); }
+  .mz-pads.two { gap: 8px; }
+}

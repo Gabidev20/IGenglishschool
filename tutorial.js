@@ -248,7 +248,7 @@ const StudentTour = (() => {
       html: tuSay('<p>Depois de cada aula, a teacher pode deixar aqui uma <b>revisão com cartões</b> do que foi visto. É ótimo fazer no dia seguinte, rapidinho.</p>',
         '<p>After each class, your teacher can leave <b>flashcards</b> here with what you studied. Do it the next day: it is quick!</p>'),
     });
-    const pictures = ['colors', 'alphabet', 'feelings', 'weather', 'body', 'animals', 'instruments', 'house', 'prepositions', 'backpack'].filter(g => has(T(g)));
+    const pictures = ['colors', 'alphabet', 'maze', 'feelings', 'weather', 'body', 'animals', 'instruments', 'house', 'prepositions', 'backpack'].filter(g => has(T(g)));
     if (pictures.length) list.push({
       target: { all: pictures.map(T).join(', ') }, icon: '🎨', title: tuSay('Jogos com figuras', 'Picture games'),
       html: tuSay(`<p>Jogos de <b>tocar, arrastar e ouvir</b>: cores, alfabeto, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler.</p>
