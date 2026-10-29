@@ -162,7 +162,54 @@
     list(['✅  I can say “I would like…”.', '✅  I can ask “Would you…?” politely.', '✅  I can offer help: “Shall I…?”', '✅  I can suggest: “Shall we…?”'], 210, 40, true),
     T(70, 600, 1140, 'Homework (optional): write 3 sentences with would and 3 questions with shall. 💜', 30, '#faefc2')]));
 
+  // ---- A or AN? School objects game (Teles: slow pace, one idea per slide, games) ----
+  const ag = [];
+  const fx = '#2e2b2e';
+  const big = (x, y, w, emoji, label, color) => [R(x, y, w, 360, '#ffffff', { stroke: color || '#8e6d86', sw: 6 }),
+    T(x, y + 30, w, emoji, 130, fx, { al: 'center' }), T(x, y + 220, w, label, 52, color || '#8e6d86', { b: true, al: 'center' })];
+  const lvl = (t, c) => [R(980, 36, 250, 48, c || '#f05d77'), T(980, 43, 250, t, 24, '#ffffff', { b: true, al: 'center' })];
+  ag.push(slide('dark', [tag('The School Objects Game', true), T(70, 150, 1140, 'A  or  AN ?', 150, '#ffffff', { b: true }),
+    T(70, 380, 1140, '🎒 ✏️ 📏 🍎 ☂️', 90, '#ffffff'), T(70, 520, 1140, 'Hi, Teles! Ready to play? 🎮', 48, '#faefc2')]));
+  ag.push(slide('cream', [tag('Our game map'), title('Today we play 5 steps 🗺️'),
+    T(90, 200, 1100, '⭐ Step 1:  Meet  A  and  AN\n⭐ Step 2:  Level 1 — A words\n⭐ Step 3:  Level 2 — AN words\n⭐ Step 4:  Games! 🎮\n⭐ Step 5:  Treasure hunt + prize 🏆', 42),
+    T(70, 640, 1140, 'We go slowly. One step at a time. 💜', 30, '#8e6d86', { b: true })]));
+  ag.push(slide('rose', [tag('Step 1 · Meet A and AN'), ...lvl('Step 1'), title('A and AN mean “one”'),
+    ...card(200, 130, '🇧🇷  a / an = um / uma', 40), ...card(350, 230, '“a book”  =  one book 📘\n“an apple”  =  one apple 🍎', 44)]));
+  ag.push(slide('cream', [tag('Step 1 · The secret rule'), ...lvl('Step 1'), title('The secret rule 🔑'),
+    R(70, 200, 540, 380, '#ffd6e0', { stroke: '#f05d77', sw: 6 }), T(70, 225, 540, 'AN 🅰️', 70, '#f05d77', { b: true, al: 'center' }),
+    T(70, 340, 540, 'A   E   I   O   U', 62, fx, { b: true, al: 'center' }), T(90, 460, 500, 'Vowels → AN', 36, fx, { al: 'center' }),
+    R(670, 200, 540, 380, '#d6e4ff', { stroke: '#3d8bd9', sw: 6 }), T(670, 225, 540, 'A 🅱️', 70, '#3d8bd9', { b: true, al: 'center' }),
+    T(670, 340, 540, 'B C D F G…', 62, fx, { b: true, al: 'center' }), T(690, 460, 500, 'All other letters → A', 34, fx, { al: 'center' })]));
+  ag.push(slide('cream', [tag('Level 1 · A words'), ...lvl('Level 1', '#3d8bd9'), title('A … (say it with me!) 🗣️'),
+    ...big(70, 200, 360, '📘', 'a book', '#3d8bd9'), ...big(460, 200, 360, '🖊️', 'a pen', '#3d8bd9'), ...big(850, 200, 360, '✏️', 'a pencil', '#3d8bd9')]));
+  ag.push(slide('cream', [tag('Level 1 · A words'), ...lvl('Level 1', '#3d8bd9'), title('A … (one more time!) 🗣️'),
+    ...big(70, 200, 360, '📏', 'a ruler', '#3d8bd9'), ...big(460, 200, 360, '🎒', 'a bag', '#3d8bd9'), ...big(850, 200, 360, '🕐', 'a clock', '#3d8bd9')]));
+  ag.push(slide('rose', [tag('Level 2 · AN words'), ...lvl('Level 2', '#f05d77'), title('AN … (say it with me!) 🗣️'),
+    ...big(70, 200, 360, '🧽', 'an eraser', '#f05d77'), ...big(460, 200, 360, '🍎', 'an apple', '#f05d77'), ...big(850, 200, 360, '🍊', 'an orange', '#f05d77')]));
+  ag.push(slide('rose', [tag('Level 2 · AN words'), ...lvl('Level 2', '#f05d77'), title('AN … (one more time!) 🗣️'),
+    ...big(70, 200, 360, '☂️', 'an umbrella', '#f05d77'), ...big(460, 200, 360, '📕🇺🇸', 'an English book', '#f05d77'), ...big(850, 200, 360, '⭐', 'Level 2 done!', '#5cad5a')]));
+  ag.push(slide('dark', [tag('Brain break', true), T(70, 200, 1140, 'Breathe 🌈', 110, '#ffffff', { b: true }),
+    T(70, 380, 1140, 'In… 1 2 3\nOut… 1 2 3', 56, '#faefc2'), T(70, 590, 1140, 'Take your time. When you are ready, we play! 🎮', 34, '#ffffff')]));
+  ag.push(slide('cream', [tag('Game 1 · Magic doors'), ...lvl('Game 1', '#5cad5a'), title('Choose the magic door 🚪'),
+    R(70, 190, 200, 70, '#d6e4ff', { stroke: '#3d8bd9', sw: 5 }), T(70, 203, 200, 'A', 40, '#3d8bd9', { b: true, al: 'center' }),
+    R(300, 190, 200, 70, '#ffd6e0', { stroke: '#f05d77', sw: 5 }), T(300, 203, 200, 'AN', 40, '#f05d77', { b: true, al: 'center' }),
+    T(90, 300, 1100, ['1.  🎒  ____ bag', '2.  🍎  ____ apple', '3.  🪑  ____ chair', '4.  ☂️  ____ umbrella', '5.  🍊  ____ orange', '6.  🖥️  ____ desk'].join('\n'), 42)]));
+  ag.push(slide('rose', [tag('Game 2 · Missing word'), ...lvl('Game 2', '#5cad5a'), title('Fill in: a or an? ✏️'),
+    T(90, 200, 1100, ['1.  It is ____ ruler.', '2.  It is ____ eraser.', '3.  I have ____ notebook.', '4.  I have ____ English book.', '5.  This is ____ clock.'].join('\n'), 44)]));
+  const sortItems = ['📘 book', '🧽 eraser', '🖊️ pen', '🍎 apple', '📏 ruler', '🍊 orange', '☂️ umbrella', '🎒 bag'];
+  ag.push(slide('cream', [tag('Game 3 · Sort it!'), ...lvl('Game 3', '#5cad5a'), title('Drag each object to its box 🧺'),
+    R(70, 170, 560, 270, '#d6e4ff', { stroke: '#3d8bd9', sw: 6 }), T(70, 180, 560, 'A 🅱️', 50, '#3d8bd9', { b: true, al: 'center' }),
+    R(650, 170, 560, 270, '#ffd6e0', { stroke: '#f05d77', sw: 6 }), T(650, 180, 560, 'AN 🅰️', 50, '#f05d77', { b: true, al: 'center' }),
+    ...sortItems.map((w, i) => T(70 + (i % 4) * 300, 500 + Math.floor(i / 4) * 100, 280, w, 38, fx, { b: true }))]));
+  ag.push(slide('rose', [tag('Final mission'), ...lvl('Treasure hunt', '#f6cf3a'), title('Treasure hunt 🔍'),
+    T(90, 200, 1100, 'Find it in the room. Touch it. Say it!\n\n☐  a pen        “It’s a pen.”\n☐  an eraser    “It’s an eraser.”\n☐  a book       “It’s a book.”\n☐  a bag        “It’s a bag.”', 40)]));
+  ag.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
+    T(70, 190, 1140, 'Game 1:  1 a · 2 an · 3 a · 4 an · 5 an · 6 a\nGame 2:  1 a · 2 an · 3 a · 4 an · 5 a\nGame 3:  A → book, pen, ruler, bag\n              AN → eraser, apple, orange, umbrella', 36)]));
+  ag.push(slide('dark', [tag('You won!', true), T(70, 150, 1140, '🏆', 150, '#ffffff', { al: 'center' }), T(70, 360, 1140, 'Teles is the A / AN Champion!', 64, '#ffffff', { b: true, al: 'center' }),
+    T(70, 500, 1140, '⭐ ⭐ ⭐', 90, '#faefc2', { al: 'center' }), T(70, 640, 1140, 'Great job! See you next game! 💜', 34, '#faefc2', { al: 'center' })]));
+
   window.SLIDES_MODELOS = [
+    { id: 'a-an-teles', title: 'A or AN? School Objects Game — Teles', slides: ag },
     { id: 'would-shall-heloize', title: 'Would & Shall (iniciante) — Heloize', slides: mv },
     { id: 'touch-katseye', title: 'Touch (KATSEYE) — 30 min', slides },
     { id: 'weather-guaratuba-s1', title: 'Weather Forecast — Guaratuba (Student 1)', slides: wf },
