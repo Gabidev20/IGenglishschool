@@ -10115,3 +10115,9 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .sd-credits { margin-top: 12px; font-size: .75rem; color: var(--ink-faint); text-align: center; }
 .sd-credits summary { cursor: pointer; }
 .sd-credits p { margin: 4px 0 0; }
+
+/* The student's coursebook picker in the link window (studentAccess.js). */
+.sa-material { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0 4px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.sa-material span { flex: 1 1 260px; font-size: 0.88rem; }
+.sa-material small { color: var(--ink-soft); }
+.sa-material select { flex: 0 1 220px; padding: 7px 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font: inherit; background: var(--surface); }

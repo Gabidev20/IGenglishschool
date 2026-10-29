@@ -153,10 +153,19 @@ function activeTab() {
   const tabs = curriculumTabs();
   return tabs.find(t => t.id === activeTierId) || tabs[0];
 }
-const topicShown = t => (typeof igTopicVisibleToTeacher === 'function' ? igTopicVisibleToTeacher(t) : true);
+const topicShown = t => (typeof igTopicVisibleToTeacher === 'function' ? igTopicVisibleToTeacher(t) : true)
+  // With a student selected, other coursebooks than theirs stay out (studentAccess.js).
+  && (typeof saFitsMaterial !== 'function' || typeof getActiveStudent !== 'function' || saFitsMaterial(getActiveStudent(), t));
 
 let activeTierId = curriculumTabs()[0].id;
 let activeLevelFilter = 'all';
+
+// Redraw the grid when the selected student changes (students.js). The first
+// student change happens while this file is still running (initStudents,
+// above), before the grid exists: `var` is hoisted as undefined, so until
+// this line it does nothing.
+var igTopicsReady = true;
+function igRefreshTopicsForStudent() { if (igTopicsReady) renderTopics(); }
 
 function renderLevelTabs() {
   const tabs = curriculumTabs();
@@ -208,6 +217,9 @@ function renderTopics() {
   if (typeof teacherAdultOnly === 'function' && teacherAdultOnly()) {
     cards.sort((a, b) => (b.topic.audience === 'adult') - (a.topic.audience === 'adult'));
   }
+  // The selected student's own coursebook comes first.
+  const material = typeof saMaterialOf === 'function' && typeof getActiveStudent === 'function' ? saMaterialOf(getActiveStudent()) : null;
+  if (material) cards.sort((a, b) => (saBookName(b.topic) === material) - (saBookName(a.topic) === material));
 
   topicsGridEl.innerHTML = cards.map(({ level, topic }) => `
     <button class="topic-card" data-level="${level.id}" data-topic="${topic.id}">
@@ -926,6 +938,15 @@ const ArcadeGames = (() => {
         .filter(t => (t.audience === 'adult' ? grown : true))
         .map(topic => ({ ...topic, levelId: l.id, levelCode: l.code })));
     if (grown) list.sort((a, b) => (b.audience === 'adult') - (a.audience === 'adult'));
+    // The student's coursebook (studentAccess.js): its units first, from any
+    // level; other books' units out.
+    const material = student && typeof saMaterialOf === 'function' ? saMaterialOf(student) : null;
+    if (material) {
+      const mine = LEVELS.flatMap(l => l.topics.filter(t => saBookName(t) === material)
+        .map(topic => ({ ...topic, levelId: l.id, levelCode: l.code })));
+      const rest = list.filter(t => !saBookName(t));
+      return { grown, list: mine.concat(rest) };
+    }
     return { grown, list };
   }
 

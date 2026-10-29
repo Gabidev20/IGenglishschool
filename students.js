@@ -462,6 +462,8 @@ function onActiveStudentChanged() {
   if (typeof refreshSessionDrawerIfOpen === 'function') refreshSessionDrawerIfOpen();
   // The homework panel shows one student at a time, so it follows the switcher.
   if (typeof renderHomework === 'function') renderHomework(document.getElementById('homeworkRoot'));
+  // The curriculum grid follows the student's coursebook (studentAccess.js).
+  if (typeof igRefreshTopicsForStudent === 'function') igRefreshTopicsForStudent();
 }
 
 function selectStudent(id) {

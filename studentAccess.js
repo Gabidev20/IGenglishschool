@@ -80,6 +80,32 @@ function saWrite(studentId, patch) {
 // WHAT EXISTS
 // ---------------------------------------------------------------------------
 const saIsGrammar = topic => Array.isArray(topic.rules) && topic.rules.length > 0;
+
+// THE STUDENT'S MATERIAL — the coursebook the student uses in class
+// ("Own it! 1"), chosen in the link window and saved as `material` on the
+// student's access record (so it also travels to the link). It is a filter:
+// that book's units are on the link even before they are taught, and the
+// units of every other book are left out. No material = as before.
+const saBookName = topic => (topic && topic.book ? String(topic.book).split(' · ')[0].trim() : '');
+function saCoursebooks() {
+  const names = [];
+  (typeof LEVELS !== 'undefined' ? LEVELS : []).forEach(l => l.topics.forEach(t => {
+    const b = saBookName(t);
+    if (b && !names.includes(b)) names.push(b);
+  }));
+  return names.sort((a, b) => a.localeCompare(b));
+}
+function saMaterialOf(student) {
+  const m = student ? saRecord(student.id).material : null;
+  return typeof m === 'string' && m ? m : null;
+}
+// May this topic be offered with this student on screen? Only the other
+// books' units are ruled out.
+function saFitsMaterial(student, topic) {
+  const m = saMaterialOf(student);
+  const b = saBookName(topic);
+  return !m || !b || b === m;
+}
 const saTopicKey = (levelId, topicId) => `t:${levelId}:${topicId}`;
 const saLevelIndex = id => (typeof LEVELS !== 'undefined' ? LEVELS.findIndex(l => l.id === id) : -1);
 
@@ -150,6 +176,7 @@ function saDefaultKeys(student) {
   const grown = typeof igIsGrownup === 'function' && igIsGrownup(student);
   const taught = new Set(saRecord(student.id).taught.concat(window.IG_SHARE_MODE ? [] : saComputeTaught(student)));
   const own = Math.max(0, saLevelIndex(student.levelId));
+  const material = saMaterialOf(student);
   const keys = [];
 
   LEVELS.forEach((l, i) => {
@@ -157,6 +184,9 @@ function saDefaultKeys(student) {
     l.topics.forEach(t => {
       const key = saTopicKey(l.id, t.id);
       if (taught.has(key)) { keys.push(key); return; }
+      // The student's book: every unit, whatever its level. Another book: never.
+      const book = saBookName(t);
+      if (material && book) { if (book === material) keys.push(key); return; }
       if (!inRange) return;
       if (t.audience === 'adult' && !grown) return;
       if (saIsGrammar(t)) return;              // grammar only once it was taught
@@ -243,7 +273,15 @@ function saEditorHTML(student) {
         <h4>📚 O que ${esc(student.name)} pode acessar no link</h4>
         <span class="sa-mode ${saIsCustom(student) ? 'is-custom' : ''}">${saIsCustom(student) ? '✋ escolhido por você' : '⚙️ automático'}</span>
       </div>
-      <p class="sa-lead">No automático o link mostra o vocabulário do nível ${esc((LEVELS[own] || {}).code || '')}
+      <label class="sa-material">
+        <span>📘 <b>Material do aluno</b> <small>(filtro: as unidades deste livro entram no link; as de outros livros saem)</small></span>
+        <select id="saMaterial">
+          <option value="">Nenhum livro (só pelo nível)</option>
+          ${saCoursebooks().map(b => `<option value="${esc(b)}" ${saMaterialOf(student) === b ? 'selected' : ''}>${esc(b)}</option>`).join('')}
+        </select>
+      </label>
+
+      <p class="sa-lead">No automático o link mostra ${saMaterialOf(student) ? `todas as unidades do <b>${esc(saMaterialOf(student))}</b>, ` : ''}o vocabulário do nível ${esc((LEVELS[own] || {}).code || '')}
         ${young ? 'e dos níveis anteriores' : ''} e só a gramática que já apareceu no registro das aulas
         (<span class="sa-tag sa-tag--ok">já dado</span>). Marque ou desmarque para escolher você mesma.</p>
 
@@ -291,6 +329,16 @@ function saWireEditor(root, student, onChange) {
     const mode = ed.querySelector('.sa-mode');
     if (mode) { mode.textContent = '✋ escolhido por você'; mode.classList.add('is-custom'); }
     if (onChange) onChange();
+  });
+  // Picking the material goes back to the automatic choice, which is where
+  // the filter works (a hand-made list stays exactly as the teacher made it).
+  const material = ed.querySelector('#saMaterial');
+  if (material) material.addEventListener('change', () => {
+    saWrite(student.id, { material: material.value || null, custom: null, taught: saComputeTaught(student) });
+    repaint();
+    flash(material.value ? `✅ Material: ${material.value}. O link já mostra as unidades dele.` : '⚙️ Sem livro: o link segue só o nível.');
+    if (onChange) onChange();
+    if (typeof refreshCurriculumForAudience === 'function') refreshCurriculumForAudience();
   });
   const unit = ed.querySelector('#saSpeakUnit');
   if (unit) unit.addEventListener('change', () => {
