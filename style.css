@@ -10121,3 +10121,11 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .sa-material span { flex: 1 1 260px; font-size: 0.88rem; }
 .sa-material small { color: var(--ink-soft); }
 .sa-material select { flex: 0 1 220px; padding: 7px 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font: inherit; background: var(--surface); }
+
+/* "Livro da aula" for a practice book (livroOnline.js openUnits): one button per unit. */
+.lo-units-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+.lo-unit { display: flex; align-items: center; gap: 12px; padding: 12px 14px; text-align: left; border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface); cursor: pointer; transition: border-color .15s ease, transform .15s ease; }
+.lo-unit:hover { border-color: var(--primary); transform: translateY(-1px); }
+.lo-unit-emoji { font-size: 1.6rem; flex: none; }
+.lo-unit b { display: block; font-size: 0.95rem; color: var(--ink); }
+.lo-unit small { display: block; font-size: 0.8rem; color: var(--ink-soft); }
