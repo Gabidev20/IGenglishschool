@@ -113,7 +113,50 @@
   wf.push(slide('dark', [tag('Finish', true), title('You did it! 🌟', true),
     list(['✅  I know my lines.', '✅  I know when to start (the cues).', '✅  Next: say it all again without looking!'], 230, 44, true)]));
 
+  // ---- Modal verbs (should, would, can, could, must, may, might, will) ----
+  const mv = [];
+  const card = (y, h, text, fs) => [R(70, y, 1140, h, '#ffffff'), T(100, y + 14, 1080, text, fs || 32)];
+  mv.push(slide('dark', [tag('Grammar practice', true), T(70, 190, 1140, 'Modal Verbs 💬', 110, '#ffffff', { b: true }),
+    T(70, 350, 1140, 'should · would · can · could · must · may · might · will', 44, '#faefc2'), T(70, 460, 1140, 'Learn it, practice it, use it! ✨', 44, '#ffffff')]));
+  mv.push(slide('cream', [tag('The basics'), title('What are modal verbs?'),
+    ...card(200, 130, '💡 Small helper verbs that show ability, advice, permission, possibility or politeness.'),
+    ...card(350, 260, '✅ Modal + base verb:   She can swim.\n❌ No “-s”:   He should go.  (not “shoulds”)\n❌ No “to”:   I must study.  (not “must to study”)\n❓ Question:   Can you help me?\n🚫 Negative:   You shouldn’t be late.', 30)]));
+  const modal = (name, uses, pt) => mv.push(slide(mv.length % 2 ? 'rose' : 'cream', [tag('Modal verb ' + (mv.length - 1) + ' of 7'), title(name),
+    ...uses.flatMap(([label, ex], i) => [R(70, 190 + i * 150, 1140, 130, '#ffffff'), T(100, 200 + i * 150, 1080, '💡 ' + label + '\n💬 ' + ex, 30)]),
+    T(70, 640, 1140, pt, 28, '#8e6d86', { b: true })]));
+  modal('can / can’t', [['ability (I know how to)', '“I can speak English.”  “She can’t drive.”'], ['permission / requests', '“Can I use your pen?”  “Can you help me?”']], '🇧🇷 poder / saber (fazer) · can’t = não poder / não conseguir');
+  modal('could', [['past ability', '“I could swim when I was five.”'], ['polite request', '“Could you open the window, please?”']], '🇧🇷 conseguia (passado) · poderia (pedido educado)');
+  modal('should / shouldn’t', [['advice (it’s a good idea)', '“You should drink more water.”'], ['advice (it’s a bad idea)', '“You shouldn’t stay up late.”']], '🇧🇷 deveria / não deveria (conselho)');
+  modal('must / have to', [['strong obligation', '“You must wear a seat belt.”  “I have to go to school.”'], ['prohibition', '“You mustn’t touch that!”  (= don’t do it)']], '🇧🇷 precisar / ter que · mustn’t = é proibido');
+  modal('may / might', [['possibility (50%)', '“It might rain today.”  “She may be late.”'], ['formal permission', '“May I come in?”']], '🇧🇷 talvez / pode ser que · may I = posso? (formal)');
+  modal('would', [['polite wish', '“I would like a coffee, please.”  (= I’d like)'], ['imaginary situation', '“If I had a car, I would drive to the beach.”']], '🇧🇷 gostaria / faria (situação imaginária)');
+  modal('will / won’t', [['future decision or promise', '“I will help you.”  “I won’t be late.”'], ['prediction', '“Tomorrow will be sunny.”']], '🇧🇷 vou / irei · won’t = não vou');
+  mv.push(slide('cream', [tag('Summary'), title('Quick chart 📋'),
+    T(80, 190, 1120, 'can  →  ability, permission\ncould  →  past ability, polite request\nshould  →  advice\nmust / have to  →  obligation\nmay / might  →  possibility\nwould  →  polite wish, imagination\nwill  →  future, promise', 38)]));
+
+  mv.push(slide('cream', [tag('Exercise 1 · Fill in the blanks'), title('Word bank 🧩'),
+    ...['can', 'could', 'should', 'must', 'might', 'would'].map((w, i) => [R(70 + i * 190, 200, 170, 64, '#8e6d86'), T(70 + i * 190, 212, 170, w, 30, '#ffffff', { b: true, al: 'center' })]).flat(),
+    T(90, 300, 1100, ['1.  You look tired. You ________ go to bed early.', '2.  I ________ like some water, please.', '3.  When I was little, I ________ not read.', '4.  Look at the clouds! It ________ rain.', '5.  You ________ stop at a red light. It’s the law.', '6.  ________ you help me with my homework?'].join('\n'), 30)]));
+  mv.push(slide('cream', [tag('Exercise 2 · Choose the best option'), title('Circle the right one ⭕'),
+    list(['1.  You (can / should) eat more vegetables. They are healthy.', '2.  (Must / Would) you like some tea?', '3.  I (can’t / mustn’t) find my keys. Can you help?', '4.  It (might / must) be sunny tomorrow, but I’m not sure.', '5.  You (shouldn’t / can’t) be rude to your teacher.'], 200, 32)]));
+  mv.push(slide('cream', [tag('Exercise 3 · Make it correct'), title('Fix the mistake ✏️'),
+    list(['1.  She cans swim very well.', '2.  You should to drink more water.', '3.  Can you to help me, please?', '4.  He musts finish his homework.', '5.  I would like going to the park.'], 200, 34)]));
+  mv.push(slide('rose', [tag('Reading 1 📖'), title('Mia’s busy week'),
+    T(80, 190, 1120, 'Mia has a big test on Friday. She must study every day. Tonight she can’t go out with her friends. Her mom says, “You should sleep early.” Tomorrow Mia might study at the library. She asks her brother, “Could you help me?” He says, “Sure! I can help you after dinner.”', 32),
+    T(80, 470, 1120, 'Answer:\n1. What must Mia do every day?\n2. What should Mia do tonight, says her mom?\n3. Where might Mia study tomorrow?', 28, '#8e6d86', { b: true })]));
+  mv.push(slide('cream', [tag('Reading 2 📖'), title('At the café ☕'),
+    T(80, 190, 1120, 'Waiter:  Good afternoon! What would you like?\nTom:  I’d like a sandwich, please. Can I have orange juice too?\nWaiter:  Of course. You should try our cake. It’s great!\nTom:  Okay, I will take a small piece.\nWaiter:  It might take ten minutes. Is that okay?\nTom:  No problem. Thank you!', 30),
+    T(80, 560, 1120, '🗣️ Practice it with your teacher. Then change the food and drinks!', 28, '#8e6d86', { b: true })]));
+  mv.push(slide('rose', [tag('Speaking 🗣️'), title('Give advice!'),
+    list(['🤕  I have a headache.  →  You should …', '😴  I’m always sleepy in class.  →  You shouldn’t …', '🌧️  It’s raining and I have no umbrella.  →  You could …', '🎂  What would you do with a million dollars?  →  I would …'], 200, 32)]));
+  mv.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
+    T(70, 190, 1140, 'Ex. 1:  1 should · 2 would · 3 could · 4 might · 5 must · 6 Could / Can\nEx. 2:  1 should · 2 Would · 3 can’t · 4 might · 5 shouldn’t\nEx. 3:  1 She can swim · 2 You should drink · 3 Can you help · 4 He must finish · 5 I would like to go\nReading 1:  1 study · 2 sleep early · 3 at the library', 30)]));
+  mv.push(slide('dark', [tag('Wrap-up', true), title('Great job, Heloize! 🌟', true),
+    list(['✅  I know the 7 modal verbs.', '✅  Modal + base verb. No “-s”, no “to”.', '✅  I can give advice and ask politely.'], 230, 42, true),
+    T(70, 560, 1140, 'Homework (optional): write 5 sentences with should, can, would, might and must. 💜', 30, '#faefc2')]));
+
   window.SLIDES_MODELOS = [
+    { id: 'modal-verbs-heloize', title: 'Modal Verbs (should, would, can…) — Heloize', slides: mv },
     { id: 'touch-katseye', title: 'Touch (KATSEYE) — 30 min', slides },
     { id: 'weather-guaratuba-s1', title: 'Weather Forecast — Guaratuba (Student 1)', slides: wf },
   ];
