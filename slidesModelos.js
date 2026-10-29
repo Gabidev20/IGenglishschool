@@ -113,50 +113,57 @@
   wf.push(slide('dark', [tag('Finish', true), title('You did it! 🌟', true),
     list(['✅  I know my lines.', '✅  I know when to start (the cues).', '✅  Next: say it all again without looking!'], 230, 44, true)]));
 
-  // ---- Modal verbs (should, would, can, could, must, may, might, will) ----
+  // ---- Would & Shall (beginner) ----
   const mv = [];
   const card = (y, h, text, fs) => [R(70, y, 1140, h, '#ffffff'), T(100, y + 14, 1080, text, fs || 32)];
-  mv.push(slide('dark', [tag('Grammar practice', true), T(70, 190, 1140, 'Modal Verbs 💬', 110, '#ffffff', { b: true }),
-    T(70, 350, 1140, 'should · would · can · could · must · may · might · will', 44, '#faefc2'), T(70, 460, 1140, 'Learn it, practice it, use it! ✨', 44, '#ffffff')]));
-  mv.push(slide('cream', [tag('The basics'), title('What are modal verbs?'),
-    ...card(200, 130, '💡 Small helper verbs that show ability, advice, permission, possibility or politeness.'),
-    ...card(350, 260, '✅ Modal + base verb:   She can swim.\n❌ No “-s”:   He should go.  (not “shoulds”)\n❌ No “to”:   I must study.  (not “must to study”)\n❓ Question:   Can you help me?\n🚫 Negative:   You shouldn’t be late.', 30)]));
-  const modal = (name, uses, pt) => mv.push(slide(mv.length % 2 ? 'rose' : 'cream', [tag('Modal verb ' + (mv.length - 1) + ' of 7'), title(name),
-    ...uses.flatMap(([label, ex], i) => [R(70, 190 + i * 150, 1140, 130, '#ffffff'), T(100, 200 + i * 150, 1080, '💡 ' + label + '\n💬 ' + ex, 30)]),
+  mv.push(slide('dark', [tag('Grammar practice', true), T(70, 190, 1140, 'WOULD & SHALL 💬', 110, '#ffffff', { b: true }),
+    T(70, 350, 1140, 'Polite words to ask, offer and suggest', 44, '#faefc2'), T(70, 460, 1140, 'Learn it, practice it, use it! ✨', 44, '#ffffff')]));
+  mv.push(slide('cream', [tag('The basics'), title('Would and shall are helper verbs'),
+    ...card(200, 120, '💡 They go before another verb. The verb stays simple.'),
+    ...card(345, 260, '✅  I would like a pizza.\n✅  She would help you.\n✅  Shall I open the door?\n✅  Shall we go?\n❌  No “-s”:  She would helps  ✗', 32)]));
+  const two = (k, name, uses, pt) => mv.push(slide(k % 2 ? 'rose' : 'cream', [tag(name), title(name),
+    ...uses.flatMap(([label, ex], i) => [R(70, 190 + i * 160, 1140, 140, '#ffffff'), T(100, 202 + i * 160, 1080, '💡 ' + label + '\n💬 ' + ex, 30)]),
     T(70, 640, 1140, pt, 28, '#8e6d86', { b: true })]));
-  modal('can / can’t', [['ability (I know how to)', '“I can speak English.”  “She can’t drive.”'], ['permission / requests', '“Can I use your pen?”  “Can you help me?”']], '🇧🇷 poder / saber (fazer) · can’t = não poder / não conseguir');
-  modal('could', [['past ability', '“I could swim when I was five.”'], ['polite request', '“Could you open the window, please?”']], '🇧🇷 conseguia (passado) · poderia (pedido educado)');
-  modal('should / shouldn’t', [['advice (it’s a good idea)', '“You should drink more water.”'], ['advice (it’s a bad idea)', '“You shouldn’t stay up late.”']], '🇧🇷 deveria / não deveria (conselho)');
-  modal('must / have to', [['strong obligation', '“You must wear a seat belt.”  “I have to go to school.”'], ['prohibition', '“You mustn’t touch that!”  (= don’t do it)']], '🇧🇷 precisar / ter que · mustn’t = é proibido');
-  modal('may / might', [['possibility (50%)', '“It might rain today.”  “She may be late.”'], ['formal permission', '“May I come in?”']], '🇧🇷 talvez / pode ser que · may I = posso? (formal)');
-  modal('would', [['polite wish', '“I would like a coffee, please.”  (= I’d like)'], ['imaginary situation', '“If I had a car, I would drive to the beach.”']], '🇧🇷 gostaria / faria (situação imaginária)');
-  modal('will / won’t', [['future decision or promise', '“I will help you.”  “I won’t be late.”'], ['prediction', '“Tomorrow will be sunny.”']], '🇧🇷 vou / irei · won’t = não vou');
-  mv.push(slide('cream', [tag('Summary'), title('Quick chart 📋'),
-    T(80, 190, 1120, 'can  →  ability, permission\ncould  →  past ability, polite request\nshould  →  advice\nmust / have to  →  obligation\nmay / might  →  possibility\nwould  →  polite wish, imagination\nwill  →  future, promise', 38)]));
+  two(1, 'WOULD 1 · “I would like…”', [['a polite way to say what you want', '“I would like a glass of water, please.”\n“I’d like a pizza.”  (I’d = I would)'], ['asking what someone wants', '“Would you like some tea?”   “Yes, please.” / “No, thank you.”']], '🇧🇷 eu gostaria de… · você gostaria de…?');
+  two(2, 'WOULD 2 · polite requests', [['asking for help in a nice way', '“Would you help me, please?”\n“Would you open the door, please?”'], ['answers', '“Sure!”   “Of course.”   “Sorry, I can’t.”']], '🇧🇷 você poderia…? (pedido educado)');
+  two(3, 'WOULD 3 · imagine', [['when we imagine something (with “if”)', '“If I had a dog, I would play with it.”'], ['more examples', '“If I were rich, I would travel.”\n“If it were sunny, we would go to the beach.”']], '🇧🇷 eu faria… / eu iria… (situação imaginária)');
+  mv.push(slide('cream', [tag('Would · summary'), title('Would — how to use it 📋'),
+    T(80, 190, 1120, '➕  I / you / he / she / we / they  would  + verb\n        She would like a cake.\n➖  would not = wouldn’t\n        I wouldn’t go.\n❓  Would + person + verb?\n        Would you like some juice?\n💬  Short answer:  Yes, I would.  /  No, I wouldn’t.', 32)]));
+  two(4, 'SHALL 1 · “Shall I…?”', [['offering to help someone', '“Shall I open the window?”\n“Shall I carry your bag?”'], ['answers', '“Yes, please. Thank you!”   “No, thanks. I’m OK.”']], '🇧🇷 quer que eu…? / devo…? (oferecer ajuda)');
+  two(5, 'SHALL 2 · “Shall we…?”', [['suggesting something to do together', '“Shall we go to the park?”\n“Shall we eat pizza?”'], ['answers', '“Yes, let’s!”   “Good idea!”   “No, let’s not.”']], '🇧🇷 vamos…? / que tal…? (sugestão)');
+  mv.push(slide('cream', [tag('Shall · remember'), title('Shall — 3 important things ⭐'),
+    ...card(200, 90, '1️⃣  We use shall with I and we:  Shall I…?  Shall we…?', 32),
+    ...card(310, 90, '2️⃣  It is mostly for questions (offers and suggestions).', 32),
+    ...card(420, 130, '3️⃣  It sounds polite and a little formal. In everyday American English, people also say “Do you want me to…?” and “Let’s…”.', 30)]));
+  mv.push(slide('rose', [tag('Compare'), title('Would  vs  Shall'),
+    T(80, 190, 1120, 'WOULD  →  “I would like…” (what I want)\n             “Would you…?” (polite question / request)\n             “If I had…, I would…” (imagine)\n\nSHALL  →  “Shall I…?” (I offer help)\n             “Shall we…?” (I suggest something)', 34)]));
 
-  mv.push(slide('cream', [tag('Exercise 1 · Fill in the blanks'), title('Word bank 🧩'),
-    ...['can', 'could', 'should', 'must', 'might', 'would'].map((w, i) => [R(70 + i * 190, 200, 170, 64, '#8e6d86'), T(70 + i * 190, 212, 170, w, 30, '#ffffff', { b: true, al: 'center' })]).flat(),
-    T(90, 300, 1100, ['1.  You look tired. You ________ go to bed early.', '2.  I ________ like some water, please.', '3.  When I was little, I ________ not read.', '4.  Look at the clouds! It ________ rain.', '5.  You ________ stop at a red light. It’s the law.', '6.  ________ you help me with my homework?'].join('\n'), 30)]));
-  mv.push(slide('cream', [tag('Exercise 2 · Choose the best option'), title('Circle the right one ⭕'),
-    list(['1.  You (can / should) eat more vegetables. They are healthy.', '2.  (Must / Would) you like some tea?', '3.  I (can’t / mustn’t) find my keys. Can you help?', '4.  It (might / must) be sunny tomorrow, but I’m not sure.', '5.  You (shouldn’t / can’t) be rude to your teacher.'], 200, 32)]));
-  mv.push(slide('cream', [tag('Exercise 3 · Make it correct'), title('Fix the mistake ✏️'),
-    list(['1.  She cans swim very well.', '2.  You should to drink more water.', '3.  Can you to help me, please?', '4.  He musts finish his homework.', '5.  I would like going to the park.'], 200, 34)]));
-  mv.push(slide('rose', [tag('Reading 1 📖'), title('Mia’s busy week'),
-    T(80, 190, 1120, 'Mia has a big test on Friday. She must study every day. Tonight she can’t go out with her friends. Her mom says, “You should sleep early.” Tomorrow Mia might study at the library. She asks her brother, “Could you help me?” He says, “Sure! I can help you after dinner.”', 32),
-    T(80, 470, 1120, 'Answer:\n1. What must Mia do every day?\n2. What should Mia do tonight, says her mom?\n3. Where might Mia study tomorrow?', 28, '#8e6d86', { b: true })]));
-  mv.push(slide('cream', [tag('Reading 2 📖'), title('At the café ☕'),
-    T(80, 190, 1120, 'Waiter:  Good afternoon! What would you like?\nTom:  I’d like a sandwich, please. Can I have orange juice too?\nWaiter:  Of course. You should try our cake. It’s great!\nTom:  Okay, I will take a small piece.\nWaiter:  It might take ten minutes. Is that okay?\nTom:  No problem. Thank you!', 30),
-    T(80, 560, 1120, '🗣️ Practice it with your teacher. Then change the food and drinks!', 28, '#8e6d86', { b: true })]));
-  mv.push(slide('rose', [tag('Speaking 🗣️'), title('Give advice!'),
-    list(['🤕  I have a headache.  →  You should …', '😴  I’m always sleepy in class.  →  You shouldn’t …', '🌧️  It’s raining and I have no umbrella.  →  You could …', '🎂  What would you do with a million dollars?  →  I would …'], 200, 32)]));
+  mv.push(slide('cream', [tag('Exercise 1 · Fill in the blanks'), title('would  or  shall? 🧩'),
+    ...['would', 'shall'].map((w, i) => [R(70 + i * 240, 195, 210, 64, '#8e6d86'), T(70 + i * 240, 207, 210, w, 32, '#ffffff', { b: true, al: 'center' })]).flat(),
+    T(90, 290, 1100, ['1.  I ________ like a pizza, please.', '2.  ________ I open the window?', '3.  ________ we go to the park?', '4.  ________ you like some water?', '5.  If I had a cat, I ________ play with it.', '6.  It’s hot. ________ I turn on the fan?'].join('\n'), 32)]));
+  mv.push(slide('cream', [tag('Exercise 2 · Choose'), title('Circle the right one ⭕'),
+    list(['1.  (Would / Shall) we play a game?', '2.  I (would / shall) like an ice cream.', '3.  (Shall / Would) you like tea or coffee?', '4.  (Would / Shall) I help you with your bag?', '5.  If I had a car, I (would / shall) drive to the beach.'], 200, 34)]));
+  mv.push(slide('cream', [tag('Exercise 3 · Order the words'), title('Make the sentence ✏️'),
+    list(['1.  like / I / a / would / sandwich', '2.  we / Shall / eat / now / ?', '3.  you / Would / some / like / milk / ?', '4.  I / Shall / the / open / door / ?'], 210, 36)]));
+  mv.push(slide('cream', [tag('Exercise 4 · Match'), title('Question  →  Answer 🔗'),
+    T(80, 190, 600, '1.  Shall I carry your bag?\n2.  Shall we dance?\n3.  Would you like some cake?\n4.  Would you open the door, please?', 30),
+    T(700, 190, 500, 'a)  Yes, please. Thank you!\nb)  Yes, let’s!\nc)  Yes, I would.\nd)  Sure!', 30)]));
+  mv.push(slide('rose', [tag('Reading 1 📖'), title('Sara’s birthday'),
+    T(80, 190, 1120, 'Today is Sara’s birthday. She would like a chocolate cake. Her friend Ben says, “Shall I buy the cake?” Sara says, “Yes, please!” Then Ben asks, “Shall we invite Lia?” “Yes, let’s!” says Sara. “If I had a big house, I would have a big party.”', 32),
+    T(80, 470, 1120, 'Answer:\n1. What would Sara like?\n2. What does Ben ask first?\n3. Who shall they invite?', 28, '#8e6d86', { b: true })]));
+  mv.push(slide('cream', [tag('Reading 2 📖'), title('At the store 🎒'),
+    T(80, 190, 1120, 'Clerk:  Hello! Would you like some help?\nAna:  Yes, please. I would like a blue backpack.\nClerk:  Shall I show you this one?\nAna:  Yes, please. It’s nice!\nClerk:  Would you like a bag for it?\nAna:  No, thank you.', 30),
+    T(80, 560, 1120, '🗣️ Read it with your teacher. Then change the things you buy!', 28, '#8e6d86', { b: true })]));
+  mv.push(slide('rose', [tag('Speaking 🗣️'), title('Your turn!'),
+    list(['☕  Offer help:  “Shall I …?”', '🌳  Suggest a plan to a friend:  “Shall we …?”', '🍕  Order food:  “I would like …”', '🎁  Imagine:  “If I had a million dollars, I would …”'], 200, 34)]));
   mv.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
-    T(70, 190, 1140, 'Ex. 1:  1 should · 2 would · 3 could · 4 might · 5 must · 6 Could / Can\nEx. 2:  1 should · 2 Would · 3 can’t · 4 might · 5 shouldn’t\nEx. 3:  1 She can swim · 2 You should drink · 3 Can you help · 4 He must finish · 5 I would like to go\nReading 1:  1 study · 2 sleep early · 3 at the library', 30)]));
+    T(70, 190, 1140, 'Ex. 1:  1 would · 2 Shall · 3 Shall · 4 Would · 5 would · 6 Shall\nEx. 2:  1 Shall · 2 would · 3 Would · 4 Shall · 5 would\nEx. 3:  1 I would like a sandwich. · 2 Shall we eat now? · 3 Would you like some milk? · 4 Shall I open the door?\nEx. 4:  1a · 2b · 3c · 4d\nReading 1:  1 a chocolate cake · 2 “Shall I buy the cake?” · 3 Lia', 30)]));
   mv.push(slide('dark', [tag('Wrap-up', true), title('Great job, Heloize! 🌟', true),
-    list(['✅  I know the 7 modal verbs.', '✅  Modal + base verb. No “-s”, no “to”.', '✅  I can give advice and ask politely.'], 230, 42, true),
-    T(70, 560, 1140, 'Homework (optional): write 5 sentences with should, can, would, might and must. 💜', 30, '#faefc2')]));
+    list(['✅  I can say “I would like…”.', '✅  I can ask “Would you…?” politely.', '✅  I can offer help: “Shall I…?”', '✅  I can suggest: “Shall we…?”'], 210, 40, true),
+    T(70, 600, 1140, 'Homework (optional): write 3 sentences with would and 3 questions with shall. 💜', 30, '#faefc2')]));
 
   window.SLIDES_MODELOS = [
-    { id: 'modal-verbs-heloize', title: 'Modal Verbs (should, would, can…) — Heloize', slides: mv },
+    { id: 'would-shall-heloize', title: 'Would & Shall (iniciante) — Heloize', slides: mv },
     { id: 'touch-katseye', title: 'Touch (KATSEYE) — 30 min', slides },
     { id: 'weather-guaratuba-s1', title: 'Weather Forecast — Guaratuba (Student 1)', slides: wf },
   ];
