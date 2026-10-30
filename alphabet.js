@@ -14,35 +14,48 @@
 
 const AB_COLORS_LIST = ['#e5484d', '#f08a24', '#e0a800', '#3fae5a', '#3d7bd9', '#8e5fc2', '#f05d77', '#14a3a3'];
 
-// [letter, what the voice reads, what the microphone may hear for it]
+// [letter, what the voice reads, what the microphone may write for it —
+// speech engines spell a lone letter many ways, and accents add more]
 const AB_LETTERS = [
-  ['A', 'ay', ['a', 'ay', 'eh', 'hey', 'hay']],
-  ['B', 'bee', ['b', 'be', 'bee']],
-  ['C', 'see', ['c', 'see', 'sea', 'si']],
-  ['D', 'dee', ['d', 'dee', 'di']],
-  ['E', 'E', ['e', 'ee', 'he']],
-  ['F', 'F', ['f', 'eff', 'ef', 'if']],
-  ['G', 'gee', ['g', 'gee', 'ji', 'jee']],
-  ['H', 'aitch', ['h', 'aitch', 'age', 'each', 'eight']],
-  ['I', 'eye', ['i', 'eye', 'aye', 'hi']],
-  ['J', 'jay', ['j', 'jay', 'jei']],
-  ['K', 'kay', ['k', 'kay', 'okay', 'ok', 'cay', 'kei']],
-  ['L', 'L', ['l', 'el', 'ell', 'elle']],
-  ['M', 'M', ['m', 'em', 'am']],
-  ['N', 'N', ['n', 'en', 'and', 'in']],
-  ['O', 'oh', ['o', 'oh', 'owe', 'ou']],
-  ['P', 'pee', ['p', 'pee', 'pea', 'pi']],
-  ['Q', 'queue', ['q', 'queue', 'cue', 'kiu', 'cute']],
-  ['R', 'are', ['r', 'are', 'our', 'ar', 'or']],
-  ['S', 'S', ['s', 'ess', 'es', 'yes', 'as']],
+  ['A', 'ay', ['a', 'ay', 'eh', 'hey', 'hay', 'ey', 'ei', 'yay', 'eight', '8', 'ah']],
+  ['B', 'bee', ['b', 'be', 'bee', 'bea', 'bi', 'bey', 'bae']],
+  ['C', 'see', ['c', 'see', 'sea', 'si', 'cee', 'she', 'seat']],
+  ['D', 'dee', ['d', 'dee', 'de', 'di', 'the', 'dean']],
+  ['E', 'E', ['e', 'ee', 'he', 'ii', 'yi', 'eat']],
+  ['F', 'F', ['f', 'eff', 'ef', 'if', 'half']],
+  ['G', 'gee', ['g', 'gee', 'ji', 'jee', 'gi', 'jean']],
+  ['H', 'aitch', ['h', 'aitch', 'age', 'each', 'itch', 'hatch', 'edge', 'eich']],
+  ['I', 'eye', ['i', 'eye', 'aye', 'hi', 'ai', 'high']],
+  ['J', 'jay', ['j', 'jay', 'jei', 'jade', 'gay']],
+  ['K', 'kay', ['k', 'kay', 'okay', 'ok', 'cay', 'kei', 'kate', 'cake']],
+  ['L', 'L', ['l', 'el', 'ell', 'elle', 'al', 'hell']],
+  ['M', 'M', ['m', 'em', 'am', 'um', 'him']],
+  ['N', 'N', ['n', 'en', 'and', 'in', 'an', 'end']],
+  ['O', 'oh', ['o', 'oh', 'owe', 'ou', 'ow']],
+  ['P', 'pee', ['p', 'pee', 'pea', 'pi', 'pe']],
+  ['Q', 'queue', ['q', 'queue', 'cue', 'kiu', 'cute', 'que', 'kew', 'cu', 'kyu']],
+  ['R', 'are', ['r', 'are', 'our', 'ar', 'or', 'hour']],
+  ['S', 'S', ['s', 'ess', 'es', 'yes', 'as', 'is']],
   ['T', 'tea', ['t', 'tea', 'tee', 'ti']],
-  ['U', 'you', ['u', 'you', 'yu', 'yo']],
+  ['U', 'you', ['u', 'you', 'yu', 'yo', 'ew', 'yoo']],
   ['V', 'vee', ['v', 'vee', 'we', 'vi']],
-  ['W', 'double you', ['w', 'double you', 'double u', 'dabliu', 'double']],
-  ['X', 'X', ['x', 'ex', 'eggs', 'axe', 'ax']],
+  ['W', 'double you', ['w', 'double you', 'double u', 'dabliu', 'double', 'dublin']],
+  ['X', 'X', ['x', 'ex', 'eggs', 'axe', 'ax', 'ecks']],
   ['Y', 'why', ['y', 'why', 'wye', 'wai']],
-  ['Z', 'zee', ['z', 'zee', 'zed']],
+  ['Z', 'zee', ['z', 'zee', 'zed', 'zi']],
 ].map(([letter, say, heard], i) => ({ letter, say, heard, color: AB_COLORS_LIST[i % AB_COLORS_LIST.length] }));
+
+// Is this transcript the letter? "B", "bee.", "the letter b", "uh… be" all
+// count; another letter's name does not.
+function abHeardIs(l, transcript) {
+  let t = String(transcript || '').toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  t = t.replace(/^(the letter|letter|it's|its|it is|is it|this is)\s+/, '').trim();
+  if (!t) return false;
+  const tokens = t.split(' ');
+  const compact = t.replace(/ /g, '');
+  return l.heard.some(w => (w.includes(' ') ? t.includes(w) || compact === w.replace(/ /g, '') : tokens.includes(w)))
+    || compact === l.letter.toLowerCase();
+}
 
 function abSay(text, rate) {
   if (!('speechSynthesis' in window)) return;
@@ -97,7 +110,7 @@ function openAlphabetGame() {
   const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
   const byLetter = x => AB_LETTERS.find(l => l.letter === x);
   let mode = 'tap';
-  let round = 0, stars = 0, target = null, choices = [], locked = false, playing = false;
+  let round = 0, stars = 0, target = null, choices = [], locked = false, playing = false, autoMic = false;
   const ROUNDS = 8;
   const timers = [];
   const later = (fn, ms) => timers.push(setTimeout(() => { if (document.getElementById('abMount')) fn(); }, ms));
@@ -118,6 +131,7 @@ function openAlphabetGame() {
   const starsRow = () => `<div class="cg-stars">${Array.from({ length: ROUNDS }, (_, i) => `<i class="${i < stars ? 'on' : ''}">⭐</i>`).join('')}</div>`;
 
   function finish() {
+    stopListening();
     IGSound.win();
     if (typeof awardProgress === 'function') awardProgress(stars * 2, stars >= ROUNDS - 2 ? 1 : 0);
     mount().innerHTML = `
@@ -196,7 +210,17 @@ function openAlphabetGame() {
   }
 
   // ---- 🎤 say it -----------------------------------------------------------------
+  // Speech engines are poor at a lone letter: they write "bee", "be", "B.",
+  // "the letter b"… and a child's accent adds more. So the microphone keeps
+  // listening for up to 8 seconds, checks every guess WHILE the child is
+  // speaking (interim results, 10 alternatives each) and accepts the first
+  // one that is the letter. The 🔊 and ✅ buttons stop it first: the
+  // letter's own recording must never be heard by the microphone.
+  let listening = null;            // the running listening session, if any
+  function stopListening() { if (listening) { listening.stop(); listening = null; } }
+
   function sayRound() {
+    stopListening();
     if (round >= ROUNDS) { finish(); return; }
     target = shuffle(AB_LETTERS.filter(l => !target || l.letter !== target.letter))[0];
     const canRec = Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
@@ -208,37 +232,69 @@ function openAlphabetGame() {
         ${canRec ? `<button class="cg-big" data-mic aria-label="Speak">🎤</button>` : ''}
         <button class="cg-big cg-big--ok" data-ok aria-label="I said it">✅</button>
       </div>
-      <p class="cg-heard" id="abHeard"></p>`;
+      <p class="cg-heard" id="abHeard">${canRec ? 'Toque no 🎤 e diga a letra' : ''}</p>`;
     let done = false;
+    const status = t => { const el = document.getElementById('abHeard'); if (el) el.innerHTML = t; };
     const good = () => {
       if (done) return;
       done = true;
+      stopListening();
       stars++; round++;
       IGSound.correct();
-      abLetter(target);
-      later(sayRound, 1400);
+      status('⭐ Yes!');
+      // The letter, then the next one — and the microphone opens by itself
+      // (the permission was already given), so the child just keeps going.
+      abLetter(target).then(() => later(sayRound, 500));
     };
-    mount().querySelector('[data-hint]').addEventListener('click', () => abLetter(target));
+    mount().querySelector('[data-hint]').addEventListener('click', () => { stopListening(); paintMic(false); abLetter(target); });
     mount().querySelector('[data-ok]').addEventListener('click', good);
     const mic = mount().querySelector('[data-mic]');
-    if (mic) mic.addEventListener('click', () => {
+    const paintMic = on => { if (mic) mic.classList.toggle('is-recording', on); };
+
+    function listen() {
+      if (done || !mic || !mic.isConnected) return;
+      stopListening();
+      abStopAudio();
       const Ctor = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const rec = new Ctor();
-      rec.lang = 'en-US'; rec.maxAlternatives = 5; rec.interimResults = false;
-      mic.classList.add('is-recording');
-      rec.onresult = e => {
-        const heard = [...e.results[0]].map(r => r.transcript.toLowerCase().replace(/[.,!?]/g, '').trim());
-        const ok = heard.some(h => target.heard.some(w => h === w || h.split(/\s+/).includes(w) || (w.includes(' ') && h.includes(w))));
-        if (ok) { good(); return; }
-        IGSound.wrong();
-        const el = document.getElementById('abHeard');
-        if (el) el.textContent = `🤔 "${heard[0] || '…'}"`;
-        later(() => abLetter(target), 400);
+      const deadline = Date.now() + 8000;
+      let rec = null, stopped = false, best = '';
+      const session = {
+        stop() { stopped = true; paintMic(false); try { rec && rec.abort(); } catch (e) {} },
       };
-      rec.onend = () => mic.classList.remove('is-recording');
-      rec.onerror = () => mic.classList.remove('is-recording');
-      try { rec.start(); } catch (e) { /* busy */ }
-    });
+      listening = session;
+      paintMic(true);
+      status('🎤 Listening… <b>say the letter!</b>');
+      const startOne = () => {
+        if (stopped || done || !mic.isConnected) { paintMic(false); return; }   // closed or next round
+        rec = new Ctor();
+        rec.lang = 'en-US'; rec.maxAlternatives = 10; rec.interimResults = true; rec.continuous = false;
+        rec.onresult = e => {
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const alts = [...e.results[i]].map(r => r.transcript);
+            if (alts[0] && alts[0].trim()) best = alts[0].trim();
+            if (alts.some(t => abHeardIs(target, t))) { good(); return; }
+          }
+        };
+        rec.onerror = ev => {
+          if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+            stopped = true; paintMic(false);
+            status('⚠️ O microfone está bloqueado. Libere o microfone no navegador ou use o ✅.');
+          }
+        };
+        // A pause ends one listening; within the 8 seconds, listen again.
+        rec.onend = () => {
+          if (stopped || done) return;
+          if (Date.now() < deadline) { try { startOne(); } catch (e) { later(startOne, 200); } return; }
+          paintMic(false); listening = null;
+          if (best) { IGSound.wrong(); status(`🤔 Ouvi “${igEscapeHtml(best)}”. Ouça 🔊 e tente de novo!`); }
+          else status('🙉 Não ouvi nada. Toque no 🎤 e fale um pouco mais alto.');
+        };
+        try { rec.start(); } catch (e) { later(startOne, 250); }
+      };
+      startOne();
+    }
+    if (mic) mic.addEventListener('click', () => { autoMic = true; listen(); });
+    if (mic && autoMic) later(listen, 400);
   }
 
   AB_LETTERS.forEach(l => abAudio(l.letter.toLowerCase()));
@@ -247,6 +303,7 @@ function openAlphabetGame() {
   function start(m) {
     stopTimers();
     abStopAudio();
+    stopListening();
     mode = m; round = 0; stars = 0; target = null;
     document.querySelectorAll('.ab .cg-mode').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
     if (m === 'tap') tapPaint();
