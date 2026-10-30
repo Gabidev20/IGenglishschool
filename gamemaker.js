@@ -110,6 +110,46 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-farm>
+        <span class="gamemaker-ready-art ab-art">🐄</span>
+        <span class="gamemaker-ready-text">
+          <b>🐄 Old MacDonald</b>
+          <small>"Who says moo?" — a criança toca no animal certo, ele entra na fazenda e a música canta o verso dele. No fim, a fazenda inteira canta.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-touch>
+        <span class="gamemaker-ready-art ab-art">🎈</span>
+        <span class="gamemaker-ready-text">
+          <b>🎈 Touch it!</b>
+          <small>"Touch the small red star!", "Touch three hearts!" — cores, formas, big/small e números, só ouvindo.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-pizza>
+        <span class="gamemaker-ready-art ab-art">🍕</span>
+        <span class="gamemaker-ready-text">
+          <b>🍕 Pizza Shop</b>
+          <small>"I want a pizza with two tomatoes and cheese, please!" — o pedido é falado e desenhado; a criança monta a pizza.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-sounds>
+        <span class="gamemaker-ready-art ab-art">🔊</span>
+        <span class="gamemaker-ready-text">
+          <b>🔊 Sound Detective</b>
+          <small>Toca um som (cachorro, chuva, tambor, telefone, trem…) e a criança acha a figura. "It's a dog!"</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
+      <button class="gamemaker-ready-card" type="button" data-open-memory>
+        <span class="gamemaker-ready-art ab-art">🧠</span>
+        <span class="gamemaker-ready-text">
+          <b>🧠 Talking Memory</b>
+          <small>Jogo da memória em que um cartão tem a figura e o par só fala 🔊 — o par é achado pelo ouvido.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-jump>
         <span class="gamemaker-ready-art ab-art">🦖</span>
         <span class="gamemaker-ready-text">
@@ -155,6 +195,11 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-alphabet]').forEach(btn => btn.addEventListener('click', openAlphabetGame));
   container.querySelectorAll('[data-open-maze]').forEach(btn => btn.addEventListener('click', openMazeGame));
   container.querySelectorAll('[data-open-jump]').forEach(btn => btn.addEventListener('click', openJumpGame));
+  container.querySelectorAll('[data-open-farm]').forEach(btn => btn.addEventListener('click', openFarmGame));
+  container.querySelectorAll('[data-open-touch]').forEach(btn => btn.addEventListener('click', openTouchGame));
+  container.querySelectorAll('[data-open-pizza]').forEach(btn => btn.addEventListener('click', openShopGame));
+  container.querySelectorAll('[data-open-sounds]').forEach(btn => btn.addEventListener('click', openSoundGame));
+  container.querySelectorAll('[data-open-memory]').forEach(btn => btn.addEventListener('click', openTalkMemoryGame));
 }
 
 // ---------------------------------------------------------------------------

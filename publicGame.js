@@ -30,6 +30,11 @@ const PUBLIC_GAME_WORKSPACE = 'public_game';
 const PUBLIC_GAMES = {
   colors:   { emoji: '🎨', title: 'Colors',        pt: 'Cores',                 open: () => openColorsGame() },
   abc:      { emoji: '🔤', title: 'ABC',           pt: 'O alfabeto',            open: () => openAlphabetGame() },
+  farm:     { emoji: '🐄', title: 'Old MacDonald', pt: 'A fazenda',             open: () => openFarmGame() },
+  touch:    { emoji: '🎈', title: 'Touch it!',     pt: 'Ouça e toque',          open: () => openTouchGame() },
+  pizza:    { emoji: '🍕', title: 'Pizza Shop',    pt: 'Monte a pizza',         open: () => openShopGame() },
+  sounds:   { emoji: '🔊', title: 'Sound Detective', pt: 'Que som é esse?',     open: () => openSoundGame() },
+  memory:   { emoji: '🧠', title: 'Talking Memory', pt: 'Memória que fala',     open: () => openTalkMemoryGame() },
   jump:     { emoji: '🦖', title: 'Jump & Learn',  pt: 'Pule e responda',       open: () => openJumpGame() },
   maze:     { get emoji() { return typeof mzPacIcon === 'function' ? mzPacIcon('pg-pac') : '🟡'; }, title: 'Maze Muncher',  pt: 'Labirinto come-come',   open: () => openMazeGame() },
   backpack: { emoji: '🎒', title: 'School Objects', pt: 'Objetos da escola',     open: () => openBackpackGame() },

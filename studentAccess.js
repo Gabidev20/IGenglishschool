@@ -28,6 +28,11 @@ const SA_READY_GAMES = [
   { id: 'colors', icon: '🎨', label: 'Colors' },
   { id: 'alphabet', icon: '🔤', label: 'ABC — Alphabet' },
   { id: 'jump', icon: '🦖', label: 'Jump & Learn' },
+  { id: 'farm', icon: '🐄', label: 'Old MacDonald' },
+  { id: 'touch', icon: '🎈', label: 'Touch it!' },
+  { id: 'pizza', icon: '🍕', label: 'Pizza Shop' },
+  { id: 'sounds', icon: '🔊', label: 'Sound Detective' },
+  { id: 'memory', icon: '🧠', label: 'Talking Memory' },
   { id: 'maze', icon: typeof mzPacIcon === 'function' ? mzPacIcon('sa-pac') : '🟡', label: 'Maze Muncher' },
   { id: 'feelings', icon: '😊', label: 'Feelings' },
   { id: 'weather', icon: '🌦️', label: 'Weather' },
@@ -245,7 +250,7 @@ function saEditorHTML(student) {
 
       ${young || prof === 'writer' ? `
         <p class="sa-group-label">🎮 Jogos com figuras</p>
-        <div class="sa-grid">${SA_READY_GAMES.filter(g => young || g.id === 'alphabet' || g.id === 'drawing' || g.id === 'maze' || g.id === 'jump').map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
+        <div class="sa-grid">${SA_READY_GAMES.map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
 
       ${practice.length ? `
         <p class="sa-group-label">⚡ Treinos (Practice / Writing)</p>

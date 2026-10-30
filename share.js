@@ -504,6 +504,11 @@ function renderStudentHome(shell, studentId) {
     colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
     drawing: () => tile('drawing', '🖍️', 'Drawing Challenge', 'Desenho surpresa — abra a caixa e desenhe', 'stu-tile--review'),
     alphabet: () => tile('alphabet', '🔤', 'ABC', 'Alfabeto — ouvir e falar as letras'),
+    farm: () => tile('farm', '🐄', 'Old MacDonald', 'A fazenda — quem faz muu?'),
+    touch: () => tile('touch', '🎈', 'Touch it!', 'Ouça e toque — cores, formas, números'),
+    pizza: () => tile('pizza', '🍕', 'Pizza Shop', 'Monte a pizza do pedido'),
+    sounds: () => tile('sounds', '🔊', 'Sound Detective', 'Que som é esse?'),
+    memory: () => tile('memory', '🧠', 'Talking Memory', 'Jogo da memória que fala'),
     jump: () => tile('jump', '🦖', 'Jump & Learn', 'Pule e responda para abrir os portões'),
     maze: () => tile('maze', typeof mzPacIcon === 'function' ? mzPacIcon('stu-pac') : '🟡', 'Maze Muncher', 'Labirinto come-come — sozinho ou com um amigo'),
     backpack: () => tile('backpack', '🎒', 'Backpack', 'Mochila — school objects'),
@@ -530,7 +535,7 @@ function renderStudentHome(shell, studentId) {
   };
   // The picture games are tiles of their own; the teacher can switch each
   // one off in the link window.
-  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body', alphabet: 'alphabet', drawing: 'drawing', maze: 'maze', jump: 'jump' };
+  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body', alphabet: 'alphabet', drawing: 'drawing', maze: 'maze', jump: 'jump', farm: 'farm', touch: 'touch', pizza: 'pizza', sounds: 'sounds', memory: 'memory' };
   // A grown-up's page leads with the skill their teacher said matters most.
   const adultSkills = () => {
     const order = { speaking: ['speaking', 'audio'], listening: ['dictation'], writing: ['write', 'writingPractice'], reading: ['games'], grammar: ['practice'] };
@@ -541,9 +546,9 @@ function renderStudentHome(shell, studentId) {
   };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
-    prereader: ['review', 'colors', 'alphabet', 'maze', 'jump', 'drawing', 'feelings', 'weather', 'body', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
-    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'maze', 'jump', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'audio', 'mistakes'],
-    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'maze', 'jump', 'drawing', 'games', 'mistakes'],
+    prereader: ['review', 'farm', 'touch', 'sounds', 'pizza', 'memory', 'colors', 'alphabet', 'maze', 'jump', 'drawing', 'feelings', 'weather', 'body', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
+    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'maze', 'jump', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'practice', 'dictation', 'speaking', 'write', 'audio', 'mistakes'],
+    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'maze', 'jump', 'drawing', 'games', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
     .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []))
@@ -635,6 +640,11 @@ function renderStudentHome(shell, studentId) {
     alphabet: () => openAlphabetGame(),
     maze: () => openMazeGame(),
     jump: () => openJumpGame(),
+    farm: () => openFarmGame(),
+    touch: () => openTouchGame(),
+    pizza: () => openShopGame(),
+    sounds: () => openSoundGame(),
+    memory: () => openTalkMemoryGame(),
     drawing: () => { if (typeof LiveTools !== 'undefined') LiveTools.openTool('drawing', { solo: true }); },
     manual: () => openStudentManual(student),
     audio: () => { markRepliesSeen(); openChat({ role: 'student', student }); },

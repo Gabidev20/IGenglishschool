@@ -21,6 +21,11 @@ const GS_CLASS_GAMES = [
 // Picture games: made for children, hidden for a teacher of grown-ups only.
 const GS_PICTURE_GAMES = [
   { icon: '🔤', en: 'ABC', pt: 'Alfabeto', open: () => openAlphabetGame() },
+  { icon: '🐄', en: 'Old MacDonald', pt: 'A fazenda', open: () => openFarmGame() },
+  { icon: '🎈', en: 'Touch it!', pt: 'Ouça e toque', open: () => openTouchGame() },
+  { icon: '🍕', en: 'Pizza Shop', pt: 'Monte a pizza', open: () => openShopGame() },
+  { icon: '🔊', en: 'Sound Detective', pt: 'Que som é?', open: () => openSoundGame() },
+  { icon: '🧠', en: 'Talking Memory', pt: 'Memória que fala', open: () => openTalkMemoryGame() },
   { icon: '🎨', en: 'Colors', pt: 'Cores', open: () => openColorsGame() },
   { icon: '🧍', en: 'Body Parts', pt: 'Corpo', open: () => openBodyGame() },
   { icon: '😊', en: 'Feelings', pt: 'Sentimentos', open: () => openFeelingsGame() },
