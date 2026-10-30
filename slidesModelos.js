@@ -190,7 +190,7 @@
     ...big(70, 200, 360, '☂️', 'an umbrella', '#f05d77'), ...big(460, 200, 360, '📕🇺🇸', 'an English book', '#f05d77'), ...big(850, 200, 360, '⭐', 'Level 2 done!', '#5cad5a')]));
   ag.push(slide('dark', [tag('Brain break', true), T(70, 200, 1140, 'Breathe 🌈', 110, '#ffffff', { b: true }),
     T(70, 380, 1140, 'In… 1 2 3\nOut… 1 2 3', 56, '#faefc2'), T(70, 590, 1140, 'Take your time. When you are ready, we play! 🎮', 34, '#ffffff')]));
-  ag.push(slide('cream', [tag('Game 1 · Magic doors'), ...lvl('Game 1', '#5cad5a'), title('Choose the magic door 🚪'),
+  ag.push(slide('cream', [tag('Game 1 · Mystery doors'), ...lvl('Game 1', '#5cad5a'), title('Choose the right door 🚪'),
     R(70, 190, 200, 70, '#d6e4ff', { stroke: '#3d8bd9', sw: 5 }), T(70, 203, 200, 'A', 40, '#3d8bd9', { b: true, al: 'center' }),
     R(300, 190, 200, 70, '#ffd6e0', { stroke: '#f05d77', sw: 5 }), T(300, 203, 200, 'AN', 40, '#f05d77', { b: true, al: 'center' }),
     T(90, 300, 1100, ['1.  🎒  ____ bag', '2.  🍎  ____ apple', '3.  🪑  ____ chair', '4.  ☂️  ____ umbrella', '5.  🍊  ____ orange', '6.  🖥️  ____ desk'].join('\n'), 42)]));

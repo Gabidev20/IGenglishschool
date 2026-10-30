@@ -1943,7 +1943,7 @@ const LEVELS = [
             "id": "october",
             "en": "October",
             "pt": "outubro",
-            "emoji": "🎃"
+            "emoji": "🍁"
           },
           {
             "id": "november",
@@ -6543,7 +6543,7 @@ const LEVELS = [
       {
         "id": "futureforms",
         "title": "Grammar: Will vs Going To",
-        "emoji": "🔮",
+        "emoji": "🚀",
         "description": "Spontaneous decisions vs planned intentions",
         "cefr": "A2",
         "grammarTip": "We use 'going to' + verb for plans we already decided: 'I am going to travel this summer.' We use 'will' + verb for quick decisions we make while speaking: 'It's cold, I will close the window.' A good trick: 'going to' means already planned, and 'will' means decided right now.",
@@ -9230,7 +9230,7 @@ const LEVELS = [
             "id": "wouldverb",
             "en": "would + verb",
             "pt": "would + verbo",
-            "emoji": "🔮"
+            "emoji": "💭"
           },
           {
             "id": "firstconditional",
@@ -10989,7 +10989,7 @@ const LEVELS = [
             "id": "foreshadowing",
             "en": "foreshadowing",
             "pt": "prenúncio",
-            "emoji": "🔮"
+            "emoji": "📖"
           },
           {
             "id": "portrait",

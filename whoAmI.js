@@ -49,7 +49,7 @@ const WAI_QUESTIONS = {
   ],
   person: [
     'Am I a man?', 'Am I a woman?', 'Am I a child?', 'Am I real?', 'Am I alive?', 'Am I famous?',
-    'Am I from a story?', 'Am I a cartoon?', 'Am I good?', 'Am I bad?', 'Can I fly?', 'Can I do magic?',
+    'Am I from a story?', 'Am I a cartoon?', 'Am I good?', 'Am I bad?', 'Can I fly?', 'Am I strong?',
     'Do I live in a castle?', 'Do I live in the forest?', 'Do I have a special object?', 'Am I an animal?',
     'Am I tall?', 'Do I wear a hat?',
   ],
@@ -142,21 +142,23 @@ const WAI_BUILTIN = [
     ],
   },
   {
-    id: 'b-stories', name: 'Story Characters', emoji: '🧚', audience: 'kids', qset: 'person',
+    // Real people, animals and stories only: no magic, fairies, witches or
+    // dragons (the school's choice).
+    id: 'b-stories', name: 'Story Characters', emoji: '📖', audience: 'kids', qset: 'person',
     characters: [
-      { emoji: '👸', name: 'Cinderella', clues: ['I have two bad sisters.', 'A fairy helps me go to a party.', 'I lose a glass slipper at midnight!'] },
-      { emoji: '🍎', name: 'Snow White', clues: ['I live with seven little friends.', 'A bad queen hates me.', 'I eat a poisoned apple!'] },
+      { emoji: '👧', name: 'Goldilocks', clues: ['I go into a house in the forest.', 'I eat the baby bear\'s porridge.', 'I sleep in a little bed and three bears find me!'] },
+      { emoji: '🐷', name: 'the Three Little Pigs', clues: ['We are three brothers.', 'We build houses of straw, sticks and bricks.', 'A big bad wolf wants to blow our houses down!'] },
       { emoji: '🧺', name: 'Little Red Riding Hood', clues: ['I walk in the forest.', 'I visit my grandmother.', 'I wear a red hood and I meet a wolf!'] },
-      { emoji: '🧚', name: 'Peter Pan', clues: ['I never grow up.', 'I have a fairy friend.', 'I can fly and I fight Captain Hook!'] },
-      { emoji: '🤥', name: 'Pinocchio', clues: ['I\'m made of wood.', 'A man called Geppetto made me.', 'My nose grows when I tell a lie!'] },
+      { emoji: '🏹', name: 'Robin Hood', clues: ['I live in the forest.', 'I\'m very good with a bow and arrow.', 'I help the poor people!'] },
+      { emoji: '🐒', name: 'Tarzan', clues: ['I live in the jungle.', 'Gorillas are my family.', 'I swing on long vines!'] },
       { emoji: '🎅', name: 'Santa Claus', clues: ['I live at the North Pole.', 'I have reindeer.', 'I bring presents at Christmas!'] },
       { emoji: '🐰', name: 'the Easter Bunny', clues: ['I come once a year.', 'I have long ears.', 'I bring chocolate eggs!'] },
-      { emoji: '🦷', name: 'the Tooth Fairy', clues: ['I come at night when you sleep.', 'I can fly.', 'I take your tooth and leave money!'] },
-      { emoji: '🐉', name: 'a dragon', clues: ['I\'m very big and I can fly.', 'I live in a cave or a castle.', 'Fire comes out of my mouth!'] },
+      { emoji: '🍪', name: 'the Gingerbread Man', clues: ['I\'m made in the kitchen.', 'I run away from everybody.', '"Run, run, as fast as you can!"'] },
+      { emoji: '🛡️', name: 'a knight', clues: ['I live in a castle.', 'I wear armor.', 'I ride a horse and protect the king!'] },
       { emoji: '🏴‍☠️', name: 'a pirate', clues: ['I live on a ship.', 'I sometimes have a parrot.', 'I look for treasure!'] },
-      { emoji: '🧙‍♀️', name: 'a witch', clues: ['I can do magic.', 'I wear a tall black hat.', 'I fly on a broom!'] },
+      { emoji: '🤴', name: 'a king', clues: ['I live in a castle.', 'I wear a crown.', 'I rule a country!'] },
       { emoji: '🦸', name: 'a superhero', clues: ['I wear a mask or a cape.', 'I have special powers.', 'I save people!'] },
-      { emoji: '🧜‍♀️', name: 'a mermaid', clues: ['I live in the sea.', 'I can sing beautifully.', 'I\'m half girl, half fish!'] },
+      { emoji: '🧑‍🚀', name: 'an astronaut', clues: ['I travel in a rocket.', 'I wear a big white suit.', 'I go to space!'] },
       { emoji: '🐺', name: 'the Big Bad Wolf', clues: ['I live in the forest.', 'I\'m always hungry.', 'I blow down the houses of the three little pigs!'] },
     ],
   },
@@ -569,7 +571,7 @@ function renderWhoAmI(container) {
         <p class="wai-label">Modelos de perguntas <small>(uma por linha, do ponto de vista de quem adivinha: "Am I…?", "Do I…?", "Can I…?")</small></p>
         <div class="wai-qsets">
           Inserir modelo:
-          ${[['animal', '🐾 Animais'], ['person', '🧚 Personagens'], ['famous', '🌟 Famosos'], ['job', '👩‍⚕️ Profissões'], ['food', '🍕 Comida'], ['thing', '🎒 Objetos'], ['place', '🌍 Lugares'], ['general', '❓ Gerais']]
+          ${[['animal', '🐾 Animais'], ['person', '📖 Personagens'], ['famous', '🌟 Famosos'], ['job', '👩‍⚕️ Profissões'], ['food', '🍕 Comida'], ['thing', '🎒 Objetos'], ['place', '🌍 Lugares'], ['general', '❓ Gerais']]
             .map(([k, label]) => `<button type="button" class="wai-chip" data-qset="${k}">${label}</button>`).join('')}
         </div>
         <textarea class="wai-questions" data-f="questions" rows="7">${waiEsc((d.questions || []).join('\n'))}</textarea>

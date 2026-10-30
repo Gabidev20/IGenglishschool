@@ -82,7 +82,7 @@ const RV_EMOJI = {
   run: '🏃', swim: '🏊', jump: '🦘', sing: '🎤', dance: '💃', read: '📖', write: '✍️', sleep: '😴', eat: '🍽️', drink: '🥤',
   play: '🎲', walk: '🚶', fly: '🕊️', climb: '🧗', ride: '🚴', paint: '🎨', draw: '✏️', listen: '👂', talk: '💬',
   big: '🐘', small: '🐭', hot: '🔥', cold: '🥶', fast: '🏎️', slow: '🐢', love: '❤️', yes: '👍', no: '👎',
-  morning: '🌅', night: '🌙', afternoon: '🌤️', today: '📅', week: '🗓️', birthday: '🎂', party: '🎉', christmas: '🎄', halloween: '🎃', easter: '🐣',
+  morning: '🌅', night: '🌙', afternoon: '🌤️', today: '📅', week: '🗓️', birthday: '🎂', party: '🎉', christmas: '🎄', easter: '🐣',
   soccer: '⚽', football: '🏈', basketball: '🏀', tennis: '🎾', music: '🎵', song: '🎶', movie: '🎬', game: '🎮', toy: '🧸',
   circle: '⚪', square: '🟥', triangle: '🔺', star: '⭐', diamond: '🔷',
   'look forward to': '🤗', hello: '👋', goodbye: '👋', please: '🙏', 'thank you': '🙏', sorry: '😔',

@@ -332,7 +332,7 @@ const GameEngine = (() => {
     'good evening': 'You say it when it gets dark, when you arrive.', 'good night': 'You say it when you go to bed.',
     'goodbye': 'You say it when you leave.', 'bye': 'A short way to say goodbye.',
     'see you later': 'You say it when you will see the person again today.', 'see you tomorrow': 'You say it when you will see the person the next day.',
-    'welcome': 'You say it when someone arrives at your house or school.', 'please': 'A magic word when you ask for something.',
+    'welcome': 'You say it when someone arrives at your house or school.', 'please': 'A kind word when you ask for something.',
     'thank you': 'You say it when someone gives you something or helps you.', "you're welcome": 'The answer to "thank you".',
     'sorry': 'You say it when you make a mistake.', 'excuse me': 'You say it to ask for attention or to pass.',
     'yes': 'The opposite of "no".', 'no': 'The opposite of "yes".', 'nice to meet you': 'You say it when you meet someone for the first time.',

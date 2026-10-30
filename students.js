@@ -63,7 +63,7 @@ const DEFAULT_STICKERS = [
   { id: 'trophy', emoji: '🏆', name: 'Champion', threshold: 20 },
   { id: 'rainbow', emoji: '🌈', name: 'Rainbow Star', threshold: 30 },
   { id: 'crown', emoji: '👑', name: 'Word Royalty', threshold: 45 },
-  { id: 'unicorn', emoji: '🦄', name: 'Legendary Learner', threshold: 60 },
+  { id: 'unicorn', emoji: '🦅', name: 'Legendary Learner', threshold: 60 },   // id kept: stickers already won keep counting
   { id: 'diamond', emoji: '💎', name: 'Diamond Mind', threshold: 80 },
   { id: 'medal', emoji: '🥇', name: 'Gold Medalist', threshold: 100 },
 ];
