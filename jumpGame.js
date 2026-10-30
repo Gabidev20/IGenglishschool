@@ -179,8 +179,11 @@ function jlBuildLevel(nGates) {
   return { W, tiles, coins: coins.map(c => ({ ...c, taken: false })), enemies: enemies.map(e => ({ ...e, w: 0.9, h: 0.8, vy: 0, alive: true, squash: 0 })), gates, flagX };
 }
 
-function openJumpGame() {
+// opts.words: play with exactly these words (e.g. the class's mistakes).
+function openJumpGame(opts) {
   const settings = jlLoadSettings();
+  const custom = opts && Array.isArray(opts.words) && opts.words.length >= 3 ? opts.words : null;
+  if (custom) settings.set = 'custom';
   let stopGame = null;
 
   openModal(`
@@ -197,6 +200,7 @@ function openJumpGame() {
   const mount = () => document.getElementById('jlMount');
 
   function wordsFor() {
+    if (settings.set === 'custom' && custom) return custom.map(w => ({ en: w.en, pt: w.pt, emoji: w.emoji, image: w.image }));
     if (settings.set === 'topic') return jlTopicWords(settings.topic);
     const s = JL_SETS.find(x => x.id === settings.set) || JL_SETS[0];
     return s.words();
@@ -227,6 +231,9 @@ function openJumpGame() {
               <button type="button" class="mz-opt${settings.set === s.id ? ' on' : ''}" data-set="${s.id}">
                 ${jlEmojiHTML(s.icon, 'mz-av-img')}<small>${s.en}</small><small class="mz-pt">${s.pt}</small>
               </button>`).join('')}
+            ${custom ? `<button type="button" class="mz-opt${settings.set === 'custom' ? ' on' : ''}" data-set="custom">
+              ${jlEmojiHTML('🔁', 'mz-av-img')}<small>${igEscapeHtml(opts.title || 'My words')}</small><small class="mz-pt">${custom.length} palavras</small>
+            </button>` : ''}
             <button type="button" class="mz-opt${settings.set === 'topic' ? ' on' : ''}" data-set="topic">
               ${jlEmojiHTML('📚', 'mz-av-img')}<small>${topicLabel}</small><small class="mz-pt">Tópico do currículo</small>
             </button>
@@ -250,7 +257,8 @@ function openJumpGame() {
         <button type="button" class="btn btn-primary mz-start" data-start>▶ Start!</button>
         <p class="jl-error" data-error></p>
       </div>`;
-    const repaint = () => { jlSaveSettings(settings); setup(); };
+    // A custom list is for this time only: it is not remembered.
+    const repaint = () => { jlSaveSettings(settings.set === 'custom' ? { ...settings, set: 'numbers' } : settings); setup(); };
     m.querySelectorAll('[data-av]').forEach(b => b.addEventListener('click', () => {
       settings.avatar = b.dataset.av; jlSay((JL_AVATARS.find(a => a.id === b.dataset.av) || {}).en); repaint();
     }));
@@ -279,7 +287,7 @@ function openJumpGame() {
     m.querySelector('[data-start]').addEventListener('click', () => {
       const qs = jlMakeQuestions(wordsFor(), settings.questions);
       if (!qs.length) { m.querySelector('[data-error]').textContent = 'Choose a subject with at least 3 words. 📚'; return; }
-      jlSaveSettings(settings);
+      jlSaveSettings(settings.set === 'custom' ? { ...settings, set: 'numbers' } : settings);
       play(qs);
     });
   }

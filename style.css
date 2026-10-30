@@ -9947,3 +9947,37 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 }
 .stu-toast small { display: block; font-weight: 600; opacity: .75; font-size: .8rem; }
 .stu-toast.show { transform: translate(-50%, 0); }
+
+/* ==========================================================================
+   🔁 Class mistakes · 📲 Parents' weekly report (classInsights.js)
+   ========================================================================== */
+.dash-tab-badge { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 999px; background: #e5484d; color: #fff; font-size: .72rem; }
+.ci-filters { flex-wrap: wrap; gap: 6px; }
+.ci-filters .dash-nav-today.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+.ci-h { margin: 16px 0 8px; font-family: var(--font-display); }
+.ci-h small { font-family: var(--font-body); font-weight: 600; color: var(--ink-faint); font-size: .8rem; }
+.ci-words { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+.ci-word, .ci-q { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.ci-word { cursor: pointer; }
+.ci-word:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); }
+.ci-pic { width: 40px; height: 40px; flex-shrink: 0; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; }
+.ci-pic img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.ci-word-text, .ci-q-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ci-word-text small, .ci-q-text small { color: var(--ink-faint); font-size: .78rem; }
+.ci-who { display: inline-flex; align-items: center; gap: 2px; }
+.ci-av { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 50%; background: color-mix(in srgb, var(--who) 20%, #fff); font-size: .9rem; }
+.ci-av.big { width: 36px; height: 36px; font-size: 1.3rem; }
+.ci-count { font-weight: 800; color: #c9435c; font-size: .85rem; white-space: nowrap; }
+.ci-actions { margin-top: 10px; align-items: center; }
+.ci-hint { color: #c9435c; font-weight: 700; }
+.ci-questions { display: flex; flex-direction: column; gap: 6px; }
+.ci-lead { margin: 0; color: var(--ink-soft); flex: 1; min-width: 260px; }
+.ci-sign { font-size: .85rem; font-weight: 700; color: var(--ink-soft); }
+.ci-sign input { width: 120px; padding: 4px 8px; border: 2px solid var(--border); border-radius: 8px; font: inherit; }
+.ci-reports { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; margin-top: 10px; }
+.ci-report { border: 2px solid var(--border); border-left: 5px solid var(--who); border-radius: var(--radius-md); background: var(--surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.ci-report.sent { opacity: .7; }
+.ci-report-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ci-sent { color: #3fae5a; font-weight: 800; font-size: .85rem; }
+.ci-phone { flex: 1; min-width: 170px; padding: 6px 10px; border: 2px solid var(--border); border-radius: 10px; font: inherit; font-size: .88rem; }
+.ci-text { width: 100%; padding: 8px 10px; border: 2px solid var(--border); border-radius: 10px; font: inherit; font-size: .88rem; line-height: 1.4; resize: vertical; }
