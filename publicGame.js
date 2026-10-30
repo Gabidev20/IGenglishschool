@@ -30,6 +30,7 @@ const PUBLIC_GAME_WORKSPACE = 'public_game';
 const PUBLIC_GAMES = {
   colors:   { emoji: '🎨', title: 'Colors',        pt: 'Cores',                 open: () => openColorsGame() },
   abc:      { emoji: '🔤', title: 'ABC',           pt: 'O alfabeto',            open: () => openAlphabetGame() },
+  sayit:    { emoji: '🎤', title: 'Say it!',       pt: 'Falar a palavra',       open: () => openSayItGame() },
   farm:     { emoji: '🐄', title: 'Old MacDonald', pt: 'A fazenda',             open: () => openFarmGame() },
   touch:    { emoji: '🎈', title: 'Touch it!',     pt: 'Ouça e toque',          open: () => openTouchGame() },
   pizza:    { emoji: '🍕', title: 'Pizza Shop',    pt: 'Monte a pizza',         open: () => openShopGame() },

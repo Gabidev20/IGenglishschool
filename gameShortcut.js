@@ -21,6 +21,7 @@ const GS_CLASS_GAMES = [
 // Picture games: made for children, hidden for a teacher of grown-ups only.
 const GS_PICTURE_GAMES = [
   { icon: '🔤', en: 'ABC', pt: 'Alfabeto', open: () => openAlphabetGame() },
+  { icon: '🎤', en: 'Say it!', pt: 'Falar a palavra', open: () => openSayItGame() },
   { icon: '🐄', en: 'Old MacDonald', pt: 'A fazenda', open: () => openFarmGame() },
   { icon: '🎈', en: 'Touch it!', pt: 'Ouça e toque', open: () => openTouchGame() },
   { icon: '🍕', en: 'Pizza Shop', pt: 'Monte a pizza', open: () => openShopGame() },

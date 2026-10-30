@@ -28,6 +28,7 @@ const SA_READY_GAMES = [
   { id: 'colors', icon: '🎨', label: 'Colors' },
   { id: 'alphabet', icon: '🔤', label: 'ABC — Alphabet' },
   { id: 'jump', icon: '🦖', label: 'Jump & Learn' },
+  { id: 'sayit', icon: '🎤', label: 'Say it! (falar)' },
   { id: 'farm', icon: '🐄', label: 'Old MacDonald' },
   { id: 'touch', icon: '🎈', label: 'Touch it!' },
   { id: 'pizza', icon: '🍕', label: 'Pizza Shop' },
@@ -164,7 +165,7 @@ function saDefaultKeys(student) {
   });
 
   if (young) SA_READY_GAMES.forEach(g => keys.push(`g:${g.id}`));
-  else if (prof === 'writer') keys.push('g:alphabet', 'g:drawing', 'g:maze', 'g:jump');
+  else if (prof === 'writer') keys.push('g:alphabet', 'g:drawing', 'g:maze', 'g:jump', 'g:sayit');
 
   const taughtTitles = [...taught].join(' ');
   saPracticeTopics(student).forEach(t => {

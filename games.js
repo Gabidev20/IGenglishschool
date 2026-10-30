@@ -3598,7 +3598,7 @@ const GameEngine = (() => {
     }
 
     const figureHTML = () => bodySVG({
-      kid, built: mode === 'what' ? null : built, on: shown, fresh, hits: true, cls: 'bd-figure-svg',
+      kid, built: mode === 'what' || mode === 'say' ? null : built, on: shown, fresh, hits: true, cls: 'bd-figure-svg',
     });
 
     // Light a part up without redrawing everything (the song is fast).
@@ -3660,12 +3660,14 @@ const GameEngine = (() => {
     }
 
     function newTarget() {
-      if (mode === 'what') {
+      stopMic();
+      if (mode === 'what' || mode === 'say') {
         const pool = parts.filter(p => p.id !== target);
         target = pickN(pool, 1)[0].id;
-        shown = target; msg = '';
+        shown = target; msg = ''; sayTries = 0;
         choices = shuffle([target, ...pickN(parts.filter(p => p.id !== target).map(p => p.id), Math.min(3, parts.length - 1))]);
-        ttsSay("What's this?");
+        ttsSay(mode === 'say' ? "What's this? Say it!" : "What's this?");
+        if (mode === 'say' && autoMic) later(listenSay, 1600);
         return;
       }
       // Listen & find: a part that is not on the body yet.
@@ -3718,10 +3720,46 @@ const GameEngine = (() => {
       later(() => { if (mode === 'what' && target === was) { newTarget(); paint(); } }, 1800);
     }
 
-    const MODES = [['build', '🧩 Build'], ['listen', '🎧 Listen & find'], ['what', "❓ What's this?"]];
+    const MODES = [['build', '🧩 Build'], ['listen', '🎧 Listen & find'], ['what', "❓ What's this?"], ['say', '🎤 Say it']];
+
+    // 🎤 Say it: a part lights up and the child SAYS its name (speakPractice.js).
+    let bdMic = null, autoMic = false, sayTries = 0;
+    function stopMic() { if (bdMic) { bdMic.stop(); bdMic = null; } }
+    function sayStatus(t) { const el = container.querySelector('[data-say-status]'); if (el) el.innerHTML = t; }
+    function listenSay() {
+      if (mode !== 'say' || msg === '⭐' || typeof sayListen !== 'function') return;
+      const t = bodyPartById(target);
+      const mic = container.querySelector('[data-action="mic"]');
+      stopMic();
+      bdMic = sayListen({
+        target: t.en,
+        onListen: on => { if (mic && mic.isConnected) mic.classList.toggle('is-recording', on); if (on) sayStatus('🎤 Listening… <b>say it!</b>'); },
+        onOk: () => sayRight(),
+        onFail: best => {
+          sayTries++;
+          if (sayTries === 1) igMiss(igWordOf(topic, t.en), false, 'Body Parts');
+          if (best) { playWrong(); sayStatus(`🤔 Ouvi “${igEscapeHtml(best)}”. Ouça 🔊 e tente de novo!`); }
+          else sayStatus('🙉 Não ouvi nada. Toque no 🎤 e fale um pouco mais alto.');
+        },
+        onBlocked: () => sayStatus('⚠️ O microfone está bloqueado. Use o ✅.'),
+      });
+    }
+    function sayRight() {
+      if (msg === '⭐') return;
+      stopMic();
+      score++;
+      msg = '⭐';
+      playCorrect();
+      paint();
+      sayPart(bodyPartById(target));
+      const stage = container.querySelector('.bd-stage');
+      if (stage) confettiFromElement(stage);
+      const was = target;
+      later(() => { if (mode === 'say' && target === was) { newTarget(); paint(); } }, 1800);
+    }
 
     function paint() {
-      const build = mode === 'build', listen = mode === 'listen', what = mode === 'what';
+      const build = mode === 'build', listen = mode === 'listen', saying = mode === 'say', what = mode === 'what' || saying;
       const t = target && bodyPartById(target);
       const p = shown && bodyPartById(shown);
       const showWord = p && (!what || msg === '⭐');
@@ -3743,7 +3781,7 @@ const GameEngine = (() => {
         ${what && t ? `
           <div class="hs-target fe-target">
             <button class="bp-list-say" data-action="say-what" aria-label="Listen again">🔊</button>
-            <span>What's this?</span>
+            <span>What's this?${saying ? ' <b>Say it! 🎤</b>' : ''}</span>
           </div>` : ''}
         <div class="bd-layout${what ? ' bd-layout--solo' : ''}">
           <div class="bd-main${what ? ' bd-main--what' : ''}">
@@ -3759,7 +3797,14 @@ const GameEngine = (() => {
                 : listen && count < parts.length ? `<p class="fe-hint">🔊 Listen and tap the picture!</p>` : ''}
               ${!what && count ? `<span class="bd-count">${count} / ${parts.length}</span>` : ''}
             </div>
-            ${what ? `
+            ${saying ? `
+              <div class="bd-say">
+                <div class="cg-say-actions">
+                  ${typeof sayCanListen === 'function' && sayCanListen() ? '<button class="cg-big" data-action="mic" aria-label="Speak">🎤</button>' : ''}
+                  <button class="cg-big cg-big--ok" data-action="said" aria-label="I said it">✅</button>
+                </div>
+                <p class="cg-heard" data-say-status>${msg === '⭐' ? '' : 'Toque no 🎤 e diga o nome'}</p>
+              </div>` : what ? `
               <div class="bd-choices">
                 ${choices.map(id => { const c = bodyPartById(id); return `
                   <button class="bd-choice${msg === '⭐' && id === target ? ' ok' : ''}" data-choice="${id}">
@@ -3788,7 +3833,7 @@ const GameEngine = (() => {
       const svg = container.querySelector('.bd-stage svg');
       if (!svg) return;
       svg.addEventListener('click', ev => {
-        if (mode === 'what' || singing) return;
+        if (mode === 'what' || mode === 'say' || singing) return;
         const el = ev.target.closest && ev.target.closest('[data-part]');
         if (!el || !built.has(el.dataset.part)) return;
         const p = bodyPartById(el.dataset.part);
@@ -3810,6 +3855,7 @@ const GameEngine = (() => {
       container.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
         if (b.dataset.mode === mode) return;
         stopSong();
+        stopMic();
         mode = b.dataset.mode;
         restart();
       }));
@@ -3822,6 +3868,10 @@ const GameEngine = (() => {
       }));
       bindFigure();
       const stage = container.querySelector('.bd-stage');
+      const micBtn = container.querySelector('[data-action="mic"]');
+      if (micBtn) micBtn.addEventListener('click', () => { autoMic = true; listenSay(); });
+      const saidBtn = container.querySelector('[data-action="said"]');
+      if (saidBtn) saidBtn.addEventListener('click', sayRight);
       container.querySelectorAll('[data-body]').forEach(card => card.addEventListener('pointerdown', ev => {
         if (ev.button != null && ev.button !== 0) return;
         const p = bodyPartById(card.dataset.body);
@@ -3847,7 +3897,7 @@ const GameEngine = (() => {
 
     if (!parts.length) { container.innerHTML = `<div class="game-end-banner lose">This topic has no body parts.</div>`; return () => {}; }
     paint();
-    return () => { stopSong(); if (stopDrag) stopDrag(); timers.forEach(clearTimeout); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+    return () => { stopSong(); stopMic(); if (stopDrag) stopDrag(); timers.forEach(clearTimeout); if (window.speechSynthesis) window.speechSynthesis.cancel(); };
   }
   function stopAll() {
     clearAllTimers();

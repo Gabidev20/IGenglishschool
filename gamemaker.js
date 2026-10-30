@@ -110,6 +110,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-sayit>
+        <span class="gamemaker-ready-art ab-art">🎤</span>
+        <span class="gamemaker-ready-text">
+          <b>🎤 Say it!</b>
+          <small>Aparece a figura e a criança fala a palavra; o microfone confere (aceita o sotaque e as variações). Números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou um tópico. No Body Parts também tem o modo 🎤 Say it.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-farm>
         <span class="gamemaker-ready-art ab-art">🐄</span>
         <span class="gamemaker-ready-text">
@@ -196,6 +204,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-maze]').forEach(btn => btn.addEventListener('click', openMazeGame));
   container.querySelectorAll('[data-open-jump]').forEach(btn => btn.addEventListener('click', openJumpGame));
   container.querySelectorAll('[data-open-farm]').forEach(btn => btn.addEventListener('click', openFarmGame));
+  container.querySelectorAll('[data-open-sayit]').forEach(btn => btn.addEventListener('click', openSayItGame));
   container.querySelectorAll('[data-open-touch]').forEach(btn => btn.addEventListener('click', openTouchGame));
   container.querySelectorAll('[data-open-pizza]').forEach(btn => btn.addEventListener('click', openShopGame));
   container.querySelectorAll('[data-open-sounds]').forEach(btn => btn.addEventListener('click', openSoundGame));
