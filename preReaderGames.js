@@ -5,7 +5,8 @@
    again), every answer is a picture.
 
      🐄 Old MacDonald     "Who says moo?" — tap the cow and it joins the
-                          farm while the song is sung; the full farm sings
+                          farm while its verse plays: the traditional tune
+                          with karaoke, or the teacher's own recording
      🎈 Touch it!         "Touch the small red star!" "Touch three hearts!"
                           — colors, shapes, big/small and numbers together
      🍕 Pizza Shop        "I want a pizza with two tomatoes and cheese,
@@ -90,7 +91,94 @@ const KG_FARM = [
 ];
 // Where each animal stands in the field (% of the scene).
 const KG_FARM_SPOTS = [[14, 70], [30, 80], [46, 72], [62, 82], [78, 72], [22, 56], [56, 58], [88, 58]];
-const kgFarmVerse = a => `And on that farm he had a ${a.en}, E I E I O! With a ${a.sound} ${a.sound} here, and a ${a.sound} ${a.sound} there!`;
+// The song. The tune and words of "Old MacDonald Had a Farm" are traditional
+// (public domain); the melody is played here by synthesised instruments, the
+// words light up as they are sung (karaoke), and the voice says the
+// animal's name and sound right on their notes — a speech voice cannot sing
+// in tune. A verse the teacher recorded with her own voice is played instead.
+const KG_NOTE = { D4: 293.66, E4: 329.63, G4: 392, A4: 440, B4: 493.88 };
+// [word, note, beats, spoken] — `spoken` is said by the voice on that note;
+// a word ending in ~ is one syllable of a longer word (Mac~Don~ald).
+function kgSongLines(a) {
+  const n = a.en, s = a.sound;
+  const ar = /^[aeiou]/i.test(s) ? 'an' : 'a';      // with an oink oink
+  const old = [['Old', 'G4', 1], ['Mac~', 'G4', 1], ['Don~', 'G4', 1], ['ald', 'D4', 1], ['had', 'E4', 1], ['a', 'E4', 1], ['farm,', 'D4', 2]];
+  const eio = [['E', 'B4', 1], ['I', 'B4', 1], ['E', 'A4', 1], ['I', 'A4', 1], ['O!', 'G4', 2.5]];
+  const farm = [['And', 'D4', 0.5], ['on', 'D4', 0.5], ['that', 'G4', 1], ['farm', 'G4', 1], ['he', 'D4', 1], ['had', 'E4', 1], ['a', 'E4', 1], [`${n},`, 'D4', 2, n]];
+  const here = [['With', 'D4', 0.5], [ar, 'D4', 0.5], [s, 'G4', 1, `${s} ${s}`], [s, 'G4', 1], ['here,', 'G4', 1],
+    ['and', 'D4', 0.5], [ar, 'D4', 0.5], [s, 'G4', 1, `${s} ${s}`], [s, 'G4', 1], ['there,', 'G4', 1]];
+  const every = [['Here', 'G4', 0.5], [ar, 'G4', 0.5], [`${s},`, 'G4', 1, s], ['there', 'G4', 0.5], [ar, 'G4', 0.5], [`${s},`, 'G4', 1, s],
+    ['ev~', 'G4', 0.5], ['ery~', 'G4', 0.5], ['where', 'G4', 0.5], [ar, 'G4', 0.5], [s, 'G4', 0.5, `${s} ${s}`], [s, 'G4', 1.5]];
+  return [old, eio, farm, eio, here, every, old, eio];
+}
+// A syllable, and the space after it unless the word goes on (Mac~Don~ald).
+const kgSyl = (l, j) => l[j][0].replace(/~$/, '') + (j < l.length - 1 && !/~$/.test(l[j][0]) ? ' ' : '');
+const kgSongText = a => kgSongLines(a).map(l => l.map((w, j) => kgSyl(l, j)).join('')).join('\n');
+
+// The karaoke: the line being sung, big, its words lighting up; the next line small.
+function kgLyricsHTML(lines, li, wi) {
+  const line = (l, k, cls) => `<p class="${cls}">${l.map((w, j) => `<span class="${k === li && j <= wi ? 'on' : ''}${k === li && j === wi ? ' now' : ''}">${igEscapeHtml(w[0].replace(/~$/, ''))}</span>${/~$/.test(w[0]) || j === l.length - 1 ? '' : ' '}`).join('')}</p>`;
+  return `${line(lines[li] || [], li, 'fm-lyr-now')}${lines[li + 1] ? line(lines[li + 1], li + 1, 'fm-lyr-next') : ''}`;
+}
+
+// Plays one verse; returns { stop }. opts: { lyricsEl, voice (say the
+// animal words), then, alive (() => still open?) }.
+function kgSingVerse(a, opts) {
+  const o = opts || {};
+  const lines = kgSongLines(a);
+  const BEAT = 0.4;
+  const S = typeof IGSound !== 'undefined' && IGSound.note && !IGSound.muted() ? IGSound : null;
+  const timers = [];
+  const at = (beats, fn) => timers.push(setTimeout(() => { if (!o.alive || o.alive()) fn(); else stop(); }, beats * BEAT * 1000));
+  let t = 0;
+  lines.forEach((line, li) => line.forEach((w, wi) => {
+    const [, note, beats, spoken] = w;
+    const f = KG_NOTE[note];
+    at(t, () => {
+      if (S) { S.note(f, 0, beats * BEAT * 0.92, 'triangle', 0.16); S.note(f * 2, 0, beats * BEAT * 0.5, 'sine', 0.03); }
+      if (o.lyricsEl) o.lyricsEl.innerHTML = kgLyricsHTML(lines, li, wi);
+      if (spoken && o.voice !== false) kgSay(spoken, { rate: 1.15, pitch: 1.25 });
+    });
+    t += beats;
+  }));
+  // A bouncy bass and a soft tap on every beat, like a farm band.
+  for (let b = 0; b < Math.ceil(t); b++) {
+    at(b, () => {
+      if (!S) return;
+      S.note(b % 2 ? 146.83 : 98, 0, BEAT * 0.8, 'sine', 0.1);
+      if (S.noise) S.noise(0, 0.03, 'highpass', 4000, 0, b % 2 ? 0.05 : 0.025);
+    });
+  }
+  at(t + 0.4, () => { if (o.lyricsEl) o.lyricsEl.innerHTML = ''; if (o.then) o.then(); });
+  function stop() { timers.forEach(clearTimeout); timers.length = 0; }
+  return { stop, seconds: (t + 0.4) * BEAT };
+}
+
+// The teacher's own recordings: { cow: 'data:audio/…', … } — saved with her
+// data (synced like the rest), small: 32 kbit/s.
+const KG_FARM_VOICE_KEY = 'farm_voice';
+const kgFarmVoices = () => { const v = typeof IGStore !== 'undefined' ? IGStore.getJSON(KG_FARM_VOICE_KEY, {}) : {}; return v && typeof v === 'object' ? v : {}; };
+function kgSaveFarmVoice(id, dataUrl) {
+  const all = kgFarmVoices();
+  if (dataUrl) all[id] = dataUrl; else delete all[id];
+  IGStore.setJSON(KG_FARM_VOICE_KEY, all);
+}
+
+// One verse, whichever way it exists: the teacher's recording, or the
+// melody with karaoke. Returns { stop }.
+function kgFarmVerse(a, opts) {
+  const o = opts || {};
+  const voice = kgFarmVoices()[a.id];
+  if (!voice) return kgSingVerse(a, o);
+  const audio = new Audio(voice);
+  let done = false;
+  const fin = () => { if (done) return; done = true; if (o.lyricsEl) o.lyricsEl.innerHTML = ''; if (o.then && (!o.alive || o.alive())) o.then(); };
+  if (o.lyricsEl) o.lyricsEl.innerHTML = `<p class="fm-lyr-all">${igEscapeHtml(kgSongText(a)).replace(/\n/g, '<br>')}</p>`;
+  audio.onended = fin; audio.onerror = () => { done = true; kgSingVerse(a, o); };
+  audio.play().catch(() => { if (!done) { done = true; kgSingVerse(a, o); } });
+  return { stop() { done = true; try { audio.pause(); } catch (e) {} } };
+}
+
 
 function kgFarmScene() {
   return `<svg class="fm-bg" viewBox="0 0 400 220" preserveAspectRatio="none" aria-hidden="true">
@@ -113,7 +201,11 @@ function kgFarmScene() {
 
 function openFarmGame() {
   const win = kgOpen('🐄', "Old MacDonald's Farm", 'Who says moo? Find the animal!');
-  let onFarm = [], target = null, busy = false;
+  // Recording is for the teacher only (not on a student's link or a public game).
+  const teacher = !window.IG_SHARE_MODE;
+  let onFarm = [], target = null, busy = false, playing = null;
+  const alive = () => Boolean(win.el());
+  const stopSong = () => { if (playing) { playing.stop(); playing = null; } };
 
   function paint() {
     const m = win.el(); if (!m) return;
@@ -125,6 +217,7 @@ function openFarmGame() {
           ${onFarm.map((id, i) => { const a = KG_FARM.find(x => x.id === id); const [x, y] = KG_FARM_SPOTS[i]; return `
             <button type="button" class="fm-animal" data-farm="${id}" style="left:${x}%;top:${y}%">${kgEmoji(a.emoji, 'fm-animal-img')}</button>`; }).join('')}
         </div>
+        <div class="fm-lyrics" data-lyrics aria-live="polite"></div>
         ${left.length ? `
           <div class="fm-bar">
             <button class="cg-listen" data-hear aria-label="Listen again">🔊</button>
@@ -136,8 +229,10 @@ function openFarmGame() {
             <button type="button" class="btn btn-primary" data-sing>🎵 Sing the song</button>
             <button type="button" class="game-btn secondary" data-again>🔄 Again</button>
           </div>`}
+        ${teacher ? `<div class="fm-teacher"><button type="button" class="game-btn secondary" data-voice>🎙️ Minha voz — gravar os versos</button></div>` : ''}
       </div>`;
     m.querySelectorAll('[data-farm]').forEach(b => b.addEventListener('click', () => {
+      if (playing) return;
       const a = KG_FARM.find(x => x.id === b.dataset.farm);
       b.classList.remove('jump'); void b.offsetWidth; b.classList.add('jump');
       kgSay(`A ${a.en}! ${a.sound}, ${a.sound}!`);
@@ -148,17 +243,16 @@ function openFarmGame() {
     const sing = m.querySelector('[data-sing]');
     if (sing) sing.addEventListener('click', singAll);
     const again = m.querySelector('[data-again]');
-    if (again) again.addEventListener('click', () => { onFarm = []; target = null; paint(); next(); });
+    if (again) again.addEventListener('click', () => { stopSong(); onFarm = []; target = null; paint(); next(); });
+    const voice = m.querySelector('[data-voice]');
+    if (voice) voice.addEventListener('click', () => { stopSong(); voicePanel(); });
   }
+  const lyricsEl = () => win.el() && win.el().querySelector('[data-lyrics]');
 
-  function ask() { if (target) kgSay(`Who says ${target.sound}? ${target.sound}! ${target.sound}!`); }
+  function ask() { if (target && !playing) kgSay(`Who says ${target.sound}? ${target.sound}! ${target.sound}!`); }
   function next() {
     const left = KG_FARM.filter(a => !onFarm.includes(a.id));
-    if (!left.length) {
-      kgSfx('win');
-      kgSay('Old MacDonald had a farm, E I E I O!', { rate: 0.95, pitch: 1.15 });
-      return;
-    }
+    if (!left.length) { kgSfx('win'); return; }
     target = kgPick(left);
     busy = false;
     ask();
@@ -173,7 +267,11 @@ function openFarmGame() {
       paint();
       const el = win.el() && win.el().querySelector(`[data-farm="${a.id}"]`);
       if (el) el.classList.add('arrive');
-      kgSay(kgFarmVerse(a), { rate: 1, pitch: 1.15, then: () => { if (win.el()) next(); } });
+      // The animal's verse, then the next question.
+      setTimeout(() => {
+        if (!alive()) return;
+        playing = kgFarmVerse(a, { lyricsEl: lyricsEl(), alive, then: () => { playing = null; if (alive()) next(); } });
+      }, 500);
     } else {
       kgSfx('wrong');
       btn.classList.add('shake'); setTimeout(() => btn.classList.remove('shake'), 500);
@@ -182,16 +280,91 @@ function openFarmGame() {
   }
   // The whole song, one verse per animal; each one jumps when it is sung.
   function singAll() {
+    if (playing) return;
     const order = onFarm.slice();
     const verse = i => {
-      const m = win.el(); if (!m || i >= order.length) { if (m) kgSfx('win'); return; }
+      const m = win.el(); playing = null;
+      if (!m || i >= order.length) { if (m) kgSfx('win'); return; }
       const a = KG_FARM.find(x => x.id === order[i]);
       const el = m.querySelector(`[data-farm="${a.id}"]`);
       if (el) { el.classList.remove('jump'); void el.offsetWidth; el.classList.add('jump'); }
-      kgSay(`${i === 0 ? 'Old MacDonald had a farm, E I E I O! ' : ''}${kgFarmVerse(a)}`, { rate: 1, pitch: 1.15, then: () => verse(i + 1) });
+      playing = kgFarmVerse(a, { lyricsEl: lyricsEl(), alive, then: () => verse(i + 1) });
     };
     verse(0);
   }
+
+  // ---- 🎙️ the teacher records each verse with her own voice -----------------
+  // While recording, the melody and the karaoke play, so she sings in time.
+  function voicePanel() {
+    const m = win.el(); if (!m) return;
+    const can = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    let rec = null, stream = null, recId = null;
+    const voices = kgFarmVoices();
+    const stopAll = () => {
+      stopSong();
+      if (rec && rec.state !== 'inactive') rec.stop();
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    };
+    const draw = () => {
+      const box = win.el(); if (!box) { stopAll(); return; }
+      const vs = kgFarmVoices();
+      box.innerHTML = `
+        <div class="fm-voice">
+          <p class="fm-voice-tip">🎙️ Toque em <b>● Gravar</b> e cante o verso junto com a música (use fone de ouvido se puder).
+            Quando houver gravação, o jogo usa <b>a sua voz</b> no lugar da melodia. Fica salvo na sua conta.</p>
+          ${can ? '' : '<p class="fm-voice-tip">⚠️ Este navegador não grava áudio.</p>'}
+          <div class="fm-lyrics" data-lyrics></div>
+          <div class="fm-voice-list">
+            ${KG_FARM.map(a => `
+              <div class="fm-voice-row${recId === a.id ? ' rec' : ''}">
+                ${kgEmoji(a.emoji, 'fm-voice-img')}<b>${a.en}</b><small>${a.sound} ${a.sound}</small>
+                ${recId === a.id
+                  ? '<button type="button" class="game-btn" data-stop>■ Parar</button>'
+                  : `<button type="button" class="game-btn secondary" data-rec="${a.id}" ${!can || recId ? 'disabled' : ''}>● Gravar</button>`}
+                ${vs[a.id] ? `<button type="button" class="game-btn secondary" data-play="${a.id}" ${recId ? 'disabled' : ''}>▶</button>
+                  <button type="button" class="game-btn secondary danger" data-del="${a.id}" ${recId ? 'disabled' : ''} title="Apagar a gravação">🗑</button>`
+                  : '<span class="fm-voice-none">melodia</span>'}
+              </div>`).join('')}
+          </div>
+          <div class="an-done-actions"><button type="button" class="btn btn-primary" data-back ${recId ? 'disabled' : ''}>✅ Pronto — voltar ao jogo</button></div>
+        </div>`;
+      box.querySelectorAll('[data-rec]').forEach(b => b.addEventListener('click', () => record(KG_FARM.find(a => a.id === b.dataset.rec))));
+      const st = box.querySelector('[data-stop]'); if (st) st.addEventListener('click', () => { if (rec && rec.state !== 'inactive') rec.stop(); });
+      box.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => {
+        stopSong();
+        playing = kgFarmVerse(KG_FARM.find(a => a.id === b.dataset.play), { lyricsEl: box.querySelector('[data-lyrics]'), alive, then: () => { playing = null; } });
+      }));
+      box.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => {
+        if (!confirm('Apagar a gravação deste verso? O jogo volta a usar a melodia.')) return;
+        kgSaveFarmVoice(b.dataset.del, null); draw();
+      }));
+      box.querySelector('[data-back]').addEventListener('click', () => { stopAll(); paint(); if (target && onFarm.length < KG_FARM.length) ask(); });
+    };
+    async function record(a) {
+      try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { alert('Não consegui usar o microfone. Verifique a permissão do navegador.'); return; }
+      const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+      const mimeType = types.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+      rec = new MediaRecorder(stream, mimeType ? { mimeType, audioBitsPerSecond: 32000 } : { audioBitsPerSecond: 32000 });
+      const chunks = [];
+      rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = () => {
+        stopSong();
+        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+        const fr = new FileReader();
+        fr.onload = () => { kgSaveFarmVoice(a.id, fr.result); recId = null; kgSfx('correct'); draw(); };
+        fr.readAsDataURL(new Blob(chunks, { type: rec.mimeType || 'audio/webm' }));
+      };
+      recId = a.id;
+      draw();
+      rec.start();
+      // The melody (without the speaking voice) to sing along with; the
+      // recording stops by itself at the end of the verse.
+      playing = kgSingVerse(a, { lyricsEl: win.el() && win.el().querySelector('[data-lyrics]'), voice: false, alive,
+        then: () => { playing = null; if (rec && rec.state !== 'inactive') rec.stop(); } });
+    }
+    draw();
+  }
+
   paint();
   next();
 }

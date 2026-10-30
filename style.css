@@ -9919,3 +9919,22 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .tm-card.ear { background: #fff4d6; }
 .tm-ear { font-size: 3rem; }
 .tm-ear-badge { position: absolute; top: 4px; right: 6px; font-size: 1rem; }
+
+/* 🐄 the farm song: karaoke lines and the teacher's recordings */
+.fm-lyrics { min-height: 3.4em; text-align: center; width: min(100%, 760px); }
+.fm-lyr-now { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 3.2vw, 1.7rem); color: var(--ink-faint); }
+.fm-lyr-now span { transition: color .15s ease; }
+.fm-lyr-now span.on { color: var(--ink); }
+.fm-lyr-now span.now { color: #c9435c; display: inline-block; transform: scale(1.12); }
+.fm-lyr-next { margin: 2px 0 0; font-weight: 700; font-size: .95rem; color: var(--ink-faint); }
+.fm-lyr-all { margin: 0; font-weight: 700; color: var(--ink-soft); line-height: 1.5; }
+.fm-teacher { display: flex; justify-content: center; margin-top: 4px; }
+.fm-voice { display: flex; flex-direction: column; gap: 10px; }
+.fm-voice-tip { margin: 0; color: var(--ink-soft); text-align: center; }
+.fm-voice-list { display: flex; flex-direction: column; gap: 6px; max-width: 560px; width: 100%; margin: 0 auto; }
+.fm-voice-row { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.fm-voice-row.rec { border-color: #e5484d; background: #fdeaea; }
+.fm-voice-row b { min-width: 70px; }
+.fm-voice-row small { flex: 1; color: var(--ink-faint); }
+.fm-voice-img { width: 36px; height: 36px; }
+.fm-voice-none { font-size: .8rem; color: var(--ink-faint); }
