@@ -10054,3 +10054,15 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .lq-result-big { font-family: var(--font-display); font-weight: 900; font-size: 2rem; margin: 0 0 6px; }
 .lq-result-pts { font-family: var(--font-display); font-weight: 900; font-size: 2.4rem; color: #3fae5a; margin: 0; }
 .lq-result-ans, .lq-result-rank { font-weight: 700; margin: 6px 0 0; font-size: 1.1rem; }
+
+/* 🩺 Site check (siteCheck.js) */
+.sc-lead { color: var(--ink-soft); margin: 0 0 10px; }
+.sc-summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-radius: var(--radius-md); font-weight: 800; font-size: 1.1rem; margin: 12px 0; }
+.sc-summary.good { background: #e5f6e8; color: #2b7f40; }
+.sc-summary.meh { background: #fff4d6; color: #8a6200; }
+.sc-summary.bad { background: #fdeaea; color: #b4232c; }
+.sc-area { margin: 14px 0 6px; font-family: var(--font-display); }
+.sc-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 14px; }
+.sc-list li { font-weight: 600; }
+.sc-list li small { display: block; color: var(--ink-faint); font-weight: 500; margin-left: 1.6em; }
+.sc-fail { color: #b4232c; }

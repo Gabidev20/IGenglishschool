@@ -226,6 +226,7 @@ function renderDashboard() {
           <h2>${igEscapeHtml(dashGreeting())}</h2>
           <p>${igEscapeHtml(dashTodayLabel(today))}</p>
         </div>
+        <button class="dash-sound" id="dashCheckBtn" type="button" title="Testar o site — confere se tudo carrega e funciona">🩺</button>
         <button class="dash-sound" id="dashSoundBtn" type="button"
           title="Ligar ou desligar os sons de estrela e figurinha"></button>
       </div>
@@ -257,6 +258,8 @@ function renderDashboard() {
     soundBtn.setAttribute('aria-label', off ? 'Sons desligados' : 'Sons ligados');
   };
   paintSound();
+  const checkBtn = root.querySelector('#dashCheckBtn');
+  if (checkBtn) checkBtn.addEventListener('click', () => { if (typeof openSiteCheck === 'function') openSiteCheck(); });
   soundBtn.addEventListener('click', () => {
     IGSound.setMuted(!IGSound.muted());
     paintSound();

@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // 🩺 Site check (siteCheck.js): every script error from the very first second.
+  window.__igErrors = [];
+  window.addEventListener('error', function (e) {
+    if (!e || !e.message) return;
+    window.__igErrors.push({ msg: String(e.message), where: String(e.filename || '').split('/').pop() + (e.lineno ? ':' + e.lineno : '') });
+  });
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>IG English School</title>
@@ -285,6 +293,7 @@
 <script src="preReaderGames.js"></script>
 <script src="speakPractice.js"></script>
 <script src="liveQuiz.js"></script>
+<script src="siteCheck.js"></script>
 <script src="audioMessage.js"></script>
 <script src="learnerData.js"></script>
 <script src="mistakes.js"></script>
