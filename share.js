@@ -340,6 +340,98 @@ const ShareMode = (() => {
     return true;
   }
 
+  // ---- what the teacher sends while the link is open -----------------------
+  // The link used to read the teacher's side only when it was opened, so a
+  // homework sent during the afternoon appeared only after a reload. Every
+  // minute (and as soon as the tab is looked at again) it asks once more:
+  // new homework, a new class review, games or topics opened, an answer to
+  // a message. The student's own unsent work is sent first and kept.
+  let refreshing = false;
+  const teacherSide = () => {
+    const hw = (IGStore.getJSON('homework', []) || []).map(h => [h.id, h.title, (h.tasks || []).length]);
+    return {
+      hw: JSON.stringify(hw),
+      review: JSON.stringify(IGStore.getJSON('review_' + studentId, {}) || {}),
+      access: JSON.stringify(IGStore.getJSON('student_access', {}) || {}),
+      replies: (IGStore.getJSON('writing_' + studentId, []) || []).filter(w => w.correction).length,
+    };
+  };
+  async function refreshFromTeacher() {
+    if (!cloud || !studentId || !code || refreshing) return null;
+    refreshing = true;
+    try {
+      try { await flush(); } catch (e) { /* sent next time */ }
+      const sb = await IGCloud.anonClient();
+      const { data, error } = await sb.rpc('igenglish_share_read', { p_code: code });
+      if (error || !data || !data.ok) return null;
+      const before = teacherSide();
+      IGStore.silently(() => {
+        // Homework: the teacher's list, with this device's answers kept.
+        const local = IGStore.getJSON('homework', []) || [];
+        const merged = (Array.isArray(data.homework) ? data.homework : []).map(h => {
+          const mine = local.find(x => x.id === h.id);
+          if (mine && Array.isArray(h.tasks)) h.tasks.forEach((t, i) => { if (!t.result && mine.tasks && mine.tasks[i] && mine.tasks[i].result) t.result = mine.tasks[i].result; });
+          return h;
+        });
+        IGStore.setJSON('homework', merged);
+        IGStore.setJSON('review_' + studentId, data.review && typeof data.review === 'object' ? data.review : {});
+        if (data.access && typeof data.access === 'object') IGStore.setJSON('student_access', { [studentId]: data.access });
+        if (data.setup && typeof data.setup === 'object') IGStore.setJSON('teacher_setup', data.setup);
+        if (data.profile) IGStore.setJSON('student_profiles', { [studentId]: data.profile });
+        if (Array.isArray(data.writing)) {
+          const mineW = IGStore.getJSON('writing_' + studentId, []) || [];
+          const byId = new Map(data.writing.map(w => [w.id, w]));
+          mineW.forEach(w => { if (!byId.has(w.id)) byId.set(w.id, w); });
+          IGStore.setJSON('writing_' + studentId, [...byId.values()].sort((a, b) => new Date(b.sentAt || 0) - new Date(a.sentAt || 0)));
+        }
+      });
+      // Nothing above needs sending back: remember it as already there.
+      lastSent.clear();
+      outgoing().forEach(([kind, id, payload]) => lastSent.set(kind + '|' + id, JSON.stringify(payload)));
+      const after = teacherSide();
+      return {
+        homework: after.hw !== before.hw && JSON.parse(after.hw).length > JSON.parse(before.hw).length,
+        homeworkChanged: after.hw !== before.hw,
+        review: after.review !== before.review && after.review !== '{}',
+        access: after.access !== before.access,
+        replies: after.replies > before.replies,
+      };
+    } catch (e) {
+      return null;
+    } finally {
+      refreshing = false;
+    }
+  }
+
+  function watchTeacher(shell) {
+    let pending = false;
+    const homeShowing = () => {
+      const overlay = document.getElementById('modalOverlay');
+      return (!overlay || overlay.hidden) && !document.querySelector('.lo-root') && shell.isConnected;
+    };
+    const repaintHome = () => { pending = false; try { renderStudentHome(shell, studentId); } catch (e) { console.error(e); } };
+    const check = async () => {
+      if (document.visibilityState === 'hidden') return;
+      const news = await refreshFromTeacher();
+      if (!news) return;
+      const say = news.homework ? '📚 Chegou lição nova! <small>New homework!</small>'
+        : news.review ? '🧠 A teacher deixou uma revisão da aula! <small>New class review!</small>'
+        : news.replies ? '💬 A teacher respondeu a sua mensagem! <small>Your teacher answered!</small>'
+        : news.access ? '🎮 Novos jogos e tópicos liberados! <small>New games!</small>'
+        : '';
+      if (!say && !news.homeworkChanged) return;
+      if (say) shareToast(say);
+      // Redraw the home screen now, or as soon as the child comes back to it.
+      if (homeShowing()) repaintHome(); else pending = true;
+    };
+    setInterval(check, 60000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+    const overlay = document.getElementById('modalOverlay');
+    if (overlay && window.MutationObserver) {
+      new MutationObserver(() => { if (pending && homeShowing()) repaintHome(); }).observe(overlay, { attributes: true, attributeFilter: ['hidden'] });
+    }
+  }
+
   // ---- boot ----------------------------------------------------------------
   function claim() {
     code = shareCodeInUrl();
@@ -417,6 +509,7 @@ const ShareMode = (() => {
 
     watchWrites();
     renderStudentHome(shell, studentId);
+    if (cloud) watchTeacher(shell);
   }
 
   // The teacher's "see it as the student does" view: a way back to her own
@@ -435,8 +528,19 @@ const ShareMode = (() => {
     document.body.appendChild(bar);
   }
 
-  return { claim, start, active, flush, refreshMessages, applyActivityLocally, get studentId() { return studentId; }, get code() { return code; } };
+  return { claim, start, active, flush, refreshMessages, refreshFromTeacher, applyActivityLocally, get studentId() { return studentId; }, get code() { return code; } };
 })();
+
+// A short note at the bottom of the student's page ("📚 New homework!").
+function shareToast(html) {
+  const el = document.createElement('div');
+  el.className = 'stu-toast';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  if (typeof IGSound !== 'undefined' && IGSound.bell) IGSound.bell();
+  setTimeout(() => el.classList.add('show'), 20);
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 500); }, 7000);
+}
 
 // ---------------------------------------------------------------------------
 // THE STUDENT'S HOME SCREEN

@@ -9938,3 +9938,12 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .fm-voice-row small { flex: 1; color: var(--ink-faint); }
 .fm-voice-img { width: 36px; height: 36px; }
 .fm-voice-none { font-size: .8rem; color: var(--ink-faint); }
+
+/* The student's link: a note when the teacher sends something new */
+.stu-toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 140%); z-index: 3000;
+  background: #2e2b2e; color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 800; font-size: 1.05rem;
+  box-shadow: var(--shadow-lg); transition: transform .35s cubic-bezier(.3,1.4,.6,1); text-align: center; max-width: calc(100vw - 32px);
+}
+.stu-toast small { display: block; font-weight: 600; opacity: .75; font-size: .8rem; }
+.stu-toast.show { transform: translate(-50%, 0); }
