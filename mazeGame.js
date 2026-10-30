@@ -125,9 +125,17 @@ function mzPacIcon(cls) {
     <circle cx="21" cy="11" r="2.8" fill="#2e2b2e"/></svg>`;
 }
 
+// The avatars on offer: the student's own look first, when there is one.
+function mzAvatarList() {
+  const look = typeof myavCurrent === 'function' ? myavCurrent() : null;
+  return look ? [{ id: 'me', en: 'Me', look }].concat(MZ_AVATARS) : MZ_AVATARS;
+}
+const mzAvatarById = id => mzAvatarList().find(x => x.id === id) || MZ_AVATARS[0];
+
 // The little picture of an avatar for the setup buttons and the score bar.
 function mzAvatarHTML(id) {
-  const a = MZ_AVATARS.find(x => x.id === id) || MZ_AVATARS[0];
+  const a = mzAvatarById(id);
+  if (a.look) return typeof myavHTML === 'function' ? myavHTML(a.look, 'mz-av-img myav--small') : '⭐';
   if (!a.emoji) return mzPacIcon('mz-av-img');
   return typeof igEmojiImgHTML === 'function' ? igEmojiImgHTML(a.emoji, 'mz-av-img') : `<span class="mz-av-img">${a.emoji}</span>`;
 }
@@ -226,6 +234,11 @@ function mzRenderer(canvas, food) {
       ctx.beginPath(); ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, s * 0.45, ang + open, ang + Math.PI * 2 - open);
       ctx.closePath(); ctx.fillStyle = '#ffd400'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#2e2b2e'; ctx.stroke();
+      return;
+    }
+    if (p.avatar.look && typeof myavDraw === 'function') {
+      const bounce = p.moving ? Math.abs(Math.sin(now / 110)) * cell * 0.06 : 0;
+      myavDraw(ctx, p.avatar.look, cx, cy - bounce, s * 0.95, false);
       return;
     }
     const img = mzImage(p.avatar.emoji);
@@ -425,7 +438,7 @@ function openMazeGame() {
       <div class="mz-row">
         <span class="mz-row-label" style="--pc:${MZ_PLAYER_COLORS[p]}">Player ${p + 1}</span>
         <div class="mz-opts">
-          ${MZ_AVATARS.map(a => `
+          ${mzAvatarList().map(a => `
             <button type="button" class="mz-opt${settings.avatars[p] === a.id ? ' on' : ''}" data-av="${p}:${a.id}" style="--pc:${MZ_PLAYER_COLORS[p]}">
               ${mzAvatarHTML(a.id)}<small>${a.en}</small>
             </button>`).join('')}
@@ -472,7 +485,7 @@ function openMazeGame() {
     m.querySelectorAll('[data-av]').forEach(b => b.addEventListener('click', () => {
       const [p, id] = b.dataset.av.split(':');
       settings.avatars[Number(p)] = id;
-      mzSay((MZ_AVATARS.find(a => a.id === id) || {}).en);
+      mzSay(mzAvatarById(id).en);
       repaint();
     }));
     m.querySelectorAll('[data-food]').forEach(b => b.addEventListener('click', () => { settings.food = b.dataset.food; repaint(); }));
@@ -510,13 +523,13 @@ function openMazeGame() {
     pool.forEach(it => { if (it.emoji || it.src) mzImage(it.emoji || it.src); });
 
     const mkPlayer = (i, start) => ({
-      i, color: MZ_PLAYER_COLORS[i], avatar: MZ_AVATARS.find(a => a.id === settings.avatars[i]) || MZ_AVATARS[0],
+      i, color: MZ_PLAYER_COLORS[i], avatar: mzAvatarById(settings.avatars[i]),
       start, cell: start.slice(), to: start.slice(), t: 0, dir: null, want: null, face: i ? 'left' : 'right',
       score: 0, hurt: 0, speed: 4.6, lives: MZ_LIVES, out: false,
     });
     const players = [mkPlayer(0, mzFind('1'))];
     if (two) players.push(mkPlayer(1, mzFind('2')));
-    players.forEach(p => { if (p.avatar.emoji) mzImage(p.avatar.emoji); });
+    players.forEach(p => { if (p.avatar.emoji) mzImage(p.avatar.emoji); if (p.avatar.look && typeof myavPreload === 'function') myavPreload(p.avatar.look); });
     mzImage('🕷️');
 
     const spiderStart = mzFind('G');
@@ -851,7 +864,7 @@ function openMazeGuest(code) {
     const food = MZ_FOODS.find(f => f.id === game.food) || MZ_FOODS[0];
     const pool = food.items();
     pool.forEach(it => { if (it.emoji || it.src) mzImage(it.emoji || it.src); });
-    game.players.forEach(p => { const a = MZ_AVATARS.find(x => x.id === p.avatar); if (a && a.emoji) mzImage(a.emoji); });
+    game.players.forEach(p => { const a = mzAvatarById(p.avatar); if (a.emoji) mzImage(a.emoji); if (a.look && typeof myavPreload === 'function') myavPreload(a.look); });
     mzImage('🕷️');
     items.clear();
     game.items.forEach(([k, pi]) => items.set(k, pool[pi]));
@@ -923,7 +936,7 @@ function openMazeGuest(code) {
       items,
       players: target.p.map((a, i) => a[8] ? null : ({
         fx: shown.p[i][0], fy: shown.p[i][1], color: MZ_PLAYER_COLORS[i],
-        avatar: MZ_AVATARS.find(x => x.id === game.players[i].avatar) || MZ_AVATARS[0],
+        avatar: mzAvatarById(game.players[i].avatar),
         dir: MZ_DIR_LIST[a[2]] || null, face: a[3] ? 'left' : 'right', moving: Boolean(a[4]), blink: Boolean(a[6]),
       })).filter(Boolean),
       spiders: shown.g.map((s, i) => ({ fx: s[0], fy: s[1], tint: MZ_SPIDER_TINTS[i % 4], seed: i })),

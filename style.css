@@ -9990,3 +9990,23 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .sy-num { font-family: var(--font-display); font-weight: 900; font-size: 7rem; color: var(--primary-dark); }
 .sy-word { text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; margin: 0; color: var(--ink-soft); }
 .bd-say { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+/* ==========================================================================
+   🧑‍🎨 My avatar (myAvatar.js)
+   ========================================================================== */
+.myav { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--myav-bg); border: 2px solid #2e2b2e; vertical-align: middle; }
+.myav .myav-base { width: 78%; height: 78%; }
+.myav .myav-glasses { position: absolute; width: 58%; height: auto; top: 30%; left: 21%; }
+.myav .myav-hat { position: absolute; width: 60%; height: auto; top: -38%; left: 20%; }
+.myav--big { font-size: 6rem; }
+.myav--head { font-size: 2.1rem; }
+.myav--small { font-size: 1.4rem; width: 40px; height: 40px; }
+.myav-builder .myav-preview { display: flex; justify-content: center; padding: 34px 0 10px; }
+.myav-row-title { margin: 10px 0 4px; font-family: var(--font-display); font-weight: 800; }
+.myav-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.myav-opt { width: 52px; height: 52px; border: 3px solid var(--border); border-radius: 14px; background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; }
+.myav-opt.on { border-color: var(--primary); background: var(--primary-soft); }
+.myav-opt-img { width: 34px; height: 34px; }
+.myav-swatch { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #2e2b2e; display: block; }
+.stu-avatar--btn { position: relative; border: none; background: none; cursor: pointer; padding: 0; font: inherit; }
+.stu-avatar-edit { position: absolute; right: -6px; bottom: -4px; font-size: .9rem; background: #fff; border-radius: 50%; padding: 1px 3px; box-shadow: var(--shadow-sm); }

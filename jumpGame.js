@@ -22,7 +22,7 @@ const JL_AVATARS = [
   { id: 'dino', en: 'Dino', emoji: '🦖', side: 'left' },
   { id: 'frog', en: 'Frog', emoji: '🐸' },
   { id: 'monkey', en: 'Monkey', emoji: '🐵' },
-  { id: 'unicorn', en: 'Unicorn', emoji: '🦄', side: 'left' },
+  { id: 'dog', en: 'Dog', emoji: '🐶' },
   { id: 'cat', en: 'Cat', emoji: '🐱' },
   { id: 'fox', en: 'Fox', emoji: '🦊' },
 ];
@@ -30,6 +30,13 @@ const JL_NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', '
   'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
 const JL_TENS = { 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'one hundred' };
 const JL_SETTINGS_KEY = 'ig_jump_settings';
+// The avatars on offer: the student's own look first, when there is one.
+function jlAvatarList() {
+  const look = typeof myavCurrent === 'function' ? myavCurrent() : null;
+  return look ? [{ id: 'me', en: 'Me', look }].concat(JL_AVATARS) : JL_AVATARS;
+}
+const jlAvatarById = id => jlAvatarList().find(a => a.id === id) || JL_AVATARS[0];
+const jlAvatarHTML = (a, cls) => (a.look && typeof myavHTML === 'function' ? myavHTML(a.look, `${cls} myav--small`) : jlEmojiHTML(a.emoji, cls));
 const JL_HEARTS = 5;
 
 // The subjects: each gives words { en, pt, emoji?, image?, num? }.
@@ -218,9 +225,9 @@ function openJumpGame(opts) {
         <div class="mz-row">
           <span class="mz-row-label">Player</span>
           <div class="mz-opts">
-            ${JL_AVATARS.map(a => `
+            ${jlAvatarList().map(a => `
               <button type="button" class="mz-opt${settings.avatar === a.id ? ' on' : ''}" data-av="${a.id}">
-                ${jlEmojiHTML(a.emoji, 'mz-av-img')}<small>${a.en}</small>
+                ${jlAvatarHTML(a, 'mz-av-img')}<small>${a.en}</small>
               </button>`).join('')}
           </div>
         </div>
@@ -260,7 +267,7 @@ function openJumpGame(opts) {
     // A custom list is for this time only: it is not remembered.
     const repaint = () => { jlSaveSettings(settings.set === 'custom' ? { ...settings, set: 'numbers' } : settings); setup(); };
     m.querySelectorAll('[data-av]').forEach(b => b.addEventListener('click', () => {
-      settings.avatar = b.dataset.av; jlSay((JL_AVATARS.find(a => a.id === b.dataset.av) || {}).en); repaint();
+      settings.avatar = b.dataset.av; jlSay(jlAvatarById(b.dataset.av).en); repaint();
     }));
     m.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => { settings.set = b.dataset.set; repaint(); }));
     m.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => { settings.questions = Number(b.dataset.q); repaint(); }));
@@ -299,8 +306,9 @@ function openJumpGame(opts) {
     const level = jlBuildLevel(questions.length);
     const { W, tiles, coins, enemies, gates, flagX } = level;
     const H = JL_H;
-    const avatar = JL_AVATARS.find(a => a.id === settings.avatar) || JL_AVATARS[0];
+    const avatar = jlAvatarById(settings.avatar);
     ['🐌', '🔒', '🏰', '🪙', avatar.emoji].forEach(jlImage);
+    if (avatar.look && typeof myavPreload === 'function') myavPreload(avatar.look);
 
     const tile = (x, y) => (x < 0 || x >= W ? 7 : y < 0 || y >= H ? 0 : tiles[y * W + x]);
     const setTile = (x, y, v) => { if (x >= 0 && x < W && y >= 0 && y < H) tiles[y * W + x] = v; };
@@ -317,7 +325,7 @@ function openJumpGame(opts) {
     m.innerHTML = `
       <div class="jl-game">
         <div class="mz-scores">
-          <span class="jl-hud">${jlEmojiHTML(avatar.emoji, 'mz-av-img')}<span class="jl-hearts" data-hearts></span></span>
+          <span class="jl-hud">${jlAvatarHTML(avatar, 'mz-av-img')}<span class="jl-hearts" data-hearts></span></span>
           <span class="jl-hud">${jlEmojiHTML('🪙', 'jl-hud-img')}<b data-coins>0</b></span>
           <span class="jl-hud">🔒 <b data-gates>0/${questions.length}</b></span>
           <span class="mz-left"></span>
@@ -640,8 +648,12 @@ function openJumpGame(opts) {
       });
       // the player
       if (!(P.inv > 0 && Math.floor(now / 100) % 2)) {
-        const img = jlImage(avatar.emoji);
         const sq = P.squash > 0 ? 1 + P.squash : 1;
+        if (avatar.look && typeof myavDraw === 'function') {
+          const run = P.ground && Math.abs(P.vx) > 0.5 ? Math.abs(Math.sin(now / 80)) * S * 0.08 : 0;
+          myavDraw(ctx, avatar.look, (P.x + P.w / 2) * S, (P.y + P.h) * S - S * 0.66 * sq - run, S * 1.3, false);
+        }
+        const img = avatar.look ? null : jlImage(avatar.emoji);
         ctx.save(); ctx.translate((P.x + P.w / 2) * S, (P.y + P.h) * S);
         if (avatar.side === 'left' && P.face > 0) ctx.scale(-1, 1);   // looking where it runs
         ctx.scale(1 / sq, sq);

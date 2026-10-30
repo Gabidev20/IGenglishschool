@@ -234,6 +234,11 @@ const ShareMode = (() => {
           stickers: [...new Set((cur.stickers || []).concat(payload.progress.stickers || []))],
         });
       }
+      // The child's own avatar (myAvatar.js).
+      if (payload.look && payload.look.base && typeof myavSet === 'function') {
+        const all = IGStore.getJSON('student_looks', {}) || {};
+        if (JSON.stringify(all[sid]) !== JSON.stringify(payload.look)) { all[sid] = payload.look; IGStore.setJSON('student_looks', all); }
+      }
       // The Student Manual's answers: the newest copy wins.
       if (payload.manual && typeof payload.manual === 'object') {
         const mine = IGStore.getJSON('manual_' + sid, {}) || {};
@@ -284,6 +289,7 @@ const ShareMode = (() => {
       progress: IGStore.getJSON('progress_' + studentId, {}),
       bank: IGStore.getJSON('bank_' + studentId, {}),
       manual: IGStore.getJSON('manual_' + studentId, {}),
+      look: typeof myavGet === 'function' ? myavGet(studentId) : null,
     }]];
     (IGStore.getJSON('homework', []) || []).forEach(hw => {
       const tasks = (hw.tasks || [])
@@ -320,7 +326,7 @@ const ShareMode = (() => {
     IGStore.onWrite(key => {
       if (!studentId) return;
       if (key === 'homework' || key.startsWith('progress_') || key.startsWith('log_')
-        || key.startsWith('bank_') || key.startsWith('writing_') || key.startsWith('manual_')) scheduleFlush();
+        || key.startsWith('bank_') || key.startsWith('writing_') || key.startsWith('manual_') || key === 'student_looks') scheduleFlush();
     });
     window.addEventListener('beforeunload', () => { try { flush(); } catch (e) {} });
   }
@@ -673,7 +679,10 @@ function renderStudentHome(shell, studentId) {
   shell.innerHTML = `
     <div class="stu-wrap">
       <header class="stu-header" style="--stu-color:${shareEsc(student.color || '#8e6d86')}">
-        <span class="stu-avatar">${shareEsc(student.avatar || '🙂')}</span>
+        <button type="button" class="stu-avatar stu-avatar--btn" id="stuAvatarBtn" title="My avatar">
+          ${typeof myavGet === 'function' && myavGet(student.id) ? myavHTML(myavGet(student.id), 'myav--head') : shareEsc(student.avatar || '🙂')}
+          <span class="stu-avatar-edit">✏️</span>
+        </button>
         <div>
           <h1>Hello, ${shareEsc((typeof saRecord === 'function' && saRecord(student.id).fn) || student.name)}! 👋</h1>
           <p>${shareEsc(igLevelText(student))}
@@ -775,6 +784,8 @@ function renderStudentHome(shell, studentId) {
       : openSpeakingModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) })),
     writing: () => (markRepliesSeen(), typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
   };
+  const avBtn = shell.querySelector('#stuAvatarBtn');
+  if (avBtn && typeof openAvatarBuilder === 'function') avBtn.addEventListener('click', () => openAvatarBuilder(student.id, () => renderStudentHome(shell, studentId)));
   shell.querySelectorAll('[data-go]').forEach(btn => {
     btn.addEventListener('click', () => {
       // A child who can't read hears the button's name.
