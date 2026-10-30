@@ -9783,3 +9783,24 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .gs-pac { width: 2rem; height: 2rem; display: block; }
 .pg-pac { width: 1em; height: 1em; display: inline-block; vertical-align: -0.1em; }
 .gm-pac { width: 84px; height: 84px; display: block; margin: auto; }
+
+/* Maze Muncher — lives, pause and the online room */
+.mz-hearts { font-size: .78rem; letter-spacing: -1px; margin-left: 2px; white-space: nowrap; }
+.mz-score.me { box-shadow: 0 0 0 4px color-mix(in srgb, var(--pc) 35%, transparent); }
+.mz-row--room .mz-opts { align-items: center; }
+.mz-room-btn { font-weight: 800; }
+.mz-room, .mz-roombar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mz-roombar { width: 100%; padding: 6px 10px; border-radius: var(--radius-md); background: var(--primary-soft); }
+.mz-room-code { font-family: var(--font-display); font-weight: 900; font-size: 1.35rem; letter-spacing: .08em; }
+.mz-room-link { flex: 1; min-width: 200px; padding: 6px 10px; border: 2px solid var(--border); border-radius: 10px; font: inherit; font-size: .85rem; background: var(--surface); color: var(--ink); }
+.mz-room-status { font-size: .85rem; font-weight: 700; color: var(--ink-soft); }
+.mz-room-on { font-size: .85rem; font-weight: 800; color: var(--pc); }
+.mz-join-code { width: 90px; padding: 5px 8px; border: 2px solid var(--border); border-radius: 10px; font: inherit; text-transform: uppercase; text-align: center; letter-spacing: .1em; }
+.mz-wait { text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--ink-soft); padding: 30px 10px; margin: 0; }
+.mz-wait small { font-size: .9rem; color: var(--ink-faint); }
+.mz-pick { justify-content: center; gap: 16px; }
+.mz-opt--big { min-width: 150px; padding: 16px; gap: 8px; }
+.mz-opt--big .mz-av-img { width: 72px; height: 72px; }
+.mz-opt--big b { font-size: 1.2rem; }
+.mz-pad--big { grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(3, 54px); }
+.mz-pad--big button { font-size: 1.5rem; }
