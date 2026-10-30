@@ -9804,3 +9804,46 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .mz-opt--big b { font-size: 1.2rem; }
 .mz-pad--big { grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(3, 54px); }
 .mz-pad--big button { font-size: 1.5rem; }
+
+/* ==========================================================================
+   🦖 Jump & Learn (jumpGame.js) — uses the Maze Muncher setup styles
+   ========================================================================== */
+.jl-head-img { width: 34px; height: 34px; display: block; }
+.jl-topic-pick { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.gs-topic.on { border-color: var(--primary); background: var(--primary-soft); }
+.jl-error { color: #c9435c; font-weight: 700; text-align: center; min-height: 1.2em; margin: 0; }
+.jl-game { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.jl-hud { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px 4px 6px; border-radius: 999px; background: var(--surface); border: 2px solid var(--border); font-weight: 800; }
+.jl-hud b { font-family: var(--font-display); font-size: 1.25rem; }
+.jl-hud-img { width: 22px; height: 22px; vertical-align: middle; }
+.jl-hearts { font-size: .9rem; letter-spacing: -1px; white-space: nowrap; }
+.jl-stage { position: relative; }
+.jl-canvas { display: block; border-radius: 12px; box-shadow: var(--shadow-md); touch-action: none; max-width: 100%; }
+.jl-ask { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(20, 30, 60, .45); border-radius: 12px; padding: 10px; }
+.jl-ask[hidden] { display: none; }
+.jl-ask-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px 20px; max-width: 520px; width: 100%; text-align: center; box-shadow: var(--shadow-lg); animation: fe-pop .35s cubic-bezier(.3,1.6,.6,1); }
+.jl-ask-n { margin: 0; font-weight: 800; color: var(--ink-faint); font-size: .85rem; }
+.jl-ask-pic { width: 96px; height: 96px; margin: 4px auto; font-size: 4.5rem; display: flex; align-items: center; justify-content: center; }
+.jl-ask-pic img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.jl-ask-q { font-family: var(--font-display); font-weight: 800; font-size: 1.45rem; margin: 6px 0 12px; line-height: 1.25; }
+.jl-big { font-size: 2.2rem; color: var(--primary-dark); }
+.jl-ask-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.jl-opt {
+  position: relative; padding: 14px 8px; border: 3px solid var(--border); border-bottom-width: 5px; border-radius: var(--radius-md);
+  background: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; color: var(--ink); cursor: pointer;
+}
+.jl-opt small { position: absolute; top: 3px; left: 7px; font-size: .7rem; color: var(--ink-faint); }
+.jl-opt.big { font-size: 2rem; }
+.jl-opt:hover { border-color: var(--primary); }
+.jl-opt.ok { border-color: #3fae5a; background: #e5f6e8; }
+.jl-opt.no { border-color: #e5484d; background: #fdeaea; opacity: .55; animation: shakeItem .4s ease; }
+.jl-pad { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 760px; gap: 12px; }
+.jl-pad button { border: none; border-radius: 16px; color: #fff; font-weight: 900; cursor: pointer; touch-action: none; user-select: none; }
+.jl-pad-dir { display: flex; gap: 10px; }
+.jl-pad-dir button { width: 74px; height: 58px; font-size: 1.6rem; background: #3d7bd9; box-shadow: 0 4px 0 #2a5aa3; }
+.jl-pad-jump { width: 150px; height: 58px; font-size: 1.3rem; background: #3fae5a; box-shadow: 0 4px 0 #2b7f40; }
+.jl-pad button.on { transform: translateY(3px); box-shadow: none; }
+.jl-stars { font-size: 2.2rem; margin: 0 0 6px; }
+.jl-end-line { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; font-weight: 800; color: var(--ink-soft); margin: 0 0 14px; }
+.jl-end-line .jl-hud-img, .jl-hud .jl-hud-img { display: inline-block; }
+@media (max-width: 560px) { .jl-ask-opts { grid-template-columns: 1fr; } .jl-ask-q { font-size: 1.2rem; } }

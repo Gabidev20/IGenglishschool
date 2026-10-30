@@ -110,6 +110,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-jump>
+        <span class="gamemaker-ready-art ab-art">🦖</span>
+        <span class="gamemaker-ready-text">
+          <b>🦖 Jump &amp; Learn</b>
+          <small>Jogo de plataforma: corra, pule buracos, canos e caracóis, pegue moedas… e para passar pelos portões 🔒 responda à pergunta — "How do you say 20 in English?", "How do you say lápis in English?". Você escolhe o assunto: números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou qualquer tópico do currículo.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-maze>
         <span class="gamemaker-ready-art ab-art">${mzPacIcon('gm-pac')}</span>
         <span class="gamemaker-ready-text">
@@ -146,6 +154,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-body]').forEach(btn => btn.addEventListener('click', openBodyGame));
   container.querySelectorAll('[data-open-alphabet]').forEach(btn => btn.addEventListener('click', openAlphabetGame));
   container.querySelectorAll('[data-open-maze]').forEach(btn => btn.addEventListener('click', openMazeGame));
+  container.querySelectorAll('[data-open-jump]').forEach(btn => btn.addEventListener('click', openJumpGame));
 }
 
 // ---------------------------------------------------------------------------

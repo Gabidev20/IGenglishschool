@@ -27,6 +27,7 @@ const STUDENT_ACCESS_KEY = 'student_access';
 const SA_READY_GAMES = [
   { id: 'colors', icon: '🎨', label: 'Colors' },
   { id: 'alphabet', icon: '🔤', label: 'ABC — Alphabet' },
+  { id: 'jump', icon: '🦖', label: 'Jump & Learn' },
   { id: 'maze', icon: typeof mzPacIcon === 'function' ? mzPacIcon('sa-pac') : '🟡', label: 'Maze Muncher' },
   { id: 'feelings', icon: '😊', label: 'Feelings' },
   { id: 'weather', icon: '🌦️', label: 'Weather' },
@@ -158,7 +159,7 @@ function saDefaultKeys(student) {
   });
 
   if (young) SA_READY_GAMES.forEach(g => keys.push(`g:${g.id}`));
-  else if (prof === 'writer') keys.push('g:alphabet', 'g:drawing', 'g:maze');
+  else if (prof === 'writer') keys.push('g:alphabet', 'g:drawing', 'g:maze', 'g:jump');
 
   const taughtTitles = [...taught].join(' ');
   saPracticeTopics(student).forEach(t => {
@@ -244,7 +245,7 @@ function saEditorHTML(student) {
 
       ${young || prof === 'writer' ? `
         <p class="sa-group-label">🎮 Jogos com figuras</p>
-        <div class="sa-grid">${SA_READY_GAMES.filter(g => young || g.id === 'alphabet' || g.id === 'drawing' || g.id === 'maze').map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
+        <div class="sa-grid">${SA_READY_GAMES.filter(g => young || g.id === 'alphabet' || g.id === 'drawing' || g.id === 'maze' || g.id === 'jump').map(g => box(`g:${g.id}`, `${g.icon} ${esc(g.label)}`)).join('')}</div>` : ''}
 
       ${practice.length ? `
         <p class="sa-group-label">⚡ Treinos (Practice / Writing)</p>
