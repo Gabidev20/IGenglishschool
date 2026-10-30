@@ -16,11 +16,13 @@
    Wrong answers go to "My mistakes" like every other game.
    ========================================================================== */
 
+// side: 'left' = the picture looks left (mirrored when running right);
+// no side = it looks at you and is never mirrored.
 const JL_AVATARS = [
-  { id: 'dino', en: 'Dino', emoji: '🦖' },
+  { id: 'dino', en: 'Dino', emoji: '🦖', side: 'left' },
   { id: 'frog', en: 'Frog', emoji: '🐸' },
   { id: 'monkey', en: 'Monkey', emoji: '🐵' },
-  { id: 'unicorn', en: 'Unicorn', emoji: '🦄' },
+  { id: 'unicorn', en: 'Unicorn', emoji: '🦄', side: 'left' },
   { id: 'cat', en: 'Cat', emoji: '🐱' },
   { id: 'fox', en: 'Fox', emoji: '🦊' },
 ];
@@ -144,7 +146,7 @@ function jlBuildLevel(nGates) {
 
   const pieces = {
     gap() { flat(2); const w = 2 + Math.floor(Math.random() * 2); const x0 = x(); gap(w);
-      for (let i = 0; i < w + 1; i++) coins.push({ x: x0 - 0.5 + i, y: JL_TOP - 3.2 - Math.sin((i / w) * Math.PI) * 1.2 }); flat(2); },
+      for (let i = 0; i < w + 1; i++) coins.push({ x: x0 - 0.5 + i, y: JL_TOP - 2.6 - Math.sin((i / w) * Math.PI) * 0.8 }); flat(2); },
     pipe() { flat(2); const h = 2; for (let k = 0; k < 2; k++) { const c = col(); for (let y = JL_TOP - h; y < JL_TOP; y++) c[y] = 3; }
       coins.push({ x: x() - 1.5, y: JL_TOP - h - 1.6 }); flat(3); },
     steps() { flat(1); [1, 2, 3, 3, 2, 1].forEach(h => { const c = col(); for (let y = JL_TOP - h; y < JL_TOP; y++) c[y] = 7; });
@@ -425,7 +427,9 @@ function openJumpGame() {
         }
       }
       setTile(gate.qx, gate.qy, 6);
-      for (let k = 0; k < 5; k++) coins.push({ x: gate.qx + 0.5 + (k - 2) * 0.7, y: gate.qy - 1.4 - Math.abs(k - 2) * 0.3, taken: false });
+      // Five coins jump out of the block and are counted at once.
+      P.coins += 5;
+      for (let k = 0; k < 5; k++) particles.push({ x: gate.qx + 0.35, y: gate.qy - 0.6, vx: (k - 2) * 1.6, vy: -9 - Math.random() * 3, life: 0.9, coin: true });
       P.cp = gate.wx - 1.5;
       if (typeof IGSound !== 'undefined') IGSound.pop && IGSound.pop();
       paintHud();
@@ -442,7 +446,7 @@ function openJumpGame() {
     }
 
     // ---- physics -------------------------------------------------------------------
-    const G = 40, JUMP = 16, RUN = 6;
+    const G = 40, JUMP = 17, RUN = 6;
     function moveX(o, dx) {
       o.x += dx;
       const top = Math.floor(o.y + 0.02), bot = Math.floor(o.y + o.h - 0.02);
@@ -631,13 +635,20 @@ function openJumpGame() {
         const img = jlImage(avatar.emoji);
         const sq = P.squash > 0 ? 1 + P.squash : 1;
         ctx.save(); ctx.translate((P.x + P.w / 2) * S, (P.y + P.h) * S);
-        if (P.face < 0) ctx.scale(-1, 1);
+        if (avatar.side === 'left' && P.face > 0) ctx.scale(-1, 1);   // looking where it runs
         ctx.scale(1 / sq, sq);
         const run = P.ground && Math.abs(P.vx) > 0.5 ? Math.abs(Math.sin(now / 80)) * S * 0.08 : 0;
         if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -S * 0.65, -S * 1.25 - run, S * 1.3, S * 1.3);
         ctx.restore();
       }
-      particles.forEach(p => { ctx.fillStyle = p.c; ctx.fillRect(p.x * S, p.y * S, S * 0.25, S * 0.25); });
+      particles.forEach(p => {
+        if (p.coin) {
+          ctx.globalAlpha = Math.min(1, p.life * 2);
+          ctx.fillStyle = '#ffd400'; ctx.strokeStyle = '#b8860b'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.ellipse(p.x * S, p.y * S, S * 0.28, S * 0.28, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          ctx.globalAlpha = 1;
+        } else { ctx.fillStyle = p.c; ctx.fillRect(p.x * S, p.y * S, S * 0.25, S * 0.25); }
+      });
       ctx.restore();
       if (paused) {
         ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(0, 0, w, h);

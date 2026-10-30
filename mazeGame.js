@@ -40,7 +40,7 @@ const MZ_MAP = [
 
 const MZ_AVATARS = [
   { id: 'pacman', en: 'Pac-Man', emoji: null },
-  { id: 'dino', en: 'Dinosaur', emoji: '🦖' },
+  { id: 'dino', en: 'Dinosaur', emoji: '🦖', side: 'left' },   // the picture looks left
   { id: 'monkey', en: 'Monkey', emoji: '🐵' },
   { id: 'butterfly', en: 'Butterfly', emoji: '🦋' },
   { id: 'frog', en: 'Frog', emoji: '🐸' },
@@ -229,7 +229,8 @@ function mzRenderer(canvas, food) {
       return;
     }
     const img = mzImage(p.avatar.emoji);
-    const flip = (p.dir === 'left' || p.dir === 'right' ? p.dir : p.face) === 'left';
+    // Only a picture drawn in profile is turned to face the way it moves.
+    const flip = p.avatar.side === 'left' && (p.dir === 'left' || p.dir === 'right' ? p.dir : p.face) === 'right';
     const bounce = p.moving ? Math.abs(Math.sin(now / 110)) * cell * 0.06 : 0;
     ctx.save(); ctx.translate(cx, cy - bounce); if (flip) ctx.scale(-1, 1);
     if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -s / 2, -s / 2, s, s);
