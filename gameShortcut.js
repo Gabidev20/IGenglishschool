@@ -10,6 +10,7 @@
 
 const GS_CLASS_GAMES = [
   { icon: '🕵️', en: 'Who am I?', pt: 'Adivinhação', open: () => openWhoAmI() },
+  { icon: '🏆', en: 'Live Quiz', pt: 'Quiz ao vivo · Zoom', open: () => openLiveQuiz() },
   { icon: '🦖', en: 'Jump & Learn', pt: 'Pule e responda', open: () => openJumpGame() },
   { icon: typeof mzPacIcon === 'function' ? mzPacIcon('gs-pac') : '🟡', en: 'Maze Muncher', pt: 'Come-come · 2 jogadores', open: () => openMazeGame() },
   { icon: '🎨', en: 'Drawing Challenge', pt: 'Desenhe e adivinhe', open: () => LiveTools.openTool('drawing') },

@@ -110,6 +110,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-quiz>
+        <span class="gamemaker-ready-art ab-art">🏆</span>
+        <span class="gamemaker-ready-text">
+          <b>🏆 Live Quiz (Zoom)</b>
+          <small>Quiz ao vivo, no estilo Kahoot: você abre a sala e compartilha a tela; cada aluno entra pelo link no próprio celular ou computador e responde em botões coloridos. Quem acerta mais rápido ganha mais pontos — ranking a cada pergunta e pódio no final.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-sayit>
         <span class="gamemaker-ready-art ab-art">🎤</span>
         <span class="gamemaker-ready-text">
@@ -205,6 +213,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-jump]').forEach(btn => btn.addEventListener('click', openJumpGame));
   container.querySelectorAll('[data-open-farm]').forEach(btn => btn.addEventListener('click', openFarmGame));
   container.querySelectorAll('[data-open-sayit]').forEach(btn => btn.addEventListener('click', openSayItGame));
+  container.querySelectorAll('[data-open-quiz]').forEach(btn => btn.addEventListener('click', openLiveQuiz));
   container.querySelectorAll('[data-open-touch]').forEach(btn => btn.addEventListener('click', openTouchGame));
   container.querySelectorAll('[data-open-pizza]').forEach(btn => btn.addEventListener('click', openShopGame));
   container.querySelectorAll('[data-open-sounds]').forEach(btn => btn.addEventListener('click', openSoundGame));
