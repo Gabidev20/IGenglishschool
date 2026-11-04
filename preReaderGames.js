@@ -813,8 +813,59 @@ const KG_SOUNDS = [
   { id: 'train', en: "It's a train!", emoji: '🚂', play: () => kgSay('Choo choo! Choo choo!', { pitch: 0.8 }) },
 ];
 
+// Real recordings for the animals and things (sounds/*.mp3, from Wikimedia
+// Commons — authors and licences below; CC BY / BY-SA ask for the credit,
+// shown under the game). [seconds to play]: long ones stop early, gently.
+const KG_SOUND_REC = { cow: 4, dog: 3, cat: 2, duck: 3.5, sheep: 3, rooster: 4.5, lion: 4.5, car: 3.5, train: 3.5, phone: 4.5, doorbell: 4.2, clock: 4 };
+const KG_SOUND_CREDITS = [
+  { id: 'cow', who: "MichaeltheFox8621", license: 'CC BY-SA 4.0', file: "Single Cow Moo.ogg" },
+  { id: 'dog', who: "Amada44", license: 'CC BY-SA 3.0', file: "Barking of a dog.ogg" },
+  { id: 'cat', who: "freemaster2", license: 'CC0', file: "Meow of a Siamese cat - freemaster2.wav" },
+  { id: 'duck', who: "Jonathon Jongsma", license: 'CC BY-SA 3.0', file: "Anas platyrhynchos - Mallard XC62258.mp3" },
+  { id: 'sheep', who: "earthcalling", license: 'Public domain', file: "Sheep bleating.ogg" },
+  { id: 'rooster', who: "alys", license: 'Public domain', file: "Small rooster crowing.ogg" },
+  { id: 'lion', who: "த*உழவன்", license: 'Public domain', file: "Lion raring-sound1TamilNadu178.ogg" },
+  { id: 'car', who: "15HPanska_Ruttner_Jan", license: 'CC0', file: "Car Horn.wav" },
+  { id: 'train', who: "Alex Alex Lep", license: 'Public domain', file: "Parovoz sound.ogg" },
+  { id: 'phone', who: "CianMcCann", license: 'CC BY-SA 3.0', file: "Model 500 Telephone British ring.ogg" },
+  { id: 'doorbell', who: "Are shyde", license: 'CC BY 4.0', file: "Doorbell.wav" },
+  { id: 'clock', who: "Dub", license: 'CC BY-SA 3.0', file: "Alarmclock-mechanical.ogg" },
+];
+const KG_SOUND_AUDIO = {};
+let kgSoundNow = null;
+function kgStopRecording() {
+  if (!kgSoundNow) return;
+  const { a, t, f } = kgSoundNow;
+  clearTimeout(t); clearInterval(f);
+  try { a.pause(); a.currentTime = 0; } catch (e) { /* ignore */ }
+  kgSoundNow = null;
+}
+// Play a recording for up to `max` seconds (fading out), or the old
+// synthesised sound if the file cannot play.
+function kgPlayRecording(id, max, fallback) {
+  kgStopRecording();
+  if (typeof IGSound !== 'undefined' && IGSound.muted && IGSound.muted()) return;
+  let a = KG_SOUND_AUDIO[id];
+  if (!a) { a = new Audio(`sounds/${id}.mp3`); a.preload = 'auto'; KG_SOUND_AUDIO[id] = a; }
+  a.volume = 1;
+  try { a.currentTime = 0; } catch (e) { /* ignore */ }
+  const now = { a, t: 0, f: 0 };
+  kgSoundNow = now;
+  now.t = setTimeout(() => {            // the last 0.4 s fade away
+    now.f = setInterval(() => { a.volume = Math.max(0, a.volume - 0.1); if (a.volume <= 0.05) kgStopRecording(); }, 40);
+  }, Math.max(300, max * 1000 - 400));
+  const p = a.play();
+  if (p && p.catch) p.catch(() => { kgSoundNow = null; try { fallback(); } catch (e) { /* ignore */ } });
+}
+KG_SOUNDS.forEach(s => {
+  if (!KG_SOUND_REC[s.id]) return;
+  const synth = s.play;
+  s.play = () => kgPlayRecording(s.id, KG_SOUND_REC[s.id], synth);
+});
+
 function openSoundGame() {
   const win = kgOpen('🔊', 'Sound Detective', 'Listen… what is it?');
+  Object.keys(KG_SOUND_REC).forEach(id => { if (!KG_SOUND_AUDIO[id]) { const a = new Audio(`sounds/${id}.mp3`); a.preload = 'auto'; KG_SOUND_AUDIO[id] = a; } });
   const ROUNDS = 8;
   let round = 0, stars = 0, target = null, choices = [], missed = false, locked = false, used = [];
 
@@ -830,7 +881,10 @@ function openSoundGame() {
       <button class="cg-listen sd-listen" data-hear aria-label="Play the sound">🔊</button>
       <div class="cg-grid sd-grid">
         ${choices.map((s, i) => `<button type="button" class="cg-choice" data-pick="${i}" aria-label="${s.id}">${kgEmoji(s.emoji, 'sd-img')}</button>`).join('')}
-      </div>`;
+      </div>
+      <details class="sd-credits"><summary>ℹ️ Sounds</summary>
+        <p>Recordings from Wikimedia Commons: ${KG_SOUND_CREDITS.map(c => `${igEscapeHtml(c.id)} — ${igEscapeHtml(c.who)} (${igEscapeHtml(c.license)})`).join(' · ')}.</p>
+      </details>`;
     m.querySelector('[data-hear]').addEventListener('click', play);
     m.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => pick(choices[Number(b.dataset.pick)], b)));
     setTimeout(play, 500);

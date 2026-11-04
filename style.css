@@ -10109,3 +10109,8 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .pz-words { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: min(100%, 360px); }
 .pz-word { padding: 10px; border: 3px solid #F05D77; border-radius: 999px; background: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: #4A3347; cursor: pointer; }
 .pz-word.on { background: #F05D77; color: #fff; }
+
+/* Sound Detective: the recordings' credits */
+.sd-credits { margin-top: 12px; font-size: .75rem; color: var(--ink-faint); text-align: center; }
+.sd-credits summary { cursor: pointer; }
+.sd-credits p { margin: 4px 0 0; }
