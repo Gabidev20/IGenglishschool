@@ -2299,24 +2299,32 @@ const LivroOnline = (() => {
     contentPages(m).forEach(p => { const w = readLocal(sid, pid(m, p.n)); if (w && w.updatedAt > t) { t = w.updatedAt; n = p.n; } });
     return { n, t };
   }
-  // The page worked on most recently (at home or in class), else the last one
-  // opened, else the first lesson page.
+  // Where the student stopped = the most recent of: work saved on a page (at
+  // home or in class) and the last page opened here. Opening a page of the 2nd
+  // bimester without drawing on it must count too, or "Livro da aula" jumps
+  // back to the 1st bimester, which has older work.
+  function lastOpened(sid, m) {
+    const l = lastSeen()[sid];
+    if (!l || l.book !== m.book || (l.bim || 1) !== (m.bimester || 1)) return null;
+    return contentPages(m).some(p => p.n === l.n) ? l : null;
+  }
   function resumePage(sid, m) {
     const lw = lastWork(sid, m);
+    const lo = lastOpened(sid, m);
+    if (lo && (!lw.n || (lo.t || 0) >= lw.t)) return lo.n;
     if (lw.n) return lw.n;
     const pages = contentPages(m);
-    const l = lastSeen()[sid];
-    if (l && l.book === m.book && (l.bim || 1) === (m.bimester || 1) && pages.some(p => p.n === l.n)) return l.n;
     if (isSingle(m)) return (pages.find(p => p.kind === 'opener') || pages[0]).n;   // lesson 1, not the contents
     return (pages.find(p => p.kind === 'page') || pages[0]).n;
   }
-  // The latest bimester with work; else the one opened last; else the first.
+  // The bimester of the most recent of those two; else the first.
   function resumeBimester(sid, ms) {
     let best = null, t = 0;
     ms.forEach(m => { const lw = lastWork(sid, m); if (lw.t > t) { t = lw.t; best = m; } });
-    if (best) return best;
     const l = lastSeen()[sid];
-    return (l && ms.find(m => m.book === l.book && m.bimester === (l.bim || 1))) || ms[0];
+    const seen = l && ms.find(m => m.book === l.book && m.bimester === (l.bim || 1) && lastOpened(sid, m));
+    if (seen && (!best || (l.t || 0) >= t)) return seen;
+    return best || (l && ms.find(m => m.book === l.book && m.bimester === (l.bim || 1))) || ms[0];
   }
 
   function closeAllViews() { while (stack.length) closeTop(); }
