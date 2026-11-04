@@ -9,8 +9,9 @@
                           with karaoke, or the teacher's own recording
      🎈 Touch it!         "Touch the small red star!" "Touch three hearts!"
                           — colors, shapes, big/small and numbers together
-     🍕 Pizza Shop        "I want a pizza with two tomatoes and cheese,
-                          please!" — the order is spoken AND drawn
+     🍕 Pizza Shop        the Pizza Workshop's ingredients and steps ("Take
+                          the pizza dough… Sprinkle the oregano!"), and
+                          customers' orders, spoken AND drawn
      🔊 Sound Detective   a sound plays (a dog, rain, a drum, a phone…):
                           which picture is it?
      🧠 Talking Memory    pairs of a picture and a 🔊 card that only
@@ -459,38 +460,267 @@ function openTouchGame() {
 }
 
 // ===========================================================================
-// 🍕 PIZZA SHOP
+// 🍕 PIZZA SHOP — the same ingredients, drawings and steps as Teacher
+// Gabi's Pizza Workshop (Oficina de Pizza): pizza dough, tomato sauce,
+// cheese, sausage, olives, shredded chicken, onion rings and oregano.
+//   🧑‍🍳 Let's make a pizza!  the workshop's 10 steps, spoken one by one:
+//                            the child taps the right ingredient
+//   🛎️ Pizza Shop            a customer orders ("…with two olives and
+//                            onion rings, please!"), drawn AND spoken
 // ===========================================================================
-const KG_TOPPINGS = [
-  { id: 'tomato', one: 'tomato', many: 'tomatoes', emoji: '🍅' },
-  { id: 'mushroom', one: 'mushroom', many: 'mushrooms', emoji: '🍄' },
-  { id: 'olive', one: 'olive', many: 'olives', emoji: '🫒' },
-  { id: 'pepper', one: 'pepper', many: 'peppers', emoji: '🫑' },
-  { id: 'onion', one: 'onion', many: 'onions', emoji: '🧅' },
-  { id: 'cheese', one: 'cheese', many: 'cheese', emoji: '🧀', plain: true },   // "with cheese"
+// The workshop's colours (pizza_pdf.py).
+const KG_PZ_C = {
+  plum: '#4A3347', crust: '#E8B862', crustD: '#CF9A45', dough: '#F6DFA8', dot: '#E8CB8A',
+  red: '#D9455F', redD: '#A82E45', swirl: '#F27F93', redDot: '#F79AA9',
+  cheese: '#FFE37A', cheeseD: '#D9B040', hole: '#F2C855',
+  saus: '#C94A45', sausD: '#7A242A', sausRing: '#E07A72', sausDot: '#EE9A92',
+  olive: '#3A2E3C', oliveHi: '#7A6A7C',
+  chk: '#E9C79A', chkD: '#B58A55', chkLine: '#D1A472',
+  oni: '#F0D2E6', oniD: '#A96E93', oniRing: '#D4A6C6',
+  leaf: '#5E9A5A', leafD: '#3E6E3E',
+};
+// A little seeded random, so a piece always has the same wobbly shape.
+function kgRand(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function kgBlob(cx, cy, rx, ry, seed, wob, n, rot) {
+  const r = kgRand(seed), ph = [r() * 6.28, r() * 6.28, r() * 6.28];
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = 2 * Math.PI * i / n;
+    const k = 1 + wob * (Math.sin(2 * a + ph[0]) * 0.6 + Math.sin(3 * a + ph[1]) * 0.5 + Math.sin(5 * a + ph[2]) * 0.3);
+    const x = rx * k * Math.cos(a), y = ry * k * Math.sin(a);
+    pts.push(`${(cx + x * Math.cos(rot) - y * Math.sin(rot)).toFixed(1)},${(cy + x * Math.sin(rot) + y * Math.cos(rot)).toFixed(1)}`);
+  }
+  return pts.join(' ');
+}
+// One piece of an ingredient, centred at (x, y), size s (about its radius).
+function kgPiece(kind, x, y, s, seed, rot) {
+  const C = KG_PZ_C, sw = Math.max(0.8, s * 0.09);
+  const r = kgRand(seed || 1);
+  if (kind === 'cheese') {
+    let holes = '';
+    for (let i = 0; i < 3; i++) { const a = r() * 6.28, d = r() * 0.5; holes += `<circle cx="${x + s * d * Math.cos(a)}" cy="${y + s * 0.8 * d * Math.sin(a)}" r="${s * 0.12}" fill="${C.hole}"/>`; }
+    return `<polygon points="${kgBlob(x, y, s, s * 0.8, seed || 1, 0.16, 20, rot || 0)}" fill="${C.cheese}" stroke="${C.cheeseD}" stroke-width="${sw}"/>${holes}`;
+  }
+  if (kind === 'sausage') {
+    const dots = [[-0.35, -0.3, 0.16], [0.3, -0.2, 0.14], [0, 0.35, 0.17], [-0.4, 0.25, 0.12], [0.4, 0.35, 0.11], [0.05, -0.1, 0.1]]
+      .map(([dx, dy, q]) => `<circle cx="${x + s * dx}" cy="${y + s * dy}" r="${s * q}" fill="${C.sausDot}"/>`).join('');
+    return `<circle cx="${x}" cy="${y}" r="${s}" fill="${C.saus}" stroke="${C.sausD}" stroke-width="${sw}"/><circle cx="${x}" cy="${y}" r="${s * 0.82}" fill="none" stroke="${C.sausRing}" stroke-width="${sw * 0.45}"/>${dots}`;
+  }
+  if (kind === 'olive') {
+    return `<circle cx="${x}" cy="${y}" r="${s}" fill="${C.olive}" stroke="${C.plum}" stroke-width="${sw}"/>
+      <path d="M${x - s * 0.72 * Math.cos(-1.3)},${y - s * 0.72 * Math.sin(-1.3)} A${s * 0.72},${s * 0.72} 0 0 0 ${x - s * 0.72 * Math.cos(1.3)},${y - s * 0.72 * Math.sin(1.3)}" fill="none" stroke="${C.oliveHi}" stroke-width="${sw * 0.6}"/>
+      <circle cx="${x}" cy="${y}" r="${s * 0.4}" fill="#fff" stroke="${C.plum}" stroke-width="${sw * 0.6}"/>`;
+  }
+  if (kind === 'chicken') {
+    let lines = '';
+    for (let i = 0; i < 6; i++) {
+      const a = (r() - 0.5) * 0.8 + (rot || 0), ox = (r() - 0.5) * 0.4 * s * 2, oy = (r() - 0.5) * 0.4 * s, L = s * 0.34;
+      lines += `<line x1="${x + ox - L * Math.cos(a)}" y1="${y + oy - L * Math.sin(a)}" x2="${x + ox + L * Math.cos(a)}" y2="${y + oy + L * Math.sin(a)}" stroke="${C.chkLine}" stroke-width="${sw * 0.6}"/>`;
+    }
+    return `<polygon points="${kgBlob(x, y, s, s * 0.6, seed || 1, 0.18, 20, rot || 0)}" fill="${C.chk}" stroke="${C.chkD}" stroke-width="${sw}"/>${lines}`;
+  }
+  if (kind === 'onion') {
+    return `<circle cx="${x}" cy="${y}" r="${s}" fill="${C.oni}" stroke="${C.oniD}" stroke-width="${sw}"/><circle cx="${x}" cy="${y}" r="${s * 0.8}" fill="none" stroke="${C.oniRing}" stroke-width="${sw * 0.5}"/><circle cx="${x}" cy="${y}" r="${s * 0.62}" fill="#fff" stroke="${C.oniD}" stroke-width="${sw * 0.7}"/>`;
+  }
+  if (kind === 'oregano') {   // a few little green leaves
+    let leaves = '';
+    for (let i = 0; i < 4; i++) {
+      const a = r() * 6.28, d = r() * s * 0.8, ang = r() * 180;
+      leaves += `<ellipse cx="${x + d * Math.cos(a)}" cy="${y + d * Math.sin(a)}" rx="${s * 0.34}" ry="${s * 0.17}" transform="rotate(${ang} ${x + d * Math.cos(a)} ${y + d * Math.sin(a)})" fill="${C.leaf}" stroke="${C.leafD}" stroke-width="${sw * 0.5}"/>`;
+    }
+    return leaves;
+  }
+  return '';
+}
+const kgSaucePath = (cx, cy, rad, seed) => {
+  const C = KG_PZ_C;
+  const swirl = [[0.62, 0.3], [0.38, 2.0], [0.78, 3.6]].map(([rr, a0]) => `<path d="M${Array.from({ length: 11 }, (_, q) => `${(cx + rad * rr * Math.cos(a0 + q * 0.16)).toFixed(1)},${(cy + rad * rr * Math.sin(a0 + q * 0.16)).toFixed(1)}`).join(' L')}" fill="none" stroke="${C.swirl}" stroke-width="${rad * 0.035}" stroke-linecap="round"/>`).join('');
+  const dots = [[0.3, -0.35], [-0.4, 0.2], [0.1, 0.5], [-0.15, -0.55]].map(([dx, dy]) => `<circle cx="${cx + rad * dx}" cy="${cy + rad * dy}" r="${rad * 0.045}" fill="${C.redDot}"/>`).join('');
+  return `<polygon points="${kgBlob(cx, cy, rad, rad, seed || 1, 0.025, 60, 0)}" fill="${C.red}" stroke="${C.redD}" stroke-width="${rad * 0.02}"/>${swirl}${dots}`;
+};
+const kgDoughPath = (cx, cy, rad) => {
+  const C = KG_PZ_C, r = kgRand(3);
+  let dots = '';
+  for (let i = 0; i < 40; i++) { const a = r() * 6.28, d = r() * rad * 0.8; dots += `<circle cx="${cx + d * Math.cos(a)}" cy="${cy + d * Math.sin(a)}" r="${rad * 0.012}" fill="${C.dot}"/>`; }
+  return `<circle cx="${cx}" cy="${cy}" r="${rad}" fill="${C.crust}" stroke="${C.plum}" stroke-width="${rad * 0.025}"/><circle cx="${cx}" cy="${cy}" r="${rad * 0.84}" fill="${C.dough}" stroke="${C.crustD}" stroke-width="${rad * 0.015}"/>${dots}`;
+};
+// The icon of each ingredient, like the workshop's cards (100 x 100).
+function kgIngIcon(id, cls) {
+  const C = KG_PZ_C;
+  const inner = {
+    dough: `${kgDoughPath(50, 46, 34)}<rect x="12" y="80" width="76" height="9" rx="4.5" fill="#B5814A" stroke="${C.plum}" stroke-width="1.2"/>`,
+    sauce: `<path d="M18,40 H82 L74,84 H26Z" fill="#f3f3f1" stroke="${C.plum}" stroke-width="2"/><ellipse cx="50" cy="40" rx="32" ry="8" fill="${C.red}" stroke="${C.redD}" stroke-width="1.5"/><circle cx="80" cy="66" r="13" fill="${C.red}" stroke="${C.redD}" stroke-width="1.5"/><path d="M80,53 l-5,-5 m5,5 l5,-6 m-5,6 l0,-7" stroke="${C.leaf}" stroke-width="3" stroke-linecap="round"/>`,
+    cheese: `<path d="M10,40 L62,20 L90,44 V78 H10Z" fill="${C.cheese}" stroke="${C.cheeseD}" stroke-width="2.4" stroke-linejoin="round"/><path d="M10,40 L62,20 L90,44 Z" fill="#FFF0A8" stroke="${C.cheeseD}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="34" cy="58" r="6" fill="${C.hole}"/><circle cx="62" cy="52" r="5" fill="${C.hole}"/><circle cx="74" cy="68" r="4" fill="${C.hole}"/>`,
+    sausage: `<rect x="10" y="14" width="56" height="16" rx="8" fill="${C.saus}" stroke="${C.sausD}" stroke-width="2"/>${kgPiece('sausage', 30, 60, 18, 1)}${kgPiece('sausage', 62, 70, 18, 2)}${kgPiece('sausage', 76, 46, 16, 3)}`,
+    olive: `${kgPiece('olive', 30, 40, 18, 1)}${kgPiece('olive', 66, 34, 18, 2)}${kgPiece('olive', 48, 70, 18, 3)}`,
+    chicken: `${kgPiece('chicken', 34, 34, 22, 4, -0.2)}${kgPiece('chicken', 66, 52, 22, 7, 0.3)}${kgPiece('chicken', 38, 72, 20, 9, 0.1)}`,
+    onion: `${kgPiece('onion', 36, 60, 26, 1)}${kgPiece('onion', 70, 36, 18, 2)}${kgPiece('onion', 74, 74, 13, 3)}`,
+    oregano: `<path d="M50,90 L50,14" stroke="${C.leafD}" stroke-width="3" stroke-linecap="round"/>${[22, 34, 46, 58, 70].map((y, i) => `<ellipse cx="${i % 2 ? 62 : 38}" cy="${y}" rx="13" ry="6.5" transform="rotate(${i % 2 ? -30 : 30} ${i % 2 ? 62 : 38} ${y})" fill="${C.leaf}" stroke="${C.leafD}" stroke-width="1.6"/>`).join('')}<ellipse cx="50" cy="12" rx="6.5" ry="12" fill="${C.leaf}" stroke="${C.leafD}" stroke-width="1.6"/>`,
+    oven: `<rect x="10" y="14" width="80" height="72" rx="10" fill="#8E6D86" stroke="${C.plum}" stroke-width="3"/><rect x="20" y="30" width="60" height="44" rx="6" fill="${C.plum}"/><circle cx="50" cy="52" r="15" fill="${C.crust}"/><circle cx="50" cy="52" r="11" fill="${C.red}"/><circle cx="24" cy="22" r="3.5" fill="#F05D77"/><circle cx="34" cy="22" r="3.5" fill="#FAEFC2"/>`,
+  }[id] || '';
+  return `<svg class="${cls || ''}" viewBox="0 0 100 100" aria-hidden="true">${inner}</svg>`;
+}
+
+// The ingredients. `say` is how the order and the voice name them; `count`
+// ingredients are counted in an order ("two olives"); a tap adds `per` pieces.
+const KG_PZ_INGS = [
+  { id: 'dough', en: 'pizza dough', pt: 'massa', layer: true },
+  { id: 'sauce', en: 'tomato sauce', pt: 'molho de tomate', layer: true },
+  { id: 'cheese', en: 'cheese', pt: 'queijo', per: 8, size: 15 },
+  { id: 'sausage', en: 'sausage', pt: 'calabresa', count: true, one: 'slice of sausage', many: 'slices of sausage', per: 1, size: 12 },
+  { id: 'olive', en: 'olives', pt: 'azeitonas', count: true, one: 'olive', many: 'olives', per: 1, size: 7 },
+  { id: 'chicken', en: 'shredded chicken', pt: 'frango desfiado', per: 4, size: 12 },
+  { id: 'onion', en: 'onion rings', pt: 'cebola em rodelas', count: true, one: 'onion ring', many: 'onion rings', per: 1, size: 10 },
+  { id: 'oregano', en: 'oregano', pt: 'orégano', per: 5, size: 9 },
+];
+const kgPzIng = id => KG_PZ_INGS.find(i => i.id === id);
+// The workshop's steps, word for word.
+const KG_PZ_STEPS = [
+  { id: 'dough', say: 'Take the pizza dough.' },
+  { id: 'sauce', say: 'Spread the tomato sauce.' },
+  { id: 'cheese', say: 'Put on the cheese.' },
+  { id: 'sausage', say: 'Add the sausage.' },
+  { id: 'olive', say: 'Put a little bit of olives.' },
+  { id: 'chicken', say: 'Add the shredded chicken.' },
+  { id: 'onion', say: 'Put the onion rings on top.' },
+  { id: 'oregano', say: 'Sprinkle the oregano!' },
+  { id: 'oven', say: 'Time to bake! Into the oven!' },
 ];
 const KG_CUSTOMERS = ['👧', '🧒', '👦', '👩', '👨', '👵', '👴'];
-// Where toppings sit on the pizza (% of the pizza box), filled in order.
-const KG_PIZZA_SPOTS = [[50, 50], [30, 34], [68, 32], [30, 66], [70, 66], [50, 22], [50, 78], [18, 50], [82, 50], [38, 50], [62, 50], [50, 36]];
 
 function openShopGame() {
-  const win = kgOpen('🍕', 'Pizza Shop', 'Listen to the order and make the pizza!');
+  const win = kgOpen('🍕', 'Pizza Shop', "Let's make a pizza! 🍕");
+  let mode = null, step = 0, stars = 0, round = 0, tries = 0, order = null, customer = '👧';
+  let pizza = { dough: false, sauce: false, pieces: [] };     // pieces: [{ kind, x, y, seed, rot }]
+  let pieceSeed = 1;
   const ROUNDS = 5;
-  let round = 0, stars = 0, order = null, onPizza = [], customer = '👧', tries = 0;
-  const phrase = (t, n) => (t.plain ? t.one : `${KG_NUM[n]} ${n === 1 ? t.one : t.many}`);
+  const count = id => pizza.pieces.filter(p => p.kind === id).length;
+  const has = id => (id === 'dough' ? pizza.dough : id === 'sauce' ? pizza.sauce : count(id) > 0);
 
-  function makeOrder() {
-    const kinds = kgShuffle(KG_TOPPINGS.filter(t => !t.plain)).slice(0, round < 2 ? 1 : 2);
-    order = kinds.map(t => ({ t, n: 1 + Math.floor(Math.random() * (round < 1 ? 2 : 3)) }));
-    if (Math.random() < 0.6) order.push({ t: KG_TOPPINGS.find(t => t.plain), n: 1 });
-    customer = kgPick(KG_CUSTOMERS); onPizza = []; tries = 0;
+  // Somewhere on the sauce, not right on top of the last pieces.
+  function spot(size) {
+    let best = null;
+    for (let k = 0; k < 14; k++) {
+      const a = Math.random() * 6.28, d = Math.sqrt(Math.random()) * (60 - size * 0.6);
+      const p = { x: 100 + d * Math.cos(a), y: 100 + d * Math.sin(a) };
+      const near = Math.min(99, ...pizza.pieces.slice(-12).map(q => Math.hypot(q.x - p.x, q.y - p.y)));
+      if (!best || near > best.near) best = { ...p, near };
+      if (near > size * 1.6) break;
+    }
+    return best;
   }
+  function addPieces(id, n) {
+    const ing = kgPzIng(id);
+    for (let i = 0; i < n; i++) { const p = spot(ing.size); pizza.pieces.push({ kind: id, x: p.x, y: p.y, seed: pieceSeed++, rot: Math.random() * 3 }); }
+  }
+  function pizzaSVG(cls, hot) {
+    const order = ['cheese', 'chicken', 'sausage', 'onion', 'olive', 'oregano'];
+    const pieces = pizza.pieces.slice().sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
+    return `<svg class="${cls}" viewBox="0 0 200 200" aria-hidden="true">
+      ${pizza.dough ? kgDoughPath(100, 100, 92) : '<circle cx="100" cy="100" r="92" fill="#f7f3ee" stroke="#d9cfc7" stroke-width="2" stroke-dasharray="6 6"/>'}
+      ${pizza.sauce ? kgSaucePath(100, 100, 72, 1) : ''}
+      ${pieces.map(p => `<g data-off="${pizza.pieces.indexOf(p)}" class="pz-piece">${kgPiece(p.kind, p.x, p.y, kgPzIng(p.kind).size, p.seed, p.rot)}</g>`).join('')}
+      ${hot ? '<g class="pz-steam"><path d="M70,40 q-8,-12 0,-24 M100,34 q-8,-12 0,-24 M130,40 q-8,-12 0,-24" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".85"/></g>' : ''}
+    </svg>`;
+  }
+  const shelf = ids => `<div class="pz-shelf">${ids.map(id => `<button type="button" class="pz-ing" data-ing="${id}" aria-label="${id === 'oven' ? 'oven' : kgPzIng(id).en}">${kgIngIcon(id, 'pz-ing-svg')}<small>${id === 'oven' ? 'oven' : igEscapeHtml(kgPzIng(id).en)}</small></button>`).join('')}</div>`;
+
+  // ---- the menu ---------------------------------------------------------------
+  function menu() {
+    const m = win.el(); if (!m) return;
+    mode = null;
+    m.innerHTML = `
+      <div class="pz-menu">
+        <button type="button" class="pz-mode" data-mode="recipe">${kgIngIcon('oven', 'pz-mode-svg')}<b>🧑‍🍳 Let's make a pizza!</b><small>Os passos da oficina, um por um</small></button>
+        <button type="button" class="pz-mode" data-mode="shop">${kgIngIcon('cheese', 'pz-mode-svg')}<b>🛎️ Pizza Shop</b><small>Monte a pizza do pedido do cliente</small></button>
+      </div>`;
+    m.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => (b.dataset.mode === 'recipe' ? startRecipe() : startShop())));
+  }
+
+  // ---- 🧑‍🍳 the workshop's steps ------------------------------------------------
+  function startRecipe() { mode = 'recipe'; step = 0; stars = 0; tries = 0; pizza = { dough: false, sauce: false, pieces: [] }; paintRecipe(); kgSay(KG_PZ_STEPS[0].say); }
+  function paintRecipe(hot) {
+    const m = win.el(); if (!m) return;
+    const s = KG_PZ_STEPS[step];
+    m.innerHTML = `
+      <div class="pz">
+        <div class="pz-steps">${KG_PZ_STEPS.map((x, i) => `<i class="${i < step ? 'done' : i === step ? 'now' : ''}">${i + 1}</i>`).join('')}</div>
+        ${s ? `<button type="button" class="pz-step" data-hear>🔊 <b>${step + 1}.</b> ${igEscapeHtml(s.say)}</button>` : ''}
+        <div class="pz-pizza${hot ? ' baking' : ''}" data-pizza>${pizzaSVG('pz-base', hot)}</div>
+        ${s ? shelf(KG_PZ_INGS.map(i => i.id).concat('oven')) : ''}
+      </div>`;
+    const h = m.querySelector('[data-hear]'); if (h) h.addEventListener('click', () => kgSay(s.say));
+    m.querySelectorAll('[data-ing]').forEach(b => b.addEventListener('click', () => recipeTap(b.dataset.ing, b)));
+  }
+  function recipeTap(id, btn) {
+    const s = KG_PZ_STEPS[step];
+    if (!s) return;
+    if (id !== s.id) {
+      tries++;
+      kgSfx('wrong');
+      btn.classList.add('shake'); setTimeout(() => btn.classList.remove('shake'), 500);
+      kgSay(`Not yet! ${s.say}`);
+      return;
+    }
+    if (tries === 0) stars++;
+    tries = 0;
+    kgSfx('pop');
+    if (id === 'dough') pizza.dough = true;
+    else if (id === 'sauce') pizza.sauce = true;
+    else if (id === 'oven') { bake(); return; }
+    else addPieces(id, { cheese: 8, sausage: 6, olive: 5, chicken: 6, onion: 5, oregano: 7 }[id]);
+    step++;
+    paintRecipe();
+    kgSay(KG_PZ_STEPS[step].say);
+  }
+  // 9. Into the oven… 10. Ding! It's ready! My pizza is…
+  function bake() {
+    step = KG_PZ_STEPS.length;
+    const m = win.el(); if (!m) return;
+    m.innerHTML = `
+      <div class="pz">
+        <div class="pz-oven">${kgIngIcon('oven', 'pz-oven-svg')}</div>
+        <p class="pz-step">🔥 Baking… <small>Assando…</small></p>
+      </div>`;
+    kgSay('Time to bake! Into the oven!');
+    setTimeout(() => {
+      const m2 = win.el(); if (!m2) return;
+      kgSfx('bell');
+      m2.innerHTML = `
+        <div class="pz">
+          <p class="pz-ding">🔔 Ding! It's ready!</p>
+          <div class="pz-pizza served">${pizzaSVG('pz-base', true)}</div>
+          <p class="pz-step">My pizza is… <small>(escolha uma)</small></p>
+          <div class="pz-words">${['yummy', 'delicious', 'hot', 'amazing'].map(w => `<button type="button" class="pz-word" data-word="${w}">${w}</button>`).join('')}</div>
+        </div>`;
+      kgSay("Ding! It's ready! My pizza is…");
+      m2.querySelectorAll('[data-word]').forEach(b => b.addEventListener('click', () => {
+        kgSay(`My pizza is ${b.dataset.word}! Yummy! Enjoy your pizza!`, { then: () => { const m3 = win.el(); if (m3) kgDone(m3, Math.min(5, Math.round(stars / 9 * 5)), 5, startRecipe); } });
+        b.classList.add('on');
+      }));
+    }, 2600);
+  }
+
+  // ---- 🛎️ the customer's order --------------------------------------------------
+  function startShop() { mode = 'shop'; round = 0; stars = 0; nextOrder(); }
+  function phraseFor(o) { return o.ing.count ? `${KG_NUM[o.n]} ${o.n === 1 ? o.ing.one : o.ing.many}` : o.ing.en; }
   const orderText = () => {
-    const parts = order.map(o => phrase(o.t, o.n));
+    const parts = order.map(phraseFor);
     return `I want a pizza with ${parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0]}, please!`;
   };
-
-  function paint() {
+  function nextOrder() {
+    const m = win.el(); if (!m) return;
+    if (round >= ROUNDS) { kgDone(m, stars, ROUNDS, startShop); return; }
+    const counted = kgShuffle(KG_PZ_INGS.filter(i => i.count)).slice(0, round < 2 ? 1 : 2);
+    order = counted.map(ing => ({ ing, n: 1 + Math.floor(Math.random() * (round < 1 ? 2 : 3)) }));
+    kgShuffle(['cheese', 'chicken', 'oregano']).slice(0, 1 + Math.floor(Math.random() * 2)).forEach(id => order.push({ ing: kgPzIng(id), n: 1 }));
+    order.sort((a, b) => KG_PZ_INGS.indexOf(a.ing) - KG_PZ_INGS.indexOf(b.ing));
+    customer = kgPick(KG_CUSTOMERS); tries = 0;
+    pizza = { dough: true, sauce: true, pieces: [] };       // the shop already has the base ready
+    paintShop();
+    kgSay(`Hello! ${orderText()}`);
+  }
+  function paintShop() {
     const m = win.el(); if (!m) return;
     m.innerHTML = `
       ${kgStarsRow(stars, ROUNDS)}
@@ -498,21 +728,12 @@ function openShopGame() {
         <div class="pz-customer">
           ${kgEmoji(customer, 'pz-face')}
           <button type="button" class="pz-bubble" data-hear title="Listen again">
-            ${order.map(o => `<span class="pz-want">${Array.from({ length: o.t.plain ? 1 : o.n }, () => kgEmoji(o.t.emoji, 'pz-want-img')).join('')}</span>`).join('<span class="pz-plus">+</span>')}
+            ${order.map(o => `<span class="pz-want">${Array.from({ length: o.ing.count ? o.n : 1 }, () => kgIngIcon(o.ing.id, 'pz-want-svg')).join('')}</span>`).join('<span class="pz-plus">+</span>')}
             <span class="pz-ear">🔊</span>
           </button>
         </div>
-        <div class="pz-pizza" data-pizza>
-          <svg viewBox="0 0 100 100" class="pz-base" aria-hidden="true">
-            <circle cx="50" cy="50" r="47" fill="#e8b46a" stroke="#a8742f" stroke-width="2"/>
-            <circle cx="50" cy="50" r="39" fill="#e5484d"/>
-            <circle cx="50" cy="50" r="39" fill="#f6d36b" opacity="${onPizza.some(id => id === 'cheese') ? 0.9 : 0}"/>
-          </svg>
-          ${onPizza.map((id, i) => id === 'cheese' ? '' : `<button type="button" class="pz-top" data-off="${i}" style="left:${KG_PIZZA_SPOTS[i % 12][0]}%;top:${KG_PIZZA_SPOTS[i % 12][1]}%">${kgEmoji(KG_TOPPINGS.find(t => t.id === id).emoji, 'pz-top-img')}</button>`).join('')}
-        </div>
-        <div class="pz-shelf">
-          ${KG_TOPPINGS.map(t => `<button type="button" class="pz-ing" data-add="${t.id}" aria-label="${t.one}">${kgEmoji(t.emoji, 'pz-ing-img')}</button>`).join('')}
-        </div>
+        <div class="pz-pizza" data-pizza>${pizzaSVG('pz-base')}</div>
+        ${shelf(KG_PZ_INGS.filter(i => !i.layer).map(i => i.id))}
         <div class="an-done-actions">
           <button type="button" class="game-btn secondary" data-clear>🧽</button>
           <button type="button" class="btn btn-primary" data-serve>✅ Here you are!</button>
@@ -520,36 +741,32 @@ function openShopGame() {
         <p class="pr-teacher-line">${igEscapeHtml(orderText())}</p>
       </div>`;
     m.querySelector('[data-hear]').addEventListener('click', () => kgSay(orderText()));
-    m.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => add(b.dataset.add)));
-    m.querySelectorAll('[data-off]').forEach(b => b.addEventListener('click', () => { onPizza.splice(Number(b.dataset.off), 1); kgSfx('drop'); paint(); }));
-    m.querySelector('[data-clear]').addEventListener('click', () => { onPizza = []; paint(); });
+    m.querySelectorAll('[data-ing]').forEach(b => b.addEventListener('click', () => shopAdd(b.dataset.ing)));
+    m.querySelectorAll('[data-off]').forEach(g => g.addEventListener('click', () => { const i = Number(g.dataset.off); const k = pizza.pieces[i].kind; if (kgPzIng(k).count) pizza.pieces.splice(i, 1); else pizza.pieces = pizza.pieces.filter(p => p.kind !== k); kgSfx('drop'); paintShop(); }));
+    m.querySelector('[data-clear]').addEventListener('click', () => { pizza.pieces = []; paintShop(); });
     m.querySelector('[data-serve]').addEventListener('click', serve);
   }
-  function add(id) {
-    const t = KG_TOPPINGS.find(x => x.id === id);
-    if (t.plain) {
-      if (onPizza.includes(id)) return;
-      onPizza.push(id); kgSfx('pop'); kgSay('cheese'); paint(); return;
-    }
-    if (onPizza.filter(x => x !== 'cheese').length >= 12) return;
-    onPizza.push(id); kgSfx('pop');
-    const n = onPizza.filter(x => x === id).length;
-    kgSay(phrase(t, n));
-    paint();
+  function shopAdd(id) {
+    const ing = kgPzIng(id);
+    if (!ing.count && has(id)) return;                       // cheese, chicken, oregano: once is enough
+    if (pizza.pieces.length > 40) return;
+    addPieces(id, ing.per);
+    kgSfx('pop');
+    kgSay(ing.count ? `${KG_NUM[count(id)]} ${count(id) === 1 ? ing.one : ing.many}` : ing.en);
+    paintShop();
   }
   function serve() {
-    const ok = KG_TOPPINGS.every(t => {
-      const want = (order.find(o => o.t.id === t.id) || { n: 0 }).n;
-      const got = onPizza.filter(x => x === t.id).length;
-      return t.plain ? Boolean(want) === Boolean(got) : want === got;
+    const ok = KG_PZ_INGS.filter(i => !i.layer).every(ing => {
+      const want = order.find(o => o.ing.id === ing.id);
+      return ing.count ? (want ? want.n : 0) === count(ing.id) : Boolean(want) === has(ing.id);
     });
     if (ok) {
       if (tries === 0) stars++;
       round++;
       kgSfx('correct');
-      const m = win.el();
-      if (m) m.querySelector('.pz-pizza').classList.add('served');
-      kgSay('Thank you! Yummy!', { then: next });
+      const pz = win.el() && win.el().querySelector('.pz-pizza');
+      if (pz) pz.classList.add('served');
+      kgSay('Thank you! Yummy!', { then: nextOrder });
     } else {
       tries++;
       kgSfx('wrong');
@@ -558,12 +775,7 @@ function openShopGame() {
       kgSay(`Hmm, no. ${orderText()}`);
     }
   }
-  function next() {
-    const m = win.el(); if (!m) return;
-    if (round >= ROUNDS) { kgDone(m, stars, ROUNDS, () => { round = 0; stars = 0; next(); }); return; }
-    makeOrder(); paint(); kgSay(`Hello! ${orderText()}`);
-  }
-  next();
+  menu();
 }
 
 // ===========================================================================

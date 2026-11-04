@@ -10081,3 +10081,31 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
   position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%;
   background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.3);
 }
+
+/* 🍕 Pizza Shop — the Pizza Workshop's ingredients and steps (preReaderGames.js) */
+.pz-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.pz-mode { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 12px; border: 3px solid #8E6D86; border-radius: var(--radius-lg); background: #fff; cursor: pointer; font-family: inherit; color: #4A3347; }
+.pz-mode:hover { background: #f8f2f6; }
+.pz-mode b { font-family: var(--font-display); font-size: 1.25rem; }
+.pz-mode small { color: var(--ink-faint); }
+.pz-mode-svg { width: 90px; height: 90px; }
+.pz-steps { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; }
+.pz-steps i { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 800; font-size: .8rem; background: #eee4ec; color: #8E6D86; }
+.pz-steps i.now { background: #F05D77; color: #fff; transform: scale(1.15); }
+.pz-steps i.done { background: #8E6D86; color: #fff; }
+.pz-step { border: 2px solid #d9cad5; background: #fff; border-radius: 16px; padding: 8px 16px; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 3vw, 1.35rem); color: #4A3347; cursor: pointer; text-align: center; margin: 0; }
+.pz-step small { font-family: var(--font-body); font-weight: 600; color: var(--ink-faint); font-size: .8rem; }
+.pz-ing { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 78px; }
+.pz-ing small { font-size: .7rem; font-weight: 700; color: #4A3347; max-width: 86px; text-align: center; line-height: 1.1; }
+.pz-ing-svg { width: 54px; height: 54px; display: block; }
+.pz-want-svg { width: 34px; height: 34px; }
+.pz-piece { cursor: pointer; }
+.pz-pizza.baking { animation: shakeItem .5s ease infinite; }
+.pz-steam { animation: pz-steam 1.2s ease-in-out infinite alternate; }
+@keyframes pz-steam { from { transform: translateY(4px); opacity: .5; } to { transform: translateY(-4px); opacity: 1; } }
+.pz-oven { width: min(60vw, 220px); animation: shakeItem .6s ease infinite; }
+.pz-oven-svg { width: 100%; height: auto; display: block; }
+.pz-ding { font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; color: #F05D77; margin: 0; }
+.pz-words { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: min(100%, 360px); }
+.pz-word { padding: 10px; border: 3px solid #F05D77; border-radius: 999px; background: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: #4A3347; cursor: pointer; }
+.pz-word.on { background: #F05D77; color: #fff; }
