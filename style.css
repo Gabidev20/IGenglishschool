@@ -10066,3 +10066,18 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .sc-list li { font-weight: 600; }
 .sc-list li small { display: block; color: var(--ink-faint); font-weight: 500; margin-left: 1.6em; }
 .sc-fail { color: #b4232c; }
+
+/* 👆 Touch stick (touchStick.js) and no long-press menus in the games */
+.mz-game, .jl-game, .mz-pad, .jl-pad { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.mz-game img, .jl-game img, .mz-pad img, .jl-pad img { pointer-events: none; -webkit-user-drag: none; }
+.jl-stage { touch-action: none; }
+.mz-pad button, .jl-pad button { touch-action: none; -webkit-tap-highlight-color: transparent; }
+.ts-ring {
+  position: fixed; z-index: 4000; width: 112px; height: 112px; margin: -56px 0 0 -56px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.85); background: rgba(46,43,46,.18); pointer-events: none;
+  box-shadow: 0 0 0 2px rgba(46,43,46,.25);
+}
+.ts-knob {
+  position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%;
+  background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}

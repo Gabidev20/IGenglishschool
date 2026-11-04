@@ -476,7 +476,7 @@ function openMazeGame() {
         </div>
         ${settings.ghosts ? `<p class="mz-keys">❤️ ${MZ_LIVES} lives each — a spider takes one. ⏸ P or space = pause.</p>` : ''}
         <button type="button" class="btn btn-primary mz-start" data-start>▶ Start!</button>
-        <p class="mz-keys">⌨️ ${settings.players === 2 ? '<b style="color:' + MZ_PLAYER_COLORS[0] + '">Player 1: W A S D</b> · <b style="color:' + MZ_PLAYER_COLORS[1] + '">Player 2: ← ↑ → ↓</b>' : 'Arrows or W A S D'} · 👆 or the buttons under the maze</p>
+        <p class="mz-keys">⌨️ ${settings.players === 2 ? '<b style="color:' + MZ_PLAYER_COLORS[0] + '">Player 1: W A S D</b> · <b style="color:' + MZ_PLAYER_COLORS[1] + '">Player 2: ← ↑ → ↓</b>' : 'Arrows or W A S D'} · 👆 drag your finger on the maze, or the buttons</p>
         ${mzOnlineReady() ? `<p class="mz-keys">🎒 Student with a room code? <input class="mz-join-code" maxlength="6" placeholder="CODE" aria-label="Room code" /> <button type="button" class="game-btn secondary" data-join>Join</button></p>` : ''}
       </div>`;
     wireRoom(m);
@@ -585,20 +585,18 @@ function openMazeGame() {
       const [i, d] = b.dataset.pad.split(':');
       steer(players[Number(i)], d);
     }));
-    // A swipe on the maze steers the player nearer to where it began.
-    let swipe = null;
-    canvas.addEventListener('pointerdown', e => { swipe = { x: e.clientX, y: e.clientY }; });
-    canvas.addEventListener('pointerup', e => {
-      if (!swipe) return;
-      const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
-      const r = canvas.getBoundingClientRect();
-      const fx = (swipe.x - r.left) / screen.cell, fy = (swipe.y - r.top) / screen.cell;
-      swipe = null;
-      if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
-      const d = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
-      const near = players.slice().sort((a, b) => Math.hypot(pos(a)[0] - fx, pos(a)[1] - fy) - Math.hypot(pos(b)[0] - fx, pos(b)[1] - fy))[0];
-      steer(near, d);
-    });
+    // 👆 Drag on the maze: the finger steers the player nearer to where it
+    // landed, and can turn without leaving the screen (touchStick.js).
+    tsNoMenus(m);
+    const unstick = typeof tsStick === 'function' ? tsStick(canvas, {
+      onStart: e => {
+        const r = canvas.getBoundingClientRect();
+        const fx = (e.clientX - r.left) / screen.cell, fy = (e.clientY - r.top) / screen.cell;
+        const near = players.filter(p => !p.out).sort((a, b) => Math.hypot(pos(a)[0] - fx, pos(a)[1] - fy) - Math.hypot(pos(b)[0] - fx, pos(b)[1] - fy))[0];
+        return near ? { p: near, d: null } : null;
+      },
+      onMove: (c, dx, dy) => { const d = tsDirection(dx, dy); if (d && d !== c.d) { c.d = d; steer(c.p, d); } },
+    }) : null;
 
     // ---- movement: cell to cell, choosing at each cell ---------------------
     const pos = e => [e.cell[0] + (e.to[0] - e.cell[0]) * e.t + 0.5, e.cell[1] + (e.to[1] - e.cell[1]) * e.t + 0.5];
@@ -793,6 +791,7 @@ function openMazeGame() {
     window.addEventListener('resize', onResize);
     function cleanup() {
       cancelAnimationFrame(raf);
+      if (unstick) unstick();
       clearInterval(clock);
       if (sync) clearInterval(sync);
       window.removeEventListener('keydown', onKey);
@@ -879,7 +878,7 @@ function openMazeGuest(code) {
         </div>
         <div class="mz-said" data-said aria-live="polite"></div>
         <canvas class="mz-canvas" data-canvas></canvas>
-        <p class="mz-keys">⌨️ <b style="color:${color}">← ↑ → ↓</b> or W A S D · you are <b style="color:${color}">Player ${me + 1}</b></p>
+        <p class="mz-keys">👆 Drag on the maze · ⌨️ <b style="color:${color}">← ↑ → ↓</b> or W A S D · you are <b style="color:${color}">Player ${me + 1}</b></p>
         <div class="mz-pads">${mzPadHTML(me, color, game.players[me].avatar, true)}</div>
       </div>`;
     const canvas = m.querySelector('[data-canvas]');
@@ -890,6 +889,14 @@ function openMazeGuest(code) {
       e.preventDefault();
       steer(b.dataset.pad.split(':')[1]);
     }));
+    // 👆 Drag on the maze to steer, without lifting the finger.
+    tsNoMenus(m);
+    if (typeof tsStick === 'function') {
+      tsStick(canvas, {
+        onStart: () => ({ d: null }),
+        onMove: (c, dx, dy) => { const d = tsDirection(dx, dy); if (d && d !== c.d) { c.d = d; steer(d); } },
+      });
+    }
     shown = null;
     cancelAnimationFrame(raf);
     let last = performance.now();

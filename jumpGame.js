@@ -260,7 +260,7 @@ function openJumpGame(opts) {
             ${[5, 8, 12].map(n => `<button type="button" class="mz-opt mz-opt--wide${settings.questions === n ? ' on' : ''}" data-q="${n}">${n} questions</button>`).join('')}
           </div>
         </div>
-        <p class="mz-keys">⌨️ ← → run · ↑ or space jump · P pause · 👆 buttons under the game · ❤️ ${JL_HEARTS} hearts</p>
+        <p class="mz-keys">👆 Drag your finger on the game: sideways to run, up to jump · ⌨️ ← → run · ↑ or space jump · P pause · ❤️ ${JL_HEARTS} hearts</p>
         <button type="button" class="btn btn-primary mz-start" data-start>▶ Start!</button>
         <p class="jl-error" data-error></p>
       </div>`;
@@ -350,7 +350,8 @@ function openJumpGame(opts) {
     let S = 32, viewW = 20;
     function fit() {
       const w = Math.min(m.clientWidth || 700, 1000);
-      const h = Math.max(240, Math.min(w * 0.56, window.innerHeight - 330));
+      // A phone held upright gets a taller game: bigger characters, a little less road ahead.
+      const h = Math.max(240, Math.min(w * (w < 600 ? 0.9 : 0.56), window.innerHeight - 330));
       S = h / H; viewW = w / S;
       const dpr = window.devicePixelRatio || 1;
       canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
@@ -388,6 +389,20 @@ function openJumpGame(opts) {
       b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off);
       b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
     });
+    // 👆 Drag on the game: sideways runs, a pull upwards jumps; the finger
+    // can keep steering without leaving the screen (touchStick.js).
+    tsNoMenus(m);
+    const unstick = typeof tsStick === 'function' ? tsStick(m.querySelector('.jl-stage'), {
+      onStart: e => (asking || e.target.closest('.jl-ask, .mz-end') ? null : { up: false }),
+      onMove: (c, dx, dy) => {
+        input.right = dx > 14; input.left = dx < -14;
+        const up = dy < -26;
+        if (up && !c.up) { P.buffer = 0.14; input.jump = true; }
+        if (!up && c.up) input.jump = false;
+        c.up = up;
+      },
+      onEnd: () => { input.left = input.right = input.jump = false; },
+    }) : null;
     function togglePause() {
       if (done || asking) return;
       paused = !paused;
@@ -722,6 +737,7 @@ function openJumpGame(opts) {
     window.addEventListener('resize', onResize);
     function cleanup() {
       cancelAnimationFrame(raf);
+      if (unstick) unstick();
       clearInterval(clock);
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
