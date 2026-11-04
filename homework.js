@@ -307,6 +307,12 @@ function renderHomework(container) {
       if (hw) openHomeworkRunner(hw, () => renderHomework(container));
     });
   });
+  container.querySelectorAll('[data-hw-book]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const hw = hwLoad().find(h => h.id === btn.dataset.hwBook);
+      if (hw) hwOpenBookResult(hw);
+    });
+  });
   container.querySelectorAll('[data-hw-result]').forEach(btn => {
     btn.addEventListener('click', () => {
       const hw = hwLoad().find(h => h.id === btn.dataset.hwResult);
@@ -330,6 +336,20 @@ function renderHomework(container) {
   });
 }
 
+// The first "book pages" task of a homework that has pages, or null.
+function hwFirstBookTask(hw) {
+  return (hw.tasks || []).find(t => t.type === 'book' && ((t.pages && t.pages.length) || hwParsePages(t.pagesText).length)) || null;
+}
+
+// Teacher: from a finished book homework straight to the student's page.
+function hwOpenBookResult(hw) {
+  const task = hwFirstBookTask(hw);
+  const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === hw.studentId);
+  if (!task || !student || typeof LivroOnline === 'undefined' || !LivroOnline.bookFor(student)) { openHomeworkResult(hw); return; }
+  const pages = task.pages && task.pages.length ? task.pages : hwParsePages(task.pagesText);
+  LivroOnline.openHomeworkResult(student, { pages, bim: task.bim, label: hwPagesLabel(pages) });
+}
+
 function hwCardHTML(hw, studentView) {
   const p = hwProgress(hw);
   const score = hwScore(hw);
@@ -350,7 +370,10 @@ function hwCardHTML(hw, studentView) {
       </div>
       <div class="hw-card-actions">
         ${done
-          ? `<button class="game-btn secondary" data-hw-result="${hw.id}">📊 ${hwSay('Ver resultado', 'See result')}</button>`
+          ? (!studentView && hwFirstBookTask(hw)
+            // Book homework: the result IS the page the student did.
+            ? `<button class="game-btn secondary" data-hw-book="${hw.id}">📖 ${hwSay('Ver resultado', 'See result')}</button>${hw.tasks.length > 1 ? `<button class="game-btn secondary" data-hw-result="${hw.id}">📊 ${hwSay('Detalhes', 'Details')}</button>` : ''}`
+            : `<button class="game-btn secondary" data-hw-result="${hw.id}">📊 ${hwSay('Ver resultado', 'See result')}</button>`)
           : `<button class="game-btn" data-hw-open="${hw.id}">▶️ ${studentView ? hwSay('Fazer agora', 'Do it now') : 'Abrir'}</button>`}
         ${studentView ? '' : `
           <button class="game-btn secondary" data-hw-share="${hw.id}">📱 Copiar</button>
