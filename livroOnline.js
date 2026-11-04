@@ -2460,7 +2460,9 @@ const LivroOnline = (() => {
         return;
       }
       openAt(m, first, {
-        subtitle: typeof igSay === 'function'
+        subtitle: hwk.review
+          ? `👀 Resultado de ${esc(student.name)} — lição: ${esc(hwk.label)}. Veja o que foi feito na página.`
+          : typeof igSay === 'function'
           ? igSay(`📚 Lição de casa: ${esc(hwk.label)} — faça e toque em “Terminei esta página ✓”`, `📚 Homework: ${esc(hwk.label)}. Do it and tap “I finished this page ✓”`)
           : `📚 Lição de casa: ${esc(hwk.label)} — faça e toque em “Terminei esta página ✓”`,
         leave: () => { if (root.isConnected && stack[stack.length - 1].el === root) back(); },
@@ -2679,6 +2681,8 @@ const LivroOnline = (() => {
     // Homework: open the student's book right on the pages the teacher set.
     // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }
     openHomeworkPages: (student, hw) => openBookHome(student, { teacher: !window.IG_SHARE_MODE, homework: hw }),
+    // Teacher: the same pages, opened to look at what the student did (their drawings, answers, score).
+    openHomeworkResult: (student, hw) => openBookHome(student, { teacher: true, homework: { ...hw, review: true } }),
     // exposed for tests / phase 2
     _pageId: pageId, _readLocal: readLocal, _normalize: normalize, _simplify: simplify,
   };
