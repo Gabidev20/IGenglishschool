@@ -90,7 +90,7 @@ function openGamesMenu(ctx) {
         <span class="modal-head-thumb modal-head-thumb--icon">🎮</span>
         <div class="modal-head-text">
           <h3 id="modalTitle">Jogos</h3>
-          <p class="modal-head-sub"><span class="modal-head-desc">Escolha um jogo — ao fechar, você volta para a página do livro.</span></p>
+          <p class="modal-head-sub"><span class="modal-head-desc">Escolha um jogo — ao fechar, você volta para ${esc(c.backTo || 'a página do livro')}.</span></p>
         </div>
       </div>
 

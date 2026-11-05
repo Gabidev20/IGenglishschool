@@ -665,6 +665,9 @@ const SlidesAula = (() => {
     while (stack.length > keep + 1) closeTop();
   });
   window.addEventListener('keydown', e => {
+    // A game (site modal) open on top of the slides owns the keyboard.
+    const ov = document.getElementById('modalOverlay');
+    if (ov && !ov.hidden) return;
     const top = stack[stack.length - 1];
     if (top && top.onKey) top.onKey(e);
   });
@@ -857,6 +860,14 @@ const SlidesAula = (() => {
     try { const f = document.exitFullscreen || document.webkitExitFullscreen; if (f && fsEl()) { const p = f.call(document); if (p && p.catch) p.catch(() => {}); } } catch (e) { /* ignore */ }
   }
 
+  // 🎮 The site's games menu (gameShortcut.js) on top of the slides (teacher
+  // only). The deck title suggests matching topics ("Numbers 1–20" → Numbers).
+  const hasGames = () => typeof openGamesMenu === 'function';
+  const gamesBtn = cls => (hasGames() ? `<button type="button" class="${cls}" data-a="games" title="Abrir um jogo sem sair dos slides">🎮 Jogos</button>` : '');
+  function openGames(title) {
+    if (hasGames()) openGamesMenu({ pageTitle: title || '', backTo: 'os slides' });
+  }
+
   // getSlide(i) -> slide record; meta.slideIds.length slides.
   function openPresent(meta, getSlide, start) {
     const n = meta.slideIds.length;
@@ -868,6 +879,7 @@ const SlidesAula = (() => {
       <div class="sl-pwrap"><div class="sl-stage"><div class="sl-layer"></div></div></div>
       <div class="sl-laser" hidden></div>
       <div class="sl-pcount" aria-live="polite"></div>
+      ${hasGames() ? '<button type="button" class="sl-pexit sl-pgames" aria-label="Jogos" title="Abrir um jogo (a apresentação continua aberta)">🎮</button>' : ''}
       <button type="button" class="sl-pexit" aria-label="Sair da apresentação (Esc)" title="Sair (Esc)">✕</button>`;
     const wrap = root.querySelector('.sl-pwrap'), stage = root.querySelector('.sl-stage'), layer = root.querySelector('.sl-layer');
     const count = root.querySelector('.sl-pcount'), laser = root.querySelector('.sl-laser');
@@ -889,7 +901,14 @@ const SlidesAula = (() => {
       wake();
       if (laserOn) { laser.style.left = e.clientX + 'px'; laser.style.top = e.clientY + 'px'; }
     });
-    root.querySelector('.sl-pexit').addEventListener('click', e => { e.stopPropagation(); back(); });
+    root.querySelector('.sl-pexit:not(.sl-pgames)').addEventListener('click', e => { e.stopPropagation(); back(); });
+    const pg = root.querySelector('.sl-pgames');
+    if (pg) pg.addEventListener('click', e => {
+      e.stopPropagation();
+      // Leave fullscreen (the menu can't show over it) but keep presenting.
+      if (fsEl() === root) { wasFs = false; exitFs(); }
+      openGames(meta.title);
+    });
     const onFs = () => {
       if (fsEl() === root) wasFs = true;
       else if (wasFs) { wasFs = false; if (stack.length && stack[stack.length - 1].el === root) back(); }
@@ -1053,6 +1072,7 @@ const SlidesAula = (() => {
           ${teacher ? `<div class="sl-home-actions">
               <button type="button" class="sl-btn sl-btn--ok" data-a="new">✨ Nova apresentação</button>
               ${(window.SLIDES_MODELOS || []).length ? '<button type="button" class="sl-btn" data-a="model">📥 Modelo pronto</button>' : ''}
+              ${gamesBtn('sl-btn')}
               <button type="button" class="sl-btn" data-a="switch">🔄 Trocar aluno</button>
             </div>` : ''}
           ${loading ? '<p class="sl-empty">Abrindo os slides…</p>'
@@ -1089,6 +1109,7 @@ const SlidesAula = (() => {
       const a = b.dataset.a;
       if (a === 'back') { back(); return; }
       if (a === 'switch') { closeAllViews(); openPicker(); return; }
+      if (a === 'games') { openGames(''); return; }
       if (a === 'model') {
         const ms = window.SLIDES_MODELOS || [];
         const d = document.createElement('div');
@@ -1345,6 +1366,7 @@ const SlidesAula = (() => {
         <span class="sl-top-gap"></span>
         <button type="button" class="sl-ico" data-a="undo" aria-label="Desfazer" title="Desfazer (Ctrl+Z)">↶</button>
         <button type="button" class="sl-ico" data-a="redo" aria-label="Refazer" title="Refazer (Ctrl+Y)">↷</button>
+        ${gamesBtn('sl-btn')}
         <button type="button" class="sl-btn sl-btn--ok sl-present-btn" data-a="present" title="Apresentar em tela cheia">▶ Apresentar</button>
       </div>
       <div class="sl-toolbar" role="toolbar" aria-label="Ferramentas">
@@ -2300,6 +2322,7 @@ const SlidesAula = (() => {
         case 'back': back(); break;
         case 'undo': undo(); break;
         case 'redo': redo(); break;
+        case 'games': openGames(D.meta.title); break;
         case 'addslide': addSlide(); break;
         case 'dupslide': dupSlide(); break;
         case 'delslide': delSlide(); break;

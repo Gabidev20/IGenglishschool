@@ -9287,6 +9287,7 @@ html.sl-open .modal-overlay { z-index: 2900; }
 .sl-pcount { position: absolute; right: 14px; bottom: 10px; color: #fff; opacity: .5; font-size: .85rem; background: rgba(0, 0, 0, .45); padding: 3px 10px; border-radius: 99px; pointer-events: none; transition: opacity .3s; }
 .sl-pexit { position: absolute; top: 10px; right: 10px; width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .25); color: #fff; font-size: 1.1rem; transition: opacity .3s; }
 .sl-present.is-idle .sl-pexit, .sl-present.is-idle .sl-pcount { opacity: 0; }
+.sl-pexit.sl-pgames { right: 56px; font-size: 1.05rem; }
 .sl-present.is-idle .sl-pwrap { cursor: none; }
 .sl-present.has-laser .sl-pwrap, .sl-present.has-laser { cursor: none; }
 .sl-laser { position: fixed; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; pointer-events: none; z-index: 5;
