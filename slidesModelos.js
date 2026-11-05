@@ -263,7 +263,64 @@
     list(['✅  I understood a real weather report.', '✅  I can talk about the weather.', '✅  I can say the future: it will rain, there will be a storm.'], 220, 40, true),
     T(70, 560, 1140, 'Homework (optional): watch the weather news and write 3 sentences with will. 💜', 30, '#faefc2')]));
 
+  // ---- Numbers 1–20 — Bunny Block World (Teles: games, routine, one idea per slide) ----
+  const nb = [];
+  const nbG = '#5cad5a', nbB = '#3d8bd9', nbP = '#f05d77', nbY = '#e0a800';
+  const nbCard = (x, y, w, num, word, c, h) => [R(x, y, w, h || 330, '#ffffff', { shape: 'rect', stroke: c, sw: 8 }),
+    T(x, y + 25, w, num, 120, c, { b: true, al: 'center' }), T(x, y + (h || 330) - 95, w, word, 40, '#2e2b2e', { b: true, al: 'center' })];
+  const nbStage = (t, c) => [R(930, 36, 300, 48, c, { shape: 'rect' }), T(930, 43, 300, t, 24, '#ffffff', { b: true, al: 'center' })];
+  nb.push(slide('dark', [tag('Bunny Block World 🐰🧱', true), T(70, 140, 1140, 'Number Obby', 130, '#ffffff', { b: true }),
+    T(70, 320, 1140, '1  →  20', 90, '#faefc2', { b: true }), T(70, 470, 1140, '🐰 Hi, Teles! Bunny needs your help to reach the top! 🏁', 40, '#ffffff')]));
+  nb.push(slide('cream', [tag('The map'), title('5 stages to the top 🗺️'),
+    T(90, 200, 1100, '🟩 Stage 1:  Warm-up  1 – 10\n🟦 Stage 2:  Special numbers  11 and 12\n🟥 Stage 3:  The secret code  -TEEN\n🟨 Stage 4:  Boss level  20\n🏆 Stage 5:  Games + badges!', 42),
+    T(70, 640, 1140, 'One stage at a time. ✔️ We tick each one. 💜', 30, '#8e6d86', { b: true })]));
+  nb.push(slide('cream', [tag('Stage 1 · Warm-up'), ...nbStage('🟩 Stage 1', nbG), title('Count with Bunny! 🐰'),
+    ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].flatMap((k, i) => { const x = 70 + (i % 5) * 230, y = 200 + Math.floor(i / 5) * 230;
+      return [R(x, y, 210, 210, '#ffffff', { shape: 'rect', stroke: nbG, sw: 6 }), T(x, y + 15, 210, String(k), 90, nbG, { b: true, al: 'center' }),
+        T(x, y + 145, 210, ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][i], 32, '#2e2b2e', { b: true, al: 'center' })]; })]));
+  nb.push(slide('rose', [tag('Stage 2 · Special numbers'), ...nbStage('🟦 Stage 2', nbB), title('Two special blocks ⭐'),
+    ...nbCard(170, 200, 420, '11', 'eleven', nbB), ...nbCard(690, 200, 420, '12', 'twelve', nbB),
+    T(70, 570, 1140, '🗣️ Say it 3 times: eleven, eleven, eleven!', 34, '#2e2b2e', { b: true, al: 'center' })]));
+  nb.push(slide('cream', [tag('Stage 3 · The secret code'), ...nbStage('🟥 Stage 3', nbP), title('The secret code: -TEEN 🔑'),
+    R(70, 190, 1140, 400, '#ffffff', { shape: 'rect', stroke: nbP, sw: 6 }),
+    T(100, 215, 1080, 'six  +  teen  =  sixteen  (16)\nseven  +  teen  =  seventeen  (17)\nnine  +  teen  =  nineteen  (19)', 48, '#2e2b2e', { b: true, al: 'center', lh: 1.6 }),
+    T(70, 620, 1140, '13 – 19 all end in  -TEEN! 🐰 Bunny found the code!', 32, nbP, { b: true, al: 'center' })]));
+  nb.push(slide('rose', [tag('Stage 3 · -TEEN blocks'), ...nbStage('🟥 Stage 3', nbP), title('13 · 14 · 15 🗣️'),
+    ...nbCard(70, 200, 360, '13', 'thirteen', nbP), ...nbCard(460, 200, 360, '14', 'fourteen', nbP), ...nbCard(850, 200, 360, '15', 'fifteen', nbP),
+    T(70, 580, 1140, '💡 three → THIRteen · five → FIFteen (a little different!)', 30, '#8e6d86', { b: true, al: 'center' })]));
+  nb.push(slide('rose', [tag('Stage 3 · -TEEN blocks'), ...nbStage('🟥 Stage 3', nbP), title('16 · 17 · 18 · 19 🗣️'),
+    ...nbCard(70, 200, 270, '16', 'sixteen', nbP), ...nbCard(360, 200, 270, '17', 'seventeen', nbP), ...nbCard(650, 200, 270, '18', 'eighteen', nbP), ...nbCard(940, 200, 270, '19', 'nineteen', nbP)]));
+  nb.push(slide('dark', [tag('Stage 4 · Boss level', true), ...nbStage('🟨 Boss level', nbY), T(70, 130, 1140, 'The boss block! 👾', 60, '#ffffff', { b: true }),
+    R(390, 240, 500, 330, '#ffffff', { shape: 'rect', stroke: nbY, sw: 10 }), T(390, 260, 500, '20', 150, nbY, { b: true, al: 'center' }),
+    T(390, 470, 500, 'twenty', 56, '#2e2b2e', { b: true, al: 'center' }), T(70, 610, 1140, 'You beat the boss! 🎉 Stages 1–4 done!', 36, '#faefc2', { b: true, al: 'center' })]));
+  nb.push(slide('dark', [tag('Checkpoint · Brain break', true), T(70, 190, 1140, 'Checkpoint! 🚩', 100, '#ffffff', { b: true }),
+    T(70, 360, 1140, 'Stand up 🧍 · Jump 3 times 🐰🐰🐰\nBreathe in… 1 2 3 · out… 1 2 3', 46, '#faefc2'), T(70, 590, 1140, 'Ready? Now we play! 🎮', 36, '#ffffff')]));
+  const nbRow = (y, e, n) => T(150, y, 1060, Array.from({ length: Math.ceil(n / 5) }, (_, g) => e.repeat(Math.min(5, n - g * 5))).join('  '), 40, '#2e2b2e');
+  nb.push(slide('cream', [tag('Game 1 · How many?'), ...nbStage('🎮 Game 1', nbG), title('Bunny’s carrots 🥕 How many?'),
+    T(70, 195, 80, 'A', 40, nbG, { b: true }), nbRow(195, '🥕', 12), T(70, 315, 80, 'B', 40, nbG, { b: true }), nbRow(315, '🧱', 15),
+    T(70, 435, 80, 'C', 40, nbG, { b: true }), nbRow(435, '💎', 18),
+    T(70, 600, 1140, 'Count with your finger 👉 and say the number in English!', 30, '#8e6d86', { b: true })]));
+  nb.push(slide('rose', [tag('Game 2 · What’s next?'), ...nbStage('🎮 Game 2', nbB), title('Jump to the next block! ➡️'),
+    T(90, 200, 1100, '1.   10 · 11 · 12 · ___\n2.   14 · 15 · 16 · ___\n3.   17 · 18 · 19 · ___\n4.   ___ · 12 · 13 · 14\n5.   2 · 4 · 6 · 8 · ___', 46, '#2e2b2e', { b: true, lh: 1.6 })]));
+  const nbNums = ['13', '11', '20', '16', '12', '19'], nbWords = ['twelve', 'sixteen', 'thirteen', 'twenty', 'nineteen', 'eleven'];
+  nb.push(slide('cream', [tag('Game 3 · Build the bridge'), ...nbStage('🎮 Game 3', nbP), title('Drag the word to its number 🧱'),
+    ...nbNums.flatMap((k, i) => [R(70, 190 + i * 80, 200, 66, '#ffffff', { shape: 'rect', stroke: nbP, sw: 5 }), T(70, 197 + i * 80, 200, k, 40, nbP, { b: true, al: 'center' })]),
+    ...nbWords.map((w, i) => T(760, 197 + i * 80, 400, w, 40, '#2e2b2e', { b: true }))]));
+  nb.push(slide('rose', [tag('Game 4 · Oops, teacher!'), ...nbStage('🎮 Game 4', nbY), title('Is the teacher right? 🤔'),
+    T(90, 200, 1100, 'The teacher says a number. Sometimes it’s WRONG! 😄\nSay “Yes!” ✅ or “No! It’s …” ❌', 36),
+    ...['14', '11', '19', '17'].flatMap((k, i) => [R(70 + i * 290, 380, 270, 200, '#ffffff', { shape: 'rect', stroke: nbY, sw: 6 }), T(70 + i * 290, 410, 270, k, 110, nbY, { b: true, al: 'center' })]),
+    T(70, 610, 1140, '👩‍🏫 Teacher: say “forty” for 14 · “seven” for 11 · “nineteen” · “seventy” for 17', 24, '#8e6d86', { i: true })]));
+  nb.push(slide('cream', [tag('Final mission'), ...nbStage('🏁 Final mission', nbG), title('Treasure hunt at home 🔍'),
+    T(90, 200, 1100, 'Bring them to the camera and count in English!\n\n☐  🧸  5 toys\n☐  ✏️  11 pencils or pens\n☐  📚  13 things from your room\n☐  🧱  20 small things (blocks, coins…)', 40)]));
+  nb.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
+    T(70, 190, 1140, 'Game 1:  A 12 (twelve) · B 15 (fifteen) · C 18 (eighteen)\nGame 2:  1 13 · 2 17 · 3 20 · 4 11 · 5 10\nGame 3:  13 thirteen · 11 eleven · 20 twenty · 16 sixteen · 12 twelve · 19 nineteen\nGame 4:  14 No, fourteen · 11 No, eleven · 19 Yes · 17 No, seventeen', 32)]));
+  nb.push(slide('dark', [tag('You reached the top!', true), T(70, 130, 1140, '🏆', 150, '#ffffff', { al: 'center' }),
+    T(70, 340, 1140, 'Teles beat the Number Obby!', 64, '#ffffff', { b: true, al: 'center' }),
+    T(70, 470, 1140, '🥇 Counting badge   🔑 -TEEN badge   👾 Boss badge', 38, '#faefc2', { al: 'center' }),
+    T(70, 600, 1140, '🐰 Bunny says: Great job! See you next game! 💜', 34, '#faefc2', { al: 'center' })]));
+
   window.SLIDES_MODELOS = [
+    { id: 'numbers-1-20-teles', title: 'Numbers 1–20 · Bunny Block World — Teles', slides: nb },
     { id: 'weather-report-video-ana', title: 'Weather Report (vídeo YouTube) — Ana Clara', slides: wx },
     { id: 'a-an-teles', title: 'A or AN? School Objects Game — Teles', slides: ag },
     { id: 'would-shall-heloize', title: 'Would & Shall (iniciante) — Heloize', slides: mv },
