@@ -208,7 +208,63 @@
   ag.push(slide('dark', [tag('You won!', true), T(70, 150, 1140, '🏆', 150, '#ffffff', { al: 'center' }), T(70, 360, 1140, 'Teles is the A / AN Champion!', 64, '#ffffff', { b: true, al: 'center' }),
     T(70, 500, 1140, '⭐ ⭐ ⭐', 90, '#faefc2', { al: 'center' }), T(70, 640, 1140, 'Great job! See you next game! 💜', 34, '#faefc2', { al: 'center' })]));
 
+  // ---- Weather Report video (Chicago News, YouTube gzPA-YKJmVk) — Ana Clara ----
+  const wx = [];
+  const wxUrl = 'youtube.com/watch?v=gzPA-YKJmVk';
+  const wxCell = (x, y, w, h, t, fill, fs, o) => [R(x, y, w, h, fill, { shape: 'rect', stroke: '#8e6d86', sw: 2 }),
+    T(x + 10, y + 10, w - 20, t, fs || 24, '#2e2b2e', { al: 'center', ...o })];
+  wx.push(slide('dark', [tag('Video lesson · Ana Clara', true), T(70, 170, 1140, 'Weather Report 📺', 110, '#ffffff', { b: true }),
+    T(70, 330, 1140, 'Chicago News — with Maria', 52, '#faefc2'),
+    T(70, 430, 1140, 'Watch, understand, and become a weather reporter! 🌦️', 38, '#ffffff'),
+    R(70, 560, 1140, 70, '#ffffff', { op: 0.15 }), T(90, 575, 1100, '▶️  ' + wxUrl + '   (1:53)', 30, '#faefc2', { b: true })]));
+  wx.push(slide('cream', [tag('Our plan'), title("Today's plan"),
+    T(90, 195, 1100, ['1️⃣  Warm-up + weather words', '2️⃣  Watch 1: the big picture', '3️⃣  Watch 2: complete the forecast table', '4️⃣  True or false + fill in the blanks', '5️⃣  Grammar: it WILL rain', '6️⃣  Your turn: you are the reporter! 🎤'].join('\n'), 36, '#2e2b2e', { lh: 1.75 })]));
+  wx.push(slide('rose', [tag('Warm-up'), title('How’s the weather today? ☀️🌧️'),
+    list(['🗣️  What’s the weather like in Guaratuba today?', '🌡️  Is it hot, warm, or cold? How many degrees?', '❓  What is your favorite kind of weather? Why?'], 220, 40)]));
+  const wxWords = [['☀️', 'sunny'], ['☁️', 'cloudy'], ['🌧️', 'rain / rainy'], ['❄️', 'snow / snowy'],
+    ['💨', 'windy'], ['⛈️', 'a storm'], ['🙂', 'warm'], ['🥶', 'cold']];
+  wx.push(slide('cream', [tag('Weather words'), title('Say these words 🗣️'),
+    ...wxWords.flatMap(([e, w], i) => { const x = 70 + (i % 4) * 290, y = 200 + Math.floor(i / 4) * 210;
+      return [R(x, y, 270, 190, '#ffffff', { stroke: '#8e6d86', sw: 3 }), T(x, y + 15, 270, e, 70, '#2e2b2e', { al: 'center' }), T(x, y + 120, 270, w, 32, '#8e6d86', { b: true, al: 'center' })]; }),
+    T(70, 640, 1140, '+ degrees 🌡️ · forecast (= previsão) · temperature · go down (= cair, baixar)', 28, '#2e2b2e', { i: true })]));
+  wx.push(slide('rose', [tag('Watch 1 · The big picture'), title('Watch and answer 👀'),
+    list(['1.  What is the reporter’s name?', '2.  Where is she from? (city + TV channel)', '3.  How was the weather this morning?', '4.  How many days are in the forecast?', '5.  Is the weather in Chicago calm or crazy? 😄'], 200, 36)]));
+  const wxRows = ['This morning', 'Right now', 'Tonight', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  wx.push(slide('cream', [tag('Watch 2 · Complete the table'), title('The forecast 📋'),
+    ...wxCell(70, 175, 300, 50, 'When?', '#8e6d86', 24, { c: '#ffffff', b: true }), ...wxCell(370, 175, 560, 50, 'Weather', '#8e6d86', 24, { c: '#ffffff', b: true }), ...wxCell(930, 175, 280, 50, '°F', '#8e6d86', 24, { c: '#ffffff', b: true }),
+    ...wxRows.flatMap((r, i) => { const y = 225 + i * 58, f = i % 2 ? '#fdf7e1' : '#ffffff';
+      return [...wxCell(70, y, 300, 58, r, f, 24, { b: true }), ...wxCell(370, y, 560, 58, '', f), ...wxCell(930, y, 280, 58, i === 0 ? '—' : '', f)]; })]));
+  wx.push(slide('rose', [tag('Exercise 1 · True or false?'), title('T or F? ✅❌'),
+    T(90, 190, 1100, ['1.  Right now it’s 72 degrees and sunny.', '2.  Tonight it will snow.', '3.  On Tuesday it will be sunny and warm.', '4.  On Wednesday the temperature will go up.', '5.  On Thursday there will be a big storm.', '6.  On Saturday it will be hot.'].join('\n'), 34, '#2e2b2e', { lh: 1.75 }),
+    T(70, 640, 1140, 'Correct the false sentences! ✏️', 30, '#8e6d86', { b: true })]));
+  wx.push(slide('cream', [tag('Exercise 2 · Fill in the blanks'), title('Listen again 🎧'),
+    ...chip(70, 180, 170, 'cold'), ...chip(260, 180, 190, 'go down'), ...chip(470, 180, 170, 'snow'), ...chip(660, 180, 190, 'careful'), ...chip(870, 180, 170, 'windy'), ...chip(1060, 180, 150, 'week'),
+    T(90, 280, 1100, ['1.  This morning it was ________ and cloudy.', '2.  The temperature will ________ to 51 degrees.', '3.  Then on Wednesday it will ________.', '4.  There will be a big storm. Be ________!', '5.  On Friday it will be a little ________.', '6.  Thanks for watching and have a good ________.'].join('\n'), 32, '#2e2b2e', { lh: 1.75 })]));
+  wx.push(slide('rose', [tag('Grammar · The future with WILL'), title('It WILL rain 🌧️'),
+    R(70, 190, 1140, 170, '#ffffff'), T(100, 205, 1080, 'it will + verb\n“Tonight it will rain.”   “On Wednesday it will snow.”', 34),
+    R(70, 380, 1140, 120, '#ffffff'), T(100, 395, 1080, 'it will be + adjective\n“It will be sunny and warm.”   “It will be very windy.”', 32),
+    R(70, 520, 1140, 120, '#ffffff'), T(100, 535, 1080, 'there will be + noun\n“There will be a big storm.”', 32),
+    T(70, 655, 1140, '🇧🇷 will = vai (futuro) · it will rain = vai chover · won’t = will not', 26, '#8e6d86', { b: true })]));
+  wx.push(slide('cream', [tag('Exercise 3 · Write with WILL'), title('Tomorrow it will… ✍️'),
+    list(['1.  ☀️  (Monday)  →  On Monday it ____________________.', '2.  🌧️  (tonight)  →  ____________________.', '3.  💨☁️  (Friday)  →  ____________________.', '4.  ⛈️  (Sunday)  →  There ____________________.', '5.  🌡️⬇️  (temperature)  →  The temperature ____________.'], 200, 32)]));
+  wx.push(slide('rose', [tag('Bonus · °F or °C?'), title('72 degrees?! 🤔'),
+    T(70, 190, 1140, 'In the USA they use Fahrenheit (°F). In Brazil we use Celsius (°C).', 32),
+    ...[['72°F', '22°C'], ['51°F', '11°C'], ['77°F', '25°C'], ['32°F', '0°C']].flatMap(([f, c], i) => { const x = 70 + i * 290;
+      return [R(x, 290, 270, 170, '#ffffff', { stroke: '#f05d77', sw: 3 }), T(x, 310, 270, f, 48, '#f05d77', { b: true, al: 'center' }), T(x, 390, 270, '≈ ' + c, 40, '#2e2b2e', { al: 'center' })]; }),
+    T(70, 510, 1140, '💡 Quick trick: °C ≈ (°F − 30) ÷ 2\n🗣️ Say: “Seventy-two degrees Fahrenheit is about twenty-two degrees Celsius.”', 30)]));
+  wx.push(slide('cream', [tag('Your turn! 🎤'), title('You are the reporter!'),
+    T(70, 185, 1140, 'Make a 3-day forecast for Guaratuba. Use this model:', 32),
+    R(70, 245, 1140, 360, '#ffffff', { stroke: '#8e6d86', sw: 3 }),
+    T(100, 260, 1080, '“Good afternoon! I’m [name] from Guaratuba News.\nLet’s look at our weather for today. Right now it’s ___ degrees and it’s ___.\nTomorrow it will be ___. On ___ it will ___.\nThere will be ___. The temperature will go up / down to ___ degrees.\nThanks for watching and have a good week!”', 30),
+    T(70, 630, 1140, '⭐ Extra: record it like a real TV reporter! 📱', 30, '#8e6d86', { b: true })]));
+  wx.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
+    T(70, 175, 1140, 'Watch 1:  1 Maria · 2 Chicago, Chicago News · 3 cold and cloudy · 4 five · 5 crazy\nTable:  morning cold, cloudy · now sunny, warm 72 · tonight rain 51 · Tue sunny, warm 77\n            Wed snow 31 · Thu big storm, rain a lot, very windy 56\n            Fri a little windy, a little cloudy 67 · Sat snow 32\nEx. 1:  1 T · 2 F (rain) · 3 T · 4 F (go down) · 5 T · 6 F (snow, 32°)\nEx. 2:  1 cold · 2 go down · 3 snow · 4 careful · 5 windy · 6 week\nEx. 3:  1 will be sunny · 2 Tonight it will rain · 3 On Friday it will be windy and cloudy\n            4 will be a storm · 5 will go down / will go up', 26)]));
+  wx.push(slide('dark', [tag('Wrap-up', true), title('Great job, Ana Clara! 🌟', true),
+    list(['✅  I understood a real weather report.', '✅  I can talk about the weather.', '✅  I can say the future: it will rain, there will be a storm.'], 220, 40, true),
+    T(70, 560, 1140, 'Homework (optional): watch the weather news and write 3 sentences with will. 💜', 30, '#faefc2')]));
+
   window.SLIDES_MODELOS = [
+    { id: 'weather-report-video-ana', title: 'Weather Report (vídeo YouTube) — Ana Clara', slides: wx },
     { id: 'a-an-teles', title: 'A or AN? School Objects Game — Teles', slides: ag },
     { id: 'would-shall-heloize', title: 'Would & Shall (iniciante) — Heloize', slides: mv },
     { id: 'touch-katseye', title: 'Touch (KATSEYE) — 30 min', slides },
