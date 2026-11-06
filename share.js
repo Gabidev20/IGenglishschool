@@ -565,6 +565,8 @@ function renderStudentHome(shell, studentId) {
   if (typeof applyGrownLook === 'function') applyGrownLook(student);
   const progress = loadProgress(student.id);
   const stats = typeof ldStats === 'function' ? ldStats(student.id) : null;
+  // Book pages finished outside the homework button still complete it.
+  if (typeof hwCheckBookTasksLocal === 'function') { try { hwCheckBookTasksLocal(student.id); } catch (e) { /* ignore */ } }
   const homework = typeof hwForStudent === 'function' ? hwForStudent(student.id) : [];
   const pending = homework.filter(h => !hwIsDone(h));
   const due = stats ? stats.bank.due : 0;

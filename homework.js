@@ -238,9 +238,16 @@ function hwRemoveTask(hwId, index) {
 // ---------------------------------------------------------------------------
 // THE SECTION — teacher list on top, the active student's own homework first
 // ---------------------------------------------------------------------------
+let hwBookCheckAt = 0;
 function renderHomework(container) {
   if (!container) return;
   hwSyncGroupCopies();
+  // Book pages the students finished from home complete their book tasks
+  // (at most every 30 s; a change paints the list again).
+  if (!window.IG_SHARE_MODE && Date.now() - hwBookCheckAt > 30000) {
+    hwBookCheckAt = Date.now();
+    hwCheckBookTasksCloud().then(n => { if (n && container.isConnected) renderHomework(container); }).catch(() => {});
+  }
   // The teacher's list shows a group's homework once; each member's copy is
   // in that member's own panel.
   const all = hwLoad().filter(h => !h.groupHw);
@@ -348,6 +355,58 @@ function hwOpenBookResult(hw) {
   if (!task || !student || typeof LivroOnline === 'undefined' || !LivroOnline.bookFor(student)) { openHomeworkResult(hw); return; }
   const pages = task.pages && task.pages.length ? task.pages : hwParsePages(task.pagesText);
   LivroOnline.openHomeworkResult(student, { pages, bim: task.bim, label: hwPagesLabel(pages) });
+}
+
+// A book task is done when every one of its pages is marked "Terminei esta
+// página ✓" in the student's online book — however the student got to the
+// page. The runner only noticed it when the book was opened from the homework
+// AND closed back into it, so a page done from the book tile (or a tab closed
+// on the page) left the homework at 0/1 while the teacher got "fez atividade
+// no livro". isDone(pageId) answers from the student's saved pages.
+function hwMarkBookTasks(studentId, isDone) {
+  if (typeof LivroOnline === 'undefined' || !LivroOnline._pageId) return 0;
+  const student = (typeof loadStudents === 'function' ? loadStudents() : []).find(s => s.id === studentId);
+  const book = student && LivroOnline.bookFor(student);
+  if (!book) return 0;
+  const list = hwLoad();
+  let changed = 0;
+  list.filter(h => h.studentId === studentId).forEach(hw => (hw.tasks || []).forEach(task => {
+    if (task.type !== 'book' || task.result) return;
+    const pages = task.pages && task.pages.length ? task.pages : hwParsePages(task.pagesText);
+    if (!pages.length) return;
+    // No bimester chosen = the page in whichever bimester she did it.
+    const bims = task.bim ? [Number(task.bim)] : [1, 2, 3, 4];
+    if (!bims.some(b => pages.every(n => isDone(LivroOnline._pageId(book, n, b))))) return;
+    task.result = { pct: null, pages: pages.length, fromBook: true, at: new Date().toISOString() };
+    changed++;
+  }));
+  if (changed) hwSave(list);
+  return changed;
+}
+const hwHasOpenBookTask = studentId => hwForStudent(studentId).some(h => (h.tasks || []).some(t => t.type === 'book' && !t.result));
+
+// Student's link: from the pages saved on this device (sent on to the teacher
+// as a homework_result with the rest of the student's work).
+function hwCheckBookTasksLocal(studentId) {
+  if (!studentId || !hwHasOpenBookTask(studentId) || typeof LivroOnline === 'undefined' || !LivroOnline._readLocal) return 0;
+  return hwMarkBookTasks(studentId, id => Boolean((LivroOnline._readLocal(studentId, id) || {}).done));
+}
+
+// Teacher: from the student's pages in the cloud (and any done here in class).
+async function hwCheckBookTasksCloud(studentIds) {
+  if (window.IG_SHARE_MODE || typeof IGCloud === 'undefined' || !IGCloud.teacher || typeof LivroOnline === 'undefined') return 0;
+  const students = typeof loadStudents === 'function' ? loadStudents() : [];
+  let changed = 0;
+  for (const sid of [...new Set(studentIds || students.map(s => s.id))]) {
+    if (!hwHasOpenBookTask(sid)) continue;
+    const book = LivroOnline.bookFor(students.find(s => s.id === sid));
+    if (!book) continue;
+    let rows = [];
+    try { rows = (await IGCloud.pullBookPages(sid, book)) || []; } catch (e) { continue; }
+    const done = new Set(rows.filter(r => r && r.payload && r.payload.done).map(r => r.id));
+    changed += hwMarkBookTasks(sid, id => done.has(id) || Boolean((LivroOnline._readLocal(sid, id) || {}).done));
+  }
+  return changed;
 }
 
 function hwCardHTML(hw, studentView) {
@@ -793,3 +852,15 @@ function openHomeworkResult(hw) {
     </div>`, true);
   document.getElementById('hwResultClose').addEventListener('click', closeModal);
 }
+
+// Teacher: the moment a student saves a book page from home, see whether it
+// finished a book task (the inbox repaints the list too, but may run first).
+window.addEventListener('ig:student-activity', e => {
+  if (window.IG_SHARE_MODE) return;
+  const ids = [...new Set(((e.detail && e.detail.rows) || []).filter(r => r.kind === 'book').map(r => r.studentId))];
+  if (!ids.length) return;
+  hwCheckBookTasksCloud(ids).then(n => {
+    const root = n && document.getElementById('homeworkRoot');
+    if (root) renderHomework(root);
+  }).catch(() => {});
+});
