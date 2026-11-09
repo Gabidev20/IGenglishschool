@@ -91,7 +91,7 @@ mainNav.addEventListener('click', (e) => {
 // ---------------------------------------------------------------------------
 const siteHeader = document.getElementById('siteHeader');
 const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-const observedSections = ['live-class', 'dashboard', 'levels', 'games', 'songs', 'game-maker', 'exam-maker', 'homework']
+const observedSections = ['today', 'live-class', 'dashboard', 'levels', 'games', 'songs', 'game-maker', 'exam-maker', 'homework']
   .map(id => document.getElementById(id))
   .filter(Boolean);
 
