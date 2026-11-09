@@ -10115,3 +10115,185 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .sd-credits { margin-top: 12px; font-size: .75rem; color: var(--ink-faint); text-align: center; }
 .sd-credits summary { cursor: pointer; }
 .sd-credits p { margin: 4px 0 0; }
+
+/* ==========================================================================
+   SIDEBAR LAYOUT (computers, 1101px and wider) — design only.
+   The same header, links and buttons, laid out as a menu down the left side:
+   logo on top, the page's sections, the teacher's tools, and the student of
+   the class in a card at the bottom. No element, id or script changes;
+   phones and tablets keep the top bar and the ☰ menu. The student link and
+   the public games hide the header, so they are left out.
+   ========================================================================== */
+@media (min-width: 1101px) {
+  html:not(.ig-student-mode):not(.ig-public-game) {
+    --side-w: 268px;
+    --header-h: 0px;                 /* nothing sits on top of the page now */
+    --side-ink: rgba(255, 255, 255, 0.84);
+    --side-faint: rgba(255, 255, 255, 0.5);
+    --side-hover: rgba(255, 255, 255, 0.09);
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) body { padding-left: var(--side-w); }
+
+  html:not(.ig-student-mode):not(.ig-public-game) .site-header {
+    top: 0; bottom: 0; left: 0; right: auto;
+    width: var(--side-w);
+    height: auto;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    border-bottom: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .site-header.scrolled { box-shadow: none; }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    max-width: none;
+    min-height: 100%;
+    height: auto;
+    padding: 22px 16px 18px;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .logo { justify-content: flex-start; padding: 0 8px; }
+  html:not(.ig-student-mode):not(.ig-public-game) .logo-image { max-height: 58px; }
+
+  /* Group labels, like "Dia a dia / Escola" in the school's other tools. */
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav::before,
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions::before {
+    content: 'Na sala';
+    display: block;
+    padding: 0 12px 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--side-faint);
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions::before { content: 'Ferramentas'; }
+
+  /* The sections of the page */
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .nav-more { display: none !important; }
+  /* The phone-menu copies of the tools: on a computer the tools have their own rows. */
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav .nav-link.nav-mobile-only { display: none; }
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav .nav-link,
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    height: auto;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--side-ink);
+    font-family: var(--font-body);
+    font-size: 0.97rem;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    box-shadow: none;
+    animation: none;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav .nav-link:hover,
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-btn:hover { background: var(--side-hover); color: #FFFFFF; }
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav .nav-link.active {
+    background: #F7F2F6;
+    color: var(--color-text-dark);
+    box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Line icons, drawn with a mask so they take the text colour. */
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav .nav-link::before,
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-btn::before {
+    content: '';
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    background: currentColor;
+    -webkit-mask: var(--ico) center / contain no-repeat;
+    mask: var(--ico) center / contain no-repeat;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .main-nav .nav-link.active::before { background: var(--primary); }
+  .nav-link[data-section="live-class"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m22 8-6 4 6 4V8Z'/%3E%3Crect x='2' y='6' width='14' height='12' rx='2'/%3E%3C/svg%3E"); }
+  .nav-link[data-section="dashboard"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='9' rx='1'/%3E%3Crect x='14' y='3' width='7' height='5' rx='1'/%3E%3Crect x='14' y='12' width='7' height='9' rx='1'/%3E%3Crect x='3' y='16' width='7' height='5' rx='1'/%3E%3C/svg%3E"); }
+  .nav-link[data-section="levels"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E"); }
+  .nav-link[data-section="games"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 11h4M8 9v4M15 12h.01M18 10h.01'/%3E%3Crect x='2' y='6' width='20' height='12' rx='6'/%3E%3C/svg%3E"); }
+  .nav-link[data-section="game-maker"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8'/%3E%3C/svg%3E"); }
+  .nav-link[data-section="exam-maker"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='2' width='8' height='4' rx='1'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/%3E%3Cpath d='m9 14 2 2 4-4'/%3E%3C/svg%3E"); }
+  #headerBookBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5V5a2 2 0 0 1 2-2h13v16H6.5A2.5 2.5 0 0 0 4 21.5'/%3E%3Cpath d='M19 19v3H6.5'/%3E%3C/svg%3E"); }
+  #headerSlidesBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='20' height='13' rx='2'/%3E%3Cpath d='M8 21h8M12 16v5'/%3E%3C/svg%3E"); }
+  #headerEditorBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E"); }
+  #headerReportsBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3v18h18'/%3E%3Cpath d='M8 17v-5M13 17V8M18 17v-3'/%3E%3C/svg%3E"); }
+  #teacherHelpBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01'/%3E%3C/svg%3E"); }
+  #inboxBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='4' width='20' height='16' rx='2'/%3E%3Cpath d='m22 7-10 6L2 7'/%3E%3C/svg%3E"); }
+
+  /* The tools: the round emoji buttons become labelled rows. The emoji is
+     hidden (font-size 0) and the button's own aria-label is the text. */
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    margin: 0;
+    flex: 1 1 auto;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-btn { font-size: 0; position: relative; }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-btn::after {
+    content: attr(aria-label);
+    order: 1;
+    font-size: 0.97rem;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-btn.has-unread { color: #FFFFFF; }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .inbox-badge {
+    position: static;
+    order: 2;
+    margin-left: auto;
+    font-size: 0.72rem;
+  }
+
+  /* The teacher's account and the student of the class: at the bottom. */
+  html:not(.ig-student-mode):not(.ig-public-game) .teacher-slot { order: 10; margin-top: auto; padding-top: 18px; position: relative; }
+  html:not(.ig-student-mode):not(.ig-public-game) .teacher-chip { width: 100%; justify-content: flex-start; border-radius: 12px; padding: 8px 10px; }
+  html:not(.ig-student-mode):not(.ig-public-game) .teacher-menu { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; }
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-switcher {
+    order: 11;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  /* Accounts switched off: no teacher chip, so the student card goes down. */
+  html:not(.ig-student-mode):not(.ig-public-game) .teacher-slot[hidden] ~ .profile-switcher { margin-top: auto; }
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-switcher::before {
+    content: 'Aluno da aula';
+    display: block;
+    padding: 0 4px 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--side-faint);
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-chip { width: 100%; }
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-info { flex: 1 1 auto; min-width: 0; }
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-name,
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-level { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  html:not(.ig-student-mode):not(.ig-public-game) .profile-dropdown {
+    top: auto;
+    bottom: calc(100% + 10px);
+    left: 0;
+    right: auto;
+    max-height: min(70vh, 560px);
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .hamburger { display: none; }
+
+  /* The greeting band no longer sits under a top bar. */
+  html:not(.ig-student-mode):not(.ig-public-game) .student-greeting { margin-top: 0; }
+}
