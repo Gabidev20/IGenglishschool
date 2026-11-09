@@ -442,7 +442,118 @@
     list(['✅  I can talk about the weather and the temperature.', '✅  I can use the past continuous (+ / − / ?).', '✅  I know when to use past continuous or simple past.'], 220, 38, true),
     T(70, 560, 1140, 'Good luck on your test! 🍀 Study a little every day. 💜', 32, '#faefc2')]));
 
+  // ---- Alicia (10) · Let's go shopping + Walking home · test prep · 1 h ----
+  const al = [];
+  const alMission = t => [R(800, 36, 240, 44, '#8e6d86'), T(800, 42, 240, t, 22, '#ffffff', { b: true, al: 'center' })];
+  const alLines = (y, items, fs, o) => T(90, y, 1100, items.join('\n'), fs || 32, '#2e2b2e', { lh: 1.7, ...o });
+  const alBox = (y, h, text, fs, fill) => [R(70, y, 1140, h, fill || '#ffffff'), T(100, y + 14, 1080, text, fs || 30, '#2e2b2e', { lh: 1.45 })];
+  // A shop-window card: picture, name and a pink price tag.
+  const alItem = (x, y, emoji, name, price) => [R(x, y, 340, 170, '#ffffff'),
+    T(x + 20, y + 30, 110, emoji, 70, '#2e2b2e'), T(x + 135, y + 30, 190, name, 30, '#2e2b2e', { b: true }),
+    R(x + 135, y + 95, 130, 50, '#f05d77'), T(x + 135, y + 102, 130, price, 28, '#ffffff', { b: true, al: 'center' })];
+  // A building on the map.
+  const alPlace = (x, y, emoji, name, fill) => [R(x, y, 330, 130, fill),
+    T(x, y + 14, 330, emoji, 50, '#2e2b2e', { al: 'center' }), T(x, y + 80, 330, name, 28, '#2e2b2e', { b: true, al: 'center' })];
+
+  al.push(slide('dark', [tag('Test prep · English with Alicia', true), T(70, 150, 1140, "Let's Go Shopping! 🛍️", 96, '#ffffff', { b: true }),
+    T(70, 290, 1140, '+ Walking Home 🏙️', 64, '#faefc2', { b: true }),
+    T(70, 420, 1140, '5 missions · 1 final challenge · 1 champion: YOU! 🏆', 40, '#ffffff'),
+    T(70, 500, 1140, 'You can do it, Alicia! 💪✨', 36, '#faefc2')]));
+  al.push(slide('cream', [tag('Our plan · 1 hour'), title('Your 5 missions ⭐'),
+    alLines(185, ['👕  Mission 1 · Clothes  (8 min)', '💲  Mission 2 · Numbers 30–100 and prices  (12 min)', '👍  Mission 3 · I like it / I like them  (12 min)', '📦  Mission 4 · on · next to · under  (8 min)', '🏙️  Mission 5 · Places in the city  (12 min)', '🏆  Final challenge + test tips  (8 min)'], 34),
+    T(70, 600, 1140, 'Win a ⭐ for every mission. 5 stars = test champion! 🏆', 30, '#8e6d86', { b: true })]));
+
+  // Mission 1 — clothes
+  al.push(slide('rose', [tag('Mission 1 · Clothes'), ...alMission('Mission 1 👕'), ...time('0–4 min'), title("What's in the store? 👕"),
+    T(90, 185, 360, '👕 T-shirt\n👔 shirt\n👗 dress\n👖 jeans\n🩳 shorts\n🧥 jacket', 36, '#2e2b2e', { lh: 1.5 }),
+    T(470, 185, 360, '👟 sneakers\n👞 shoes\n🧢 cap\n👒 hat\n🧦 socks\n🧣 scarf', 36, '#2e2b2e', { lh: 1.5 }),
+    ...[R(850, 190, 360, 360, '#ffffff')], T(870, 205, 320, '💡 Always plural:\njeans, shorts, pants, sneakers, shoes, socks\n\n→ “They are cool!”\n→ “I like THEM.”', 26, '#8e6d86', { b: true, lh: 1.45 })]));
+  al.push(slide('cream', [tag('Mission 1 · Speak fast!'), ...alMission('Mission 1 👕'), ...time('4–8 min'), title('Color + clothes ⚡'),
+    ...alBox(180, 90, '💡 The color comes FIRST:  a red T-shirt ✔   a T-shirt red ✘', 30, '#ffffff'),
+    alLines(300, ['🔴 👕  →  a __________________', '🔵 🧢  →  a __________________', '⚫ 👟  →  __________________  (plural!)', '🟡 👗  →  a __________________', '🟢 🧦  →  __________________  (plural!)'], 32),
+    T(760, 330, 450, '⏱️ Say all 5 in\n20 seconds! ⭐', 40, '#f05d77', { b: true, al: 'center' })]));
+
+  // Mission 2 — numbers and prices
+  al.push(slide('rose', [tag('Mission 2 · Numbers 30–100'), ...alMission('Mission 2 💲'), ...time('8–12 min'), title('Big numbers 🔢'),
+    T(90, 185, 540, '30  thirty\n40  forty\n50  fifty\n60  sixty', 40, '#2e2b2e', { lh: 1.5, b: true }),
+    T(650, 185, 560, '70  seventy\n80  eighty\n90  ninety\n100  one hundred', 40, '#2e2b2e', { lh: 1.5, b: true }),
+    ...alBox(470, 90, '45 = forty-five   ·   72 = seventy-two   ·   99 = ninety-nine', 32),
+    T(70, 590, 1140, '⚠️ forty (no U!)  ·  thirTEEN (13) vs. THIRty (30) — listen to the end!', 28, '#f05d77', { b: true })]));
+  al.push(slide('cream', [tag('Mission 2 · Number game'), ...alMission('Mission 2 💲'), title('Write it! Say it! ✍️🗣️'),
+    alLines(185, ['1.  37  →  ____________________', '2.  54  →  ____________________', '3.  68  →  ____________________', '4.  81  →  ____________________', '5.  100  →  ____________________'], 32),
+    T(700, 185, 510, '🎧 Teacher says, you write the number:\n\nseventy-three → ____\nninety-six → ____\nfifty-eight → ____\nforty-four → ____', 30, '#8e6d86', { b: true, lh: 1.5 })]));
+  al.push(slide('rose', [tag('Mission 2 · Prices'), ...alMission('Mission 2 💲'), ...time('12–16 min'), title('How much…? 💲'),
+    ...alBox(185, 130, '👕 ONE thing:  How much IS the T-shirt?\n✅  IT’S 35 dollars.', 32),
+    ...alBox(340, 130, '👟 TWO or more / plural:  How much ARE the sneakers?\n✅  THEY’RE 90 dollars.', 32),
+    T(70, 500, 1140, '💡 $ 35 = thirty-five dollars\n💡 is → it’s   ·   are → they’re', 30, '#8e6d86', { b: true })]));
+  al.push(slide('cream', [tag('Mission 2 · The shop window 🛍️'), ...alMission('Mission 2 💲'), ...time('16–20 min'), title('Ask and answer!'),
+    ...alItem(90, 180, '👕', 'T-shirt', '$32'), ...alItem(470, 180, '👗', 'dress', '$75'), ...alItem(850, 180, '👟', 'sneakers', '$98'),
+    ...alItem(90, 370, '🧢', 'cap', '$41'), ...alItem(470, 370, '🧦', 'socks', '$30'), ...alItem(850, 370, '🧥', 'jacket', '$86'),
+    T(70, 570, 1140, '🗣️ How much is the cap? · How much are the socks?\n🤔 You have $100. What can you buy? Which one is the most expensive?', 27, '#8e6d86', { b: true, lh: 1.5 })]));
+
+  // Mission 3 — opinions
+  al.push(slide('rose', [tag('Mission 3 · Opinions'), ...alMission('Mission 3 👍'), ...time('20–24 min'), title('I like it! I like them! 👍'),
+    ...[R(70, 185, 555, 240, '#ffffff'), R(655, 185, 555, 240, '#ffffff')],
+    T(95, 200, 510, 'ONE thing 👕\n👍 I like it.\n👎 I don’t like it.\n“It’s cool!”', 34, '#2e2b2e', { lh: 1.4 }),
+    T(680, 200, 510, 'TWO or more 👟👟\n👍 I like them.\n👎 I don’t like them.\n“They’re cool!”', 34, '#2e2b2e', { lh: 1.4 }),
+    T(90, 450, 1100, '😎 cool   😍 beautiful   🤢 ugly', 38, '#2e2b2e', { b: true }),
+    T(90, 520, 1100, 'Food 🍕:   😋 delicious   🤤 yummy  →  “It’s delicious!” “Yummy!”', 34, '#8e6d86', { b: true })]));
+  al.push(slide('cream', [tag('Mission 3 · What do you think?'), ...alMission('Mission 3 👍'), ...time('24–28 min'), title('Like it or not? 🤔'),
+    alLines(185, ['🧢 a pink cap  →  I ______ it! It’s ______.', '👟👟 green sneakers  →  I ______ them. They’re ______.', '👗 a yellow dress  →  ______________________', '🧦🧦 funny socks  →  ______________________', '🍕 a pizza  →  Mmm! It’s ______! ______!', '🍰 a chocolate cake  →  ______________________'], 32),
+    T(70, 600, 1140, '💬 Use: I like it / them · I don’t like it / them · cool · ugly · beautiful · delicious · yummy', 26, '#8e6d86', { b: true })]));
+  al.push(slide('rose', [tag('Mission 3 · it or them?'), ...alMission('Mission 3 👍'), title('Complete with IT or THEM ✍️'),
+    alLines(185, ['1.  I love this jacket. I like ______. 😍', '2.  These jeans are ugly. I don’t like ______. 🤢', '3.  Look at the sneakers! I like ______. They’re cool!', '4.  This hat is ugly. I don’t like ______.', '5.  The shorts are beautiful. I like ______.', '6.  This cake is yummy! I like ______.'], 32)]));
+  al.push(slide('cream', [tag('Mission 3 · Role play 🛒'), ...alMission('Mission 3 👍'), ...time('28–32 min'), title('At the store 🛍️'),
+    ...alBox(180, 340, '🧑‍💼 Seller:  Hello! Can I help you?\n👧 Alicia:  Yes, please. I’m looking for a T-shirt.\n🧑‍💼 Seller:  What color?\n👧 Alicia:  Blue, please.\n🧑‍💼 Seller:  Here you are.\n👧 Alicia:  Oh, I like it! It’s beautiful. How much is it?\n🧑‍💼 Seller:  It’s 39 dollars.\n👧 Alicia:  OK, I’ll take it. Thank you!', 28),
+    T(70, 545, 1140, '🔁 Now change roles! Then buy SNEAKERS: “How much ARE they? I like THEM!”', 28, '#f05d77', { b: true })]));
+
+  // Mission 4 — prepositions
+  al.push(slide('rose', [tag('Mission 4 · Prepositions of place'), ...alMission('Mission 4 📦'), ...time('32–36 min'), title('on · next to · under 📦'),
+    R(90, 180, 330, 330, '#ffffff'), R(475, 180, 330, 330, '#ffffff'), R(860, 180, 330, 330, '#ffffff'),
+    T(90, 195, 330, 'on', 42, '#f05d77', { b: true, al: 'center' }), T(475, 195, 330, 'next to', 42, '#f05d77', { b: true, al: 'center' }), T(860, 195, 330, 'under', 42, '#f05d77', { b: true, al: 'center' }),
+    R(195, 400, 120, 90, '#c9a77d'), T(195, 312, 120, '🐱', 64, '#2e2b2e', { al: 'center' }),
+    R(520, 400, 120, 90, '#c9a77d'), T(660, 405, 110, '🐱', 64, '#2e2b2e', { al: 'center' }),
+    R(905, 330, 240, 18, '#8e6d86'), R(915, 348, 16, 140, '#8e6d86'), R(1119, 348, 16, 140, '#8e6d86'), T(970, 400, 110, '🐱', 64, '#2e2b2e', { al: 'center' }),
+    T(90, 530, 330, 'The cat is ON the box.', 26, '#2e2b2e', { al: 'center' }), T(475, 530, 330, 'The cat is NEXT TO the box.', 26, '#2e2b2e', { al: 'center' }), T(860, 530, 330, 'The cat is UNDER the table.', 26, '#2e2b2e', { al: 'center' }),
+    T(70, 620, 1140, '🏙️ In the city:  The bank is ON Green Street. · The bakery is NEXT TO the bank.', 26, '#8e6d86', { b: true })]));
+  al.push(slide('cream', [tag('Mission 4 · Messy bedroom!'), ...alMission('Mission 4 📦'), ...time('36–40 min'), title('Where are my things? 🛏️'),
+    R(300, 340, 470, 90, '#8e6d86'), R(310, 300, 120, 44, '#ffffff'), R(310, 430, 18, 70, '#2e2b2e'), R(742, 430, 18, 70, '#2e2b2e'),
+    T(500, 255, 90, '🧢', 60, '#2e2b2e', { al: 'center' }), T(640, 260, 90, '📕', 56, '#2e2b2e', { al: 'center' }),
+    T(480, 436, 140, '👟', 50, '#2e2b2e', { al: 'center' }), T(800, 390, 120, '🎒', 80, '#2e2b2e', { al: 'center' }),
+    T(70, 540, 1140, '1. Where’s the cap?   2. Where are the sneakers?\n3. Where’s the backpack?   4. Where’s the book?', 30, '#2e2b2e', { b: true, lh: 1.5 }),
+    T(940, 200, 270, '✅ It’s on the… / They’re under the…', 24, '#8e6d86', { b: true })]));
+
+  // Mission 5 — places in the city
+  al.push(slide('rose', [tag('Mission 5 · Places in the city'), ...alMission('Mission 5 🏙️'), ...time('40–44 min'), title('Walking home 🏙️'),
+    T(90, 185, 540, '🏦 bank\n📚 bookstore\n🏥 hospital\n🌳 square', 40, '#2e2b2e', { lh: 1.55 }),
+    T(650, 185, 560, '🥖 bakery\n🍽️ restaurant\n🛒 supermarket\n⛽ gas station', 40, '#2e2b2e', { lh: 1.55 }),
+    T(70, 560, 1140, '💡 a bank · a bookstore · a hospital · a square · a bakery · a restaurant · a supermarket · a gas station', 26, '#8e6d86', { b: true })]));
+  al.push(slide('cream', [tag('Mission 5 · Guess the place!'), ...alMission('Mission 5 🏙️'), title('What place is it? 🕵️'),
+    alLines(180, ['1.  You buy bread and cake here. 🍞  →  ______________', '2.  You buy books here.  →  ______________', '3.  Doctors and nurses work here.  →  ______________', '4.  You put gas in the car here.  →  ______________', '5.  You keep your money here.  →  ______________', '6.  You buy fruit, milk and rice here.  →  ______________', '7.  You eat lunch here with your family.  →  ______________', '8.  There are trees and benches. You walk and play here.  →  ______'], 29, { lh: 1.6 })]));
+  al.push(slide('rose', [tag('Mission 5 · The map 🗺️'), ...alMission('Mission 5 🏙️'), ...time('44–50 min'), title('Where is it? 🗺️'),
+    ...alPlace(90, 175, '🏦', 'bank', '#ffffff'), ...alPlace(475, 175, '🥖', 'bakery', '#faefc2'), ...alPlace(860, 175, '📚', 'bookstore', '#ffffff'),
+    R(70, 318, 1140, 60, '#9ea3a9', { shape: 'rect' }), T(70, 330, 1140, '— — —   Green Street   — — —', 26, '#ffffff', { b: true, al: 'center' }),
+    ...alPlace(90, 392, '🏥', 'hospital', '#ffffff'), ...alPlace(475, 392, '🌳', 'square', '#d8ecd0'), ...alPlace(860, 392, '🛒', 'supermarket', '#ffffff'),
+    T(70, 540, 1140, '1. Where’s the bakery?  2. What’s next to the hospital?\n3. Is the bank on Green Street?  4. Where’s the square?  5. Is the hospital next to the bank?', 26, '#2e2b2e', { b: true, lh: 1.5 })]));
+  al.push(slide('cream', [tag('Mission 5 · Reading'), ...alMission('Mission 5 🏙️'), title('Bia and Leo walk home 🚶‍♀️🚶'),
+    ...alBox(175, 260, 'After school, Bia and Leo walk home together. First, they see the bank on Green Street. The bakery is next to the bank. It smells delicious! “Yummy!” says Leo. Next to the bakery, there is a bookstore. Bia looks at the books in the window. “I like them!” she says. In the square, a little cat is under a bench. “It’s so beautiful!” says Bia.', 28),
+    T(90, 455, 1100, '1. Where is the bank?\n2. What is next to the bank?\n3. What does Bia like?\n4. Where is the cat?', 28, '#8e6d86', { b: true, lh: 1.5 })]));
+
+  // Final challenge, speaking, tips, answers
+  al.push(slide('rose', [tag('Final challenge 🏆'), ...time('50–55 min'), title('8 questions = 8 points! 🏆'),
+    alLines(180, ['1.  Write 76 in words.', '2.  How much ______ the shorts? (is / are)', '3.  I like this dress. I like ______.', '4.  These socks are ugly. I don’t like ______.', '5.  🐱 + 📦 (cat on top) →  The cat is ______ the box.', '6.  Doctors work here. → ______', '7.  Correct it:  “I have a T-shirt red.”', '8.  “Quanto custa o boné?” in English?'], 30, { lh: 1.6 })]));
+  al.push(slide('cream', [tag('Speaking 🗣️'), title('Tell me about you!'),
+    alLines(190, ['💬  What clothes do you like? What’s your favorite color?', '💬  Look at your clothes now. Do you like them?', '💬  What’s your favorite food? Is it yummy?', '💬  Is there a bakery or a supermarket near your house?', '💬  What’s next to your school?'], 32, { lh: 1.85 })]));
+  al.push(slide('rose', [tag('Test tips 💡'), ...time('55–60 min'), title('Before the test'),
+    alLines(185, ['✅  ONE thing → is / it / it’s  ·  plural → are / them / they’re', '✅  jeans, shorts, sneakers, socks, shoes are always plural.', '✅  Color first: a blue cap (not a cap blue).', '✅  forty (no U!) · 30 thirty ≠ 13 thirteen', '✅  on (em cima) · next to (ao lado) · under (embaixo)', '✅  Read the question twice. Look at the pictures! 👀'], 31)]));
+  al.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
+    T(70, 175, 1140, 'M1:  a red T-shirt · a blue cap · black sneakers · a yellow dress · green socks\nM2:  37 thirty-seven · 54 fifty-four · 68 sixty-eight · 81 eighty-one · 100 one hundred · 73 · 96 · 58 · 44\nShop:  How much is the cap? It’s 41 dollars. · How much are the socks? They’re 30 dollars. · $100: e.g. T-shirt + socks ($62), or the sneakers ($98). Most expensive: the sneakers.\nit/them:  1 it · 2 them · 3 them · 4 it · 5 them · 6 it\nBedroom:  1 It’s on the bed. · 2 They’re under the bed. · 3 It’s next to the bed. · 4 It’s on the bed.\nPlaces:  1 bakery · 2 bookstore · 3 hospital · 4 gas station · 5 bank · 6 supermarket · 7 restaurant · 8 square\nMap:  1 next to the bank (between the bank and the bookstore), on Green Street · 2 the square · 3 Yes, it is. · 4 next to the hospital / next to the supermarket · 5 No, it isn’t. (It’s next to the square.)\nReading:  1 on Green Street · 2 the bakery · 3 the books · 4 under a bench (in the square)\nChallenge:  1 seventy-six · 2 are · 3 it · 4 them · 5 on · 6 hospital · 7 I have a red T-shirt. · 8 How much is the cap?', 22, '#2e2b2e', { lh: 1.5 })]));
+  al.push(slide('dark', [tag('Mission complete!', true), title('You are ready, Alicia! 🌟', true),
+    list(['✅  I can name clothes and say the price.', '✅  I can say I like it / I like them.', '✅  I can say where places are in the city.'], 220, 38, true),
+    T(70, 560, 1140, 'Good luck on your test! 🍀 You are a shopping champion! 🏆🛍️', 32, '#faefc2')]));
+
   window.SLIDES_MODELOS = [
+    { id: 'shopping-city-alicia', title: 'Test prep: Shopping + Walking Home — Alicia · 1 h', slides: al },
     { id: 'av2-review-ana', title: 'AV2 Review: Weather + Past Continuous — Ana Clara', slides: av },
     { id: 'debut-katseye', title: 'Debut (KATSEYE) — Aninha · 30 min', slides: db },
     { id: 'numbers-1-20-teles', title: 'Numbers 1–20 · Bunny Block World — Teles', slides: nb },
