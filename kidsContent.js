@@ -41,6 +41,13 @@ const KID_VOCAB = {
     ['window', 'janela', '🪟'], ['TV', 'televisão', '📺'], ['lamp', 'abajur', '💡'], ['clock', 'relógio', '⏰'],
     ['toilet', 'vaso sanitário', '🚽'], ['shower', 'chuveiro', '🚿'],
   ],
+  // IG Explorers · Unit 4 (The Airport): the countries a child meets first.
+  countries: [
+    ['Brazil', 'Brasil', '🇧🇷'], ['the USA', 'Estados Unidos', '🇺🇸'], ['the UK', 'Reino Unido', '🇬🇧'],
+    ['Japan', 'Japão', '🇯🇵'], ['China', 'China', '🇨🇳'], ['Italy', 'Itália', '🇮🇹'],
+    ['France', 'França', '🇫🇷'], ['Argentina', 'Argentina', '🇦🇷'], ['Canada', 'Canadá', '🇨🇦'],
+    ['Mexico', 'México', '🇲🇽'], ['Portugal', 'Portugal', '🇵🇹'], ['Spain', 'Espanha', '🇪🇸'],
+  ],
 };
 
 // The verb to be, the way a young learner meets it.
@@ -111,6 +118,7 @@ const KID_TOPICS = [
   kidVocabTopic('kids-shapes', 'Shapes', 'Formas', KID_VOCAB.shapes, 'What shape is this?'),
   kidVocabTopic('kids-numbers', 'Numbers 1–10', 'Números', KID_VOCAB.numbers, 'What number is this?'),
   kidVocabTopic('kids-house', 'Parts of the house', 'Partes da casa', KID_VOCAB.house, 'What is this?'),
+  kidVocabTopic('kids-countries', 'Countries', 'Países', KID_VOCAB.countries, 'What country is this?'),
   {
     id: 'kids-tobe', label: 'Verb to be (I am, she is…)', pt: 'Verbo to be', kids: true,
     aliases: ['verb to be', 'to be', 'verbo to be', 'am is are'],

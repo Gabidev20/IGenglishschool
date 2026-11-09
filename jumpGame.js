@@ -67,6 +67,8 @@ const JL_SETS = [
     typeof WEATHER_TOPIC !== 'undefined' ? jlFromTopic(WEATHER_TOPIC) : [] },
   { id: 'house', en: 'The house', pt: 'Casa', icon: '🏠', words: () =>
     typeof KID_VOCAB !== 'undefined' ? jlFromTriples(KID_VOCAB.house) : [] },
+  { id: 'countries', en: 'Countries', pt: 'Países', icon: '🌎', words: () =>
+    typeof KID_VOCAB !== 'undefined' && KID_VOCAB.countries ? jlFromTriples(KID_VOCAB.countries) : [] },
 ];
 
 function jlLoadSettings() {
