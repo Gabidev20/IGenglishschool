@@ -362,7 +362,88 @@
     list(['✅  I sang “Debut”.', '✅  I learned 6 expressions.', '✅  I can use them in real life.'], 230, 44, true),
     T(70, 560, 1140, 'Homework (optional): write 3 sentences with your favorite expressions. 💜', 32, '#faefc2')]));
 
+  // ---- AV2 review (school test): weather + past continuous — Ana Clara ----
+  const av = [];
+  const avPart = t => [R(980, 36, 250, 44, '#f05d77'), T(980, 42, 250, t, 22, '#ffffff', { b: true, al: 'center' })];
+  const avLines = (y, items, fs, o) => T(90, y, 1100, items.join('\n'), fs || 32, '#2e2b2e', { lh: 1.7, ...o });
+  const avBox = (y, h, text, fs, fill) => [R(70, y, 1140, h, fill || '#ffffff'), T(100, y + 14, 1080, text, fs || 30, '#2e2b2e', { lh: 1.45 })];
+  av.push(slide('dark', [tag('Test prep · AV2', true), T(70, 160, 1140, 'AV2 Review 📝', 120, '#ffffff', { b: true }),
+    T(70, 320, 1140, 'Weather + Past Continuous', 56, '#faefc2'), T(70, 430, 1140, 'You can do it, Ana Clara! 💪✨', 44, '#ffffff')]));
+  av.push(slide('cream', [tag('What is on the test'), title('5 topics ✔️'),
+    avLines(190, ['☐  1. How’s the weather? What’s the temperature?  (p. 126–131)', '☐  2. Past continuous — affirmative  (p. 131–134)', '☐  3. Past continuous — negative and questions  (p. 137–139)', '☐  4. Past continuous vs. simple past  (p. 148–150)', '☐  5. Past continuous + Wh- questions  (p. 154)'], 32),
+    T(70, 600, 1140, 'Tick each topic when you feel ready! 😊', 30, '#8e6d86', { b: true })]));
+
+  // 1 — weather
+  av.push(slide('rose', [tag('Topic 1 · Weather'), ...avPart('Topic 1'), title('Weather words ☀️🌧️'),
+    T(90, 190, 540, '☀️ sunny\n☁️ cloudy\n🌧️ rainy\n💨 windy\n❄️ snowy\n🌫️ foggy\n⛈️ stormy', 36, '#2e2b2e', { lh: 1.45 }),
+    T(650, 190, 540, '🥵 hot\n🙂 warm\n🍃 cool\n🥶 cold\n🧊 freezing\n💧 humid', 36, '#2e2b2e', { lh: 1.45 }),
+    T(650, 560, 560, '💡 rain (noun) → rainy (adjective)\n💡 wind → windy · sun → sunny', 26, '#8e6d86', { b: true })]));
+  av.push(slide('cream', [tag('Topic 1 · Questions and answers'), ...avPart('Topic 1'), title('Ask and answer 🗣️'),
+    ...avBox(190, 150, '❓ How’s the weather?   =   What’s the weather like?\n✅ It’s sunny and hot.   ·   It’s raining.   ·   It’s cloudy.', 30),
+    ...avBox(360, 150, '❓ What’s the temperature?\n✅ It’s 25 degrees (Celsius).   ·   It’s minus 2 degrees. (−2 °C)', 30),
+    T(70, 540, 1140, '⚠️ It’s rainy ✔   It’s raining ✔   It’s rain ✘\n⚠️ Always use IT: “It’s cold.”  (not “Is cold.”)', 30, '#f05d77', { b: true })]));
+  av.push(slide('rose', [tag('Topic 1 · Practice'), ...avPart('Topic 1'), title('Look and answer ✍️'),
+    avLines(190, ['1.  ☀️ 32 °C  →  How’s the weather? ______________________', '2.  🌧️ 18 °C  →  What’s the weather like? __________________', '3.  ❄️ −5 °C  →  What’s the temperature? __________________', '4.  💨☁️  →  How’s the weather? ______________________', '5.  🌫️ 12 °C  →  ______________________________________'], 32)]));
+  av.push(slide('cream', [tag('Topic 1 · Reading'), ...avPart('Topic 1'), title('A trip to Gramado 🏔️'),
+    ...avBox(180, 270, 'Last July, my family and I went to Gramado. On the first day, it was cold and foggy. The temperature was 4 degrees in the morning! On the second day, it was sunny but windy. We were walking in the park when it started to rain. Luckily, my mom was carrying an umbrella.', 29),
+    T(90, 470, 1100, '1. How was the weather on the first day?\n2. What was the temperature in the morning?\n3. What were they doing when it started to rain?\n4. What was the mom carrying?', 28, '#8e6d86', { b: true, lh: 1.5 })]));
+
+  // 2 — past continuous affirmative
+  av.push(slide('rose', [tag('Topic 2 · Past continuous'), ...avPart('Topic 2'), title('Was / were + verb-ING 🎬'),
+    ...avBox(190, 160, 'I / he / she / it   →   WAS + verb-ing\nyou / we / they   →   WERE + verb-ing', 36),
+    ...avBox(370, 150, '“At 8 p.m. yesterday, I was studying.”\n“They were playing soccer at 4 o’clock.”', 32),
+    T(70, 550, 1140, '💡 Use it for an action IN PROGRESS at a moment in the past.\n🇧🇷 = “estava fazendo” (I was studying = eu estava estudando)', 28, '#8e6d86', { b: true })]));
+  av.push(slide('cream', [tag('Topic 2 · -ING spelling'), ...avPart('Topic 2'), title('How to write -ING ✏️'),
+    T(90, 190, 1100, 'most verbs  →  + ing:   play → playing · rain → raining · study → studying\nend in -e  →  drop the e:   write → writing · make → making · dance → dancing\nshort verb (consonant–vowel–consonant)  →  double:\n         run → running · swim → swimming · sit → sitting · get → getting', 30, '#2e2b2e', { lh: 1.8 }),
+    T(70, 560, 1140, '⚠️ Not doubled: rain → raining (2 vowels) · snow → snowing (ends in w)', 28, '#f05d77', { b: true })]));
+  av.push(slide('rose', [tag('Topic 2 · Practice'), ...avPart('Topic 2'), title('Complete with was / were + -ING'),
+    avLines(190, ['1.  At 7 a.m., it ________________ (rain).', '2.  My friends ________________ (swim) in the pool.', '3.  I ________________ (write) an email to my teacher.', '4.  We ________________ (watch) a movie at 9 p.m.', '5.  The sun ________________ (shine) all morning.', '6.  You ________________ (run) in the park.'], 32)]));
+
+  // 3 — negative and questions
+  av.push(slide('cream', [tag('Topic 3 · Negative and questions'), ...avPart('Topic 3'), title('Negative ❌ and questions ❓'),
+    ...avBox(180, 120, '❌  wasn’t (was not) / weren’t (were not) + verb-ing\n     “It wasn’t snowing.”   “They weren’t listening.”', 29),
+    ...avBox(320, 120, '❓  Was / Were + subject + verb-ing?\n     “Was it raining?”   “Were you sleeping?”', 29),
+    ...avBox(460, 120, '✅  Yes, it was. / No, it wasn’t.\n     Yes, we were. / No, we weren’t.', 29),
+    T(70, 610, 1140, '⚠️ Short answers: NO -ing!  “Yes, I was.” (not “Yes, I was sleeping.”)', 26, '#f05d77', { b: true })]));
+  av.push(slide('rose', [tag('Topic 3 · Practice'), ...avPart('Topic 3'), title('Make it negative, then ask ❓'),
+    avLines(190, ['1.  She was cooking dinner.   ❌ ______________________   ❓ ______________________?', '2.  They were playing video games.   ❌ ______________   ❓ ______________?', '3.  It was snowing in Curitiba.   ❌ ______________   ❓ ______________?'], 28, { lh: 2 }),
+    T(70, 470, 1140, 'Answer with short answers:', 30, '#8e6d86', { b: true }),
+    avLines(520, ['4.  Were you studying at 10 p.m.?  👍 ______________', '5.  Was Paulo sleeping?  👎 ______________'], 30)]));
+
+  // 4 — past continuous vs simple past
+  av.push(slide('cream', [tag('Topic 4 · Past continuous vs. simple past'), ...avPart('Topic 4'), title('Long action + short action ⏳⚡'),
+    R(90, 200, 1100, 26, '#8e6d86', { shape: 'rect' }), T(90, 238, 1100, 'I was walking home  (long action, in progress) …', 28, '#8e6d86', { b: true }),
+    R(820, 172, 26, 62, '#f05d77', { shape: 'rect' }), T(560, 282, 650, '⚡ … when it started to rain. (short action)', 28, '#f05d77', { b: true }),
+    ...avBox(350, 150, 'WHEN + simple past:  “I was walking home when it started to rain.”\nWHILE + past continuous:  “While I was walking home, it started to rain.”', 29),
+    T(70, 530, 1140, '💡 Two long actions at the same time → while + while:\n“I was reading while my brother was playing.”', 28, '#2e2b2e')]));
+  av.push(slide('rose', [tag('Topic 4 · Practice'), ...avPart('Topic 4'), title('Past continuous or simple past?'),
+    avLines(185, ['1.  I ______________ (sleep) when the phone ______________ (ring).', '2.  While we ______________ (have) lunch, it ______________ (start) to rain.', '3.  She ______________ (fall) while she ______________ (ride) her bike.', '4.  When I ______________ (arrive), they ______________ (watch) TV.', '5.  It ______________ (snow) when we ______________ (leave) the hotel.'], 29, { lh: 1.95 })]));
+  av.push(slide('cream', [tag('Topic 4 · When or while?'), ...avPart('Topic 4'), title('Choose: when or while? 🤔'),
+    avLines(200, ['1.  I was taking a shower ________ the lights went out.', '2.  ________ Mom was cooking, Dad was cleaning.', '3.  ________ I saw the storm, I closed the windows.', '4.  He cut his finger ________ he was making a sandwich.'], 32, { lh: 1.9 })]));
+
+  // 5 — wh- questions
+  av.push(slide('rose', [tag('Topic 5 · Wh- questions'), ...avPart('Topic 5'), title('Wh- + was / were + subject + -ING'),
+    avLines(190, ['❓ What were you doing at 9 p.m.?   →   I was studying.', '❓ Where was she going?   →   She was going to school.', '❓ Who was he talking to?   →   He was talking to his mom.', '❓ Why were they laughing?   →   Because the movie was funny.', '❓ What was the weather like?   →   It was raining.'], 30, { lh: 1.85 })]));
+  av.push(slide('cream', [tag('Topic 5 · Practice'), ...avPart('Topic 5'), title('Write the question for the answer ✍️'),
+    avLines(190, ['1.  ____________________________?   →  I was reading a book.', '2.  ____________________________?   →  They were going to the beach.', '3.  ____________________________?   →  She was talking to Lucas.', '4.  ____________________________?   →  It was snowing.', '5.  ____________________________?   →  Because he was tired.'], 30, { lh: 1.85 })]));
+
+  // mixed + exam tips
+  av.push(slide('rose', [tag('Mixed · Find the mistake 🔍'), title('Correct the sentences'),
+    avLines(190, ['1.  I were watching TV when you called.', '2.  It was rainning all day.', '3.  Was you sleeping at 11 p.m.?', '4.  They wasn’t playing soccer.', '5.  While I walked home, I was seeing a rainbow.', '6.  What you were doing yesterday at 6?'], 32)]));
+  av.push(slide('cream', [tag('Speaking 🗣️'), title('Your turn!'),
+    avLines(200, ['💬  What were you doing yesterday at 7 a.m.? And at 9 p.m.?', '💬  How was the weather last weekend? What were you doing?', '💬  Tell me about a time something happened while you were …'], 32, { lh: 1.9 })]));
+  av.push(slide('rose', [tag('Test tips 💡'), title('Before the test'),
+    avLines(190, ['✅  Was = I / he / she / it  ·  Were = you / we / they', '✅  Check the -ING spelling (running, writing, raining).', '✅  Short answers: Yes, I was. / No, they weren’t.', '✅  Long action → past continuous · Short action → simple past', '✅  WHEN + simple past · WHILE + past continuous', '✅  Read the weather text twice before answering.'], 30)]));
+  av.push(slide('cream', [tag('Answers (teacher) · 1'), title('✅ Answers — topics 1 to 3'),
+    T(70, 180, 1140, 'T1 practice:  1 It’s sunny and hot. · 2 It’s rainy / raining. · 3 It’s minus 5 degrees. · 4 It’s windy and cloudy. · 5 How’s the weather? / What’s the temperature? It’s foggy. / It’s 12 degrees.\nReading:  1 cold and foggy · 2 4 degrees · 3 walking in the park · 4 an umbrella\nT2:  1 was raining · 2 were swimming · 3 was writing · 4 were watching · 5 was shining · 6 were running\nT3:  1 She wasn’t cooking dinner. / Was she cooking dinner? · 2 They weren’t playing… / Were they playing…? · 3 It wasn’t snowing… / Was it snowing in Curitiba? · 4 Yes, I was. · 5 No, he wasn’t.', 25, '#2e2b2e', { lh: 1.5 })]));
+  av.push(slide('cream', [tag('Answers (teacher) · 2'), title('✅ Answers — topics 4, 5 and mixed'),
+    T(70, 180, 1140, 'T4:  1 was sleeping / rang · 2 were having / started · 3 fell / was riding · 4 arrived / were watching · 5 was snowing / left\nWhen or while:  1 when · 2 While · 3 When · 4 while\nT5:  1 What were you doing? · 2 Where were they going? · 3 Who was she talking to? · 4 What was the weather like? · 5 Why was he …? (e.g. Why was he sleeping?)\nMistakes:  1 was watching · 2 raining · 3 Were you sleeping · 4 weren’t playing · 5 While I was walking home, I saw a rainbow. · 6 What were you doing…?', 25, '#2e2b2e', { lh: 1.5 })]));
+  av.push(slide('dark', [tag('Ready!', true), title('You are ready, Ana Clara! 🌟', true),
+    list(['✅  I can talk about the weather and the temperature.', '✅  I can use the past continuous (+ / − / ?).', '✅  I know when to use past continuous or simple past.'], 220, 38, true),
+    T(70, 560, 1140, 'Good luck on your test! 🍀 Study a little every day. 💜', 32, '#faefc2')]));
+
   window.SLIDES_MODELOS = [
+    { id: 'av2-review-ana', title: 'AV2 Review: Weather + Past Continuous — Ana Clara', slides: av },
     { id: 'debut-katseye', title: 'Debut (KATSEYE) — Aninha · 30 min', slides: db },
     { id: 'numbers-1-20-teles', title: 'Numbers 1–20 · Bunny Block World — Teles', slides: nb },
     { id: 'weather-report-video-ana', title: 'Weather Report (vídeo YouTube) — Ana Clara', slides: wx },
