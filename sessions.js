@@ -263,6 +263,7 @@ function refreshLiveClassCockpit() {
       <button class="btn btn-ghost" id="openClassReviewBtn">🧠 Class review</button>
       <button class="btn btn-ghost" id="openStudentBookBtn">📖 Livro da aula</button>
       <button class="btn btn-ghost" id="openStudentSlidesBtn">🖼️ Slides da aula</button>
+      <button class="btn btn-ghost" id="openStudentFileBtn">📇 Ficha do aluno</button>
     </div>
 
     <div class="cockpit-links" id="cockpitLinks"></div>
@@ -291,6 +292,9 @@ function refreshLiveClassCockpit() {
   if (slidesBtn) slidesBtn.addEventListener('click', () => {
     if (typeof SlidesAula !== 'undefined') SlidesAula.openForStudent(student.id);
   });
+  // Everything about the student: data, contract, classes, homework, payments (studentFile.js).
+  const fileBtn = document.getElementById('openStudentFileBtn');
+  if (fileBtn) fileBtn.addEventListener('click', () => { if (typeof openStudentFile === 'function') openStudentFile(student.id); });
   wireCockpitContext(root, student);
   renderCockpitLinks(student);
   seatHomeworkRoot();
