@@ -30,7 +30,7 @@
 <link rel="apple-touch-icon" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400..800&family=Fraunces:opsz,wght@9..144,500..700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400..800&family=Fraunces:opsz,wght@9..144,500..700&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -44,6 +44,7 @@
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="Primary">
+      <a href="#today" class="nav-link" data-section="today">Hoje</a>
       <a href="#live-class" class="nav-link" data-section="live-class">Live Class</a>
       <a href="#dashboard" class="nav-link" data-section="dashboard">Painel</a>
       <a href="#levels" class="nav-link" data-section="levels">Levels</a>
@@ -102,6 +103,13 @@
 <div class="student-greeting" id="studentGreeting"></div>
 
 <main id="top">
+
+  <!-- ============ HOJE ============
+       The day at a glance (today.js): today's classes on a timeline, the
+       numbers of the month, what needs doing and the latest class logs. -->
+  <section class="today-section" id="today">
+    <div id="todayRoot"></div>
+  </section>
 
   <!-- ============ LIVE CLASS COCKPIT ============
        First on the page on purpose: the teacher opens the site, picks who
@@ -304,6 +312,7 @@
 <script src="studentProgress.js"></script>
 <script src="gamemaker.js"></script>
 <script src="dashboard.js"></script>
+<script src="today.js"></script>
 <script src="classInsights.js"></script>
 <script src="learning.js"></script>
 <script src="lessonKit.js"></script>

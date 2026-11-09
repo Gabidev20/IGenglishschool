@@ -275,6 +275,7 @@ function renderDashboard() {
   });
 
   dashPaintPane();
+  if (typeof renderToday === 'function') renderToday();   // "Hoje" (today.js) reads the same data
 }
 
 function dashGreeting() {
@@ -455,6 +456,7 @@ function renderDashboardStatsOnly() {
   const strip = root && root.querySelector('.dash-stats');
   if (!strip) return;
   strip.innerHTML = dashStatCardsHTML();
+  if (typeof renderToday === 'function') renderToday();
 }
 
 function dashStatCardsHTML() {
