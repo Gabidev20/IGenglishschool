@@ -77,6 +77,11 @@ const MZ_FOODS = [
       ? SCHOOL_OBJECTS_TOPIC.words.map(w => ({ src: w.image, say: String(w.en).toLowerCase() }))
       : [['✏️', 'pencil'], ['🖊️', 'pen'], ['📕', 'book'], ['📓', 'notebook'], ['📏', 'ruler'], ['✂️', 'scissors'],
         ['🖍️', 'crayon'], ['🖌️', 'paint brush'], ['🎒', 'backpack']].map(([emoji, say]) => ({ emoji, say }))) },
+  // Countries: the flags of IG Explorers Unit 4 (kidsContent.js).
+  { id: 'countries', en: 'Countries', pt: 'Países', icon: '🌎', items: () =>
+    (typeof KID_VOCAB !== 'undefined' && KID_VOCAB.countries ? KID_VOCAB.countries
+      : [['Brazil', '', '🇧🇷'], ['the USA', '', '🇺🇸'], ['Japan', '', '🇯🇵'], ['France', '', '🇫🇷']])
+      .map(([say, , emoji]) => ({ emoji, say })) },
   { id: 'stars', en: 'Stars', pt: 'Estrelas', icon: '⭐', items: () => [{ emoji: '⭐' }] },
 ];
 const MZ_BUBBLE = ['#e5484d', '#f08a24', '#e0a800', '#3fae5a', '#3d7bd9', '#8e5fc2', '#f05d77', '#14a3a3'];
