@@ -10392,3 +10392,53 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
   .td-class { position: static; flex: 0 0 auto; width: auto !important; min-width: 96px; min-height: 104px; }
   .td-now, .td-axis { display: none; }
 }
+
+/* ==========================================================================
+   FICHA DO ALUNO (studentFile.js)
+   ========================================================================== */
+.sf-head { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding-right: 40px; }
+.sf-avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 1.9rem; flex: none; box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.12); }
+.sf-head-txt h3 { margin: 0; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.7rem; }
+.sf-head-txt p { margin: 2px 0 0; color: var(--ink-soft); }
+.sf-book { font-weight: 600; color: var(--ink) !important; }
+.sf-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+.sf-tab { font: inherit; font-weight: 600; font-size: 0.92rem; padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink-soft); cursor: pointer; }
+.sf-tab:hover { border-color: var(--primary); color: var(--ink); }
+.sf-tab.active { background: #432C3E; border-color: #432C3E; color: #FFFFFF; }
+.sf-tab:focus-visible, .sf-form input:focus-visible, .sf-form textarea:focus-visible { outline: 3px solid var(--primary-dark); outline-offset: 2px; }
+
+.sf-form { display: flex; flex-direction: column; gap: 16px; }
+.sf-box { border: 1px solid var(--border); border-radius: 16px; padding: 14px 18px 18px; margin: 0; }
+.sf-box legend { padding: 0 6px; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.1rem; color: var(--ink); }
+.sf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 16px; }
+.sf-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sf-field > span { font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); }
+.sf-field input, .sf-field textarea { font: inherit; font-size: 0.95rem; padding: 9px 11px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); min-width: 0; }
+.sf-field output { padding: 9px 0; font-size: 0.95rem; color: var(--ink); }
+.sf-wide { margin-top: 12px; }
+.sf-check { flex-direction: row; align-items: center; gap: 8px; padding-top: 22px; }
+.sf-check input { width: 18px; height: 18px; }
+.sf-link { margin: 8px 0 0; }
+.sf-link a { font-weight: 700; color: var(--primary-dark); }
+.sf-alert { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: #FBF0D2; color: #5C4A12; font-weight: 600; }
+.sf-alert--late { background: #FCE4E8; color: #8E1B2E; }
+.sf-actions { display: flex; align-items: center; gap: 14px; }
+.sf-saved { font-weight: 600; color: #1F5A40; }
+
+.sf-sum { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-bottom: 12px; color: var(--ink-soft); }
+.sf-sum b { font-family: 'Fraunces', Georgia, serif; font-size: 1.3rem; color: var(--ink); }
+.sf-note { margin: 0 0 12px; color: var(--ink-soft); font-size: 0.92rem; }
+.sf-list { list-style: none; margin: 0; padding: 0; }
+.sf-row { display: flex; align-items: flex-start; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); }
+.sf-date { flex: 0 0 92px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sf-row-main { flex: 1 1 auto; min-width: 0; }
+.sf-row-main b { color: var(--ink); margin-right: 8px; }
+.sf-row-main p { margin: 4px 0 0; color: var(--ink-soft); font-size: 0.92rem; }
+.sf-hw { color: var(--ink) !important; }
+.sf-pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; background: #E3F1EA; color: #1F5A40; }
+.sf-pill--late { background: #FCE4E8; color: #8E1B2E; }
+.sf-pill--open { background: #FBF0D2; color: #5C4A12; }
+@media (max-width: 640px) {
+  .sf-row { flex-direction: column; gap: 4px; }
+  .sf-date { flex: none; }
+}

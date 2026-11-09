@@ -515,6 +515,7 @@ function paintStudentManagerGrid() {
         <span>${s.age ? s.age + ' yrs · ' : ''}${escapeHtmlLite(igLevelText(s))}${groupTagHTML(s.id)}</span>
       </div>
       <div class="student-card-actions">
+        <button class="gm-remove-row" data-file-student="${s.id}" aria-label="Ficha do aluno" title="Ficha do aluno: cadastro, contrato, aulas, lições e pagamentos">📇</button>
         <button class="gm-remove-row" data-share-student="${s.id}" aria-label="Link do aluno" title="Link do aluno">🔗</button>
         <button class="gm-remove-row" data-book-student="${s.id}" aria-label="Livro online" title="Livro online do aluno">📖</button>
         <button class="gm-remove-row" data-slides-student="${s.id}" aria-label="Slides da aula" title="Slides da aula do aluno">🖼️</button>
@@ -526,6 +527,9 @@ function paintStudentManagerGrid() {
 
   grid.querySelectorAll('[data-share-student]').forEach(btn => {
     btn.addEventListener('click', () => openShareLinkModal(btn.dataset.shareStudent));
+  });
+  grid.querySelectorAll('[data-file-student]').forEach(btn => {
+    btn.addEventListener('click', () => { if (typeof openStudentFile === 'function') openStudentFile(btn.dataset.fileStudent); });
   });
   grid.querySelectorAll('[data-book-student]').forEach(btn => {
     btn.addEventListener('click', () => { if (typeof LivroOnline !== 'undefined') LivroOnline.openTeacher(btn.dataset.bookStudent); });
