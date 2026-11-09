@@ -319,7 +319,51 @@
     T(70, 470, 1140, '🥇 Counting badge   🔑 -TEEN badge   👾 Boss badge', 38, '#faefc2', { al: 'center' }),
     T(70, 600, 1140, '🐰 Bunny says: Great job! See you next game! 💜', 34, '#faefc2', { al: 'center' })]));
 
+  // ---- Debut (KATSEYE) — Aninha, same 30-min shape as "Touch" ----
+  const db = [];
+  db.push(slide('dark', [tag('English with Aninha', true), T(70, 200, 1140, 'Debut 🎤', 140, '#ffffff', { b: true }),
+    T(70, 380, 1140, 'by KATSEYE', 52, '#faefc2'), T(70, 480, 1140, 'Today: sing it, understand it, USE it ✨', 44, '#ffffff')]));
+  db.push(slide('cream', [tag('Our plan · 30 min'), title("Today's plan"),
+    list(['1️⃣  Warm-up + listen  (5 min)', '2️⃣  Sing the song with the words  (5 min)', '3️⃣  6 cool expressions  (10 min)', '4️⃣  Fill in the blanks  (7 min)', '5️⃣  Your turn to talk + finish  (3 min)'], 190, 40)]));
+  db.push(slide('rose', [tag('Warm-up'), ...time('0–5 min'), title('What is a “debut”? 🌟'),
+    list(['💡  A debut = the first time a singer or a group shows their work to the world.', '🎧  Listen to the song once. How does it make you feel?', '❓  Are the singers shy or confident? How do you know?'], 220, 40)]));
+  db.push(lyric(1, 'Verse 1', 'Idea: nobody needs to tell them what to do. They like their own style and their friends.'));
+  db.push(lyric(2, 'Chorus', 'Idea: they are not showing off, they are just being themselves — and the people who doubted them will change their minds.'));
+  db.push(lyric(3, 'Verse 2 + last chorus', 'Idea: they don’t want to be the same as everybody else. They are loyal to each other and ready to take a chance.'));
+
+  const dbExp = (k, phrase, meaning, ex, pt) => db.push(slide('rose', [tag('Expression ' + k + ' of 6'), ...time('10–20 min'), title(phrase),
+    R(70, 200, 1140, 130, '#ffffff'), T(100, 215, 1080, '💡 Meaning: ' + meaning, 32),
+    R(70, 355, 1140, 200, '#ffffff'), T(100, 370, 1080, '💬 In real life:\n' + ex.join('\n'), 32),
+    T(70, 600, 1140, pt, 30, '#8e6d86', { b: true })]));
+  dbExp(1, 'make your debut', 'show your work to the public for the first time.', ['“She made her debut on TV last year.”', '“Our band will make its debut at the school party!”'], '🇧🇷 estrear / fazer a estreia');
+  dbExp(2, 'show off  (= flex)', 'do something to make people look at you and think you are great.', ['“Stop showing off your new phone!”', '“He’s flexing his new sneakers.”  (informal)'], '🇧🇷 se exibir / se mostrar  ·  flexing = ostentando (gíria)');
+  dbExp(3, 'make a scene', 'do something loud or dramatic so everybody looks at you.', ['“Please don’t make a scene at the restaurant!”', '“My little brother made a scene at the mall.”'], '🇧🇷 dar um show / fazer escândalo');
+  dbExp(4, 'cookie-cutter', 'exactly the same as many other things — not original.', ['“I don’t want a cookie-cutter bedroom.”', '“Her style is not cookie-cutter. It’s unique!”'], '🇧🇷 igualzinho aos outros / sem originalidade  (cookie cutter = forminha de biscoito 🍪)');
+  dbExp(5, 'ride or die', 'a friend who is 100% loyal and is always with you.', ['“Lia is my ride or die.”', '“We’re ride or die — best friends forever!”'], '🇧🇷 amigo(a) pra toda hora / fiel até o fim');
+  dbExp(6, 'roll the dice', 'take a chance — try something without knowing the result.', ['“I don’t know if I’ll win, but I’ll roll the dice.”', '“Let’s roll the dice and try the new game!”'], '🇧🇷 arriscar / tentar a sorte 🎲  ·  “simple as that” = simples assim');
+
+  db.push(slide('cream', [tag('Exercise 1'), ...time('20–27 min'), title('Word bank 🧩'),
+    ...chip(70, 220, 200, 'debut'), ...chip(290, 220, 260, 'showing off'), ...chip(570, 220, 200, 'scene'), ...chip(790, 220, 300, 'cookie-cutter'),
+    ...chip(70, 320, 260, 'ride or die'), ...chip(350, 320, 200, 'dice'), ...chip(570, 320, 300, 'simple as that'), ...chip(890, 320, 200, 'pull up'),
+    T(70, 450, 1140, 'Choose the right word for each sentence on the next slides. ➡️\nUse each word only once. Take your time. 😊', 36)]));
+  const dbEx = (head, items) => db.push(slide('cream', [tag('Exercise 1 · Fill in the blanks'), ...time('20–27 min'), title(head), list(items, 200, 34)]));
+  dbEx('Sentences 1–4', ['1.  KATSEYE made their ________ in 2024.', '2.  He’s always ________ his new phone. So annoying!', '3.  Don’t cry and shout in the store. Don’t make a ________.', '4.  All the houses on my street look the same. They’re so ________.']);
+  dbEx('Sentences 5–8', ['5.  Maya is always there for me. She’s my ________.', '6.  I don’t know if it will work, but let’s roll the ________.', '7.  You want to learn English? Practice every day. ________!', '8.  We’re at the park. Can you ________ in 10 minutes? (= arrive)']);
+  db.push(slide('cream', [tag('Exercise 2 · Choose the best answer'), ...time('20–27 min'), title('Which one is right? ✅'),
+    list(['1.  If you make your debut, you…\n     A) stop singing      B) show your work for the first time', '2.  Your ride or die friend is…\n     A) always with you      B) never with you', '3.  Something cookie-cutter is…\n     A) very original      B) the same as many others', '4.  If you roll the dice, you…\n     A) take a chance      B) stay safe and do nothing'], 190, 30)]));
+  db.push(slide('cream', [tag('Exercise 3 · Listen again 🎧'), ...time('20–27 min'), title('Word hunt'),
+    T(70, 190, 1140, 'Listen to the song again. ✔️ Tick the words you hear. ⚠️ 4 words are NOT in the song!', 32),
+    T(90, 290, 380, '☐ debut\n☐ scene\n☐ camera\n☐ simple', 40), T(470, 290, 380, '☐ dice\n☐ spotlight\n☐ cookie\n☐ ride', 40), T(850, 290, 380, '☐ lights\n☐ flexin’\n☐ confidence\n☐ pull up', 40)]));
+  db.push(slide('cream', [tag('Answers (teacher)'), title('✅ Answers'),
+    T(70, 190, 1140, 'Ex. 1:  1 debut · 2 showing off · 3 scene · 4 cookie-cutter\n           5 ride or die · 6 dice · 7 Simple as that · 8 pull up\n\nEx. 2:  1 B · 2 A · 3 B · 4 A\n\nEx. 3:  NOT in the song → camera · spotlight · lights · confidence', 36)]));
+  db.push(slide('rose', [tag('Your turn! 🗣️'), ...time('27–30 min'), title("Let's talk"),
+    list(['💬  Who is your ride or die friend? Why?', '💬  Imagine your debut: what do you do? Sing, dance, act, play a game…?', '💬  When was the last time you rolled the dice and tried something new?'], 230, 36)]));
+  db.push(slide('dark', [tag('Wrap-up', true), title('Great job, Aninha! 🌟', true),
+    list(['✅  I sang “Debut”.', '✅  I learned 6 expressions.', '✅  I can use them in real life.'], 230, 44, true),
+    T(70, 560, 1140, 'Homework (optional): write 3 sentences with your favorite expressions. 💜', 32, '#faefc2')]));
+
   window.SLIDES_MODELOS = [
+    { id: 'debut-katseye', title: 'Debut (KATSEYE) — Aninha · 30 min', slides: db },
     { id: 'numbers-1-20-teles', title: 'Numbers 1–20 · Bunny Block World — Teles', slides: nb },
     { id: 'weather-report-video-ana', title: 'Weather Report (vídeo YouTube) — Ana Clara', slides: wx },
     { id: 'a-an-teles', title: 'A or AN? School Objects Game — Teles', slides: ag },
