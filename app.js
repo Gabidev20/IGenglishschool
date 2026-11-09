@@ -55,6 +55,31 @@ document.addEventListener('click', (e) => {
 initStudents();
 
 // ---------------------------------------------------------------------------
+// SIDE MENU: FOLD TO ICONS (computers; the CSS shows the button from 1101px)
+// The choice is remembered on this computer only.
+// ---------------------------------------------------------------------------
+(function sideMenuToggle() {
+  const btn = document.getElementById('sideToggleBtn');
+  if (!btn) return;
+  const KEY = 'ig_side_collapsed';
+  const apply = (folded) => {
+    document.documentElement.classList.toggle('side-collapsed', folded);
+    btn.setAttribute('aria-expanded', String(!folded));
+    const label = folded ? 'Abrir o menu' : 'Recolher o menu';
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
+  };
+  let folded = false;
+  try { folded = localStorage.getItem(KEY) === '1'; } catch (e) { /* private mode */ }
+  apply(folded);
+  btn.addEventListener('click', () => {
+    folded = !document.documentElement.classList.contains('side-collapsed');
+    apply(folded);
+    try { localStorage.setItem(KEY, folded ? '1' : '0'); } catch (e) { /* private mode */ }
+  });
+})();
+
+// ---------------------------------------------------------------------------
 // HAMBURGER / MOBILE NAV
 // ---------------------------------------------------------------------------
 const hamburgerBtn = document.getElementById('hamburgerBtn');

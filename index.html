@@ -42,15 +42,19 @@
       <img src="logo.png" alt="IGenglishschool" class="logo-image"
            onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-text-fallback',textContent:'IGenglishschool'}))" />
     </a>
+    <!-- Computers only: folds the side menu down to its icons (app.js). -->
+    <button class="side-toggle" id="sideToggleBtn" type="button" aria-label="Recolher o menu" title="Recolher o menu" aria-expanded="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
 
     <nav class="main-nav" id="mainNav" aria-label="Primary">
-      <a href="#today" class="nav-link" data-section="today">Hoje</a>
-      <a href="#live-class" class="nav-link" data-section="live-class">Live Class</a>
-      <a href="#dashboard" class="nav-link" data-section="dashboard">Painel</a>
-      <a href="#levels" class="nav-link" data-section="levels">Levels</a>
-      <a href="#games" class="nav-link" data-section="games">Games</a>
-      <a href="#game-maker" class="nav-link" data-section="game-maker">Game Maker</a>
-      <a href="#exam-maker" class="nav-link" data-section="exam-maker">Provas</a>
+      <a href="#today" class="nav-link" data-section="today" title="Hoje">Hoje</a>
+      <a href="#live-class" class="nav-link" data-section="live-class" title="Live Class">Live Class</a>
+      <a href="#dashboard" class="nav-link" data-section="dashboard" title="Painel">Painel</a>
+      <a href="#levels" class="nav-link" data-section="levels" title="Levels">Levels</a>
+      <a href="#games" class="nav-link" data-section="games" title="Games">Games</a>
+      <a href="#game-maker" class="nav-link" data-section="game-maker" title="Game Maker">Game Maker</a>
+      <a href="#exam-maker" class="nav-link" data-section="exam-maker" title="Provas">Provas</a>
       <!-- In the phone menu only: on a computer these two are the round
            buttons on the right of the header, so they never scroll out of
            sight when the menu runs out of room. -->
