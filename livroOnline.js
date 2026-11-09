@@ -218,6 +218,61 @@ const LivroOnline = (() => {
     }
   }
 
+  // PRACTICE BOOKS — coursebooks the student uses on paper or in the
+  // publisher's app (e.g. "Own it! 1"): no pages here, only their units as
+  // practice topics (bookUnits.js). Choosing one in a book picker sets the
+  // student's material (studentAccess.js), which filters the link, and the
+  // "book" becomes the list of those units. Picker value: "mat:<book name>".
+  const MAT = 'mat:';
+  const practiceBooks = () => (typeof saCoursebooks === 'function' ? saCoursebooks() : []);
+  const materialOf = s => (s && typeof saMaterialOf === 'function' ? saMaterialOf(s) : null);
+  // The practice book a student opens: their material, when no paged book is theirs.
+  const practiceFor = s => (bookFor(s) ? null : materialOf(s));
+  function unitsOf(material) {
+    return (typeof LEVELS !== 'undefined' ? LEVELS : []).flatMap(l => l.topics
+      .filter(t => typeof saBookName === 'function' && saBookName(t) === material)
+      .map(t => ({ levelId: l.id, topic: t })));
+  }
+  // One answer for every book picker: a paged book, a practice book, automatic or none.
+  function chooseBook(student, value) {
+    if (String(value || '').startsWith(MAT)) {
+      setBook(student.id, 'none');
+      if (typeof saWrite === 'function') saWrite(student.id, { material: value.slice(MAT.length), custom: null });
+    } else {
+      setBook(student.id, value || null);
+      if (materialOf(student) && typeof saWrite === 'function') saWrite(student.id, { material: null });
+    }
+  }
+  const pickedValue = s => (practiceFor(s) ? MAT + practiceFor(s) : assignedRaw(s.id));
+  const practiceOptionsHTML = picked => {
+    const names = practiceBooks();
+    return names.length ? `<optgroup label="Prática no site (sem páginas)">
+      ${names.map(n => `<option value="${esc(MAT + n)}" ${picked === MAT + n ? 'selected' : ''}>📗 ${esc(n)}</option>`).join('')}
+    </optgroup>` : '';
+  };
+  const bookTitleFor = s => (bookFor(s) ? bookInfo(bookFor(s)).title : practiceFor(s) ? `📗 ${practiceFor(s)}` : '');
+
+  // The practice book's units, each opening the topic (games, quiz, reading…).
+  function openUnits(student) {
+    const material = practiceFor(student);
+    const units = unitsOf(material);
+    openModal(`
+      <div class="modal-content-pad lo-units">
+        <h3 id="modalTitle">📗 ${esc(material)} — ${esc(student.name)}</h3>
+        <p class="lo-pick-lead">Prática de cada unidade no site: vocabulário, gramática, leitura, jogos e writing. As páginas do livro ficam no livro.</p>
+        <div class="lo-units-list">
+          ${units.map(u => `
+            <button type="button" class="lo-unit" data-level="${esc(u.levelId)}" data-topic="${esc(u.topic.id)}">
+              <span class="lo-unit-emoji">${esc(u.topic.emoji || '📘')}</span>
+              <span><b>${esc(String(u.topic.book || '').split(' · ')[1] || u.topic.title)}</b><small>${esc(u.topic.title)}</small></span>
+            </button>`).join('') || '<p class="quiz-empty">Nenhuma unidade deste livro no site ainda.</p>'}
+        </div>
+      </div>`, false);
+    document.querySelectorAll('.lo-units-list .lo-unit').forEach(b => b.addEventListener('click', () => {
+      if (typeof openTopicModal === 'function') openTopicModal(b.dataset.level, b.dataset.topic);
+    }));
+  }
+
   // -------------------------------------------------------------------------
   // PAGE DATA
   // -------------------------------------------------------------------------
@@ -2505,7 +2560,7 @@ const LivroOnline = (() => {
     const students = typeof loadStudents === 'function' ? loadStudents() : [];
     if (!students.length) { alert('Cadastre um aluno primeiro.'); return; }
     const active = typeof getActiveStudentId === 'function' ? getActiveStudentId() : null;
-    const rows = students.map(s => ({ s, t: recentScore(s), book: bookFor(s) }))
+    const rows = students.map(s => ({ s, t: recentScore(s), book: bookTitleFor(s) }))
       .sort((a, b) => (b.s.id === active) - (a.s.id === active) || b.t - a.t || String(a.s.name).localeCompare(String(b.s.name)));
     const fmt = t => { try { return new Date(t).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); } catch (e) { return ''; } };
     const norm = v => String(v || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -2521,7 +2576,7 @@ const LivroOnline = (() => {
               <button type="button" class="lo-pick-row" data-sid="${esc(s.id)}" style="--who:${esc(s.color || '#8e6d86')}">
                 <span class="lo-pick-av">${esc(s.avatar || '🙂')}</span>
                 <span class="lo-pick-txt"><b>${esc(s.name)}</b>
-                  <small>${book ? esc(bookInfo(book).title) : 'sem livro — escolha ao lado'}${s.id === active ? ' · aula atual' : t ? ' · ' + esc(fmt(t)) : ''}</small></span>
+                  <small>${book ? esc(book) : 'sem livro — escolha ao lado'}${s.id === active ? ' · aula atual' : t ? ' · ' + esc(fmt(t)) : ''}</small></span>
                 <span class="lo-pick-go">▶</span>
               </button>
               ${bookSelectHTML(s, 'lo-pick-book')}
@@ -2541,22 +2596,23 @@ const LivroOnline = (() => {
     });
     document.querySelectorAll('#loPickList .lo-pick-row').forEach(btn => btn.addEventListener('click', () => openClass(btn.dataset.sid)));
     document.querySelectorAll('#loPickList select[data-book-for]').forEach(sel => sel.addEventListener('change', () => {
-      setBook(sel.dataset.bookFor, sel.value || null);
       const st = students.find(x => x.id === sel.dataset.bookFor);
-      const b = st ? bookFor(st) : null;
+      if (!st) return;
+      chooseBook(st, sel.value);
       const small = sel.closest('.lo-pick-item').querySelector('.lo-pick-txt small');
-      if (small) small.textContent = (b ? bookInfo(b).title : 'sem livro') + ' · livro salvo ✓';
+      if (small) small.textContent = (bookTitleFor(st) || 'sem livro') + ' · livro salvo ✓';
     }));
     setTimeout(() => { try { search.focus({ preventScroll: true }); } catch (e) { /* old browser */ } }, 50);
   }
 
   // The same "which book" choice everywhere the teacher meets a student.
   function bookSelectHTML(student, cls) {
-    const raw = assignedRaw(student.id);
+    const raw = pickedValue(student);
     const auto = bookByAge(student.age);
     return `<select class="${cls}" data-book-for="${esc(student.id)}" aria-label="Livro de ${esc(student.name)}">
       <option value="">⚙️ Pela idade${auto ? ' — ' + esc(bookInfo(auto).title) : ' — nenhum'}</option>
       ${BOOKS.map(b => `<option value="${b.id}" ${raw === b.id ? 'selected' : ''}>📘 ${esc(b.title)} (${b.ages})</option>`).join('')}
+      ${practiceOptionsHTML(raw)}
       <option value="none" ${raw === 'none' ? 'selected' : ''}>🚫 Sem livro</option>
     </select>`;
   }
@@ -2570,7 +2626,7 @@ const LivroOnline = (() => {
     if (typeof getActiveStudentId === 'function' && getActiveStudentId() !== studentId && typeof selectStudent === 'function') {
       try { selectStudent(studentId); } catch (e) { console.error(e); }
     }
-    if (!bookFor(student)) { openTeacher(studentId); return; }
+    if (!bookFor(student)) { if (practiceFor(student)) openUnits(student); else openTeacher(studentId); return; }
     openBookHome(student, { teacher: true, resume: true });
   }
 
@@ -2584,7 +2640,7 @@ const LivroOnline = (() => {
 
   async function paintTeacher(mount, student, bimWanted) {
     if (!mount) return;
-    const raw = assignedRaw(student.id);
+    const raw = pickedValue(student);
     const book = bookFor(student);
     const auto = bookByAge(student.age);
     const head = `
@@ -2594,10 +2650,18 @@ const LivroOnline = (() => {
           <select id="loBookSel">
             <option value="">⚙️ Automático pela idade${auto ? ' — ' + esc(bookInfo(auto).title) : ' — nenhum (' + esc(student.age || '?') + ' anos)'}</option>
             ${BOOKS.map(b => `<option value="${b.id}" ${raw === b.id ? 'selected' : ''}>${esc(b.title)} (${b.ages} anos)</option>`).join('')}
+            ${practiceOptionsHTML(raw)}
             <option value="none" ${raw === 'none' ? 'selected' : ''}>🚫 Sem livro online</option>
           </select>
         </label>
       </div>`;
+    if (!book && practiceFor(student)) {
+      mount.innerHTML = head + `<p class="quiz-empty">📗 <b>${esc(practiceFor(student))}</b> não tem páginas no site: as unidades dele estão em “Livro da aula” e no link do aluno (Topics &amp; games).</p>
+        <div class="game-btn-row"><button class="btn btn-primary" type="button" id="loOpenUnits">📗 Ver as unidades</button></div>`;
+      wireChoose(mount, student);
+      mount.querySelector('#loOpenUnits').addEventListener('click', () => openUnits(student));
+      return;
+    }
     if (!book) {
       mount.innerHTML = head + '<p class="quiz-empty">Nenhum livro para este aluno. Escolha um acima — ele aparece como “📖 My book” no link do aluno e em “📖 Livro da aula”.</p>';
       wireChoose(mount, student);
@@ -2668,7 +2732,7 @@ const LivroOnline = (() => {
     const sel = mount.querySelector('#loBookSel');
     if (!sel) return;
     sel.addEventListener('change', () => {
-      setBook(student.id, sel.value || null);
+      chooseBook(student, sel.value);
       paintTeacher(mount, student);
     });
   }

@@ -1258,7 +1258,9 @@ const GameEngine = (() => {
       const restart = container.querySelector('[data-action="restart"]');
       if (restart) restart.addEventListener('click', () => renderSortIt(container, topic));
       const say = container.querySelector('[data-action="say-card"]');
-      if (say) say.addEventListener('click', () => ttsSay(item.text.replace(/____/g, '').replace(/[^\p{L}\p{N}'’ ,.?!-]/gu, '').trim()));
+      // The blank becomes a short pause ("I … 13 years old."), so the words
+      // around it are not run together ("I 13 years old").
+      if (say) say.addEventListener('click', () => ttsSay(item.text.replace(/_{3,}/g, ' ... ').replace(/[^\p{L}\p{N}'’ ,.?!-]/gu, '').replace(/\s+/g, ' ').trim()));
     }
 
     // The card's picture, BIG: the emoji written in the item ("cooking 🧑‍🍳")
