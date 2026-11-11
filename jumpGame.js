@@ -61,6 +61,8 @@ const JL_SETS = [
   ]) },
   { id: 'body', en: 'Body parts', pt: 'Corpo', icon: '🧍', words: () =>
     typeof BODY_TOPIC !== 'undefined' ? jlFromTopic(BODY_TOPIC) : [] },
+  { id: 'family', en: 'Family', pt: 'Família', icon: '👨‍👩‍👧', words: () =>
+    typeof KID_VOCAB !== 'undefined' && KID_VOCAB.family ? jlFromTriples(KID_VOCAB.family) : [] },
   { id: 'feelings', en: 'Feelings', pt: 'Sentimentos', icon: '😊', words: () =>
     typeof FEELINGS_TOPIC !== 'undefined' ? jlFromTopic(FEELINGS_TOPIC) : [] },
   { id: 'weather', en: 'Weather', pt: 'Clima', icon: '🌦️', words: () =>

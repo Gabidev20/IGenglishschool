@@ -48,7 +48,18 @@ const KID_VOCAB = {
     ['France', 'França', '🇫🇷'], ['Argentina', 'Argentina', '🇦🇷'], ['Canada', 'Canadá', '🇨🇦'],
     ['Mexico', 'México', '🇲🇽'], ['Portugal', 'Portugal', '🇵🇹'], ['Spain', 'Espanha', '🇪🇸'],
   ],
+  family: [
+    ['mom', 'mamãe', '👩'], ['dad', 'papai', '👨'], ['sister', 'irmã', '👧'], ['brother', 'irmão', '👦'],
+    ['grandpa', 'vovô', '👴'], ['grandma', 'vovó', '👵'], ['baby', 'bebê', '👶'],
+  ],
 };
+
+// 👨‍👩‍👧 Family members as a ready topic: Balloon Pop, Memory, Flashcards…
+const FAMILY_TOPIC = {
+  id: 'family', title: 'Family', emoji: '👨‍👩‍👧',
+  words: KID_VOCAB.family.map(([en, pt, emoji]) => ({ id: `fam_${en}`, en, pt, emoji })),
+};
+const openFamilyGame = () => openReadyGame(FAMILY_TOPIC, 'balloon', '👨‍👩‍👧 Family');
 
 // The verb to be, the way a young learner meets it.
 const KID_BE = [

@@ -18,7 +18,7 @@ const SC_PARTS = [
   ['Avatar', 'openAvatarBuilder'], ['Menu de jogos do livro', 'openGamesMenu'], ['Revisão da aula', 'openClassReviewPlayer'],
 ];
 const SC_GAMES = [
-  ['ABC', 'openAlphabetGame'], ['Colors', 'openColorsGame'], ['Body Parts', 'openBodyGame'], ['Feelings', 'openFeelingsGame'],
+  ['ABC', 'openAlphabetGame'], ['Colors', 'openColorsGame'], ['Body Parts', 'openBodyGame'], ['Family', 'openFamilyGame'], ['Feelings', 'openFeelingsGame'],
   ['Weather', 'openWeatherGame'], ['Animals', 'openAnimalGame'], ['Music', 'openInstrumentsGame'], ['House', 'openHouseGame'],
   ['Where is it?', 'openPrepositionsGame'], ['Backpack', 'openBackpackGame'], ['Who am I?', 'openWhoAmI'], ['Maze Muncher', 'openMazeGame'],
   ['Jump & Learn', 'openJumpGame'], ['Old MacDonald', 'openFarmGame'], ['Touch it!', 'openTouchGame'], ['Pizza Shop', 'openShopGame'],

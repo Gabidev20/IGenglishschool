@@ -77,6 +77,11 @@ const MZ_FOODS = [
       ? SCHOOL_OBJECTS_TOPIC.words.map(w => ({ src: w.image, say: String(w.en).toLowerCase() }))
       : [['✏️', 'pencil'], ['🖊️', 'pen'], ['📕', 'book'], ['📓', 'notebook'], ['📏', 'ruler'], ['✂️', 'scissors'],
         ['🖍️', 'crayon'], ['🖌️', 'paint brush'], ['🎒', 'backpack']].map(([emoji, say]) => ({ emoji, say }))) },
+  // Family: mom, dad, sister, brother, grandpa, grandma, baby (kidsContent.js).
+  { id: 'family', en: 'Family', pt: 'Família', icon: '👨‍👩‍👧', items: () =>
+    (typeof KID_VOCAB !== 'undefined' && KID_VOCAB.family ? KID_VOCAB.family
+      : [['mom', '', '👩'], ['dad', '', '👨'], ['sister', '', '👧'], ['brother', '', '👦'], ['grandpa', '', '👴'], ['grandma', '', '👵'], ['baby', '', '👶']])
+      .map(([say, , emoji]) => ({ emoji, say })) },
   // Countries: the flags of IG Explorers Unit 4 (kidsContent.js).
   { id: 'countries', en: 'Countries', pt: 'Países', icon: '🌎', items: () =>
     (typeof KID_VOCAB !== 'undefined' && KID_VOCAB.countries ? KID_VOCAB.countries

@@ -38,6 +38,7 @@ const SA_READY_GAMES = [
   { id: 'feelings', icon: '😊', label: 'Feelings' },
   { id: 'weather', icon: '🌦️', label: 'Weather' },
   { id: 'body', icon: '🧍', label: 'Body Parts' },
+  { id: 'family', icon: '👨‍👩‍👧', label: 'Family' },
   { id: 'animals', icon: '🦁', label: 'Animals' },
   { id: 'music', icon: '🎸', label: 'Music' },
   { id: 'house', icon: '🏠', label: 'House' },

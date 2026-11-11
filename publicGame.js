@@ -47,6 +47,7 @@ const PUBLIC_GAMES = {
   where:    { emoji: '📦', title: 'Where is it?',  pt: 'Onde está?',            open: () => openPrepositionsGame() },
   weather:  { emoji: '🌦️', title: 'Weather',       pt: 'O tempo',               open: () => openWeatherGame() },
   body:     { emoji: '🧍', title: 'Body Parts',    pt: 'Partes do corpo',       open: () => openBodyGame() },
+  family:   { emoji: '👨‍👩‍👧', title: 'Family',        pt: 'Família',               open: () => openFamilyGame() },
 };
 
 const PublicGame = (() => {

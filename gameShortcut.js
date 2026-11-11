@@ -30,6 +30,7 @@ const GS_PICTURE_GAMES = [
   { icon: '🧠', en: 'Talking Memory', pt: 'Memória que fala', open: () => openTalkMemoryGame() },
   { icon: '🎨', en: 'Colors', pt: 'Cores', open: () => openColorsGame() },
   { icon: '🧍', en: 'Body Parts', pt: 'Corpo', open: () => openBodyGame() },
+  { icon: '👨‍👩‍👧', en: 'Family', pt: 'Família', open: () => openFamilyGame() },
   { icon: '😊', en: 'Feelings', pt: 'Sentimentos', open: () => openFeelingsGame() },
   { icon: '🌦️', en: 'Weather', pt: 'Clima', open: () => openWeatherGame() },
   { icon: '🦁', en: 'Animals', pt: 'Animais', open: () => openAnimalGame() },

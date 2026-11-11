@@ -190,6 +190,14 @@ function renderReadyGames(container) {
           <span class="game-btn">▶ Play</span>
         </span>
       </button>
+      <button class="gamemaker-ready-card" type="button" data-open-family>
+        <span class="gamemaker-ready-art gamemaker-ready-art--emoji">👨‍👩‍👧</span>
+        <span class="gamemaker-ready-text">
+          <b>👨‍👩‍👧 Family</b>
+          <small>Mom, dad, sister, brother, grandpa, grandma, baby — Balloon Pop, Memory e os outros jogos de palavras com figuras. Também está no Maze Muncher, Jump & Learn e Talking Memory.</small>
+          <span class="game-btn">▶ Play</span>
+        </span>
+      </button>
       <button class="gamemaker-ready-card" type="button" data-open-body>
         <span class="gamemaker-ready-art">${bodySVG({ on: 'hands', cls: 'bd-art' })}</span>
         <span class="gamemaker-ready-text">
@@ -208,6 +216,7 @@ function renderReadyGames(container) {
   container.querySelectorAll('[data-open-prepositions]').forEach(btn => btn.addEventListener('click', openPrepositionsGame));
   container.querySelectorAll('[data-open-weather]').forEach(btn => btn.addEventListener('click', openWeatherGame));
   container.querySelectorAll('[data-open-body]').forEach(btn => btn.addEventListener('click', openBodyGame));
+  container.querySelectorAll('[data-open-family]').forEach(btn => btn.addEventListener('click', openFamilyGame));
   container.querySelectorAll('[data-open-alphabet]').forEach(btn => btn.addEventListener('click', openAlphabetGame));
   container.querySelectorAll('[data-open-maze]').forEach(btn => btn.addEventListener('click', openMazeGame));
   container.querySelectorAll('[data-open-jump]').forEach(btn => btn.addEventListener('click', openJumpGame));
