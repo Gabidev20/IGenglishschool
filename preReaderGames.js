@@ -384,22 +384,42 @@ const KG_COLORS = { red: '#e5484d', blue: '#3d7bd9', green: '#3fae5a', yellow: '
 const kgShapeSVG = (it, cls) => `<svg class="${cls || ''}" viewBox="0 0 100 100" aria-hidden="true"><g fill="${KG_COLORS[it.color]}" stroke="#2e2b2e" stroke-width="4" stroke-linejoin="round" transform="${it.size === 'small' ? 'translate(25 25) scale(.5)' : ''}">${KG_SHAPES[it.shape]}</g></svg>`;
 const kgItemName = (it, withSize) => `${withSize ? it.size + ' ' : ''}${it.color} ${it.shape}`;
 
+// Numbers 1–10 for Touch it!: [emoji, one, many].
+const KG_TT_THINGS = [
+  ['🍎', 'apple', 'apples'], ['⭐', 'star', 'stars'], ['🎈', 'balloon', 'balloons'], ['🚗', 'car', 'cars'],
+  ['🐶', 'dog', 'dogs'], ['🍌', 'banana', 'bananas'], ['🐤', 'chick', 'chicks'], ['⚽', 'ball', 'balls'],
+];
+const KG_TT_DIGIT_COLORS = ['#e5484d', '#f08a24', '#e0a800', '#3fae5a', '#3d7bd9', '#8e5fc2', '#f05d77', '#14a3a3', '#8b5e3c', '#2f6fb0'];
+function kgTouchNumberHTML(it) {
+  if (it.kind === 'digit') {
+    return `<svg class="tt-svg" viewBox="0 0 100 100" aria-hidden="true"><text x="50" y="54" text-anchor="middle" dominant-baseline="middle" font-size="${it.n === 10 ? 58 : 74}" font-weight="900" font-family="var(--font-display), sans-serif" fill="${KG_TT_DIGIT_COLORS[(it.n - 1) % 10]}">${it.n}</text></svg>`;
+  }
+  if (it.kind === 'group') {
+    return `<span class="tt-group tt-group--${it.n > 6 ? 'many' : it.n > 4 ? 'some' : 'few'}">${Array.from({ length: it.n }, () => kgEmoji(it.thing[0], 'tt-dot')).join('')}</span>`;
+  }
+  return `<span class="tt-one">${kgEmoji(it.thing[0], 'tt-one-img')}</span>`;
+}
+const kgTouchNumberName = it => (it.kind === 'digit' ? `number ${KG_NUM[it.n]}`
+  : it.kind === 'group' ? `${KG_NUM[it.n]} ${it.n === 1 ? it.thing[1] : it.thing[2]}` : `${/^[aeiou]/.test(it.thing[1]) ? 'an' : 'a'} ${it.thing[1]}`);
+
 function openTouchGame() {
   const win = kgOpen('🎈', 'Touch it!', 'Listen and touch! Colors, shapes, big and small, numbers');
   const ROUNDS = 8;
+  let theme = null;
   let round = 0, stars = 0, board = [], task = null, locked = false, tapped = new Set(), missed = false;
   const SH = Object.keys(KG_SHAPES), CO = Object.keys(KG_COLORS);
   const rnd = () => ({ shape: kgPick(SH), color: kgPick(CO), size: Math.random() < 0.5 ? 'big' : 'small' });
+  const name = (it, withSize) => (theme === 'numbers' ? kgTouchNumberName(it) : kgItemName(it, withSize));
+  const face = it => (theme === 'numbers' ? kgTouchNumberHTML(it) : kgShapeSVG(it, 'tt-svg'));
 
-  function makeRound() {
+  function makeShapesRound() {
     // Rounds 1–3: "the red star" · 4–6: "the small red star" · 7–8: "three hearts"
-    tapped = new Set(); missed = false;
     if (round >= 6) {
       const shape = kgPick(SH), n = 2 + Math.floor(Math.random() * 2);
       const many = Array.from({ length: n + 1 }, () => ({ shape, color: kgPick(CO), size: Math.random() < 0.5 ? 'big' : 'small' }));
       const rest = Array.from({ length: 4 }, () => { let it; do { it = rnd(); } while (it.shape === shape); return it; });
       board = kgShuffle(many.concat(rest));
-      task = { kind: 'count', shape, n, say: `Touch ${KG_NUM[n]} ${shape}s!`, match: it => it.shape === shape };
+      task = { kind: 'count', n, say: `Touch ${KG_NUM[n]} ${shape}s!`, yes: `Yes! ${KG_NUM[n]} ${shape}s!`, match: it => it.shape === shape };
       return;
     }
     const withSize = round >= 3;
@@ -412,8 +432,45 @@ function openTouchGame() {
     items.push({ ...target, shape: kgPick(SH.filter(s => s !== target.shape)) });
     if (withSize) items.push({ ...target, size: target.size === 'big' ? 'small' : 'big' });
     while (items.length < 6) { const it = rnd(); if (!same(it)) items.push(it); }
-    board = kgShuffle(withSize ? items : items.map(it => ({ ...it, size: it === target ? it.size : it.size })));
-    task = { kind: 'one', target, withSize, say: `Touch the ${kgItemName(target, withSize)}!`, match: same };
+    board = kgShuffle(items);
+    task = { kind: 'one', withSize, say: `Touch the ${kgItemName(target, withSize)}!`, yes: `Yes! The ${kgItemName(target, withSize)}!`, match: same };
+  }
+
+  // Numbers 1–10. Rounds 1–3: "Touch number seven!" (the digits) ·
+  // 4–6: "Find four apples!" (cards with 1–10 things) · 7–8: "Touch six
+  // stars!" (the child touches them one by one, counting out loud).
+  function makeNumbersRound() {
+    const n1to10 = () => 1 + Math.floor(Math.random() * 10);
+    const near = n => [n - 1, n + 1].filter(k => k >= 1 && k <= 10);
+    const spread = (n, size) => {
+      const list = [n, ...near(n)];
+      while (list.length < size) { const k = n1to10(); if (!list.includes(k)) list.push(k); }
+      return kgShuffle(list);
+    };
+    if (round < 3) {
+      const n = n1to10();
+      board = spread(n, 8).map(k => ({ kind: 'digit', n: k }));
+      task = { kind: 'one', say: `Touch number ${KG_NUM[n]}!`, yes: `Yes! Number ${KG_NUM[n]}!`, match: it => it.n === n };
+      return;
+    }
+    if (round < 6) {
+      const n = n1to10(), thing = kgPick(KG_TT_THINGS);
+      board = spread(n, 4).map(k => ({ kind: 'group', n: k, thing }));
+      const what = `${KG_NUM[n]} ${n === 1 ? thing[1] : thing[2]}`;
+      task = { kind: 'one', say: `Find ${what}!`, yes: `Yes! ${what[0].toUpperCase()}${what.slice(1)}!`, match: it => it.n === n };
+      return;
+    }
+    const thing = kgPick(KG_TT_THINGS), n = 3 + Math.floor(Math.random() * 6);   // 3–8
+    const others = KG_TT_THINGS.filter(t => t !== thing);
+    const items = Array.from({ length: Math.min(10, n + 2) }, () => ({ kind: 'thing', thing }))
+      .concat(Array.from({ length: 2 }, () => ({ kind: 'thing', thing: kgPick(others) })));
+    board = kgShuffle(items);
+    task = { kind: 'count', n, say: `Touch ${KG_NUM[n]} ${thing[2]}!`, yes: `Yes! ${KG_NUM[n][0].toUpperCase()}${KG_NUM[n].slice(1)} ${thing[2]}!`, match: it => it.thing === thing };
+  }
+
+  function makeRound() {
+    tapped = new Set(); missed = false;
+    if (theme === 'numbers') makeNumbersRound(); else makeShapesRound();
   }
 
   function paint() {
@@ -422,8 +479,8 @@ function openTouchGame() {
       ${kgStarsRow(stars, ROUNDS)}
       <button class="cg-listen" data-hear aria-label="Listen again">🔊</button>
       <p class="pr-teacher-line">${igEscapeHtml(task.say)}</p>
-      <div class="tt-board">
-        ${board.map((it, i) => `<button type="button" class="tt-item${tapped.has(i) ? ' got' : ''}" data-i="${i}" aria-label="${kgItemName(it, true)}">${kgShapeSVG(it, 'tt-svg')}${tapped.has(i) ? `<span class="tt-count">${[...tapped].indexOf(i) + 1}</span>` : ''}</button>`).join('')}
+      <div class="tt-board${theme === 'numbers' ? ' tt-board--numbers' : ''}">
+        ${board.map((it, i) => `<button type="button" class="tt-item${tapped.has(i) ? ' got' : ''}" data-i="${i}" aria-label="${igEscapeHtml(name(it, true))}">${face(it)}${tapped.has(i) ? `<span class="tt-count">${[...tapped].indexOf(i) + 1}</span>` : ''}</button>`).join('')}
       </div>`;
     m.querySelector('[data-hear]').addEventListener('click', () => kgSay(task.say));
     m.querySelectorAll('[data-i]').forEach(b => b.addEventListener('click', () => tap(Number(b.dataset.i), b)));
@@ -442,21 +499,33 @@ function openTouchGame() {
       round++;
       kgSfx('correct');
       btn.classList.add('popped');
-      kgSay(task.kind === 'count' ? `Yes! ${KG_NUM[task.n]} ${task.shape}s!` : `Yes! The ${kgItemName(it, task.withSize)}!`);
+      kgSay(task.yes);
       setTimeout(() => { if (!win.el()) return; locked = false; next(); }, 1500);
     } else {
       missed = true;
       kgSfx('wrong');
       btn.classList.add('shake'); setTimeout(() => btn.classList.remove('shake'), 500);
-      kgSay(`That's a ${kgItemName(it, task.kind === 'one' && task.withSize)}. ${task.say}`);
+      kgSay(`That's ${theme === 'numbers' ? '' : 'a '}${name(it, task.kind === 'one' && task.withSize)}. ${task.say}`);
     }
   }
   function next() {
     const m = win.el(); if (!m) return;
-    if (round >= ROUNDS) { kgDone(m, stars, ROUNDS, () => { round = 0; stars = 0; next(); }); return; }
+    if (round >= ROUNDS) { kgDone(m, stars, ROUNDS, () => { round = 0; stars = 0; menu(); }); return; }
     makeRound(); paint(); kgSay(task.say);
   }
-  next();
+  // The theme first: shapes and colors, or numbers 1–10.
+  function menu() {
+    const m = win.el(); if (!m) return;
+    m.innerHTML = `
+      <div class="pz-menu">
+        <button type="button" class="pz-mode tt-mode" data-theme="shapes">${kgShapeSVG({ shape: 'star', color: 'yellow', size: 'big' }, 'pz-mode-svg')}<b>🔷 Shapes & colors</b><small>Cores, formas, big e small</small></button>
+        <button type="button" class="pz-mode tt-mode" data-theme="numbers">${kgTouchNumberHTML({ kind: 'digit', n: 7 }).replace('tt-svg', 'pz-mode-svg')}<b>🔢 Numbers 1–10</b><small>Números, quantidades e contar</small></button>
+      </div>`;
+    m.querySelectorAll('[data-theme]').forEach(b => b.addEventListener('click', () => {
+      theme = b.dataset.theme; round = 0; stars = 0; next();
+    }));
+  }
+  menu();
 }
 
 // ===========================================================================

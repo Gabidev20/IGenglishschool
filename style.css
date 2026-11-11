@@ -10446,3 +10446,13 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 /* 👨‍👩‍👧 Family ready card: an emoji picture */
 .gamemaker-ready-art--emoji { font-size: 4.2rem; line-height: 1; text-align: center; }
 .gamemaker-ready-art--emoji img { width: 96px; height: 96px; }
+
+/* 🔢 Touch it! — Numbers 1–10 */
+.tt-board--numbers .tt-item { padding: 6px; }
+.tt-group { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 2px; width: 100%; height: 100%; }
+.tt-group .tt-dot { width: 40%; height: auto; }
+.tt-group--some, .tt-group--many { display: grid; grid-template-columns: repeat(5, 1fr); align-content: center; justify-items: center; gap: 6px 2px; }
+.tt-group--some .tt-dot, .tt-group--many .tt-dot { width: 92%; }
+.tt-one { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.tt-one-img { width: 72%; height: auto; }
+.tt-mode { border-color: var(--border); color: var(--ink); }
