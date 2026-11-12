@@ -10465,3 +10465,15 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .sp-activity li time { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-soft); margin-right: 6px; }
 .sp-activity li small { color: var(--ink-faint); margin-left: 4px; }
 .sp-activity .sp-act-visit { background: transparent; color: var(--ink-faint); padding-top: 2px; padding-bottom: 2px; }
+
+/* Hoje: classes at overlapping times share the height, one row each */
+.td-class--lane {
+  top: calc(18px + (100% - 38px) * var(--lane) / var(--lanes)); bottom: auto;
+  height: calc((100% - 38px) / var(--lanes) - 4px); padding: 6px 10px; gap: 0;
+}
+.td-class--lane small { display: none; }
+.td-class--lane span { font-size: 0.95rem; }
+@media (max-width: 640px) { .td-class--lane { height: auto; padding: 8px 6px; } .td-class--lane small { display: block; } }
+/* Últimos registros: the avatar's picture in the middle of its circle */
+.td-log .td-log-av { display: grid; place-items: center; margin-top: 0; font-size: 1.3rem; line-height: 1; }
+.td-log .td-log-av img { width: 26px; height: 26px; display: block; }

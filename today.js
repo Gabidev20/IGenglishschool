@@ -122,12 +122,26 @@ function tdTimelineHTML(d) {
   const hours = [];
   for (let h = first; h <= last; h += 2) hours.push(h);
   const nowIn = d.nowMin >= first * 60 && d.nowMin <= last * 60;
+  // Classes that overlap in time (14:30 and 15:00) go on rows of their own
+  // instead of on top of each other: lane = its row, lanes = rows in its group.
+  const lane = new Map(), lanes = new Map();
+  let group = [], groupEnd = -1, rowsEnd = [];
+  const closeGroup = () => { const n = Math.max(1, rowsEnd.length); group.forEach(c => lanes.set(c, n)); group = []; rowsEnd = []; };
+  timed.slice().sort((a, b) => a.start - b.start).forEach(c => {
+    if (c.start >= groupEnd) closeGroup();
+    let row = rowsEnd.findIndex(end => end <= c.start);
+    if (row === -1) { row = rowsEnd.length; rowsEnd.push(0); }
+    rowsEnd[row] = c.start + TD_CLASS_MIN;
+    lane.set(c, row); group.push(c);
+    groupEnd = Math.max(groupEnd, c.start + TD_CLASS_MIN);
+  });
+  closeGroup();
   return `
     <div class="td-track">
       ${nowIn ? `<span class="td-now" style="left:${pos(d.nowMin).toFixed(2)}%"><i>agora</i></span>` : ''}
       ${timed.map(c => `
-        <button type="button" class="td-class${c === d.next ? ' is-next' : ''}${c.logged ? ' is-logged' : ''}"
-                style="left:${pos(c.start).toFixed(2)}%;width:${((TD_CLASS_MIN / span) * 100).toFixed(2)}%"
+        <button type="button" class="td-class${c === d.next ? ' is-next' : ''}${c.logged ? ' is-logged' : ''}${lanes.get(c) > 1 ? ' td-class--lane' : ''}"
+                style="left:${pos(c.start).toFixed(2)}%;width:${((TD_CLASS_MIN / span) * 100).toFixed(2)}%;--lane:${lane.get(c) || 0};--lanes:${lanes.get(c) || 1}"
                 data-td-open="${tdEsc(c.s.id)}" title="${tdEsc(`${c.time} · ${c.s.name}`)}">
           <b>${tdEsc(c.time)}</b>
           <span>${tdEsc(c.s.name)}</span>
