@@ -228,6 +228,9 @@ function refreshLiveClassCockpit() {
   }
 
   const young = isYoungLearner(student);
+  // The class buttons (Today's Class, Slides, Zoom, Canva…) come right after
+  // the last class; the homework list goes below them, not in between.
+  const ctx = cockpitContextHTML(student).split('<!--cockpit-hw-->');
 
   root.innerHTML = `
     <div class="cockpit-student-card" style="--accent-color:${student.color}">
@@ -255,7 +258,7 @@ function refreshLiveClassCockpit() {
       `}
     </div>
 
-    ${cockpitContextHTML(student)}
+    ${ctx[0]}
 
     <div class="cockpit-actions">
       <button class="btn btn-primary" id="openSessionDrawerBtn">📋 Today's Class</button>
@@ -267,6 +270,8 @@ function refreshLiveClassCockpit() {
     </div>
 
     <div class="cockpit-links" id="cockpitLinks"></div>
+
+    ${ctx[1] || ''}
   `;
 
   if (young) {
@@ -343,7 +348,7 @@ function cockpitContextHTML(student) {
         ` : `<p class="cockpit-ctx-note">Nenhuma aula registrada ainda — use <b>📋 Today's Class</b> no fim da aula.</p>`}
       </div>
     </div>
-
+    <!--cockpit-hw-->
     <div class="cockpit-hw" id="cockpitHwSlot">
       <div class="cockpit-hw-head">
         <h3>🏠 Lição de casa</h3>
