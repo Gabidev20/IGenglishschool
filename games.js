@@ -408,7 +408,10 @@ const GameEngine = (() => {
   // 2) MEMORY GAME
   // -------------------------------------------------------------------------
   function renderMemory(container, topic) {
-    const words = pickN(topic.words, Math.min(6, topic.words.length));
+    // A topic's newest words (marked "fresh") are played first, when there are enough.
+    const fresh = (topic.words || []).filter(w => w.fresh);
+    const deck = fresh.length >= 6 ? fresh : topic.words;
+    const words = pickN(deck, Math.min(6, deck.length));
     // A child who cannot read yet matches two identical pictures — no words
     // on the cards — and hears the word when a card turns over.
     const student = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
@@ -1048,7 +1051,8 @@ const GameEngine = (() => {
   const UNSCRAMBLE_ROUND = 6;
 
   function renderUnscramble(container, topic) {
-    const all = (typeof lkSentences === 'function' ? lkSentences(topic) : []);
+    const all = (typeof lkPracticeFirst === 'function' ? lkPracticeFirst(topic)
+      : typeof lkSentences === 'function' ? lkSentences(topic) : []);
     if (all.length < 3) {
       container.innerHTML = '<div class="game-end-banner lose">This topic has no example sentences yet.</div>';
       return;

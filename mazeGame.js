@@ -82,6 +82,14 @@ const MZ_FOODS = [
     (typeof KID_VOCAB !== 'undefined' && KID_VOCAB.family ? KID_VOCAB.family
       : [['mom', '', '👩'], ['dad', '', '👨'], ['sister', '', '👧'], ['brother', '', '👦'], ['grandpa', '', '👴'], ['grandma', '', '👵'], ['baby', '', '👶']])
       .map(([say, , emoji]) => ({ emoji, say })) },
+  // Past Continuous: the topic's actions (topicsData.js) — "was cooking" 🍳…
+  { id: 'pastcont', en: 'Past Continuous', pt: 'Passado contínuo', icon: '⏳', items: () => {
+    const level = (typeof LEVELS !== 'undefined' ? LEVELS : []).find(l => (l.topics || []).some(t => t.id === 'pastcontinuous'));
+    const topic = level && level.topics.find(t => t.id === 'pastcontinuous');
+    const list = topic ? topic.words.filter(w => w.emoji).map(w => ({ emoji: w.emoji, say: w.en })) : [];
+    return list.length ? list : [['📺', 'was watching'], ['🍳', 'was cooking'], ['⚽', 'were playing'], ['😴', 'was sleeping']]
+      .map(([emoji, say]) => ({ emoji, say }));
+  } },
   // Countries: the flags of IG Explorers Unit 4 (kidsContent.js).
   { id: 'countries', en: 'Countries', pt: 'Países', icon: '🌎', items: () =>
     (typeof KID_VOCAB !== 'undefined' && KID_VOCAB.countries ? KID_VOCAB.countries

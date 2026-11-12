@@ -203,6 +203,19 @@ function lkSentences(topic) {
   return out;
 }
 
+// The sentences a game should play. A topic marked "practiceFirst" plays
+// only its own practiceSentences (new ones the teacher asked for, so the
+// class examples don't come back); otherwise everything lkSentences finds.
+const LK_PRACTICE_FIRST_MIN = 3;
+function lkPracticeFirst(topic) {
+  if (!topic.practiceFirst) return lkSentences(topic);
+  const all = lkSentences(topic);
+  const own = new Set((Array.isArray(topic.practiceSentences) ? topic.practiceSentences : [])
+    .map(s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase()));
+  const mine = all.filter(s => own.has(s.toLowerCase()));
+  return mine.length >= LK_PRACTICE_FIRST_MIN ? mine : all;
+}
+
 // learning.js's splitter returns { text, glossaryWord, grammarTerm } objects,
 // not strings — everything here wants the bare sentence.
 function lkReadingSentences(topic) {

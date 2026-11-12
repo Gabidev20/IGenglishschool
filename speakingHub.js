@@ -141,14 +141,38 @@ function spTabsFor(student) {
   return tabs;
 }
 
-function openSpeakingHub(student, fallbackLines) {
+// The student's topics that have sentences to say (lessonKit.js).
+function spTopicList(topics) {
+  if (typeof lkSentences !== 'function') return [];
+  return (topics || []).map(t => ({ topic: t, lines: typeof lkPracticeFirst === 'function' ? lkPracticeFirst(t) : lkSentences(t) }))
+    .filter(x => x.lines.length >= 4);
+}
+
+function openSpeakingHub(student, fallbackLines, topics) {
   const tabs = spTabsFor(student);
+  const topicList = spTopicList(topics);
+  let topicAt = 0;
+  let topicFirst = false;
+  if (topicList.length) {
+    // The newest class that names one of the topics picks it; when that is
+    // the latest class of all, the Topics tab opens first.
+    const rec = typeof saRecord === 'function' ? saRecord(student.id) : {};
+    const classes = Array.isArray(rec.classes) ? rec.classes : [];
+    const titleOf = x => String(x.topic.title || '').replace(/^grammar:\s*/i, '').toLowerCase();
+    for (let i = 0; i < classes.length; i++) {
+      const label = String(classes[i].topic || '').toLowerCase();
+      const hit = topicList.findIndex(x => titleOf(x) && label.includes(titleOf(x)));
+      if (hit >= 0) { topicAt = hit; topicFirst = i === 0; break; }
+    }
+    const tab = { id: 'topic', icon: '📚', label: 'Topics' };
+    if (topicFirst) tabs.unshift(tab); else tabs.push(tab);
+  }
   if (!tabs.length) {
     openSpeakingModal({ studentId: student.id, source: 'home', lines: fallbackLines });
     return;
   }
   let active = tabs[0].id;
-  const state = { pron: 0, take: 0, unit: null, bookMode: 'phrases' };
+  const state = { pron: 0, take: 0, unit: null, bookMode: 'phrases', topic: topicAt };
 
   openModal(`
     <div class="modal-content-pad">
@@ -248,10 +272,27 @@ function openSpeakingHub(student, fallbackLines) {
     if (deck.length) engine({ lines: deck, itemLabel: 'Item', topicLabel: 'Class takeaway' });
   }
 
+  function paintTopic() {
+    const x = topicList[Math.min(state.topic, topicList.length - 1)];
+    const lines = x.lines.slice();
+    for (let i = lines.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [lines[i], lines[j]] = [lines[j], lines[i]]; }
+    pane.innerHTML = `
+      <div class="spk-head">
+        <p class="spk-lead">Sentences from your topics. Listen, then say them.<br><small>Frases dos seus tópicos: ouça e fale.</small></p>
+        <label class="spk-pick"><span>Topic</span>
+          <select id="spTopic">${topicList.map((t, i) => `<option value="${i}" ${i === state.topic ? 'selected' : ''}>${spEsc(`${t.topic.emoji || ''} ${t.topic.title}`.trim())}</option>`).join('')}</select>
+        </label>
+      </div>
+      <div id="skMount" class="game-mount"></div>`;
+    pane.querySelector('#spTopic').addEventListener('change', e => { state.topic = Number(e.target.value) || 0; paint(); });
+    engine({ lines: lines.slice(0, 10), itemLabel: 'Frase', topicLabel: x.topic.title });
+  }
+
   function paint() {
     SkillsModules.stopAll();
     const tab = tabs.find(t => t.id === active);
-    if (tab.id === 'pron') paintPron(tab);
+    if (tab.id === 'topic') paintTopic();
+    else if (tab.id === 'pron') paintPron(tab);
     else if (tab.id === 'book') paintBook(tab);
     else paintTake(tab);
   }

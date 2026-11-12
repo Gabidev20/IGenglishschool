@@ -40,6 +40,15 @@ const jlAvatarHTML = (a, cls) => (a.look && typeof myavHTML === 'function' ? mya
 const JL_HEARTS = 5;
 
 // The subjects: each gives words { en, pt, emoji?, image?, num? }.
+function jlIsAnaClara() {
+  const st = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
+  return Boolean(st && /^ana clara\b/i.test(String(st.name || '').trim()));
+}
+function jlLevelTopicWords(topicId) {
+  const level = (typeof LEVELS !== 'undefined' ? LEVELS : []).find(l => (l.topics || []).some(t => t.id === topicId));
+  const topic = level && level.topics.find(t => t.id === topicId);
+  return topic ? (topic.words || []).filter(w => w.en && w.emoji).map(w => ({ en: w.en, pt: w.pt, emoji: w.emoji })) : [];
+}
 const jlFromTriples = list => (list || []).map(([en, pt, emoji]) => ({ en, pt, emoji }));
 const jlFromTopic = t => (t && t.words ? t.words : []).map(w => ({ en: w.en, pt: w.pt, emoji: w.emoji, image: w.image }));
 const JL_SETS = [
@@ -69,6 +78,10 @@ const JL_SETS = [
     typeof WEATHER_TOPIC !== 'undefined' ? jlFromTopic(WEATHER_TOPIC) : [] },
   { id: 'house', en: 'The house', pt: 'Casa', icon: '🏠', words: () =>
     typeof KID_VOCAB !== 'undefined' ? jlFromTriples(KID_VOCAB.house) : [] },
+  // Past Continuous (topicsData.js) — only for Ana Clara: for anyone else
+  // the set is empty, so it does not show.
+  { id: 'pastcont', en: 'Past Continuous', pt: 'Passado contínuo', icon: '⏳', words: () =>
+    (jlIsAnaClara() ? jlLevelTopicWords('pastcontinuous') : []) },
   { id: 'countries', en: 'Countries', pt: 'Países', icon: '🌎', words: () =>
     typeof KID_VOCAB !== 'undefined' && KID_VOCAB.countries ? jlFromTriples(KID_VOCAB.countries) : [] },
 ];

@@ -786,7 +786,7 @@ function renderStudentHome(shell, studentId) {
     dictation: () => openDictationModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) }),
     // Speaking: Pronunciation · My book · Class takeaway (speakingHub.js).
     speaking: () => (typeof openSpeakingHub === 'function'
-      ? openSpeakingHub(student, shareLinesFor(topics))
+      ? openSpeakingHub(student, shareLinesFor(topics), topics)
       : openSpeakingModal({ studentId: student.id, source: 'home', lines: shareLinesFor(topics) })),
     writing: () => (markRepliesSeen(), typeof openProfileWriting === 'function' ? openProfileWriting(student) : openWritingModal({ studentId: student.id })),
   };
@@ -813,7 +813,8 @@ function renderStudentHome(shell, studentId) {
 function shareLinesFor(topics) {
   if (typeof lkSentences !== 'function') return null;
   const all = [];
-  (topics || []).forEach(t => lkSentences(t).forEach(x => { if (!all.includes(x)) all.push(x); }));
+  (topics || []).forEach(t => (typeof lkPracticeFirst === 'function' ? lkPracticeFirst(t) : lkSentences(t))
+    .forEach(x => { if (!all.includes(x)) all.push(x); }));
   if (all.length < 4) return null;
   for (let i = all.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
   return all.slice(0, 10);

@@ -6295,6 +6295,104 @@ const LEVELS = [
             "en": "were running",
             "pt": "estavam correndo",
             "emoji": "🏃"
+          },
+          {
+            "id": "waseating",
+            "en": "was eating",
+            "pt": "estava comendo",
+            "emoji": "🍝",
+            "fresh": true
+          },
+          {
+            "id": "weredancing",
+            "en": "were dancing",
+            "pt": "estavam dançando",
+            "emoji": "💃",
+            "fresh": true
+          },
+          {
+            "id": "wasswimming",
+            "en": "was swimming",
+            "pt": "estava nadando",
+            "emoji": "🏊",
+            "fresh": true
+          },
+          {
+            "id": "waswriting",
+            "en": "was writing",
+            "pt": "estava escrevendo",
+            "emoji": "✍️",
+            "fresh": true
+          },
+          {
+            "id": "wasdrawing",
+            "en": "was drawing",
+            "pt": "estava desenhando",
+            "emoji": "🖍️",
+            "fresh": true
+          },
+          {
+            "id": "werelaughing",
+            "en": "were laughing",
+            "pt": "estavam rindo",
+            "emoji": "😂",
+            "fresh": true
+          },
+          {
+            "id": "wascleaning",
+            "en": "was cleaning",
+            "pt": "estava limpando",
+            "emoji": "🧽",
+            "fresh": true
+          },
+          {
+            "id": "wascrying",
+            "en": "was crying",
+            "pt": "estava chorando",
+            "emoji": "😢",
+            "fresh": true
+          },
+          {
+            "id": "wasriding",
+            "en": "was riding a bike",
+            "pt": "estava andando de bicicleta",
+            "emoji": "🚲",
+            "fresh": true
+          },
+          {
+            "id": "wereshopping",
+            "en": "were shopping",
+            "pt": "estavam fazendo compras",
+            "emoji": "🛍️",
+            "fresh": true
+          },
+          {
+            "id": "wasshowering",
+            "en": "was taking a shower",
+            "pt": "estava tomando banho",
+            "emoji": "🚿",
+            "fresh": true
+          },
+          {
+            "id": "wassnowing",
+            "en": "was snowing",
+            "pt": "estava nevando",
+            "emoji": "❄️",
+            "fresh": true
+          },
+          {
+            "id": "waspainting",
+            "en": "was painting",
+            "pt": "estava pintando",
+            "emoji": "🎨",
+            "fresh": true
+          },
+          {
+            "id": "wasbarking",
+            "en": "was barking",
+            "pt": "estava latindo",
+            "emoji": "🐕",
+            "fresh": true
           }
         ],
         "readingTime": {
@@ -6352,14 +6450,28 @@ const LEVELS = [
             ]
           }
         ],
+        "practiceFirst": true,
         "practiceSentences": [
-          "I was watching TV at eight",
-          "She was cooking when I arrived",
-          "They were playing in the garden",
-          "It was raining all morning",
-          "We were waiting for the bus",
-          "What were you doing yesterday",
-          "He was not listening to me"
+          "She was reading a book in her room",
+          "We were having lunch at noon",
+          "My dad was washing the car",
+          "The kids were swimming in the pool",
+          "I was doing my homework at seven",
+          "The dog was barking all night",
+          "They were not watching the game",
+          "Was it raining when you left",
+          "My mom was talking on the phone",
+          "He was riding his bike to school",
+          "We were dancing at the party",
+          "What was she doing at nine",
+          "The baby was crying in the car",
+          "I was taking a shower when you called",
+          "They were playing video games all afternoon",
+          "She was not wearing a jacket",
+          "Where were you going this morning",
+          "The sun was shining at the beach",
+          "My friends were waiting for me outside",
+          "He was eating pizza when I arrived"
         ],
         "video": {
           "youtubeId": "D2uT7foH5mQ",
