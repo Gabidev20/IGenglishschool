@@ -144,7 +144,7 @@ function reviewSentences(word) {
   if (/^to\s/i.test(w) || k.split(' ').length >= 3 || (/\s/.test(k) && !reviewLookup(w))) {
     return [`${lw.charAt(0).toUpperCase()}${lw.slice(1)}.`];
   }
-  if (/s$/.test(k) && !/ss$/.test(k)) return [`These are ${lw}.`, `I like ${lw}.`];
+  if (/s$/.test(k) && !/(ss|us|is)$/.test(k)) return [`These are ${lw}.`, `I like ${lw}.`];
   return [`This is ${art} ${lw}.`, `I can see ${art} ${lw}.`];
 }
 
@@ -165,8 +165,11 @@ const rvTidy = w => (/^[A-Z][a-z]/.test(w) ? w.toLowerCase() : w);
 let rvIdSeq = 0;
 const rvId = () => `rc${Date.now().toString(36)}${(rvIdSeq++).toString(36)}`;
 
-function reviewCard(en, extra) {
+// `ctx` { student, session }: with them the sentences come from the class and
+// the course at the student's level (reviewPractice.js).
+function reviewCard(en, extra, ctx) {
   const hit = reviewLookup(en);
+  const c = ctx || {};
   return {
     id: rvId(),
     en: String(en).trim(),
@@ -174,18 +177,21 @@ function reviewCard(en, extra) {
     image: (hit && hit.image) || '',
     emoji: (hit && hit.emoji) || '',
     pron: (extra && extra.pron) || '',
-    sentences: reviewSentences(en),
+    ...(extra && extra.type ? { type: extra.type } : {}),
+    sentences: extra && extra.type === 'phrase' ? [String(en).trim()]
+      : typeof rpSentencesFor === 'function' && c.student ? rpSentencesFor(en, c.student, c.session) : reviewSentences(en),
   };
 }
 
-function generateReview(session) {
+function generateReview(session, student) {
   const cards = [];
   const seen = new Set();
+  const ctx = { student, session };
   const push = (en, extra) => {
     const k = rvNorm(en);
     if (!k || seen.has(k) || cards.length >= RV_MAX) return;
     seen.add(k);
-    cards.push(reviewCard(en, extra));
+    cards.push(reviewCard(en, extra, ctx));
   };
 
   // 1. The new words written on the class sheet.
@@ -213,6 +219,14 @@ function generateReview(session) {
       });
     }
   }));
+
+  // 4. Longer chunks: the sentences written on the class sheet (14+).
+  if (typeof rpPhraseCards === 'function') {
+    rpPhraseCards(session, student, 3).forEach(p => {
+      const k = rvNorm(p.en);
+      if (k && !seen.has(k)) { seen.add(k); cards.push(reviewCard(p.en, { type: 'phrase' }, ctx)); }
+    });
+  }
 
   return {
     sessionId: session.id,
@@ -245,6 +259,15 @@ function rvSay(text) {
 function openClassReviewPlayer(review, opts) {
   const o = opts || {};
   const cards = review.cards;
+  const who = o.student || (typeof getActiveStudent === 'function' ? getActiveStudent() : null);
+  const sentencesOf = c => (typeof rpCardSentences === 'function' && who ? rpCardSentences(c, who) : (c.sentences || []).filter(Boolean));
+  const canPractice = Boolean(who) && typeof openReviewPractice === 'function';
+  const practice = () => { if (canPractice) openReviewPractice(who, { preview: o.preview, onBack: () => openClassReviewPlayer(review, o) }); };
+  const practiceLabel = () => {
+    const sum = typeof rpSummary === 'function' && who ? rpSummary(who.id) : null;
+    const n = sum ? sum.due + Math.min(sum.fresh, 6) : 0;
+    return `🔁 ${crSay('Praticar', 'Practice')}${n ? ` · ${n}` : ''}`;
+  };
   let index = 0;
   let flipped = false;
   const said = new Set();
@@ -260,31 +283,38 @@ function openClassReviewPlayer(review, opts) {
           <p class="rv-done-title">Great review!</p>
           <p class="rv-done-sub">${said.size} / ${cards.length} ✅</p>
           <div class="an-done-actions">
+            ${canPractice ? `<button class="game-btn" data-rv="practice">${practiceLabel()}</button>` : ''}
             <button class="game-btn secondary" data-rv="again">🔄 Again</button>
             ${o.onBack ? `<button class="game-btn" data-rv="back">✏️ Voltar à edição</button>` : ''}
           </div>
         </div>`;
       body.querySelector('[data-rv="again"]').addEventListener('click', () => { index = 0; flipped = false; done = false; said.clear(); paint(); });
+      const pr = body.querySelector('[data-rv="practice"]');
+      if (pr) pr.addEventListener('click', practice);
       const back = body.querySelector('[data-rv="back"]');
       if (back) back.addEventListener('click', o.onBack);
       return;
     }
     const c = cards[index];
+    const sentences = sentencesOf(c);
+    const long = c.type === 'phrase' || c.en.length > 22;
+    const barText = crSay('Cards da aula — depois pratique para não esquecer', "Class cards — then practice so you don't forget");
     body.innerHTML = `
+      ${canPractice ? `<div class="rv-practice-bar"><span>${barText}</span><button class="rv-link" data-rv="practice">${practiceLabel()}</button></div>` : ''}
       <div class="rv-progress">${cards.map((x, i) => `<i class="${i === index ? 'on' : ''}${said.has(x.id) ? ' ok' : ''}"></i>`).join('')}</div>
       <div class="rv-card${flipped ? ' flipped' : ''}" data-rv="flip" role="button" tabindex="0" aria-label="Turn the card">
         <div class="rv-face rv-front">
           ${reviewPicHTML(c, 'rv-pic')}
-          <p class="rv-word">${igEscapeHtml(c.en)}</p>
+          <p class="rv-word${long ? ' rv-word--phrase' : ''}">${igEscapeHtml(c.en)}</p>
           <p class="rv-tap">👆 Tap to turn</p>
         </div>
         <div class="rv-face rv-back">
           ${reviewPicHTML(c, 'rv-pic rv-pic--small')}
-          <p class="rv-word rv-word--small">${igEscapeHtml(c.en)}</p>
+          <p class="rv-word rv-word--small${long ? ' rv-word--phrase' : ''}">${igEscapeHtml(c.en)}</p>
           ${c.pt ? `<p class="rv-pt">${igEscapeHtml(c.pt)}</p>` : ''}
           ${c.pron ? `<p class="rv-pron">🗣️ ${igEscapeHtml(c.pron)}</p>` : ''}
           <div class="rv-sentences">
-            ${(c.sentences || []).filter(Boolean).map((s, i) => `<button class="rv-sentence" data-say="${i}">🔊 ${igEscapeHtml(s)}</button>`).join('')}
+            ${(c.type === 'phrase' ? [] : sentences).map((s, i) => `<button class="rv-sentence" data-say="${i}">🔊 ${igEscapeHtml(s)}</button>`).join('')}
           </div>
         </div>
       </div>
@@ -299,7 +329,9 @@ function openClassReviewPlayer(review, opts) {
     const flip = () => { flipped = !flipped; IGSound.flip(); card.classList.toggle('flipped', flipped); };
     card.addEventListener('click', e => { if (e.target.closest('[data-say]')) return; flip(); });
     card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
-    body.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => rvSay(c.sentences[Number(b.dataset.say)])));
+    body.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => rvSay(sentences[Number(b.dataset.say)])));
+    const prTop = body.querySelector('.rv-practice-bar [data-rv="practice"]');
+    if (prTop) prTop.addEventListener('click', practice);
     body.querySelector('[data-rv="word"]').addEventListener('click', () => rvSay(c.en));
     body.querySelector('[data-rv="said"]').addEventListener('click', () => {
       if (!said.has(c.id)) { said.add(c.id); IGSound.correct(); }
@@ -340,7 +372,7 @@ function openClassReviewPlayer(review, opts) {
 function openClassReviewEditor(student, session) {
   let review = loadReviews(student.id)[session.id];
   const isNew = !review;
-  if (!review) { review = generateReview(session); saveReview(student.id, review); }
+  if (!review) { review = generateReview(session, student); saveReview(student.id, review); }
   let saveTimer = null;
 
   function save(now) {
@@ -365,6 +397,22 @@ function openClassReviewEditor(student, session) {
       </details>`;
   };
 
+  // How the student is remembering the words of all class reviews.
+  const memory = typeof rpMemory === 'function' ? rpMemory(student.id) : {};
+  const boxOf = c => { const m = typeof rpKey === 'function' ? memory[rpKey(c.en)] : null; return m ? m.box : null; };
+  const memoryHTML = () => {
+    if (typeof rpSummary !== 'function') return '';
+    const s = rpSummary(student.id);
+    if (!s.total) return '';
+    return `<p class="rv-memory">🧠 <b>Memória de ${igEscapeHtml(student.name)}</b>: ${s.strong} de ${s.total} palavras firmes · ${s.due} para revisar hoje · ${s.fresh} ainda não praticadas.
+      <small>A prática (🔁 no link do aluno) traz cada palavra de volta em 1, 3, 7, 14 e 30 dias, com exercícios cada vez mais difíceis.</small></p>`;
+  };
+  const boxDots = c => {
+    const b = boxOf(c);
+    if (b == null) return `<span class="rv-box rv-box--new" title="Ainda não praticada">novo</span>`;
+    return `<span class="rv-box" title="Memória: ${b} de 5">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= b ? 'on' : ''}"></i>`).join('')}</span>`;
+  };
+
   function cardEditorHTML(c, i) {
     const hit = !c.image && !c.emoji ? reviewLookup(c.en) : null;
     return `
@@ -384,7 +432,8 @@ function openClassReviewEditor(student, session) {
           </div>
           <textarea data-field="sentences" rows="2" placeholder="Uma frase por linha — ex.: This is a cat." aria-label="Frases">${igEscapeHtml((c.sentences || []).join('\n'))}</textarea>
           <div class="rv-edit-tools">
-            <button class="rv-link" data-resentences>✨ sugerir frases</button>
+            ${c.type === 'phrase' ? '<span class="rv-edit-pron">💬 frase da aula</span>' : '<button class="rv-link" data-resentences>✨ sugerir frases</button>'}
+            ${boxDots(c)}
             ${c.pron ? `<span class="rv-edit-pron">🗣️ ${igEscapeHtml(c.pron)}</span>` : ''}
           </div>
         </div>
@@ -409,7 +458,9 @@ function openClassReviewEditor(student, session) {
       <div class="rv-edit-actions">
         <button class="game-btn secondary" id="rvRegen">✨ Gerar de novo das anotações</button>
         <button class="game-btn" id="rvPreview" ${review.cards.length ? '' : 'disabled'}>▶ Ver como o aluno</button>
+        ${typeof openReviewPractice === 'function' ? `<button class="game-btn secondary" id="rvPractice" ${review.cards.length ? '' : 'disabled'}>🔁 Ver a prática</button>` : ''}
       </div>
+      ${memoryHTML()}
       <p class="rv-share-note">👧 O aluno vê esta revisão no link dele, em <b>🧠 Revisão da aula</b>.</p>`;
     bind(host);
   }
@@ -445,7 +496,8 @@ function openClassReviewEditor(student, session) {
         if (hit) { card.image = hit.image; card.emoji = hit.emoji; save(true); paint(); }
       });
       row.querySelector('[data-resentences]').addEventListener('click', () => {
-        card.sentences = reviewSentences(card.en);
+        card.sentences = card.type === 'phrase' ? [card.en]
+          : typeof rpSentencesFor === 'function' ? rpSentencesFor(card.en, student, session) : reviewSentences(card.en);
         save(true); paint();
       });
       row.querySelector('[data-del]').addEventListener('click', () => {
@@ -457,7 +509,7 @@ function openClassReviewEditor(student, session) {
     const add = () => {
       const w = addInput.value.trim();
       if (!w) { addInput.focus(); return; }
-      review.cards.push(reviewCard(w));
+      review.cards.push(reviewCard(w, null, { student, session }));
       save(true); paint();
       const again = document.getElementById('rvNewWord');
       if (again) again.focus();
@@ -466,14 +518,19 @@ function openClassReviewEditor(student, session) {
     addInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); add(); } });
     host.querySelector('#rvRegen').addEventListener('click', () => {
       if (review.cards.length && !confirm('Gerar os cards de novo a partir das anotações? As suas edições nesta revisão serão substituídas.')) return;
-      const fresh = generateReview(session);
+      const fresh = generateReview(session, student);
       review.cards = fresh.cards;
       if (!review.title) review.title = fresh.title;
       save(true); paint();
     });
     host.querySelector('#rvPreview').addEventListener('click', () => {
       save(true);
-      openClassReviewPlayer(review, { preview: true, onBack: () => openClassReviewEditor(student, session) });
+      openClassReviewPlayer(review, { preview: true, student, onBack: () => openClassReviewEditor(student, session) });
+    });
+    const prBtn = host.querySelector('#rvPractice');
+    if (prBtn) prBtn.addEventListener('click', () => {
+      save(true);
+      openReviewPractice(student, { preview: true, onBack: () => openClassReviewEditor(student, session) });
     });
   }
 
