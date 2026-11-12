@@ -10592,3 +10592,7 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
   html:not(.ig-student-mode):not(.ig-public-game) body,
   html:not(.ig-student-mode):not(.ig-public-game) .site-header { transition: padding-left 0.2s ease, width 0.2s ease; }
 }
+
+/* 🌐 PT / EN button (i18n.js): a globe in the side menu, its label says the language. */
+#langToggleBtn { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E"); font-weight: 800; letter-spacing: .02em; }
+html.ig-student-mode #langToggleBtn, html.ig-public-game #langToggleBtn { display: none; }

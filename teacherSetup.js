@@ -140,7 +140,9 @@ function applyGrownLook(student) {
 // right wherever html.ig-grown is: the student link and the teacher's screen
 // with that learner selected.
 function igSay(pt, en) {
-  return document.documentElement.classList.contains('ig-grown') ? en : pt;
+  if (document.documentElement.classList.contains('ig-grown')) return en;
+  // the teacher picked English for her own screen (i18n.js, PT / EN button)
+  return typeof IGLang !== 'undefined' && IGLang.active() ? en : pt;
 }
 
 // ---------------------------------------------------------------------------

@@ -76,6 +76,8 @@
       <button class="inbox-btn header-desktop-only" id="headerSlidesBtn" type="button" aria-label="Slides da aula" title="🖼️ Slides da aula — criar e apresentar slides para o aluno">🖼️</button>
       <button class="inbox-btn header-desktop-only" id="headerEditorBtn" type="button" aria-label="Editor de conteúdo" title="🧩 Editor — editar os temas, palavras, vídeos e leituras">🧩</button>
       <button class="inbox-btn header-desktop-only" id="headerReportsBtn" type="button" aria-label="Boletim" title="📊 Reports — boletim dos alunos">📊</button>
+      <!-- 🌐 PT / EN: the language of the teacher's own screen (i18n.js). -->
+      <button class="inbox-btn lang-btn" id="langToggleBtn" type="button" aria-pressed="false" aria-label="Idioma: Português (mudar para English)" title="Idioma: Português (mudar para English)">PT</button>
       <button class="inbox-btn help-btn" id="teacherHelpBtn" type="button" aria-label="Como usar o site" title="Como usar o site (tutorial)">❓</button>
 
       <button class="inbox-btn" id="inboxBtn" type="button" aria-label="Mensagens dos alunos" title="Mensagens dos alunos">✉️<span class="inbox-badge" id="inboxBadge" hidden>0</span></button>
@@ -269,6 +271,8 @@
 </div>
 
 <script src="utils.js"></script>
+<script src="i18n.js"></script>
+<script src="i18nDict.js"></script>
 <!-- Right after utils.js: a #jogo= link (textbook QR code) must pick its
      own empty storage before any other script reads the teacher's. -->
 <script src="publicGame.js"></script>
