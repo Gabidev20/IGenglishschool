@@ -1087,7 +1087,7 @@ const GameEngine = (() => {
         </div>
 
         <div class="us-board">
-          <p class="us-instruction">Tap the words in the right order.</p>
+          <p class="us-instruction">Tap the words in the right order. ✋ Drag a word to move it, or to slip a forgotten one in.</p>
 
           <div class="us-answer ${checked === true ? 'right' : checked === false ? 'wrong' : ''}" id="usAnswer">
             ${placed.length === 0
@@ -1112,9 +1112,17 @@ const GameEngine = (() => {
         </div>
       `;
 
+      // ✋ Drag a word: inside the sentence it moves to another place; from
+      // the bank it goes in exactly where it is dropped; out of the sentence
+      // it goes back to the bank. A plain tap still works as before.
+      container.querySelectorAll('.us-tile').forEach(btn => {
+        if (btn.disabled) return;
+        btn.addEventListener('pointerdown', e => usDragStart(e, btn));
+      });
+
       container.querySelectorAll('[data-place]').forEach(btn => {
         btn.addEventListener('click', () => {
-          if (checked === true) return;
+          if (checked === true || usJustDragged) return;
           placed.push(Number(btn.dataset.place));
           IGSound.click();
           checked = null;
@@ -1123,7 +1131,7 @@ const GameEngine = (() => {
       });
       container.querySelectorAll('[data-unplace]').forEach(btn => {
         btn.addEventListener('click', () => {
-          if (checked === true) return;
+          if (checked === true || usJustDragged) return;
           placed.splice(Number(btn.dataset.unplace), 1);
           IGSound.drop();
           checked = null;
@@ -1159,6 +1167,80 @@ const GameEngine = (() => {
         if (index < sentences.length) { setup(); return; }
         finish();
       });
+    }
+
+    // ---- dragging -----------------------------------------------------------
+    let usJustDragged = false;
+    // Where in the sentence a drop at (x, y) lands: before the first word that
+    // is further down, or on the same line and to the right of the pointer.
+    function usDropIndex(x, y, skip) {
+      const els = [...container.querySelectorAll('#usAnswer [data-unplace]')];
+      let i = 0;
+      for (const el of els) {
+        if (el === skip) continue;
+        const r = el.getBoundingClientRect();
+        if (y < r.top || (y <= r.bottom && x < r.left + r.width / 2)) return i;
+        i++;
+      }
+      return i;
+    }
+    function usDragStart(e, btn) {
+      if (checked === true || (e.button != null && e.button > 0)) return;
+      const fromPos = btn.dataset.unplace != null ? Number(btn.dataset.unplace) : null;
+      const tile = fromPos != null ? placed[fromPos] : Number(btn.dataset.place);
+      const x0 = e.clientX, y0 = e.clientY;
+      let ghost = null, mark = null;
+      const answer = container.querySelector('#usAnswer');
+      const overAnswer = (x, y) => {
+        const r = answer.getBoundingClientRect();
+        return x >= r.left - 12 && x <= r.right + 12 && y >= r.top - 12 && y <= r.bottom + 12;
+      };
+      const showMark = (x, y) => {
+        if (!mark) { mark = document.createElement('span'); mark.className = 'us-drop-mark'; }
+        if (!overAnswer(x, y)) { mark.remove(); return; }
+        const at = usDropIndex(x, y, btn);
+        const others = [...answer.querySelectorAll('[data-unplace]')].filter(el => el !== btn);
+        const ph = answer.querySelector('.us-placeholder');
+        if (ph) ph.remove();
+        if (others[at]) answer.insertBefore(mark, others[at]); else answer.appendChild(mark);
+      };
+      const move = ev => {
+        if (!ghost) {
+          if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < 8) return;
+          ghost = btn.cloneNode(true);
+          ghost.classList.add('us-ghost');
+          const r = btn.getBoundingClientRect();
+          ghost.style.width = `${r.width}px`;
+          document.body.appendChild(ghost);
+          btn.classList.add('us-dragging');
+        }
+        ev.preventDefault();
+        ghost.style.left = `${ev.clientX}px`; ghost.style.top = `${ev.clientY}px`;
+        showMark(ev.clientX, ev.clientY);
+      };
+      const up = ev => {
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', up);
+        if (!ghost) return;                       // a tap: the click does the rest
+        ghost.remove(); if (mark) mark.remove();
+        usJustDragged = true; setTimeout(() => { usJustDragged = false; }, 0);
+        const x = ev.clientX, y = ev.clientY;
+        if (overAnswer(x, y)) {
+          const at = usDropIndex(x, y, btn);
+          if (fromPos != null) placed.splice(fromPos, 1);
+          placed.splice(Math.min(at, placed.length), 0, tile);
+          IGSound.click();
+        } else if (fromPos != null) {
+          placed.splice(fromPos, 1);              // dragged out: back to the bank
+          IGSound.drop();
+        }
+        checked = null;
+        paint();
+      };
+      window.addEventListener('pointermove', move, { passive: false });
+      window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
     }
 
     function finish() {
