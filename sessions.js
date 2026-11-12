@@ -664,6 +664,9 @@ function paintSessionDrawer() {
       <label>New words / expressions · Pronunciation</label>
       <div class="sheet-rows" id="sessionWords"></div>
       <button class="sheet-add-btn" id="sessionAddWord" type="button">➕ Adicionar palavra</button>
+      <button class="sheet-add-btn sheet-take-btn" id="sessionPullTake" type="button" hidden
+              title="Traz o que o aluno anotou no 🧠 Takeaway do livro nesta data: palavras, pronúncia e frases">🧠 Trazer o takeaway do livro</button>
+      <p class="sheet-take-note" id="sessionTakeNote" role="status" aria-live="polite"></p>
     </div>
 
     <div class="gm-form-field">
@@ -747,6 +750,7 @@ function paintSessionDrawer() {
   for (let i = savedWords.length; i < 3; i++) addSheetWordRow(wordsEl);
   for (let i = savedHw.length; i < 4; i++) addSheetHomeworkRow(hwEl);
   document.getElementById('sessionAddWord').addEventListener('click', () => addSheetWordRow(wordsEl, true));
+  wireTakeawayPull(student, wordsEl);
   document.getElementById('sessionAddHomework').addEventListener('click', () => addSheetHomeworkRow(hwEl, true));
 
   document.getElementById('saveSessionBtn').addEventListener('click', () => saveClassSession(student));
@@ -786,6 +790,60 @@ function nextClassNumber(studentId) {
 
 // Symbols the teacher may need when correcting a transcription by hand.
 const IPA_SYMBOLS = ['ə', 'ɪ', 'æ', 'ʌ', 'ʊ', 'ɒ', 'ɔː', 'iː', 'uː', 'ɜː', 'ɑː', 'ʃ', 'ʒ', 'θ', 'ð', 'ŋ', 'tʃ', 'dʒ', 'ˈ', 'ˌ'];
+
+// 🧠 TAKEAWAY FROM THE BOOK — what the student wrote in the book's Takeaway
+// panel on the class date (livroOnline.js takeawayFor). The button shows only
+// when there is something; a click fills the empty word / pronunciation lines
+// (adding lines when needed) and appends the sentences to "Phrases / texts",
+// skipping what is already on the sheet. Nothing is saved until the teacher
+// saves the class, so she can still edit or remove anything.
+function wireTakeawayPull(student, wordsEl) {
+  const btn = document.getElementById('sessionPullTake');
+  const note = document.getElementById('sessionTakeNote');
+  const dateEl = document.getElementById('sessionDate');
+  if (!btn || typeof LivroOnline === 'undefined' || !LivroOnline.takeawayFor) return;
+  let found = null;
+  const count = t => (t ? t.words.length + t.pron.length + t.phrases.length : 0);
+  const check = async () => {
+    const day = dateEl && dateEl.value;
+    found = await LivroOnline.takeawayFor(student, day).catch(() => null);
+    if (!btn.isConnected) return;
+    const n = count(found);
+    btn.hidden = !n;
+    if (n) btn.textContent = `🧠 Trazer o takeaway do livro (${n})`;
+    note.textContent = '';
+  };
+  check();
+  if (dateEl) dateEl.addEventListener('change', check);
+  btn.addEventListener('click', () => {
+    if (!count(found)) return;
+    const rows = () => [...wordsEl.querySelectorAll('.sheet-row')];
+    // A pronunciation line reads "thirteen /ˈθɜːtiːn/" once its phonetics are in: compare the word only.
+    const bare = v => v.split('/')[0].trim().toLowerCase();
+    const has = (cls, v) => rows().some(r => bare(r.querySelector(cls).value) === bare(v));
+    const slot = cls => rows().find(r => !r.querySelector(cls).value.trim()) || (addSheetWordRow(wordsEl, false), rows()[rows().length - 1]);
+    let added = 0;
+    found.words.forEach(v => { if (has('.sheet-word', v)) return; slot('.sheet-word').querySelector('.sheet-word').value = v; added++; });
+    found.pron.forEach(v => {
+      if (has('.sheet-pron', v)) return;
+      const input = slot('.sheet-pron').querySelector('.sheet-pron');
+      input.value = v;
+      // The phonetics appear the same way as when the teacher types the word.
+      input.dispatchEvent(new Event('blur'));
+      added++;
+    });
+    const textEl = document.getElementById('sessionText');
+    if (textEl) {
+      const NL = String.fromCharCode(10);
+      const lines = textEl.value.split(NL).map(l => l.trim().toLowerCase());
+      const fresh = found.phrases.filter(v => !lines.includes(v.trim().toLowerCase()));
+      if (fresh.length) { textEl.value = (textEl.value.trim() ? textEl.value.trim() + NL : '') + fresh.join(NL); added += fresh.length; }
+    }
+    note.textContent = added
+      ? `✅ ${added} ${added === 1 ? 'item trazido' : 'itens trazidos'} do livro (p. ${found.pages.join(', ')}). Confira e salve a aula.`
+      : 'Tudo isso já está na ficha.';
+  });
+}
 
 function addSheetWordRow(container, focus, value) {
   const v = value || {};

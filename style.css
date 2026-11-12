@@ -10483,3 +10483,37 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .us-tile.us-dragging { opacity: 0.3; }
 .us-ghost { position: fixed; z-index: 5000; pointer-events: none; transform: translate(-50%, -60%) rotate(-3deg); box-shadow: 0 10px 24px rgba(0,0,0,.22); margin: 0; }
 .us-drop-mark { width: 4px; align-self: stretch; min-height: 38px; border-radius: 4px; background: var(--primary); }
+
+/* 🧠 Takeaway panel in the book (livroOnline.js): floats over the right side
+   of the book so the page stays visible while the student writes. */
+.lo-take {
+  position: absolute; top: 64px; right: 14px; bottom: 84px; z-index: 30;
+  width: min(360px, calc(100% - 28px)); overflow-y: auto;
+  background: #fff; border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-lg);
+  padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px;
+}
+.lo-take[hidden] { display: none; }
+.lo-take-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.lo-take-head h3 { margin: 0; font-size: 1.2rem; }
+.lo-take-lead { margin: 0; font-size: 0.86rem; color: var(--ink-soft); }
+.lo-take-sec h4 { margin: 0 0 6px; font-size: 0.95rem; }
+.lo-take-list { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lo-take-list li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 10px; background: var(--bg); font-weight: 600; font-size: 0.92rem; }
+.lo-take-list li span { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.lo-take-list .lo-take-empty { background: transparent; color: var(--ink-faint); font-weight: 500; padding: 2px 0; }
+.lo-take-del { flex: none; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-soft); cursor: pointer; }
+.lo-take-del:hover { background: var(--primary-soft); color: var(--primary-dark); }
+.lo-take-add { display: flex; gap: 6px; }
+.lo-take-add input { flex: 1 1 auto; min-width: 0; font: inherit; font-size: 0.95rem; padding: 8px 10px; border: 2px solid var(--border); border-radius: 10px; }
+.lo-take-add input:focus-visible, .lo-take-del:focus-visible { outline: 3px solid var(--primary-dark); outline-offset: 1px; }
+.lo-take-btn.is-on { border-color: var(--primary); background: var(--primary-soft); }
+/* Today's Class: the "bring the takeaway" button and its note. */
+.sheet-take-btn { margin-left: 8px; border-color: var(--primary); color: var(--primary-dark); }
+.sheet-take-btn[hidden] { display: none; }
+.sheet-take-note { margin: 6px 0 0; font-size: 0.86rem; color: var(--ink-soft); }
+.sheet-take-note:empty { display: none; }
+.lo-take-btn { position: relative; }
+.lo-take-btn[data-count]::after {
+  content: attr(data-count); position: absolute; top: 2px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px;
+  border-radius: 999px; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 800; line-height: 18px; text-align: center;
+}
