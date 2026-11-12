@@ -2797,6 +2797,22 @@ const LivroOnline = (() => {
   // newer cloud copy of each bimester (same merge as the teacher's panel).
   // -> { words: [], pron: [], phrases: [], pages: [n] } or null (no book).
   async function takeawayFor(student, day) {
+    // A group class: gather what each member noted in their own book.
+    if (student && typeof isGroupStudent === 'function' && isGroupStudent(student.id) && typeof studentGroupId === 'function') {
+      const members = loadStudents().filter(s => studentGroupId(s.id) === student.id);
+      const parts = [await takeawayOne(student, day)];
+      for (const m of members) parts.push(Object.assign({}, await takeawayOne(m, day), { who: m }));
+      const out = { words: [], pron: [], phrases: [], pages: [], who: [] };
+      parts.filter(Boolean).forEach(p => {
+        TAKE_KINDS.forEach(k => (p[k] || []).forEach(v => { if (!out[k].some(x => x.toLowerCase() === v.toLowerCase())) out[k].push(v); }));
+        (p.pages || []).forEach(n => { if (!out.pages.includes(n)) out.pages.push(n); });
+        if (p.who && TAKE_KINDS.some(k => (p[k] || []).length)) out.who.push(String(p.who.name).replace(/\s*\(.*\)$/, ''));
+      });
+      return out;
+    }
+    return takeawayOne(student, day);
+  }
+  async function takeawayOne(student, day) {
     const book = student ? bookFor(student) : null;
     if (!book) return null;
     let ms;
