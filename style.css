@@ -10516,6 +10516,7 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
 .lo-take-btn[data-count]::after {
   content: attr(data-count); position: absolute; top: 2px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px;
   border-radius: 999px; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 800; line-height: 18px; text-align: center;
+}
 
 /* ==========================================================================
    SIDE MENU: lists that fit, and folding to icons (app.js sideMenuToggle).
