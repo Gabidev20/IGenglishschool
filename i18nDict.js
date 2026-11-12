@@ -123,6 +123,8 @@ IGLang.add({
  "Bimestre": "Two-month term",
  "Bimestre atual": "Current term",
  "Bimestre do livro": "Book term",
+ "Boa noite": "Good evening",
+ "Boa tarde": "Good afternoon",
  "Boa! Anotado": "Nice! Noted",
  "Boletim": "Report card",
  "Boletim (Progress Report": "Report card (Progress Report",
@@ -511,6 +513,8 @@ IGLang.add({
  "I want a pizza with two tomatoes and cheese, please!\" — o pedido é falado e desenhado; a criança monta a pizza": "I want a pizza with two tomatoes and cheese, please!\" — the order is spoken and drawn; the child builds the pizza",
  "IGenglishschool] As tabelas foram encontradas em": "IGenglishschool] The tables were found in",
  "Idade": "Age",
+ "Idioma": "Language",
+ "Idioma: Português": "Language: Português",
  "Idioma: Português (mudar para English": "Language: Portuguese (switch to English",
  "Imagem": "Image",
  "Imagem baixada. No WhatsApp, abra a conversa do aluno e anexe o arquivo": "Image downloaded. In WhatsApp, open the student's chat and attach the file",
@@ -1531,6 +1535,8 @@ IGLang.add({
  "que": "that",
  "quer que eu…? / devo…? (oferecer ajuda": "do you want me to…? / shall I…? (offering help",
  "questões dominadas": "questions mastered",
+ "registrada": "logged",
+ "registradas": "logged",
  "registrar a aula": "log the class",
  "responda à pergunta — \"How do you say 20 in English?\", \"How do you say lápis in English?\". Você escolhe o assunto: números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou qualquer tópico do currículo": "gates, answer a question — \"How do you say 20 in English?\", \"How do you say lápis in English?\". You pick the subject: numbers, school supplies, colors, animals, fruit, body, feelings, weather, house or any topic in the curriculum",
  "resposta": "answer",
@@ -2492,12 +2498,24 @@ IGLang.addPatterns([
 "$1's shortcuts"
 ],
 [
+"^Boa tarde, ([^·]{1,240}?)$",
+"Good afternoon, $1"
+],
+[
+"^Boa noite, ([^·]{1,240}?)$",
+"Good evening, $1"
+],
+[
 "^Pela idade((?:s|es|is)?)$",
 "By age$1"
 ],
 [
 "^Livro p\\. ([^·]{1,240}?)$",
 "Book p. $1"
+],
+[
+"^Registrar ([^·]{1,240}?)$",
+"Log $1"
 ],
 [
 "^Livro de ([^·]{1,240}?)$",
@@ -2510,6 +2528,10 @@ IGLang.addPatterns([
 [
 "^(\\S{1,30}) não carregou$",
 "$1 didn't load"
+],
+[
+"^Bom dia, ([^·]{1,240}?)$",
+"Good morning, $1"
 ],
 [
 "^em ([^·]{1,240}?) dias$",

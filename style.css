@@ -10679,3 +10679,98 @@ html.ig-hide-live #live-class { display: none !important; }
 .rp-missed { color: var(--ink-soft); font-size: .95rem; margin: 0 0 12px; }
 @media (max-width: 520px) { .rp-options { grid-template-columns: 1fr; } .rp-word { font-size: 1.6rem; } }
 .rp-say--big { width: 72px; height: 72px; font-size: 2rem; }
+
+/* ==========================================================================
+   SIDE MENU, polished: the fold tab on the menu's edge, the PT | EN switch,
+   and the group labels in English when the teacher picked EN.
+   ========================================================================== */
+
+/* 🌐 PT | EN — a pill with a gold thumb that slides to the language on. */
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;
+  padding: 6px 8px; border-radius: 12px;
+}
+.lang-switch .ls-ico { flex: none; opacity: .85; }
+.lang-switch .ls-label { font-size: .92rem; font-weight: 600; }
+.lang-switch .ls-code { display: none; }
+.ls-track {
+  position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; align-items: center;
+  width: 78px; height: 30px; padding: 3px; border-radius: 999px; margin-left: auto;
+  background: rgba(46, 30, 44, .10); box-shadow: inset 0 1px 2px rgba(0,0,0,.12);
+}
+.ls-thumb {
+  position: absolute; top: 3px; left: 3px; width: calc(50% - 3px); height: calc(100% - 6px);
+  border-radius: 999px; background: #EFC868; box-shadow: 0 2px 6px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.08);
+  transition: transform .28s cubic-bezier(.34, 1.4, .64, 1);
+}
+.lang-switch.is-en .ls-thumb { transform: translateX(100%); }
+.ls-opt {
+  position: relative; z-index: 1; text-align: center; font-size: .72rem; font-weight: 800; letter-spacing: .06em;
+  color: rgba(46, 30, 44, .55); transition: color .2s ease;
+}
+.lang-switch:not(.is-en) .ls-opt[data-l="pt"], .lang-switch.is-en .ls-opt[data-l="en"] { color: #2E1E2C; }
+.lang-switch:focus-visible { outline: 3px solid #EFC868; outline-offset: 2px; }
+html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: none; }
+/* Phones and tablets: just the pill, in the top bar. */
+@media (max-width: 1100px) {
+  .lang-switch .ls-ico, .lang-switch .ls-label { display: none; }
+  .lang-switch { padding: 4px; }
+}
+
+@media (min-width: 1101px) {
+  /* In the side menu: its own row above the teacher's card. */
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .lang-switch {
+    order: 9; width: 100%; margin-top: auto; padding: 8px 12px;
+    color: rgba(255, 255, 255, .86);
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .lang-switch:hover { background: var(--side-hover); color: #fff; }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions:has(.lang-switch) .teacher-slot { margin-top: 0; padding-top: 10px; }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions:has(.lang-switch) .teacher-slot[hidden] ~ .profile-switcher { margin-top: 10px; }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .ls-track { background: rgba(255, 255, 255, .12); box-shadow: inset 0 1px 2px rgba(0,0,0,.25); }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .ls-opt { color: rgba(255, 255, 255, .62); }
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .lang-switch:not(.is-en) .ls-opt[data-l="pt"],
+  html:not(.ig-student-mode):not(.ig-public-game) .header-actions .lang-switch.is-en .ls-opt[data-l="en"] { color: #2E1E2C; }
+
+  /* Folded menu: a small gold coin with the language on. */
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .header-actions .lang-switch { justify-content: center; padding: 8px 0; }
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .lang-switch .ls-ico,
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .lang-switch .ls-label,
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .lang-switch .ls-track { display: none; }
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .lang-switch .ls-code {
+    display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+    background: #EFC868; color: #2E1E2C; font-size: .74rem; font-weight: 800; letter-spacing: .05em;
+    box-shadow: 0 3px 10px rgba(0,0,0,.25);
+  }
+
+  /* ⟨ The fold tab: a round handle sitting on the menu's right edge. */
+  html:not(.ig-student-mode):not(.ig-public-game) .side-toggle {
+    position: fixed; top: 40px; left: calc(var(--side-w) - 15px); right: auto; z-index: 130;
+    display: grid; place-items: center; width: 30px; height: 30px; padding: 0;
+    border-radius: 50%; border: 1px solid rgba(111, 72, 99, .18);
+    background: #FFFFFF; color: #6F4863;
+    box-shadow: 0 4px 14px -2px rgba(46, 30, 44, .35), 0 0 0 4px rgba(255, 255, 255, .0);
+    opacity: .9;
+    transition: left .2s ease, transform .18s ease, box-shadow .18s ease, color .18s ease, opacity .18s ease;
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .site-header:hover .side-toggle,
+  html:not(.ig-student-mode):not(.ig-public-game) .side-toggle:focus-visible { opacity: 1; }
+  html:not(.ig-student-mode):not(.ig-public-game) .side-toggle:hover {
+    background: #FFFFFF; color: #CE2C46; transform: scale(1.12);
+    box-shadow: 0 6px 18px -2px rgba(46, 30, 44, .45), 0 0 0 4px rgba(239, 200, 104, .45);
+  }
+  html:not(.ig-student-mode):not(.ig-public-game) .side-toggle svg { width: 16px; height: 16px; transition: transform .25s ease; }
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .side-toggle { position: fixed; margin: 0; left: calc(var(--side-w) - 15px); }
+  html.side-collapsed:not(.ig-student-mode):not(.ig-public-game) .side-toggle svg { transform: rotate(180deg); }
+}
+@media (min-width: 1101px) and (prefers-reduced-motion: reduce) {
+  .side-toggle, .side-toggle svg, .ls-thumb { transition: none !important; }
+}
+
+/* Group labels in English when the teacher picked EN (CSS text can't be
+   reached by i18n.js, so it is swapped here). */
+@media (min-width: 1101px) {
+  html.ig-lang-en:not(.side-collapsed):not(.ig-student-mode):not(.ig-public-game) .main-nav::before { content: 'In class'; }
+  html.ig-lang-en:not(.side-collapsed):not(.ig-student-mode):not(.ig-public-game) .header-actions::before { content: 'Tools'; }
+  html.ig-lang-en:not(.side-collapsed):not(.ig-student-mode):not(.ig-public-game) .profile-switcher::before { content: 'Student in class'; }
+}
