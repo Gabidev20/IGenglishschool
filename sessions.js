@@ -164,6 +164,8 @@ function seatHomeworkRoot() {
   const sec = document.getElementById('homework');
   const slot = document.getElementById('cockpitHwBody');
   if (!r || !sec || !slot) return;
+  // Live Class hidden by this teacher (studentPicker.js): homework keeps its own section.
+  if (typeof igHideLive === 'function' && igHideLive()) { parkHomeworkRoot(); if (typeof renderHomework === 'function') { try { renderHomework(r); } catch (e) { /* ignore */ } } return; }
   slot.appendChild(r);
   sec.style.display = 'none';
   if (typeof renderHomework === 'function') { try { renderHomework(r); } catch (e) { /* ignore */ } }

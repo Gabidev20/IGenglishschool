@@ -225,6 +225,8 @@ function renderToday() {
   };
   const goWeek = () => goDash('week');
   const goLive = () => {
+    // Live Class hidden by this teacher: the student's shortcuts instead.
+    if (typeof igHideLive === 'function' && igHideLive() && typeof openStudentPicker === 'function') { openStudentPicker(true); return; }
     const sec = document.getElementById('live-class');
     if (sec) { if (sec.classList.contains('is-collapsed') && typeof setSectionCollapsed === 'function') setSectionCollapsed(sec, false); sec.scrollIntoView({ behavior: 'smooth' }); }
   };
