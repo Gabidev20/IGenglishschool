@@ -120,7 +120,7 @@ const GroupLink = (() => {
         created++; changed = true;
         if (groupProfile && typeof saveStudentProfile === 'function') saveStudentProfile(st.id, groupProfile);
         // Same book, games and slides settings as the group (teacher notes stay empty).
-        saWrite(st.id, { ...template, taught: saComputeTaught(st), fn: name, gn: group.name });
+        saWrite(st.id, { ...template, taught: saComputeTaught(st), fn: name, gn: group.name }, { fromGroup: true });
       } else if (st.name !== memberLabel(name, group)) {
         st.name = memberLabel(name, group);          // the group was renamed
         changed = true;
@@ -261,7 +261,8 @@ const GroupLink = (() => {
       holder.querySelector('#grpApply').addEventListener('click', async () => {
         if (!confirm('Copiar o livro, os jogos liberados e os slides do grupo para todos os membros? As escolhas individuais de livro/jogos serão substituídas.')) return;
         const { members: _m, taught: _t, fn: _f, gn: _g, ...template } = saRecord(group.id);
-        status(group).forEach(m => { if (m.student) saWrite(m.student.id, { ...template, taught: saComputeTaught(m.student) }); });
+        // "Aplicar a todos": the members follow the group again, own choices included.
+        status(group).forEach(m => { if (m.student) saWrite(m.student.id, { ...template, own: {}, taught: saComputeTaught(m.student) }, { fromGroup: true }); });
         paint(false);
         const btn = holder.querySelector('#grpApply'); if (btn) { btn.textContent = '✅ Aplicado!'; }
       });

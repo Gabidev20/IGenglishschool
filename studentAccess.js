@@ -71,10 +71,41 @@ function saRecord(studentId) {
     taught: r && Array.isArray(r.taught) ? r.taught : [],
   };
 }
-function saWrite(studentId, patch) {
+// What a group decides for everyone: the practice topics, the online book,
+// the class slides and the Speaking unit. A member follows the group unless
+// the teacher set that field for the member themself (`own`).
+const SA_GROUP_FIELDS = ['custom', 'book', 'slides', 'speakUnit'];
+function saWrite(studentId, patch, opts) {
+  const fromGroup = Boolean(opts && opts.fromGroup);
   const map = saLoadAll();
-  map[studentId] = { ...saRecord(studentId), ...patch };
+  const cur = saRecord(studentId);
+  const next = { ...cur, ...patch };
+  if (!fromGroup && typeof studentGroupId === 'function' && studentGroupId(studentId)) {
+    const own = { ...(cur.own || {}) };
+    SA_GROUP_FIELDS.forEach(f => { if (f in patch) own[f] = true; });
+    next.own = own;
+  }
+  map[studentId] = next;
   IGStore.setJSON(STUDENT_ACCESS_KEY, map);
+  if (!fromGroup && typeof isGroupStudent === 'function' && isGroupStudent(studentId)
+    && SA_GROUP_FIELDS.some(f => f in patch)) saMirrorGroup(studentId);
+}
+// The group's choices, copied to each member that has not chosen its own.
+function saMirrorGroup(groupId) {
+  if (window.IG_SHARE_MODE || typeof loadStudents !== 'function' || typeof studentGroupId !== 'function') return;
+  const g = saRecord(groupId);
+  loadStudents().filter(s => studentGroupId(s.id) === groupId).forEach(m => {
+    const r = saRecord(m.id);
+    const own = r.own || {};
+    const patch = {};
+    SA_GROUP_FIELDS.forEach(f => {
+      if (own[f] || !(f in g)) return;
+      if (JSON.stringify(r[f] === undefined ? null : r[f]) !== JSON.stringify(g[f] === undefined ? null : g[f])) patch[f] = g[f];
+    });
+    if (!Object.keys(patch).length) return;
+    if ('custom' in patch) patch.taught = saComputeTaught(m);
+    saWrite(m.id, patch, { fromGroup: true });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -112,6 +143,13 @@ function saComputeTaught(student) {
 // on the family's phone knows which grammar has already been covered.
 function saRefreshTaughtAll() {
   if (window.IG_SHARE_MODE || typeof loadStudents !== 'function') return;
+  // Groups first: their choices and class reviews reach the members.
+  if (typeof isGroupStudent === 'function') {
+    loadStudents().filter(s => isGroupStudent(s.id)).forEach(g => {
+      try { saMirrorGroup(g.id); } catch (e) { console.error(e); }
+      try { if (typeof rvMirrorGroup === 'function') rvMirrorGroup(g.id); } catch (e) { console.error(e); }
+    });
+  }
   const map = saLoadAll();
   let changed = false;
   loadStudents().forEach(s => {

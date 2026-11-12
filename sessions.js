@@ -843,7 +843,7 @@ function wireTakeawayPull(student, wordsEl) {
       if (fresh.length) { textEl.value = (textEl.value.trim() ? textEl.value.trim() + NL : '') + fresh.join(NL); added += fresh.length; }
     }
     note.textContent = added
-      ? `✅ ${added} ${added === 1 ? 'item trazido' : 'itens trazidos'} do livro (p. ${found.pages.join(', ')}). Confira e salve a aula.`
+      ? `✅ ${added} ${added === 1 ? 'item trazido' : 'itens trazidos'} do livro (p. ${found.pages.join(', ')}${found.who && found.who.length ? ` · ${found.who.join(', ')}` : ''}). Confira e salve a aula.`
       : 'Tudo isso já está na ficha.';
   });
 }

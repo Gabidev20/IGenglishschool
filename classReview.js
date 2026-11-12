@@ -22,6 +22,22 @@ function saveReview(studentId, review) {
   const map = loadReviews(studentId);
   map[review.sessionId] = review;
   IGStore.setJSON(reviewKey(studentId), map);
+  if (typeof isGroupStudent === 'function' && isGroupStudent(studentId)) rvMirrorGroup(studentId);
+}
+// Group classes: each member gets the group's reviews on their own link
+// (and their own practice schedule). Reviews only a member has are kept.
+function rvMirrorGroup(groupId) {
+  if (window.IG_SHARE_MODE || typeof loadStudents !== 'function' || typeof studentGroupId !== 'function') return;
+  const src = loadReviews(groupId);
+  if (!Object.keys(src).length) return;
+  loadStudents().filter(s => studentGroupId(s.id) === groupId).forEach(m => {
+    const mine = loadReviews(m.id);
+    let changed = false;
+    Object.keys(src).forEach(k => {
+      if (JSON.stringify(mine[k]) !== JSON.stringify(src[k])) { mine[k] = src[k]; changed = true; }
+    });
+    if (changed) IGStore.setJSON(reviewKey(m.id), mine);
+  });
 }
 // The review the child should see: the most recent class that has one.
 function latestReview(studentId) {
