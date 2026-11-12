@@ -54,13 +54,16 @@ function tdData() {
   const dow = DASH_DAYS.find(d => d.dow === today.getDay());
 
   // Today's classes, by start time.
-  const classes = (dow ? students.filter(s => dashScheduleFor(s.id).days.includes(dow.id)) : [])
-    .map(s => {
-      const start = tdMinutes(dashScheduleFor(s.id).time);
-      return { s, start, time: dashScheduleFor(s.id).time, logged: Boolean(dashSessionsByDate(s.id)[todayKey]), prepped: dashIsPrepped(s.id, todayKey) };
+  const todays = typeof agClassesOn === 'function' ? agClassesOn(todayKey)
+    : (dow ? students.filter(s => dashScheduleFor(s.id).days.includes(dow.id)) : []).map(s => ({ s, time: dashScheduleFor(s.id).time, dur: TD_CLASS_MIN }));
+  const classes = todays
+    .map(c => {
+      const s = c.s;
+      const start = tdMinutes(c.time);
+      return { s, start, time: c.time, dur: c.dur || TD_CLASS_MIN, logged: Boolean(dashSessionsByDate(s.id)[todayKey]), prepped: dashIsPrepped(s.id, todayKey) };
     })
     .sort((a, b) => (a.start == null) - (b.start == null) || (a.start || 0) - (b.start || 0));
-  const next = classes.find(c => c.start != null && c.start + TD_CLASS_MIN > nowMin && !c.logged)
+  const next = classes.find(c => c.start != null && c.start + c.dur > nowMin && !c.logged)
     || classes.find(c => !c.logged) || null;
 
   // Who is "active": a schedule, or a class in the last 30 days (their own or their group's).
@@ -116,7 +119,7 @@ function tdGreeting() {
 function tdTimelineHTML(d) {
   const timed = d.classes.filter(c => c.start != null);
   const first = Math.min(TD_FIRST_HOUR, ...timed.map(c => Math.floor(c.start / 60)));
-  const last = Math.max(TD_LAST_HOUR, ...timed.map(c => Math.ceil((c.start + TD_CLASS_MIN) / 60)));
+  const last = Math.max(TD_LAST_HOUR, ...timed.map(c => Math.ceil((c.start + (c.dur || TD_CLASS_MIN)) / 60)));
   const span = (last - first) * 60;
   const pos = min => ((min - first * 60) / span) * 100;
   const hours = [];
@@ -131,9 +134,9 @@ function tdTimelineHTML(d) {
     if (c.start >= groupEnd) closeGroup();
     let row = rowsEnd.findIndex(end => end <= c.start);
     if (row === -1) { row = rowsEnd.length; rowsEnd.push(0); }
-    rowsEnd[row] = c.start + TD_CLASS_MIN;
+    rowsEnd[row] = c.start + (c.dur || TD_CLASS_MIN);
     lane.set(c, row); group.push(c);
-    groupEnd = Math.max(groupEnd, c.start + TD_CLASS_MIN);
+    groupEnd = Math.max(groupEnd, c.start + (c.dur || TD_CLASS_MIN));
   });
   closeGroup();
   return `
@@ -141,7 +144,7 @@ function tdTimelineHTML(d) {
       ${nowIn ? `<span class="td-now" style="left:${pos(d.nowMin).toFixed(2)}%"><i>agora</i></span>` : ''}
       ${timed.map(c => `
         <button type="button" class="td-class${c === d.next ? ' is-next' : ''}${c.logged ? ' is-logged' : ''}${lanes.get(c) > 1 ? ' td-class--lane' : ''}"
-                style="left:${pos(c.start).toFixed(2)}%;width:${((TD_CLASS_MIN / span) * 100).toFixed(2)}%;--lane:${lane.get(c) || 0};--lanes:${lanes.get(c) || 1}"
+                style="left:${pos(c.start).toFixed(2)}%;width:${(((c.dur || TD_CLASS_MIN) / span) * 100).toFixed(2)}%;--lane:${lane.get(c) || 0};--lanes:${lanes.get(c) || 1}"
                 data-td-open="${tdEsc(c.s.id)}" title="${tdEsc(`${c.time} · ${c.s.name}`)}">
           <b>${tdEsc(c.time)}</b>
           <span>${tdEsc(c.s.name)}</span>

@@ -186,7 +186,8 @@ function refreshLiveClassCockpit() {
     try {
       if (typeof dashToday === 'function' && typeof DASH_DAYS !== 'undefined' && typeof dashScheduleFor === 'function') {
         const dow = DASH_DAYS.find(d => d.dow === dashToday().getDay());
-        if (dow) todayIds = all.filter(s => dashScheduleFor(s.id).days.includes(dow.id)).map(s => s.id);
+        if (typeof agClassesOn === 'function') todayIds = agClassesOn(dashKey(dashToday())).map(c => c.sid);
+        else if (dow) todayIds = all.filter(s => dashScheduleFor(s.id).days.includes(dow.id)).map(s => s.id);
       }
     } catch (e) { todayIds = []; }
     const ordered = all.slice().sort((a, b) => todayIds.includes(b.id) - todayIds.includes(a.id));
