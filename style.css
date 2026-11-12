@@ -10517,3 +10517,39 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
   content: attr(data-count); position: absolute; top: 2px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px;
   border-radius: 999px; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 800; line-height: 18px; text-align: center;
 }
+
+/* 🙈 Live Class hidden by this teacher + the student picker (studentPicker.js) */
+html.ig-hide-live .nav-link[data-section="live-class"],
+html.ig-hide-live #live-class { display: none !important; }
+.sp-overlay { position: fixed; inset: 0; z-index: 3000; background: rgba(30, 20, 30, .42); display: flex; align-items: flex-start; justify-content: center; padding: 9vh 16px 16px; }
+.sp-panel { width: min(560px, 100%); max-height: 78vh; display: flex; flex-direction: column; background: var(--surface, #fff); color: var(--ink); border-radius: 18px; box-shadow: 0 24px 60px -12px rgba(0,0,0,.45); overflow: hidden; }
+.sp-search { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border, #eee); }
+.sp-search input { flex: 1; border: 0; outline: 0; font: inherit; font-size: 1.1rem; background: transparent; color: inherit; min-width: 0; }
+.sp-search kbd { font: inherit; font-size: .72rem; padding: 2px 6px; border: 1px solid var(--border, #ddd); border-radius: 6px; color: var(--ink-faint); }
+.sp-list { overflow-y: auto; padding: 6px 8px 10px; }
+.sp-group { margin: 10px 8px 4px; font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-faint); }
+.sp-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 10px; border: 0; border-radius: 12px; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.sp-row:hover, .sp-row.is-cursor { background: var(--surface-alt, rgba(0,0,0,.05)); }
+.sp-row.is-cursor { box-shadow: inset 0 0 0 2px var(--primary); }
+.sp-av { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 1.15rem; }
+.sp-av--big { flex-basis: 48px; width: 48px; height: 48px; font-size: 1.5rem; }
+.sp-name { flex: 1; min-width: 0; display: flex; flex-direction: column; font-weight: 700; }
+.sp-name small { font-weight: 500; color: var(--ink-faint); font-size: .8rem; }
+.sp-when { font-size: .8rem; font-weight: 700; color: var(--primary); white-space: nowrap; }
+.sp-check { color: var(--primary); font-weight: 900; }
+.sp-empty { padding: 18px; text-align: center; color: var(--ink-faint); }
+.sp-foot { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 10px 16px; border-top: 1px solid var(--border, #eee); background: var(--surface-alt, rgba(0,0,0,.02)); }
+.sp-link { border: 0; background: none; padding: 4px 0; font: inherit; font-size: .88rem; font-weight: 700; color: var(--ink-soft); cursor: pointer; }
+.sp-link:hover { color: var(--primary); }
+.sp-link--right { margin-left: auto; }
+.sp-who { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid var(--border, #eee); }
+.sp-who div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.sp-who b { font-size: 1.15rem; }
+.sp-who small { color: var(--ink-faint); }
+.sp-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 14px 16px; overflow-y: auto; }
+.sp-act { display: grid; grid-template-columns: 30px 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border, #e6e6e6); background: var(--surface, #fff); font: inherit; font-size: 1.25rem; color: inherit; text-decoration: none; cursor: pointer; }
+.sp-act b { font-size: .95rem; grid-column: 2; grid-row: 1; }
+.sp-act small { font-size: .78rem; color: var(--ink-faint); grid-column: 2; grid-row: 2; }
+.sp-act:hover, .sp-act:focus-visible { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent); }
+.sp-act--main { grid-column: 1 / -1; background: color-mix(in srgb, var(--primary) 8%, var(--surface, #fff)); border-color: color-mix(in srgb, var(--primary) 35%, transparent); }
+@media (max-width: 520px) { .sp-actions { grid-template-columns: 1fr; } .sp-overlay { padding-top: 4vh; } }
