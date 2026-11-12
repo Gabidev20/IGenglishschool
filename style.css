@@ -10517,3 +10517,50 @@ html.ig-grown .wordmatch-line { stroke: #2F7D5B; stroke-width: 2; filter: none; 
   content: attr(data-count); position: absolute; top: 2px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px;
   border-radius: 999px; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 800; line-height: 18px; text-align: center;
 }
+
+/* 🔁 Class review practice (reviewPractice.js) */
+.rv-practice-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 0 10px; padding: 8px 12px; border-radius: var(--radius-md, 12px); background: var(--surface-alt, rgba(0,0,0,.04)); font-size: .9rem; color: var(--ink-soft); }
+.rv-practice-bar .rv-link { font-weight: 800; }
+.rv-word--phrase { font-size: 1.35rem; line-height: 1.3; }
+.rv-word--small.rv-word--phrase { font-size: 1.1rem; }
+.rv-memory { margin: 14px 0 0; padding: 10px 12px; border-radius: var(--radius-md, 12px); background: var(--surface-alt, rgba(0,0,0,.04)); font-size: .92rem; line-height: 1.45; }
+.rv-memory small { display: block; color: var(--ink-faint); margin-top: 4px; }
+.rv-box { display: inline-flex; gap: 3px; align-items: center; margin-left: auto; }
+.rv-box i { width: 9px; height: 9px; border-radius: 50%; background: var(--border, #ddd); }
+.rv-box i.on { background: var(--primary); }
+.rv-box--new { font-size: .75rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .04em; }
+
+.rp-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.rp-bar { flex: 1; height: 8px; border-radius: 99px; background: var(--border, #e5e5e5); overflow: hidden; }
+.rp-bar i { display: block; height: 100%; background: var(--primary); border-radius: 99px; transition: width .3s ease; }
+.rp-count { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: .9rem; }
+.rp-ex { text-align: center; }
+.rp-q { margin: 0 0 8px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; font-size: .8rem; }
+.rp-word { font-family: var(--font-display); font-weight: 800; font-size: 2rem; margin: 4px 0 14px; color: var(--ink); display: flex; justify-content: center; align-items: center; gap: 8px; }
+.rp-word--pt { font-size: 1.6rem; }
+.rp-say { border: 1px solid var(--border); background: var(--surface, #fff); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; font-size: 1rem; }
+.rp-pic { display: flex; justify-content: center; margin: 4px 0 12px; }
+.rp-sentence { font-size: 1.25rem; line-height: 1.5; margin: 6px auto 14px; max-width: 34em; color: var(--ink); }
+.rp-gap { display: inline-block; min-width: 4.5em; border-bottom: 3px solid var(--primary); color: transparent; }
+.rp-hint { font-size: .9rem; color: var(--ink-faint); margin: 0 0 10px; }
+.rp-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 520px; margin: 0 auto; }
+.rp-opt { padding: 14px 12px; border-radius: var(--radius-md, 12px); border: 2px solid var(--border); background: var(--surface, #fff); font: inherit; font-weight: 700; font-size: 1.05rem; cursor: pointer; color: var(--ink); }
+.rp-opt:hover:not(:disabled) { border-color: var(--primary); }
+.rp-opt.ok, .rp-type input.ok { border-color: #2E9E5B; background: #E7F6EC; }
+.rp-opt.no, .rp-type input.no { border-color: #D64545; background: #FBEAEA; }
+.rp-type { display: flex; gap: 8px; justify-content: center; max-width: 420px; margin: 0 auto; }
+.rp-type input { flex: 1; min-width: 0; padding: 12px 14px; border-radius: var(--radius-md, 12px); border: 2px solid var(--border); font: inherit; font-size: 1.1rem; }
+.rp-built { min-height: 54px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; padding: 10px; margin: 0 auto 12px; max-width: 560px; border: 2px dashed var(--border); border-radius: var(--radius-md, 12px); font-size: 1.15rem; font-weight: 700; }
+.rp-built span { padding: 4px 8px; border-radius: 8px; background: var(--surface-alt, rgba(0,0,0,.05)); }
+.rp-tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 560px; margin: 0 auto 12px; }
+.rp-tile { padding: 8px 12px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface, #fff); font: inherit; font-weight: 700; cursor: pointer; }
+.rp-tile:hover { border-color: var(--primary); }
+.rp-order-actions { display: flex; justify-content: center; gap: 8px; }
+.rp-fb { margin: 16px auto 0; max-width: 560px; padding: 12px 14px; border-radius: var(--radius-md, 12px); text-align: center; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.rp-fb.ok { background: #E7F6EC; }
+.rp-fb.no { background: #FBEAEA; }
+.rp-fb-title { margin: 0; font-weight: 800; font-size: 1.05rem; }
+.rp-fb-note { margin: 0; font-size: .85rem; color: var(--ink-soft); }
+.rp-missed { color: var(--ink-soft); font-size: .95rem; margin: 0 0 12px; }
+@media (max-width: 520px) { .rp-options { grid-template-columns: 1fr; } .rp-word { font-size: 1.6rem; } }
+.rp-say--big { width: 72px; height: 72px; font-size: 2rem; }
