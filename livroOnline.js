@@ -263,15 +263,43 @@ const LivroOnline = (() => {
       ...(p.score && typeof p.score === 'object' ? { score: { ok: num(p.score.ok, 0), total: num(p.score.total, 0) } } : {}),
       ...(p.ixDone ? { ixDone: true } : {}),
       ...(p.xp ? { xp: num(p.xp, 0) } : {}),
+      ...(takeCount(p.take) ? { take: normTake(p.take) } : {}),
     };
   }
+
+  // TAKEAWAY — what the student keeps from the class, written on the page she
+  // is on (🧠 in the side rail): new words, words to improve the
+  // pronunciation of, and longer sentences. It rides on the page record, so it
+  // syncs like the page between the student's link and the teacher's class.
+  // Each item carries the day it was written ('YYYY-MM-DD'), which is how
+  // Today's Class picks up the takeaway of THAT class (takeawayFor, below).
+  //   take: { words: [{ v, at }], pron: [{ v, at }], phrases: [{ v, at }] }
+  const TAKE_KINDS = ['words', 'pron', 'phrases'];
+  const TAKE_MAX = 40;
+  function normTake(t) {
+    const out = {};
+    TAKE_KINDS.forEach(k => {
+      out[k] = (Array.isArray(t && t[k]) ? t[k] : [])
+        .filter(x => x && typeof x.v === 'string' && x.v.trim())
+        .slice(0, TAKE_MAX)
+        .map(x => ({ v: x.v.trim().slice(0, k === 'phrases' ? 300 : 80), at: /^\d{4}-\d{2}-\d{2}$/.test(x.at) ? x.at : '' }));
+    });
+    return out;
+  }
+  function takeCount(t) {
+    return t && typeof t === 'object' ? TAKE_KINDS.reduce((n, k) => n + (Array.isArray(t[k]) ? t[k].length : 0), 0) : 0;
+  }
+  const dayKey = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
   function readLocal(sid, id) {
     try { const raw = localStorage.getItem(lsKey(sid, id)); return raw ? normalize(JSON.parse(raw)) : null; } catch (e) { return null; }
   }
   function writeLocal(sid, id, page) {
     try { localStorage.setItem(lsKey(sid, id), JSON.stringify(page)); return true; } catch (e) { return false; }
   }
-  const hasWork = p => Boolean(p && (p.strokes.length || p.texts.length || p.stickers.length));
+  const hasWork = p => Boolean(p && (p.strokes.length || p.texts.length || p.stickers.length || takeCount(p.take)));
   const contentPages = m => m.pages.filter(p => p.kind !== 'stickers');
 
   // -------------------------------------------------------------------------
@@ -737,7 +765,25 @@ const LivroOnline = (() => {
         <div class="lo-opts" data-ref="opts"></div>
         <div class="lo-tools" role="toolbar" aria-label="Ferramentas">
           ${TOOLS.map(t => `<button type="button" class="lo-tool" data-tool="${t.id}" aria-pressed="false"><span>${t.icon}</span><small>${t.label}</small></button>`).join('')}
-        </div>`}
+          <button type="button" class="lo-tool lo-take-btn" data-take="toggle" aria-pressed="false" aria-controls="loTake"
+                  title="Takeaway: new words, pronunciation and sentences from this class"><span>🧠</span><small>Takeaway</small></button>
+        </div>
+        <section class="lo-take" id="loTake" data-ref="take" hidden aria-label="Takeaway">
+          <div class="lo-take-head">
+            <h3>🧠 Takeaway</h3>
+            <button type="button" class="lo-chip" data-take="close" aria-label="Fechar / Close">✕</button>
+          </div>
+          <p class="lo-take-lead" data-ref="takelead"></p>
+          ${[['words', '🆕', 'New words', 'word or expression'], ['pron', '🗣️', 'Pronunciation', 'a word to say better'], ['phrases', '💬', 'Sentences', 'a longer sentence from the class']].map(([k, icon, label, ph]) => `
+          <div class="lo-take-sec">
+            <h4>${icon} ${label}</h4>
+            <ul class="lo-take-list" data-take-list="${k}"></ul>
+            <form class="lo-take-add" data-take-form="${k}">
+              <input type="text" maxlength="${k === 'phrases' ? 300 : 80}" placeholder="${ph}" aria-label="${label}" autocomplete="off" />
+              <button type="submit" class="lo-chip lo-chip--ok" aria-label="Add">＋</button>
+            </form>
+          </div>`).join('')}
+        </section>`}
       <div class="lo-nav">
         <button type="button" class="lo-navbtn" data-a="prev" aria-label="Anterior">◀</button>
         <div class="lo-strip" data-ref="strip"></div>
@@ -1010,7 +1056,7 @@ const LivroOnline = (() => {
       }
       over.innerHTML = html;
     }
-    function render() { renderInk(); renderOver(); renderIx(); paintChrome(); }
+    function render() { renderInk(); renderOver(); renderIx(); paintChrome(); paintTake(); }
 
     function paintChrome() {
       const partLabel = part === 'top' ? ' · parte de cima' : part === 'bottom' ? ' · parte de baixo' : '';
@@ -2028,6 +2074,68 @@ const LivroOnline = (() => {
     ['gesturestart', 'gesturechange'].forEach(t => stage.addEventListener(t, e => e.preventDefault()));
     stage.addEventListener('contextmenu', e => e.preventDefault());
 
+    // ---- 🧠 takeaway (on the page that is open) ---------------------------------
+    const takePanel = root.querySelector('[data-ref="take"]');
+    const takeBtn = root.querySelector('[data-take="toggle"]');
+    // Called by render() too (page change, undo, the other side's update), so
+    // it looks the elements up itself instead of using the consts above.
+    function paintTake() {
+      const takePanel = root.querySelector('[data-ref="take"]');
+      const takeBtn = root.querySelector('[data-take="toggle"]');
+      // The count as a small badge, so the label stays whole in the narrow rail.
+      if (takeBtn) { const n = takeCount(data.take); if (n) takeBtn.dataset.count = n; else delete takeBtn.dataset.count; }
+      if (!takePanel || takePanel.hidden) return;
+      const t = normTake(data.take);
+      const say = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
+      takePanel.querySelector('[data-ref="takelead"]').textContent = say(
+        `Anote o que você aprendeu nesta aula (p. ${pg.n}). A teacher recebe junto com a ficha da aula.`,
+        `Write down what you learned in this class (p. ${pg.n}). Your teacher gets it with the class notes.`);
+      TAKE_KINDS.forEach(k => {
+        const ul = takePanel.querySelector(`[data-take-list="${k}"]`);
+        ul.innerHTML = t[k].map((x, i) => `
+          <li><span>${esc(x.v)}</span><button type="button" class="lo-take-del" data-take-del="${k}:${i}" aria-label="Remove ${esc(x.v)}">✕</button></li>`).join('')
+          || `<li class="lo-take-empty">${say('Nada ainda.', 'Nothing yet.')}</li>`;
+      });
+    }
+    function editTake(fn) {
+      remember();
+      const t = normTake(data.take);
+      fn(t);
+      if (takeCount(t)) data.take = t; else delete data.take;
+      changed();
+      paintTake();
+    }
+    if (takePanel) {
+      takePanel.addEventListener('submit', e => {
+        const form = e.target.closest('[data-take-form]');
+        if (!form) return;
+        e.preventDefault();
+        const input = form.querySelector('input');
+        const v = input.value.trim();
+        if (!v) return;
+        const k = form.dataset.takeForm;
+        editTake(t => { if (!t[k].some(x => x.v.toLowerCase() === v.toLowerCase())) t[k].push({ v, at: dayKey() }); });
+        input.value = '';
+        input.focus();
+      });
+      takePanel.addEventListener('click', e => {
+        const del = e.target.closest('[data-take-del]');
+        if (del) {
+          const [k, i] = del.dataset.takeDel.split(':');
+          editTake(t => { t[k].splice(Number(i), 1); });
+          return;
+        }
+        if (e.target.closest('[data-take="close"]')) { takePanel.hidden = true; if (takeBtn) takeBtn.setAttribute('aria-pressed', 'false'); }
+      });
+    }
+    if (takeBtn) takeBtn.addEventListener('click', () => {
+      takePanel.hidden = !takePanel.hidden;
+      takeBtn.setAttribute('aria-pressed', takePanel.hidden ? 'false' : 'true');
+      takeBtn.classList.toggle('is-on', !takePanel.hidden);
+      paintTake();
+      if (!takePanel.hidden) { const first = takePanel.querySelector('input'); if (first) first.focus(); }
+    });
+
     // ---- buttons ------------------------------------------------------------------
     root.addEventListener('click', e => {
       const pb = e.target.closest('[data-photo]');
@@ -2684,8 +2792,34 @@ const LivroOnline = (() => {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireTeacherButtons);
   else wireTeacherButtons();
 
+  // Today's Class: the takeaway the student wrote in her book on `day`
+  // ('YYYY-MM-DD'; empty = every day), from every page, after taking the
+  // newer cloud copy of each bimester (same merge as the teacher's panel).
+  // -> { words: [], pron: [], phrases: [], pages: [n] } or null (no book).
+  async function takeawayFor(student, day) {
+    const book = student ? bookFor(student) : null;
+    if (!book) return null;
+    let ms;
+    try { ms = await loadBook(book); } catch (e) { return null; }
+    if (!Array.isArray(ms)) return null;
+    for (const m of ms) { try { await TeacherSync.open(student.id, book, m); } catch (e) { /* stay with the local copy */ } }
+    const out = { words: [], pron: [], phrases: [], pages: [] };
+    ms.forEach(m => m.pages.forEach(p => {
+      const page = readLocal(student.id, pid(m, p.n));
+      if (!page || !page.take) return;
+      let hit = false;
+      TAKE_KINDS.forEach(k => page.take[k].forEach(x => {
+        if (day && x.at !== day) return;
+        if (!out[k].some(v => v.toLowerCase() === x.v.toLowerCase())) out[k].push(x.v);
+        hit = true;
+      }));
+      if (hit && !out.pages.includes(p.n)) out.pages.push(p.n);
+    }));
+    return out;
+  }
+
   return {
-    resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest,
+    resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest, takeawayFor,
     // Homework: open the student's book right on the pages the teacher set.
     // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }
     openHomeworkPages: (student, hw) => openBookHome(student, { teacher: !window.IG_SHARE_MODE, homework: hw }),
