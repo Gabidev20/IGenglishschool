@@ -136,9 +136,10 @@ const ciSent = () => { const v = IGStore.getJSON(CI_SENT_KEY, {}); return v && t
 function ciWeekFacts(st) {
   const since = Date.now() - 7 * ciDay;
   const log = (typeof ldLoadLog === 'function' ? ldLoadLog(st.id) : []).filter(a => new Date(a.t).getTime() >= since);
-  const days = new Set(log.map(a => String(a.t).slice(0, 10))).size;
-  const right = log.filter(a => a.ok).length;
-  const pct = log.length ? Math.round(right / log.length * 100) : null;
+  const days = new Set(log.map(a => (typeof ldDayKey === 'function' ? ldDayKey(a.t) : String(a.t).slice(0, 10)))).size;
+  const answers = log.filter(a => a.kind !== 'visit' && a.kind !== 'play');
+  const right = answers.filter(a => a.ok).length;
+  const pct = answers.length ? Math.round(right / answers.length * 100) : null;
   const bank = typeof ldLoadBank === 'function' ? Object.values(ldLoadBank(st.id)) : [];
   const word = c => c && c.item && (c.item.kind === 'vocab' || c.item.kind === 'word');
   const recent = c => new Date(c.last || c.added || 0).getTime() >= since;
@@ -150,7 +151,7 @@ function ciWeekFacts(st) {
   const hwWeek = hw.filter(h => new Date(h.sentAt || h.createdAt || 0).getTime() >= since - 7 * ciDay);
   const hwDone = hwWeek.filter(h => typeof hwIsDone === 'function' && hwIsDone(h)).length;
   const progress = typeof loadProgress === 'function' ? loadProgress(st.id) : {};
-  return { log: log.length, days, pct, missing, learned, hwTotal: hwWeek.length, hwDone, stars: progress.stars || 0 };
+  return { log: answers.length || log.filter(a => a.kind === 'play').length, days, pct, missing, learned, hwTotal: hwWeek.length, hwDone, stars: progress.stars || 0 };
 }
 
 function ciReportText(st, f, teacherName) {

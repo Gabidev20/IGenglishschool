@@ -88,10 +88,13 @@ function paintStudentProgress(mount, student) {
 
     <div class="sp-stats">
       ${spStatCard('🔥', stats ? stats.streak : 0, stats && stats.streak === 1 ? say('dia seguido', 'day in a row') : say('dias seguidos', 'days in a row'), stats && stats.streak >= 3 ? 'hot' : '')}
+      ${spStatCard('🗓️', stats ? stats.activeDays : 0, stats && stats.activeDays === 1 ? say('dia na semana', 'day this week') : say('dias na semana', 'days this week'))}
       ${spStatCard('✅', stats ? `${stats.weekAccuracy}%` : '0%', say('acerto na semana', 'right this week'))}
-      ${spStatCard('🎯', stats ? stats.weekTotal : 0, say('exercícios na semana', 'exercises this week'))}
+      ${spStatCard('🎯', stats ? stats.weekTotal : 0, say('respostas na semana', 'answers this week'))}
       ${spStatCard('🧠', stats ? stats.bank.mastered : 0, say('questões dominadas', 'questions mastered'))}
     </div>
+
+    ${spActivityHTML(student.id, say, grownLook)}
 
     <div class="sp-panel">
       <h4 class="watch-h">📅 ${say('Minha semana', 'My week')}</h4>
@@ -179,4 +182,35 @@ function paintStudentProgress(mount, student) {
       if (hw) openHomeworkRunner(hw, () => paintStudentProgress(mount, student));
     });
   });
+}
+
+// 🗓️ The days the student came in, and what they did at what time.
+function spActivityHTML(studentId, say, english) {
+  const days = typeof ldActivityDays === 'function' ? ldActivityDays(studentId, 7) : [];
+  const hhmm = t => new Date(t).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const dayName = d => {
+    const key = typeof ldDayKey === 'function' ? ldDayKey(d) : '';
+    const today = typeof ldToday === 'function' ? ldToday() : '';
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    if (key === today) return say('Hoje', 'Today');
+    if (typeof ldDayKey === 'function' && key === ldDayKey(y)) return say('Ontem', 'Yesterday');
+    return d.toLocaleDateString(english ? 'en-US' : 'pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
+  };
+  const line = it => {
+    if (it.kind === 'visit') return `<li class="sp-act-visit"><time>${hhmm(it.t)}</time> 🔗 ${say('Entrou no link', 'Opened the link')}</li>`;
+    const what = spEsc(it.text || say('Jogo', 'Game'));
+    const tally = it.n ? ` <small>${it.n} ${say(it.n === 1 ? 'resposta' : 'respostas', it.n === 1 ? 'answer' : 'answers')}, ${it.right} ${say(it.right === 1 ? 'certa' : 'certas', 'right')}</small>` : '';
+    const stars = it.stars ? ` <small>${'⭐'.repeat(Math.min(5, it.stars))}</small>` : '';
+    const time = it.end && hhmm(it.end) !== hhmm(it.t) ? `${hhmm(it.t)}–${hhmm(it.end)}` : hhmm(it.t);
+    return `<li><time>${time}</time> ${it.kind === 'play' ? '🎮' : '✏️'} <b>${what}</b>${tally}${stars}</li>`;
+  };
+  return `
+    <div class="sp-panel sp-activity">
+      <h4 class="watch-h">🗓️ ${say('Quando eu estudei', 'When I practiced')}</h4>
+      ${days.length ? days.map(d => `
+        <div class="sp-act-day">
+          <h5>${dayName(d.date)}</h5>
+          <ul>${d.items.slice().reverse().map(line).join('')}</ul>
+        </div>`).join('') : `<p class="sp-next">${say('Ainda não tem nada aqui. Jogue um jogo e ele aparece!', 'Nothing here yet. Play a game and it will show up!')}</p>`}
+    </div>`;
 }

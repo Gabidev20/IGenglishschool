@@ -17,6 +17,8 @@ const MS_KINDS = ['vocab', 'sentence'];
 // Called by the games. `word` is a word-bank entry ({ en, pt, image,
 // emoji }) or a plain sentence string. A wrong answer adds (or drops) the
 // card to box 0; a right one only helps a card that is already there.
+const IG_MISS_BOTH = ['Colors', 'Hangman', 'Match-up', 'Balloon Pop', 'Unscramble', 'Jump & Learn', 'Talking Memory',
+  'Say it!', 'Quick Quiz', 'Listen & Repeat'];
 function igMiss(word, ok, game) {
   try {
     if (!word || typeof ldLoadBank !== 'function') return;
@@ -25,6 +27,13 @@ function igMiss(word, ok, game) {
     const isText = typeof word === 'string';
     let en = String(isText ? word : word.en || '').trim();
     if (!en) return;
+    // Every answer in a game also goes in the activity log ("Meu progresso").
+    // (Only games that report the right answers too: the others tell us
+    // their mistakes only, and would look like 0% right.)
+    if (typeof ldRecord === 'function' && IG_MISS_BOTH.indexOf(game) !== -1) {
+      ldRecord({ kind: 'word', prompt: en, correct: en, topic: game || (typeof ldCurrentGameName === 'function' ? ldCurrentGameName() : '') },
+        ok, { studentId, source: 'game', skipBank: true });
+    }
     if (!isText) {
       const m = /\bis for (.+)$/i.exec(en);           // "A is for Apple" → apple
       if (m) en = m[1].trim();

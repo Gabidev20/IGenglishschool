@@ -514,6 +514,8 @@ const ShareMode = (() => {
     }
 
     watchWrites();
+    // The day and time the student came in (not the teacher's preview).
+    if (!/[#&]previa=1/.test(window.location.hash || '') && typeof ldNoteActivity === 'function') ldNoteActivity('visit', 'Opened the link');
     renderStudentHome(shell, studentId);
     if (cloud) watchTeacher(shell);
   }

@@ -324,6 +324,8 @@ function awardProgress(xp, stars) {
   // Only the XP is left to log — double-counting the stars here is exactly
   // the bug that made the Scoreboard's stars invisible in "Today's Class".
   if (typeof recordSessionProgress === 'function') recordSessionProgress(id, xp || 0, 0);
+  // "Meu progresso" shows which game, on which day, at what time.
+  if (typeof ldNoteActivity === 'function') ldNoteActivity('play', ldCurrentGameName(), stars ? { stars } : null);
 }
 
 // Age-based split used by the Live Lesson cockpit's routine bar: ages 3-8

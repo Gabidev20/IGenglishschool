@@ -12,7 +12,7 @@
 
 const LD_LOG_PREFIX = 'log_';      // studentId -> [attempt]
 const LD_BANK_PREFIX = 'bank_';    // studentId -> { key: card }
-const LD_LOG_MAX = 1200;           // a year of daily practice, then it rolls
+const LD_LOG_MAX = 4000;           // months of daily games, then it rolls
 
 // Leitner boxes: a card climbs one box per correct answer and falls to the
 // bottom on a wrong one. The gaps are the standard doubling ladder.
@@ -23,7 +23,15 @@ function ldToday() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
-function ldDayKey(iso) { return String(iso || '').slice(0, 10); }
+function ldDayKey(iso) {
+  const d = iso instanceof Date ? iso : new Date(iso);
+  if (isNaN(d)) return String(iso || '').slice(0, 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+// Entering the link and finishing a game are logged too (for the days and
+// times on "Meu progresso"), but they are not exercises: no right or wrong.
+const LD_NOT_EXERCISE = ['visit', 'play'];
+const ldIsExercise = a => LD_NOT_EXERCISE.indexOf(a.kind) === -1;
 function ldPlusDays(days) {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
@@ -174,9 +182,9 @@ function ldStreak(log) {
   let streak = 0;
   const d = new Date();
   // Today not being there yet does not break a streak — the day is not over.
-  if (!days.has(ldDayKey(d.toISOString()))) d.setDate(d.getDate() - 1);
+  if (!days.has(ldDayKey(d))) d.setDate(d.getDate() - 1);
   for (;;) {
-    const key = ldDayKey(d.toISOString());
+    const key = ldDayKey(d);
     if (!days.has(key)) break;
     streak++;
     d.setDate(d.getDate() - 1);
@@ -185,7 +193,8 @@ function ldStreak(log) {
 }
 
 function ldStats(studentId) {
-  const log = ldLoadLog(studentId);
+  const all = ldLoadLog(studentId);
+  const log = all.filter(ldIsExercise);
   const bank = ldBankSummary(studentId);
   const today = ldToday();
   const weekAgo = Date.now() - 6 * 864e5;
@@ -196,7 +205,7 @@ function ldStats(studentId) {
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const key = ldDayKey(d.toISOString());
+    const key = ldDayKey(d);
     const day = log.filter(a => ldDayKey(a.t) === key);
     week.push({
       key,
@@ -222,7 +231,8 @@ function ldStats(studentId) {
     weekRight: recent.filter(a => a.ok).length,
     accuracy: log.length ? Math.round((log.filter(a => a.ok).length / log.length) * 100) : 0,
     weekAccuracy: recent.length ? Math.round((recent.filter(a => a.ok).length / recent.length) * 100) : 0,
-    streak: ldStreak(log),
+    streak: ldStreak(all),
+    activeDays: new Set(all.filter(a => new Date(a.t).getTime() >= weekAgo - 864e5).map(a => ldDayKey(a.t))).size,
     week,
     byTopic,
     bank,
@@ -263,4 +273,64 @@ function openReviewSession(studentId) {
     return;
   }
   openExamRunner(exam, { studentId: id, source: 'review' });
+}
+
+// ---------------------------------------------------------------------------
+// ACTIVITY — when the student came in and what they played
+// ---------------------------------------------------------------------------
+// The game on screen now: its title, plus the chosen tab (Balloon Pop…).
+function ldCurrentGameName() {
+  const title = document.querySelector('.modal #modalTitle, #modalTitle');
+  const tab = document.querySelector('.modal .game-pick-btn.active');
+  const clean = s => String(s || '').replace(/\s+/g, ' ').trim();
+  let name = clean(title && title.textContent);
+  const t = clean(tab && tab.textContent);
+  if (t && t !== name) name = name ? `${name} · ${t}` : t;
+  return name.slice(0, 80);
+}
+
+// kind 'visit' (opened the link) or 'play' (finished a game).
+function ldNoteActivity(kind, label, extra) {
+  try {
+    const studentId = typeof getActiveStudentId === 'function' ? getActiveStudentId() : null;
+    if (!studentId) return;
+    const log = ldLoadLog(studentId);
+    const now = Date.now();
+    // The same thing again a moment later is the same visit / the same game.
+    const gap = kind === 'visit' ? 30 * 60e3 : 60e3;
+    for (let i = log.length - 1; i >= 0 && now - new Date(log[i].t).getTime() < gap; i--) {
+      if (log[i].kind === kind && log[i].label === (label || '')) return;
+    }
+    log.push({ t: new Date(now).toISOString(), ok: true, kind, topic: '', source: 'activity', label: String(label || '').slice(0, 140), ...(extra || {}) });
+    ldSaveLog(studentId, log);
+  } catch (e) { /* the log must never break a game */ }
+}
+
+// The last days with something done, newest first: [{ key, date, items }]
+// where items are { t, icon, text } — answers in a row from the same game
+// become one line ("Balloon Pop · 8 answers, 6 right").
+function ldActivityDays(studentId, maxDays) {
+  const log = ldLoadLog(studentId).slice().sort((a, b) => new Date(a.t) - new Date(b.t));
+  const byDay = new Map();
+  log.forEach(a => {
+    const key = ldDayKey(a.t);
+    if (!byDay.has(key)) byDay.set(key, []);
+    const items = byDay.get(key);
+    const last = items[items.length - 1];
+    if (a.kind === 'visit') { items.push({ t: a.t, kind: 'visit', text: a.label }); return; }
+    if (a.kind === 'play') {
+      // The answers just before belong to this game: fold them in.
+      if (last && last.kind === 'answers' && new Date(a.t) - new Date(last.end) < 15 * 60e3) {
+        last.kind = 'play'; last.text = a.label || last.text; last.end = a.t; last.stars = a.stars;
+      } else items.push({ t: a.t, end: a.t, kind: 'play', text: a.label, n: 0, right: 0, stars: a.stars });
+      return;
+    }
+    const topic = a.topic || a.source || '';
+    if (last && last.kind === 'answers' && last.topic === topic && new Date(a.t) - new Date(last.end) < 15 * 60e3) {
+      last.n++; if (a.ok) last.right++; last.end = a.t; return;
+    }
+    items.push({ t: a.t, end: a.t, kind: 'answers', topic, text: topic, n: 1, right: a.ok ? 1 : 0 });
+  });
+  return [...byDay.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1)).slice(0, maxDays || 7)
+    .map(([key, items]) => ({ key, date: new Date(items[0].t), items }));
 }
