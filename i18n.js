@@ -123,6 +123,18 @@ const IGLang = (() => {
       const core = lookup(m[2]);
       if (core != null) return m[1] + core + m[3];
     }
+    // "📅 aula hoje às 18:00", ": 0 de 18 …": cut only the emoji /
+    // punctuation in front, keep the numbers and brackets.
+    const lead = t.match(/^[^\p{L}\d]*/u)[0];
+    if (lead && lead.length < t.length) {
+      const rest = lookup(t.slice(lead.length));
+      if (rest != null) return lead + rest;
+      const m2 = t.slice(lead.length).match(EDGE);
+      if (m2 && m2[3]) {
+        const head = lookup(m2[1] + m2[2]);
+        if (head != null) return lead + head + m2[3];
+      }
+    }
     return null;
   }
   function translate(s) {

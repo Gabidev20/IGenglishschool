@@ -6,6 +6,8 @@ IGLang.add({
  "A cidade tem belas praias, uma baía, rios e áreas de Mata Atlântica. Seu clima é úmido, com verões quentes e invernos amenos": "The city has beautiful beaches, a bay, rivers and areas of Atlantic Forest. Its climate is humid, with hot summers and mild winters",
  "A criança escolhe o animal e o descreve com figuras — big or small, a cor, long tail, long neck, mane, wings… O animal vai sendo montado e no final aparece no habitat dele com a frase": "The child picks the animal and describes it with pictures — big or small, the color, long tail, long neck, mane, wings… The animal is built piece by piece and at the end it appears in its habitat with the sentence",
  "A presença vem sozinha do": "Attendance comes automatically from the",
+ "A prática": "Practice",
+ "A prática (🔁 no link do aluno) traz cada palavra de volta em 1, 3, 7, 14 e 30 dias, com exercícios cada vez mais difíceis": "Practice (🔁 on the student's link) brings each word back after 1, 3, 7, 14 and 30 days, with harder and harder exercises",
  "A página já está limpa": "The page is already clean",
  "A tabela de atividades dos alunos não existe ainda: rode o": "The student activity table doesn't exist yet: run the",
  "A teacher ainda não escolheu um livro para você": "Your teacher hasn't picked a book for you yet",
@@ -48,6 +50,7 @@ IGLang.add({
  "Ainda não há mensagens com este aluno": "No messages with this student yet",
  "Ainda não há slides por aqui. Quando a teacher fizer slides na aula, eles aparecem aqui": "There are no slides here yet. When the teacher makes slides in class, they appear here",
  "Ainda não lê": "Doesn't read yet",
+ "Ainda não praticada": "Not practiced yet",
  "Ainda não salvo": "Not saved yet",
  "Ainda não tem nada aqui. Jogue um jogo e ele aparece": "Nothing here yet. Play a game and it will show up",
  "Ajuda": "Help",
@@ -60,6 +63,7 @@ IGLang.add({
  "Aluno desta aula": "Student for this class",
  "Aluno e livro desta aula": "Student and book for this class",
  "Aluno não encontrado": "Student not found",
+ "Alunos": "Students",
  "Alunos do grupo": "Students in the group",
  "Animais, cores, formas, números, casa e verb to be": "Animals, colors, shapes, numbers, house and verb to be",
  "Anotado — vale repetir esta frase": "Noted — this sentence is worth repeating",
@@ -101,6 +105,7 @@ IGLang.add({
  "Atualizar contas dos membros": "Update member accounts",
  "Até": "To",
  "Aula": "Class",
+ "Aula hoje": "Class today",
  "Aula movida": "Class moved",
  "Aulas": "Classes",
  "Aumentar": "Increase",
@@ -131,6 +136,7 @@ IGLang.add({
  "Buscar a fonética de novo": "Fetch the phonetics again",
  "Buscar a fonética de novo (ignora correção salva e estimativa": "Fetch the phonetics again (ignores saved correction and estimate",
  "Buscar aluno": "Search student",
+ "Buscar aluno ou turma…": "Search student or group…",
  "Buscar página": "Search page",
  "Buscar página (número ou título": "Search page (number or title",
  "Básico": "Basic",
@@ -147,6 +153,7 @@ IGLang.add({
  "Cancelar": "Cancel",
  "Cancelar edição": "Cancel editing",
  "Canva, Zoom) de cada aluno": "Canva, Zoom) of each student",
+ "Cards da aula — depois pratique para não esquecer": "Class cards — then practice so you don't forget",
  "Carregando": "Loading",
  "Carregando as páginas": "Loading the pages",
  "Carregando o livro": "Loading the book",
@@ -358,7 +365,9 @@ IGLang.add({
  "Escolher arquivo": "Choose file",
  "Escolher outra cor": "Choose another color",
  "Escolher outra cor de fundo": "Choose another background color",
+ "Esconde a seção Live Class só no seu login e troca esta lista por uma busca com atalhos do aluno": "Hides the Live Class only in your account and turns this list into a search with the student's shortcuts",
  "Esconder": "Hide",
+ "Esconder a Live Class (só para mim)": "Hide the Live Class (just for me)",
  "Esconder nomes": "Hide names",
  "Esconder respostas": "Hide answers",
  "Escreva a frase": "Write the sentence",
@@ -474,6 +483,7 @@ IGLang.add({
  "Gerando imagem": "Generating image",
  "Gerar de novo do formulário": "Generate again from the form",
  "Gerar prova": "Generate test",
+ "Gerenciar alunos": "Manage students",
  "Gestão": "Management",
  "Grade 13×13 com a lista": "13×13 grid with the list",
  "Gramática": "Grammar",
@@ -647,6 +657,7 @@ IGLang.add({
  "Monte o álbum de": "Build the album for",
  "Monte um conjunto de tarefas para um aluno — prova, revisão dos erros, ditado, speaking e writing. Ele faz em casa e o resultado volta para você": "Build a set of tasks for a student — test, mistake review, dictation, speaking and writing. They do it at home and the result comes back to you",
  "Mostrar Slides da aula no link do aluno": "Show Class slides on the student's link",
+ "Mostrar a Live Class": "Show the Live Class",
  "Mostrar esta seção": "Show this section",
  "Mostrar esta seção no boletim": "Show this section on the report card",
  "Mostrar nomes": "Show names",
@@ -680,6 +691,7 @@ IGLang.add({
  "Nada registrado neste mês ainda": "Nothing recorded this month yet",
  "Negrito": "Bold",
  "Negrito (Ctrl+B": "Bold (Ctrl+B",
+ "Nenhum aluno": "No student",
  "Nenhum aluno cadastrado": "No students registered",
  "Nenhum aluno tem horário ainda": "No students have a schedule yet",
  "Nenhum erro desde que a página abriu": "No errors since the page opened",
@@ -728,6 +740,7 @@ IGLang.add({
  "Nova lição de casa": "New homework",
  "Nova palavra (ex.: banana": "New word (e.g.: banana",
  "Novo": "New",
+ "Novo aluno": "New student",
  "Novo slide em branco": "New blank slide",
  "Novo tópico — escreva e aperte Enter": "New topic — type and press Enter",
  "Novos jogos e tópicos liberados": "New games and topics unlocked",
@@ -815,6 +828,7 @@ IGLang.add({
  "Outra versão": "Another version",
  "Outro lugar bonito é a Baía de Guaratuba. Os visitantes podem apreciar a paisagem natural e conhecer melhor a fauna local": "Another beautiful place is Guaratuba Bay. Visitors can enjoy the natural scenery and get to know the local wildlife better",
  "Outros": "Others",
+ "Outros alunos": "Other students",
  "Ouvi": "I heard",
  "Ouvir": "Listen",
  "Ouvir a frase": "Listen to the sentence",
@@ -884,6 +898,7 @@ IGLang.add({
  "Português": "Portuguese",
  "Posição do áudio": "Audio position",
  "Pra resolver": "To do",
+ "Praticar": "Practice",
  "Praticar em casa": "Practice at home",
  "Preciso treinar": "Need to practice",
  "Preencha as datas \"De\" e \"Até\" primeiro": "Fill in the \"From\" and \"To\" dates first",
@@ -912,6 +927,7 @@ IGLang.add({
  "Prova curta": "Short test",
  "Provas": "Tests",
  "Provas salvas": "Saved tests",
+ "Pré-visualização — nada é salvo": "Preview — nothing is saved",
  "Pré-visualização — é assim que o aluno vê": "Preview — this is how the student sees it",
  "Próxima": "Next",
  "Próxima figurinha": "Next sticker",
@@ -1071,6 +1087,7 @@ IGLang.add({
  "Sábado": "Saturday",
  "São precisos pelo menos 2 jogadores": "At least 2 players are required",
  "São só três perguntas. O site mostra os conteúdos, jogos e ferramentas certos para a idade e o nível dos seus alunos — e dá para mudar depois": "Just three questions. The site shows the right content, games and tools for your students' age and level — and you can change it later",
+ "Só no seu login": "Only in your account",
  "Só o que já foi dado": "Only what's been taught",
  "Só os tópicos que já estão no registro das aulas": "Only topics already in the class log",
  "Takeaway do livro nesta data: palavras, pronúncia e frases": "Takeaway on this date: words, pronunciation and sentences",
@@ -1146,7 +1163,7 @@ IGLang.add({
  "Trimestre": "Quarter",
  "Triângulo": "Triangle",
  "Trocar": "Switch",
- "Trocar aluno": "Switch student",
+ "Trocar aluno": "Change student",
  "Trocar de pessoa": "Switch person",
  "Trocar mochila": "Change backpack",
  "Trocar o link": "Change the link",
@@ -1197,6 +1214,7 @@ IGLang.add({
  "Veja tudo o que você já fez: estrelas, figurinhas, dias seguidos praticando 🔥 e as atividades de cada semana": "See everything you've done: stars, stickers, practice streaks 🔥 and each week's activities",
  "Velocidade": "Speed",
  "Ver": "View",
+ "Ver a prática": "See the practice",
  "Ver a semana": "See the week",
  "Ver agora": "See now",
  "Ver como o aluno verá": "See how the student will see it",
@@ -1247,6 +1265,7 @@ IGLang.add({
  "abaixo): não existe tela de escolha de nomes, e ninguém consegue abrir a página dos colegas": "below): there is no name picker screen, and nobody can open their classmates' pages",
  "abre o WhatsApp com a mensagem escrita": "opens WhatsApp with the message written",
  "abrir": "open",
+ "abrir o link": "open the link",
  "abriu vazio": "opened empty",
  "acerto na semana": "correct this week",
  "acontecendo agora": "happening now",
@@ -1274,8 +1293,10 @@ IGLang.add({
  "aulas hoje": "classes today",
  "aulas registradas": "classes logged",
  "automático": "automatic",
+ "boletim e progresso": "report card and progress",
  "cada aula que você salva aparece aqui": "each class you save appears here",
  "cada um escolhe o seu nome e o progresso (livro online, exercícios, lição de casa, erros, escrita) fica": "each person picks their name and the progress (online book, exercises, homework, mistakes, writing) is kept",
+ "cadastro, aulas, pagamentos": "profile, classes, payments",
  "calça": "pants",
  "chapéu": "hat",
  "com jogos (Memory, Hangman, Match-up…), leitura e vocabulário. A teacher escolhe o que aparece aqui, então os tópicos vão aumentando conforme as aulas": "with games (Memory, Hangman, Match-up…), reading and vocabulary. The teacher chooses what shows up here, so the topics grow as the classes go on",
@@ -1297,6 +1318,8 @@ IGLang.add({
  "conversa com alguma fluência": "conversation with some fluency",
  "cores, alfabeto, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler": "colors, alphabet, feelings, weather, body, animals, music, the house… No need to know how to read",
  "cria a ficha da aula para mandar à família. Esse registro alimenta a frequência, o boletim e os assuntos liberados no link do aluno": "creates the class sheet to send to the family. This record feeds attendance, the report card and the topics unlocked in the student's link",
+ "criar e apresentar": "create and present",
+ "criar e ver lições": "create and see homework",
  "da IG English School. Aqui você pratica o que vimos nas aulas, faz a lição de casa e manda mensagens para a teacher": "of IG English School. Here you practice what we covered in class, do your homework and send messages to the teacher",
  "da minha lista": "from my list",
  "dançando": "dancing",
@@ -1369,10 +1392,12 @@ IGLang.add({
  "exercícios do meu nível": "exercises for my level",
  "falar": "speak",
  "fale em inglês": "speak in English",
+ "fazer o livro juntos": "do the book together",
  "fechar": "close",
  "ficar de pé": "stand up",
  "forecast (= previsão) · temperature · go down (= cair, baixar": "forecast (= weather prediction) · temperature · go down (= drop, decrease",
  "frase": "sentence",
+ "frase da aula": "sentence from class",
  "frases certas": "correct sentences",
  "frases simples, apresentações, rotina": "simple sentences, introductions, routine",
  "futuro com going to": "future with going to",
@@ -1432,10 +1457,12 @@ IGLang.add({
  "no espaço": "in space",
  "no fim da aula": "at the end of class",
  "no fundo do mar": "at the bottom of the sea",
+ "no link do aluno) traz cada palavra de volta em 1, 3, 7, 14 e 30 dias, com exercícios cada vez mais difíceis": "on the student's link) brings each word back after 1, 3, 7, 14 and 30 days, with harder and harder exercises",
  "no lugar da melodia. Fica salvo na sua conta": "in place of the melody. It's saved on your account",
  "no topo do site. Toque no aluno que vai ter aula — os do dia (pelos horários do Painel) aparecem primeiro": "at the top of the site. Tap the student who has class — today's students (by the Dashboard schedules) appear first",
  "no álbum": "in the album",
  "no ✏️ do aluno": "in the student's ✏️",
+ "novo": "new",
  "num arco-íris": "on a rainbow",
  "nunca estudou inglês": "never studied English",
  "não": "no",
@@ -1504,6 +1531,7 @@ IGLang.add({
  "que": "that",
  "quer que eu…? / devo…? (oferecer ajuda": "do you want me to…? / shall I…? (offering help",
  "questões dominadas": "questions mastered",
+ "registrar a aula": "log the class",
  "responda à pergunta — \"How do you say 20 in English?\", \"How do you say lápis in English?\". Você escolhe o assunto: números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou qualquer tópico do currículo": "gates, answer a question — \"How do you say 20 in English?\", \"How do you say lápis in English?\". You pick the subject: numbers, school supplies, colors, animals, fruit, body, feelings, weather, house or any topic in the curriculum",
  "resposta": "answer",
  "resposta curta": "short answer",
@@ -1511,6 +1539,7 @@ IGLang.add({
  "respostas curtas": "short answers",
  "respostas na semana": "answers this week",
  "revisão com cartões": "review with flashcards",
+ "revisão da última aula": "review of the last class",
  "revisão de tempos verbais": "verb tense review",
  "se exibir / se mostrar · flexing = ostentando (gíria": "to show off · flexing = showing off (slang",
  "sem": "without",
@@ -1727,700 +1756,752 @@ IGLang.add({
 
 IGLang.addPatterns([
 [
-"^Toque numa página para fazer junto com (.{1,240}?)\\. Tudo é salvo no livro de (.{1,240}?) — e aparece no link do aluno\\. 🎯 = exercícios com correção automática$",
+"^Toque numa página para fazer junto com ([^·]{1,240}?)\\. Tudo é salvo no livro de ([^·]{1,240}?) — e aparece no link do aluno\\. 🎯 = exercícios com correção automática$",
 "Tap a page to do it together with $1. Everything is saved in $2's book — and shows up on the student's link. 🎯 = exercises with automatic feedback"
 ],
 [
-"^com jogos \\(Memory, Hangman, Match-up…\\)(.{1,240}?)\\. A teacher escolhe o que aparece aqui, então os tópicos vão aumentando conforme as aulas$",
-"with games (Memory, Hangman, Match-up…)$1. The teacher chooses what appears here, so the topics grow as the classes go on"
-],
-[
-"^No automático o link mostra o vocabulário do nível (.{1,240}?) e dos níveis anteriores e só a gramática que já apareceu no registro das aulas$",
-"On automatic, the link shows the vocabulary for level $1 and earlier levels, and only the grammar that has already appeared in the class log"
-],
-[
-"^Toque numa página para fazer junto com (.{1,240}?) \\(ou só ver, marcando a caixa acima\\)\\. ⭐ = nota dos exercícios com correção automática$",
-"Tap a page to do it together with $1 (or just look, by ticking the box above). ⭐ = score from the exercises with automatic feedback"
-],
-[
-"^Foi um prazer enorme dar aula para (.{1,240}?) neste trimestre! Continue incentivando um pouquinho de prática em casa — cada minuto conta$",
-"It was a great pleasure teaching $1 this quarter! Keep encouraging a little practice at home — every minute counts"
-],
-[
-"^Ligado: (.{1,240}?) vê a seção “Slides da aula” no link dele\\(a\\) — só para ler, sem editar\\. \\(Sem Supabase isso vale só neste navegador$",
-"On: $1 sees the “Class slides” section on their link — read-only, no editing. (Without Supabase this only works in this browser"
-],
-[
-"^Parar de usar o link do grupo \"(.{1,240}?)\"\\? O endereço do grupo deixa de funcionar; os links individuais dos membros continuam valendo$",
-"Stop using the group link \"$1\"? The group address stops working; the members' individual links remain valid"
-],
-[
-"^(.{1,240}?) conta\\(s\\) de nomes que você tirou da lista continuam guardadas \\(com todo o progresso\\), mas não aparecem mais na escolha$",
-"$1 account(s) for names you removed from the list are still saved (with all their progress), but no longer appear in the picker"
-],
-[
-"^(.{1,240}?) demonstrou muito entusiasmo nas atividades de (.{1,240}?), com participação constante e progresso contínuo neste trimestre$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) demonstrou muito entusiasmo nas atividades de ([^·]{1,240}?), com participação constante e progresso contínuo neste trimestre$",
 "$1 showed great enthusiasm in $2 activities, with constant participation and continued progress this quarter"
 ],
 [
-"^No automático o link mostra o vocabulário do nível (.{1,240}?) (.{1,240}?) e só a gramática que já apareceu no registro das aulas$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) conta\\(s\\) de nomes que você tirou da lista continuam guardadas \\(com todo o progresso\\), mas não aparecem mais na escolha$",
+"$1 account(s) for names you removed from the list are still saved (with all their progress), but no longer appear in the picker"
+],
+[
+"^com jogos \\(Memory, Hangman, Match-up…\\)([^·]{1,240}?)\\. A teacher escolhe o que aparece aqui, então os tópicos vão aumentando conforme as aulas$",
+"with games (Memory, Hangman, Match-up…)$1. The teacher chooses what appears here, so the topics grow as the classes go on"
+],
+[
+"^No automático o link mostra o vocabulário do nível ([^·]{1,240}?) e dos níveis anteriores e só a gramática que já apareceu no registro das aulas$",
+"On automatic, the link shows the vocabulary for level $1 and earlier levels, and only the grammar that has already appeared in the class log"
+],
+[
+"^Toque numa página para fazer junto com ([^·]{1,240}?) \\(ou só ver, marcando a caixa acima\\)\\. ⭐ = nota dos exercícios com correção automática$",
+"Tap a page to do it together with $1 (or just look, by ticking the box above). ⭐ = score from the exercises with automatic feedback"
+],
+[
+"^Foi um prazer enorme dar aula para ([^·]{1,240}?) neste trimestre! Continue incentivando um pouquinho de prática em casa — cada minuto conta$",
+"It was a great pleasure teaching $1 this quarter! Keep encouraging a little practice at home — every minute counts"
+],
+[
+"^Ligado: ([^·]{1,240}?) vê a seção “Slides da aula” no link dele\\(a\\) — só para ler, sem editar\\. \\(Sem Supabase isso vale só neste navegador$",
+"On: $1 sees the “Class slides” section on their link — read-only, no editing. (Without Supabase this only works in this browser"
+],
+[
+"^Parar de usar o link do grupo \"([^·]{1,240}?)\"\\? O endereço do grupo deixa de funcionar; os links individuais dos membros continuam valendo$",
+"Stop using the group link \"$1\"? The group address stops working; the members' individual links remain valid"
+],
+[
+"^No automático o link mostra o vocabulário do nível ([^·]{1,240}?) ([^·]{1,240}?) e só a gramática que já apareceu no registro das aulas$",
 "In automatic mode the link shows level $1 $2 vocabulary and only the grammar that has already appeared in the class log"
 ],
 [
-"^menu do navegador → \"Adicionar à tela inicial\"\\)\\. Tudo o que a criança faz aqui chega para a teacher\\. Have fun, (.{1,240}?)$",
-"browser menu → \"Add to Home Screen\"). Everything the child does here goes to the teacher. Have fun, $1"
-],
-[
-"^menu do navegador → \"Adicionar à tela inicial\"\\)\\. Tudo o que (.{1,240}?) aqui chega para a teacher\\. Have fun, (.{1,240}?)$",
+"^menu do navegador → \"Adicionar à tela inicial\"\\)\\. Tudo o que ([^·]{1,240}?) aqui chega para a teacher\\. Have fun, ([^·]{1,240}?)$",
 "browser menu → \"Add to Home Screen\"). Everything $1 here goes to the teacher. Have fun, $2"
 ],
 [
-"^Revogar o link individual de (.{1,240}?)\\? Ele\\(a\\) deixa de aparecer na escolha do grupo até você clicar em \"Criar contas$",
+"^menu do navegador → \"Adicionar à tela inicial\"\\)\\. Tudo o que a criança faz aqui chega para a teacher\\. Have fun, ([^·]{1,240}?)$",
+"browser menu → \"Add to Home Screen\"). Everything the child does here goes to the teacher. Have fun, $1"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) questão\\(ões\\) que você errou estão esperando\\. Revisar agora é o que faz ficar na cabeça$",
+"$1 question(s) you missed are waiting. Reviewing now is what makes them stick"
+],
+[
+"^Revogar o link individual de ([^·]{1,240}?)\\? Ele\\(a\\) deixa de aparecer na escolha do grupo até você clicar em \"Criar contas$",
 "Revoke $1's individual link? They will no longer appear in the group's name picker until you click \"Create accounts"
 ],
 [
-"^menu do navegador → \"Adicionar à tela inicial\"\\)\\. Tudo o que você faz aqui chega para a teacher\\. Have fun, (.{1,240}?)$",
+"^menu do navegador → \"Adicionar à tela inicial\"\\)\\. Tudo o que você faz aqui chega para a teacher\\. Have fun, ([^·]{1,240}?)$",
 "browser menu → \"Add to Home Screen\"). Everything you do here goes to the teacher. Have fun, $1"
 ],
 [
-"^No automático o link mostra o vocabulário do nível (.{1,240}?) e só a gramática que já apareceu no registro das aulas$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) demonstrou muito entusiasmo e uma atitude positiva em todas as aulas deste trimestre$",
+"$1 showed great enthusiasm and a positive attitude in every class this quarter"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?): ([^·]{1,240}?) presença\\(s\\), ([^·]{1,240}?) falta\\(s\\)([^·]{1,240}?)([^·]{1,240}?)$",
+"$1: $2 attended, $3 missed$4$5"
+],
+[
+"^No automático o link mostra o vocabulário do nível ([^·]{1,240}?) e só a gramática que já apareceu no registro das aulas$",
 "On automatic, the link shows the vocabulary for level $1, and only the grammar that has already appeared in the class log"
 ],
 [
-"^Veja tudo o que você já fez: estrelas, (.{1,240}?)dias seguidos praticando 🔥 e as atividades de cada semana$",
-"See everything you've done: stars, $1days in a row practicing 🔥 and each week's activities"
-],
-[
-"^Substituir (.{1,240}?) presenças e (.{1,240}?) faltas por (.{1,240}?) e (.{1,240}?) \\(do registro de aulas$",
+"^Substituir ([^·]{1,240}?) presenças e ([^·]{1,240}?) faltas por ([^·]{1,240}?) e ([^·]{1,240}?) \\(do registro de aulas$",
 "Replace $1 attended and $2 missed with $3 and $4 (from the class log"
 ],
 [
-"^Ligado: (.{1,240}?) vê a seção “Slides da aula” no link dele\\(a\\) — só para ler, sem editar\\.(.{1,240}?)$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) nova\\(s\\) · ([^·]{1,240}?) aguardando resposta · ([^·]{1,240}?) no total$",
+"$1 new · $2 awaiting reply · $3 total"
+],
+[
+"^Ligado: ([^·]{1,240}?) vê a seção “Slides da aula” no link dele\\(a\\) — só para ler, sem editar\\.([^·]{1,240}?)$",
 "On: $1 sees the \"Class slides\" section on their link — read-only, no editing.$2"
+],
+[
+"^Veja tudo o que você já fez: estrelas, ([^·]{1,240}?)dias seguidos praticando 🔥 e as atividades de cada semana$",
+"See everything you've done: stars, $1days in a row practicing 🔥 and each week's activities"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) itens trazidos do livro \\(p\\. ([^·]{1,240}?)\\)\\. Confira e salve a aula$",
+"$1 items brought in from the book (p. $2). Check them and save the class"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) item trazido do livro \\(p\\. ([^·]{1,240}?)\\)\\. Confira e salve a aula$",
+"$1 item brought in from the book (p. $2). Check it and save the class"
+],
+[
+"^Praticou em \\*([^·]{1,240}?) dia\\(s\\)\\* esta semana \\(([^·]{1,240}?) atividades nos jogos\\)([^·]{1,240}?)$",
+"Practiced on *$1 day(s)* this week ($2 game activities)$3"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) de ([^·]{1,240}?) aulas concluídas - ([^·]{1,240}?)% de frequência$",
+"$1 of $2 classes completed - $3% attendance"
+],
+[
+"^Desligado \\(padrão\\): ([^·]{1,240}?) NÃO vê esta seção no link\\. Ligue quando quiser mostrar os slides$",
+"Off (default): $1 does NOT see this section on the link. Turn it on when you want to show the slides"
 ],
 [
 "^Quando a teacher manda lição, ela aparece aqui((?:s|es|is)?)\\. Toque, faça as atividades e o resultado$",
 "When the teacher sends homework, it appears here$1. Tap it, do the activities and the result"
 ],
 [
-"^(.{1,240}?) questão\\(ões\\) que você errou estão esperando\\. Revisar agora é o que faz ficar na cabeça$",
-"$1 question(s) you missed are waiting. Reviewing now is what makes them stick"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) de ([^·]{1,240}?) páginas feitas ([^·]{1,240}?)([^·]{1,240}?)$",
+"$1 of $2 pages done $3$4"
 ],
 [
-"^Desligado \\(padrão\\): (.{1,240}?) NÃO vê esta seção no link\\. Ligue quando quiser mostrar os slides$",
-"Off (default): $1 does NOT see this section on the link. Turn it on when you want to show the slides"
-],
-[
-"^Praticou em \\*(.{1,240}?) dia\\(s\\)\\* esta semana \\((.{1,240}?) atividades nos jogos\\)(.{1,240}?)$",
-"Practiced on *$1 day(s)* this week ($2 game activities)$3"
-],
-[
-"^(.{1,240}?) demonstrou muito entusiasmo e uma atitude positiva em todas as aulas deste trimestre$",
-"$1 showed great enthusiasm and a positive attitude in every class this quarter"
-],
-[
-"^Excluir a apresentação “(.{1,240}?)”\\? Isso apaga todos os slides dela e não dá para desfazer$",
+"^Excluir a apresentação “([^·]{1,240}?)”\\? Isso apaga todos os slides dela e não dá para desfazer$",
 "Delete the presentation \"$1\"? This deletes all its slides and cannot be undone"
 ],
 [
-"^Excluir o slide (.{1,240}?)\\? Dá para desfazer com Ctrl\\+Z enquanto esta tela estiver aberta$",
+"^Excluir o slide ([^·]{1,240}?)\\? Dá para desfazer com Ctrl\\+Z enquanto esta tela estiver aberta$",
 "Delete slide $1? You can undo with Ctrl+Z while this screen is open"
 ],
 [
-"^Ligado: (.{1,240}?) vê a seção “Slides da aula” no link dele\\(a\\) — só para ler, sem editar$",
+"^Ligado: ([^·]{1,240}?) vê a seção “Slides da aula” no link dele\\(a\\) — só para ler, sem editar$",
 "On: $1 sees the “Class slides” section on their link — read-only, no editing"
+],
+[
+"^Voltar ([^·]{1,240}?) para o álbum padrão\\? As figurinhas personalizadas dele serão perdidas$",
+"Put $1 back on the default album? Their custom stickers will be lost"
 ],
 [
 "^tem jogos rápidos de exercícios((?:s|es|is)?)\\. Bom para fazer 10 minutinhos antes da aula$",
 "has quick exercise games$1. Good for 10 minutes before class"
 ],
 [
-"^Voltar (.{1,240}?) para o álbum padrão\\? As figurinhas personalizadas dele serão perdidas$",
-"Put $1 back on the default album? Their custom stickers will be lost"
-],
-[
-"^Traga as presenças e faltas de cada período em que (.{1,240}?) teve aula — por exemplo$",
+"^Traga as presenças e faltas de cada período em que ([^·]{1,240}?) teve aula — por exemplo$",
 "Enter the attendance and absences for each period in which $1 had class — for example"
 ],
 [
-"^(.{1,240}?): (.{1,240}?) presença\\(s\\), (.{1,240}?) falta\\(s\\)(.{1,240}?)(.{1,240}?)$",
-"$1: $2 attended, $3 missed$4$5"
-],
-[
-"^O link da imagem de \"(.{1,240}?)\" não parece válido — ele precisa começar com https$",
-"The image link for \"$1\" doesn't look valid — it must start with https"
-],
-[
-"^(.{1,240}?) itens trazidos do livro \\(p\\. (.{1,240}?)\\)\\. Confira e salve a aula$",
-"$1 items brought in from the book (p. $2). Check them and save the class"
-],
-[
-"^Resultado de (.{1,240}?) — lição: (.{1,240}?)\\. Veja o que foi feito na página$",
-"$1's result — homework: $2. See what was done on the page"
-],
-[
-"^(.{1,240}?) nova\\(s\\) · (.{1,240}?) aguardando resposta · (.{1,240}?) no total$",
-"$1 new · $2 awaiting reply · $3 total"
-],
-[
-"^(.{1,240}?) item trazido do livro \\(p\\. (.{1,240}?)\\)\\. Confira e salve a aula$",
-"$1 item brought in from the book (p. $2). Check it and save the class"
-],
-[
-"^(.{1,240}?) de (.{1,240}?) aulas concluídas - (.{1,240}?)% de frequência$",
-"$1 of $2 classes completed - $3% attendance"
-],
-[
-"^significa \"(.{1,240}?)\" — começa com \"(.{1,240}?)\" \\((.{1,240}?) letras$",
-"means \"$1\" — starts with \"$2\" ($3 letters"
-],
-[
-"^Mande este endereço para (.{1,240}?) ou para a família\\. Quem abrir vê$",
-"Send this address to $1 or to the family. Whoever opens it sees"
-],
-[
-"^Lição de casa: (.{1,240}?) de (.{1,240}?) feita\\(s\\) — ainda dá tempo$",
-"Homework: $1 of $2 done — there's still time"
-],
-[
-"^Total:\\* (.{1,240}?) presença\\(s\\), (.{1,240}?) falta\\(s\\)(.{1,240}?)$",
-"Total:* $1 attended, $2 missed$3"
-],
-[
-"^Apagar a aula de (.{1,240}?)(.{1,240}?)\\? Isso não pode ser desfeito$",
-"Delete $1's class$2? This cannot be undone"
-],
-[
-"^Limite de (.{1,240}?) apresentações por aluno\\. Exclua alguma antiga$",
-"Limit of $1 presentations per student. Delete an old one"
-],
-[
-"^Revogar o link de (.{1,240}?)\\? O endereço antigo para de funcionar$",
-"Revoke $1's link? The old address stops working"
-],
-[
-"^Lição de casa: (.{1,240}?) — faça e toque em “Terminei esta página$",
-"Homework: $1 — do it and tap “I finished this page"
-],
-[
-"^(.{1,240}?) de (.{1,240}?) páginas feitas (.{1,240}?)(.{1,240}?)$",
-"$1 of $2 pages done $3$4"
-],
-[
-"^Olá! 😊 Aqui vai o resumo da semana de \\*(.{1,240}?)\\* no inglês$",
-"Hi! 😊 Here's *$1*'s weekly English summary"
-],
-[
-"^Oi, (.{1,240}?)! Este é o seu link pessoal para praticar inglês$",
-"Hi, $1! This is your personal link to practice English"
-],
-[
-"^O schema \"(.{1,240}?)\" não está liberado na API\\. No Supabase$",
-"The schema \"$1\" isn't exposed in the API. In Supabase"
-],
-[
-"^(.{1,240}?)\\) — cada um tem a própria conta e o próprio link$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\) — cada um tem a própria conta e o próprio link$",
 "$1) — each person has their own account and their own link"
 ],
 [
-"^Livro da aula((?:s|es|is)?) · salvo no livro de (.{1,240}?)$",
-"Class book$1 · saved in $2's book"
+"^O link da imagem de \"([^·]{1,240}?)\" não parece válido — ele precisa começar com https$",
+"The image link for \"$1\" doesn't look valid — it must start with https"
 ],
 [
-"^O contrato termina em (.{1,240}?) (.{1,240}?) \\((.{1,240}?)$",
-"The contract ends on $1 $2 ($3"
-],
-[
-"^Copia uma mensagem pronta para mandar só para (.{1,240}?)$",
-"Copies a ready-made message to send only to $1"
-],
-[
-"^Lição de casa: \\*tudo feito\\* \\((.{1,240}?)\\/(.{1,240}?)$",
-"Homework: *all done* ($1/$2"
-],
-[
-"^Escolha um jogo — ao fechar, você volta para (.{1,240}?)$",
-"Pick a game — when you close it, you go back to $1"
-],
-[
-"^As apresentações de (.{1,240}?) — cada aluno tem as suas$",
-"$1's presentations — each student has their own"
-],
-[
-"^Apagar o jogo \"(.{1,240}?)\"\\? Isso não pode ser desfeito$",
-"Delete the game \"$1\"? This can't be undone"
-],
-[
-"^Página completa! (.{1,240}?)\\/(.{1,240}?) ⭐(.{1,240}?)$",
-"Page complete! $1/$2 ⭐$3"
-],
-[
-"^Aula de (.{1,240}?) às (.{1,240}?) ainda não preparada$",
-"$1 class at $2 not prepared yet"
-],
-[
-"^(.{1,240}?) de (.{1,240}?) páginas feitas 🏆(.{1,240}?)$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) de ([^·]{1,240}?) páginas feitas 🏆([^·]{1,240}?)$",
 "$1 of $2 pages done 🏆$3"
 ],
 [
-"^(.{1,240}?)\\.(.{1,240}?)\\* — usando essa configuração$",
-"$1.$2* — using this setting"
-],
-[
-"^(.{1,240}?) de (.{1,240}?) páginas feitas (.{1,240}?)$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) de ([^·]{1,240}?) páginas feitas ([^·]{1,240}?)$",
 "$1 of $2 pages done $3"
 ],
 [
-"^(.{1,240}?) Deixe a foto em branco para usar o emoji$",
-"$1 Leave the photo blank to use the emoji"
+"^Resultado de ([^·]{1,240}?) — lição: ([^·]{1,240}?)\\. Veja o que foi feito na página$",
+"$1's result — homework: $2. See what was done on the page"
 ],
 [
-"^Você tem (.{1,240}?) lição\\(ões\\) esperando por você$",
-"You have $1 homework assignment(s) waiting for you"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\.([^·]{1,240}?)\\* — usando essa configuração$",
+"$1.$2* — using this setting"
 ],
 [
-"^O contrato termina em (.{1,240}?) dias \\((.{1,240}?)$",
-"The contract ends in $1 days ($2"
+"^significa \"([^·]{1,240}?)\" — começa com \"([^·]{1,240}?)\" \\(([^·]{1,240}?) letras$",
+"means \"$1\" — starts with \"$2\" ($3 letters"
 ],
 [
-"^(.{1,240}?) — as perguntas são novas a cada partida$",
-"$1 — the questions are new every round"
-],
-[
-"^O contrato termina em (.{1,240}?) dia \\((.{1,240}?)$",
-"The contract ends in $1 day ($2"
-],
-[
-"^(.{1,240}?) palavra\\(s\\) · (.{1,240}?) pergunta\\(s$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) palavra\\(s\\) · ([^·]{1,240}?) pergunta\\(s$",
 "$1 word(s) · $2 question(s"
 ],
 [
-"^começa com \"(.{1,240}?)\" e tem (.{1,240}?) letras$",
-"starts with \"$1\" and has $2 letters"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) Deixe a foto em branco para usar o emoji$",
+"$1 Leave the photo blank to use the emoji"
 ],
 [
-"^Oi! Este é o link da turma de inglês \"(.{1,240}?)$",
-"Hi! This is the link for the English group \"$1"
+"^Total:\\* ([^·]{1,240}?) presença\\(s\\), ([^·]{1,240}?) falta\\(s\\)([^·]{1,240}?)$",
+"Total:* $1 attended, $2 missed$3"
 ],
 [
-"^(.{1,240}?)(.{1,240}?)\\) — marque se estes alunos$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)([^·]{1,240}?)\\) — marque se estes alunos$",
 "$1$2) — check if these students"
 ],
 [
-"^(.{1,240}?)\\. Corrija o que precisar e clique em$",
-"$1. Fix what you need and click"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) — as perguntas são novas a cada partida$",
+"$1 — the questions are new every round"
 ],
 [
-"^(.{1,240}?) mensagem\\(ns\\) nova\\(s\\) dos alunos$",
-"$1 new message(s) from students"
+"^Lição de casa: ([^·]{1,240}?) de ([^·]{1,240}?) feita\\(s\\) — ainda dá tempo$",
+"Homework: $1 of $2 done — there's still time"
 ],
 [
-"^Fazer o livro com (.{1,240}?) \\(p\\. (.{1,240}?)$",
-"Do the book with $1 (p. $2"
-],
-[
-"^Não encontrei a página (.{1,240}?) no seu livro$",
-"I couldn't find page $1 in your book"
-],
-[
-"^Mover esta aula de (.{1,240}?) para (.{1,240}?)$",
-"Move this class from $1 to $2"
-],
-[
-"^(.{1,240}?) — 🎤 mensagem de áudio((?:s|es|is)?)$",
-"$1 — 🎤 audio message$2"
-],
-[
-"^Nova mensagem de (.{1,240}?) — clique para ler$",
-"New message from $1 — click to read"
-],
-[
-"^(.{1,240}?)\\/(.{1,240}?) enviados esta semana$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\/([^·]{1,240}?) enviados esta semana$",
 "$1/$2 sent this week"
 ],
 [
-"^(.{1,240}?) de (.{1,240}?) tarefas concluídas$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) de ([^·]{1,240}?) tarefas concluídas$",
 "$1 of $2 tasks completed"
 ],
 [
-"^Limite de (.{1,240}?) apresentações por aluno$",
-"Limit of $1 presentations per student"
+"^Apagar a aula de ([^·]{1,240}?)([^·]{1,240}?)\\? Isso não pode ser desfeito$",
+"Delete $1's class$2? This cannot be undone"
 ],
 [
-"^Limite de (.{1,240}?) slides por apresentação$",
-"Limit of $1 slides per presentation"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\. Corrija o que precisar e clique em$",
+"$1. Fix what you need and click"
 ],
 [
-"^Mensagens — (.{1,240}?) nova\\(s\\) da teacher$",
-"Messages — $1 new from the teacher"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) mensagem\\(ns\\) nova\\(s\\) dos alunos$",
+"$1 new message(s) from students"
 ],
 [
-"^(.{1,240}?) sem registro há (.{1,240}?) dias$",
+"^Mande este endereço para ([^·]{1,240}?) ou para a família\\. Quem abrir vê$",
+"Send this address to $1 or to the family. Whoever opens it sees"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) — 🎤 mensagem de áudio((?:s|es|is)?)$",
+"$1 — 🎤 audio message$2"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) sem registro há ([^·]{1,240}?) dias$",
 "$1 not logged for $2 days"
 ],
 [
-"^Rode o (.{1,240}?) no SQL Editor do Supabase$",
-"Run $1 in the Supabase SQL Editor"
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) exercícios · ([^·]{1,240}?) certos$",
+"$1 exercises · $2 correct"
 ],
 [
-"^(.{1,240}?) · aula atual · escondido no link$",
+"^Limite de ([^·]{1,240}?) apresentações por aluno\\. Exclua alguma antiga$",
+"Limit of $1 presentations per student. Delete an old one"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) de ([^·]{1,240}?) palavras firmes$",
+"$1 of $2 words strong"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) questões · ([^·]{1,240}?) partes$",
+"$1 questions · $2 parts"
+],
+[
+"^Revogar o link de ([^·]{1,240}?)\\? O endereço antigo para de funcionar$",
+"Revoke $1's link? The old address stops working"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) acertou! \\+([^·]{1,240}?) pontos$",
+"$1 got it! +$2 points"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) · aula atual · escondido no link$",
 "$1 · current class · hidden on the link"
 ],
 [
-"^(.{1,240}?) · aula atual · 👁 visível no link$",
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) · aula atual · 👁 visível no link$",
 "$1 · current class · 👁 visible on the link"
 ],
 [
-"^Ouvi “(.{1,240}?)”\\. Ouça 🔊 e tente de novo$",
+"^Lição de casa: ([^·]{1,240}?) — faça e toque em “Terminei esta página$",
+"Homework: $1 — do it and tap “I finished this page"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\/([^·]{1,240}?) nos exercícios$",
+"$1/$2 in the exercises"
+],
+[
+"^O contrato termina em ([^·]{1,240}?) ([^·]{1,240}?) \\(([^·]{1,240}?)$",
+"The contract ends on $1 $2 ($3"
+],
+[
+"^Olá! 😊 Aqui vai o resumo da semana de \\*([^·]{1,240}?)\\* no inglês$",
+"Hi! 😊 Here's *$1*'s weekly English summary"
+],
+[
+"^Oi, ([^·]{1,240}?)! Este é o seu link pessoal para praticar inglês$",
+"Hi, $1! This is your personal link to practice English"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) Deixe em branco para remover$",
+"$1 Leave blank to remove"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)…\\) — marque se estes alunos$",
+"$1…) — check if these students"
+],
+[
+"^O schema \"([^·]{1,240}?)\" não está liberado na API\\. No Supabase$",
+"The schema \"$1\" isn't exposed in the API. In Supabase"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\) — marque se estes alunos$",
+"$1) — check if these students"
+],
+[
+"^Página completa! ([^·]{1,240}?)\\/([^·]{1,240}?) ⭐([^·]{1,240}?)$",
+"Page complete! $1/$2 ⭐$3"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) mensagens novas de alunos$",
+"$1 new messages from students"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) textos esperando correção$",
+"$1 texts waiting for correction"
+],
+[
+"^Lição de casa: \\*tudo feito\\* \\(([^·]{1,240}?)\\/([^·]{1,240}?)$",
+"Homework: *all done* ($1/$2"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) tarefa\\(s\\) concluída\\(s$",
+"$1 task(s) completed"
+],
+[
+"^Livro da aula((?:s|es|is)?) · salvo no livro de ([^·]{1,240}?)$",
+"Class book$1 · saved in $2's book"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) texto esperando correção$",
+"$1 text waiting for correction"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)% de acerto na pronúncia$",
+"$1% pronunciation accuracy"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) mensagem nova de alunos$",
+"$1 new message from students"
+],
+[
+"^Copia uma mensagem pronta para mandar só para ([^·]{1,240}?)$",
+"Copies a ready-made message to send only to $1"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) fez atividade no livro$",
+"$1 did an activity in the book"
+],
+[
+"^Aula de ([^·]{1,240}?) às ([^·]{1,240}?) ainda não preparada$",
+"$1 class at $2 not prepared yet"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) personagens · meu jogo$",
+"$1 characters · my game"
+],
+[
+"^Escolha um jogo — ao fechar, você volta para ([^·]{1,240}?)$",
+"Pick a game — when you close it, you go back to $1"
+],
+[
+"^As apresentações de ([^·]{1,240}?) — cada aluno tem as suas$",
+"$1's presentations — each student has their own"
+],
+[
+"^Apagar o jogo \"([^·]{1,240}?)\"\\? Isso não pode ser desfeito$",
+"Delete the game \"$1\"? This can't be undone"
+],
+[
+"^O contrato termina em ([^·]{1,240}?) dias \\(([^·]{1,240}?)$",
+"The contract ends in $1 days ($2"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) personagens · pronto$",
+"$1 characters · ready"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) ainda não praticadas$",
+"$1 not practiced yet"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) fez a lição de casa$",
+"$1 did the homework"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) voz\\(es\\) em inglês$",
+"$1 English voice(s)"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) e marque a resposta$",
+"$1 and mark the answer"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) · escondido no link$",
+"$1 · hidden on the link"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) · 👁 visível no link$",
+"$1 · 👁 visible on the link"
+],
+[
+"^O contrato termina em ([^·]{1,240}?) dia \\(([^·]{1,240}?)$",
+"The contract ends in $1 day ($2"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) faz parte do grupo$",
+"$1 is part of the group"
+],
+[
+"^começa com \"([^·]{1,240}?)\" e tem ([^·]{1,240}?) letras$",
+"starts with \"$1\" and has $2 letters"
+],
+[
+"^Você tem ([^·]{1,240}?) lição\\(ões\\) esperando por você$",
+"You have $1 homework assignment(s) waiting for you"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) alunos de exemplo$",
+"$1 sample students"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) para revisar hoje$",
+"$1 to review today"
+],
+[
+"^Fazer o livro com ([^·]{1,240}?) \\(p\\. ([^·]{1,240}?)$",
+"Do the book with $1 (p. $2"
+],
+[
+"^Mover esta aula de ([^·]{1,240}?) para ([^·]{1,240}?)$",
+"Move this class from $1 to $2"
+],
+[
+"^Oi! Este é o link da turma de inglês \"([^·]{1,240}?)$",
+"Hi! This is the link for the English group \"$1"
+],
+[
+"^Não encontrei a página ([^·]{1,240}?) no seu livro$",
+"I couldn't find page $1 in your book"
+],
+[
+"^Nova mensagem de ([^·]{1,240}?) — clique para ler$",
+"New message from $1 — click to read"
+],
+[
+"^Limite de ([^·]{1,240}?) apresentações por aluno$",
+"Limit of $1 presentations per student"
+],
+[
+"^Limite de ([^·]{1,240}?) slides por apresentação$",
+"Limit of $1 slides per presentation"
+],
+[
+"^Mensagens — ([^·]{1,240}?) nova\\(s\\) da teacher$",
+"Messages — $1 new from the teacher"
+],
+[
+"^Rode o ([^·]{1,240}?) no SQL Editor do Supabase$",
+"Run $1 in the Supabase SQL Editor"
+],
+[
+"^Ouvi “([^·]{1,240}?)”\\. Ouça 🔊 e tente de novo$",
 "I heard “$1”. Listen 🔊 and try again"
 ],
 [
-"^Palavras que já está dominando: (.{1,240}?)$",
+"^Palavras que já está dominando: ([^·]{1,240}?)$",
 "Words they've already mastered: $1"
 ],
 [
-"^(.{1,240}?) exercícios · (.{1,240}?) certos$",
-"$1 exercises · $2 correct"
+"^A resposta é \"([^·]{1,240}?)\"\\.([^·]{1,240}?)$",
+"The answer is \"$1\".$2"
+],
+[
+"^Oi! Aqui é a aula de inglês de ([^·]{1,240}?)$",
+"Hi! This is $1's English class"
+],
+[
+"^Slide ([^·]{1,240}?) — arraste para reordenar$",
+"Slide $1 — drag to reorder"
+],
+[
+"^Última aula em ([^·]{1,240}?)\\/([^·]{1,240}?)$",
+"Last class on $1/$2"
+],
+[
+"^Trazer o takeaway do livro \\(([^·]{1,240}?)\\)$",
+"Bring in the takeaway from the book ($1)"
+],
+[
+"^Não sou ([^·]{1,240}?) — escolher outro nome$",
+"I'm not $1 — pick another name"
 ],
 [
 "^As tabelas ainda não existem((?:s|es|is)?)$",
 "The tables don't exist yet$1"
 ],
 [
-"^Oi! Aqui é a aula de inglês de (.{1,240}?)$",
-"Hi! This is $1's English class"
-],
-[
-"^Slide (.{1,240}?) — arraste para reordenar$",
-"Slide $1 — drag to reorder"
-],
-[
-"^Trazer o takeaway do livro \\((.{1,240}?)\\)$",
-"Bring in the takeaway from the book ($1)"
-],
-[
-"^(.{1,240}?) questões · (.{1,240}?) partes$",
-"$1 questions · $2 parts"
-],
-[
-"^Não sou (.{1,240}?) — escolher outro nome$",
-"I'm not $1 — pick another name"
-],
-[
-"^(.{1,240}?) acertou! \\+(.{1,240}?) pontos$",
-"$1 got it! +$2 points"
-],
-[
-"^(.{1,240}?) Deixe em branco para remover$",
-"$1 Leave blank to remove"
-],
-[
-"^A resposta é \"(.{1,240}?)\"\\.(.{1,240}?)$",
-"The answer is \"$1\".$2"
-],
-[
-"^(.{1,240}?)\\/(.{1,240}?) nos exercícios$",
-"$1/$2 in the exercises"
-],
-[
-"^Com carinho, (.{1,240}?)IGenglishschool$",
-"With love, $1IGenglishschool"
-],
-[
-"^Tudo funciona, com (.{1,240}?) aviso\\(s$",
-"Everything works, with $1 warning(s"
-],
-[
-"^Última aula em (.{1,240}?)\\/(.{1,240}?)$",
-"Last class on $1/$2"
-],
-[
-"^(.{1,240}?)…\\) — marque se estes alunos$",
-"$1…) — check if these students"
-],
-[
-"^Criar contas dos membros \\((.{1,240}?)$",
-"Create member accounts ($1"
-],
-[
-"^O que (.{1,240}?) pode acessar no link$",
-"What $1 can access in the link"
-],
-[
-"^(.{1,240}?)\\) — marque se estes alunos$",
-"$1) — check if these students"
-],
-[
-"^Quase — a frase certa é: \"(.{1,240}?)$",
-"Almost — the correct sentence is: \"$1"
-],
-[
-"^Meus erros — (.{1,240}?) para revisar$",
-"My mistakes — $1 to review"
-],
-[
-"^Minha lição — (.{1,240}?) pendente\\(s$",
-"My homework — $1 pending"
-],
-[
-"^(.{1,240}?) mensagens novas de alunos$",
-"$1 new messages from students"
-],
-[
-"^(.{1,240}?) textos esperando correção$",
-"$1 texts waiting for correction"
-],
-[
-"^Resposta: \"(.{1,240}?)\"\\.(.{1,240}?)$",
+"^Resposta: \"([^·]{1,240}?)\"\\.([^·]{1,240}?)$",
 "Answer: \"$1\".$2"
 ],
 [
-"^Nenhuma lição para (.{1,240}?) ainda$",
+"^Com carinho, ([^·]{1,240}?)IGenglishschool$",
+"With love, $1IGenglishschool"
+],
+[
+"^Tudo funciona, com ([^·]{1,240}?) aviso\\(s$",
+"Everything works, with $1 warning(s"
+],
+[
+"^Criar contas dos membros \\(([^·]{1,240}?)$",
+"Create member accounts ($1"
+],
+[
+"^O que ([^·]{1,240}?) pode acessar no link$",
+"What $1 can access in the link"
+],
+[
+"^para ganhar ([^·]{1,240}?) ([^·]{1,240}?)$",
+"to earn $1 $2"
+],
+[
+"^Próxima: ([^·]{1,240}?) às ([^·]{1,240}?)$",
+"Next: $1 at $2"
+],
+[
+"^Quase — a frase certa é: \"([^·]{1,240}?)$",
+"Almost — the correct sentence is: \"$1"
+],
+[
+"^Questão ([^·]{1,240}?) de ([^·]{1,240}?)$",
+"Question $1 of $2"
+],
+[
+"^Meus erros — ([^·]{1,240}?) para revisar$",
+"My mistakes — $1 to review"
+],
+[
+"^Minha lição — ([^·]{1,240}?) pendente\\(s$",
+"My homework — $1 pending"
+],
+[
+"^Nenhuma lição para ([^·]{1,240}?) ainda$",
 "No homework for $1 yet"
 ],
 [
-"^(.{1,240}?) tarefa\\(s\\) concluída\\(s$",
-"$1 task(s) completed"
+"^Manual do Aluno — página ([^·]{1,240}?)$",
+"Student Handbook — page $1"
+],
+[
+"^Mensalidade de ([^·]{1,240}?) em aberto$",
+"Monthly fee of $1 outstanding"
+],
+[
+"^Obrigada pela parceria! ([^·]{1,240}?)$",
+"Thank you for the partnership! $1"
+],
+[
+"^O contrato terminou em ([^·]{1,240}?)$",
+"The contract ended on $1"
+],
+[
+"^Perguntas por jogador: ([^·]{1,240}?)$",
+"Questions per player: $1"
+],
+[
+"^Sem horário definido: ([^·]{1,240}?)$",
+"No schedule set: $1"
 ],
 [
 "^(\\S{1,30}) · (\\S{1,30}) — só leitura$",
 "$1 · $2 — read only"
 ],
 [
-"^Manual do Aluno — página (.{1,240}?)$",
-"Student Handbook — page $1"
-],
-[
 "^(\\S{1,30}) palavra\\(s\\) · (\\S{1,30})$",
 "$1 word(s) · $2"
-],
-[
-"^Mensalidade de (.{1,240}?) em aberto$",
-"Monthly fee of $1 outstanding"
-],
-[
-"^(.{1,240}?) texto esperando correção$",
-"$1 text waiting for correction"
-],
-[
-"^Obrigada pela parceria! (.{1,240}?)$",
-"Thank you for the partnership! $1"
 ],
 [
 "^Automático pela idade((?:s|es|is)?)$",
 "Automatic by age$1"
 ],
 [
-"^(.{1,240}?)% de acerto na pronúncia$",
-"$1% pronunciation accuracy"
+"^Importar modelo para ([^·]{1,240}?)$",
+"Import template for $1"
 ],
 [
-"^para ganhar (.{1,240}?) (.{1,240}?)$",
-"to earn $1 $2"
+"^aulas registradas em ([^·]{1,240}?)$",
+"classes logged in $1"
 ],
 [
-"^(.{1,240}?) mensagem nova de alunos$",
-"$1 new message from students"
+"^Para treinar mais: ([^·]{1,240}?)$",
+"To practice more: $1"
 ],
 [
-"^Próxima: (.{1,240}?) às (.{1,240}?)$",
-"Next: $1 at $2"
+"^Remover o período \"([^·]{1,240}?)$",
+"Remove the period \"$1"
 ],
 [
-"^Questão (.{1,240}?) de (.{1,240}?)$",
-"Question $1 of $2"
+"^Editando a aula de ([^·]{1,240}?)$",
+"Editing $1's class"
 ],
 [
-"^(.{1,240}?) fez atividade no livro$",
-"$1 did an activity in the book"
+"^Revisão da aula de ([^·]{1,240}?)$",
+"$1's class review"
 ],
 [
-"^O contrato terminou em (.{1,240}?)$",
-"The contract ended on $1"
+"^Ver todas as ([^·]{1,240}?) aulas$",
+"See all $1 classes"
 ],
 [
-"^Perguntas por jogador: (.{1,240}?)$",
-"Questions per player: $1"
+"^aula registrada em ([^·]{1,240}?)$",
+"class logged in $1"
 ],
 [
-"^(.{1,240}?) personagens · meu jogo$",
-"$1 characters · my game"
+"^Olá, ([^·]{1,240}?)! Bem-vindo\\(a$",
+"Hi, $1! Welcome"
 ],
 [
-"^Sem horário definido: (.{1,240}?)$",
-"No schedule set: $1"
+"^Nenhum aluno com “([^·]{1,240}?)”$",
+"No student matches “$1”"
 ],
 [
 "^(\\S{1,30}) questões · (\\S{1,30})$",
 "$1 questions · $2"
 ],
 [
-"^Importar modelo para (.{1,240}?)$",
-"Import template for $1"
+"^Revogar o link de ([^·]{1,240}?)$",
+"Revoke $1's link"
 ],
 [
-"^aulas registradas em (.{1,240}?)$",
-"classes logged in $1"
+"^Plano da aula de ([^·]{1,240}?)$",
+"Class plan for $1"
 ],
 [
-"^(.{1,240}?) personagens · pronto$",
-"$1 characters · ready"
+"^Excluir a lição “([^·]{1,240}?)$",
+"Delete the homework “$1"
 ],
 [
-"^(.{1,240}?) fez a lição de casa$",
-"$1 did the homework"
+"^Editar a aula de ([^·]{1,240}?)$",
+"Edit $1's class"
 ],
 [
-"^(.{1,240}?) voz\\(es\\) em inglês$",
-"$1 English voice(s)"
+"^Ficha da aula de ([^·]{1,240}?)$",
+"$1's class sheet"
+],
+[
+"^Todas as aulas \\(([^·]{1,240}?)$",
+"All classes ($1"
 ],
 [
 "^(\\S{1,30}) (\\S{1,30}) de alunos$",
 "$1 $2 from students"
 ],
 [
-"^(.{1,240}?) e marque a resposta$",
-"$1 and mark the answer"
+"^Ficha da aula — ([^·]{1,240}?)$",
+"Class sheet — $1"
 ],
 [
-"^(.{1,240}?) · escondido no link$",
-"$1 · hidden on the link"
+"^Sugestões para “([^·]{1,240}?)$",
+"Suggestions for “$1"
 ],
 [
-"^(.{1,240}?) · 👁 visível no link$",
-"$1 · 👁 visible on the link"
+"^Lição de casa · ([^·]{1,240}?)$",
+"Homework · $1"
 ],
 [
-"^Para treinar mais: (.{1,240}?)$",
-"To practice more: $1"
-],
-[
-"^(.{1,240}?) faz parte do grupo$",
-"$1 is part of the group"
-],
-[
-"^Remover o período \"(.{1,240}?)$",
-"Remove the period \"$1"
-],
-[
-"^Editando a aula de (.{1,240}?)$",
-"Editing $1's class"
-],
-[
-"^Revisão da aula de (.{1,240}?)$",
-"$1's class review"
-],
-[
-"^Ver todas as (.{1,240}?) aulas$",
-"See all $1 classes"
+"^Lição de casa — ([^·]{1,240}?)$",
+"Homework — $1"
 ],
 [
 "^(\\S{1,30}) (\\S{1,30}) correção$",
 "$1 $2 correction"
 ],
 [
-"^aula registrada em (.{1,240}?)$",
-"class logged in $1"
-],
-[
-"^Olá, (.{1,240}?)! Bem-vindo\\(a$",
-"Hi, $1! Welcome"
-],
-[
-"^Revogar o link de (.{1,240}?)$",
-"Revoke $1's link"
-],
-[
-"^(.{1,240}?) alunos de exemplo$",
-"$1 sample students"
-],
-[
-"^Plano da aula de (.{1,240}?)$",
-"Class plan for $1"
-],
-[
-"^Excluir a lição “(.{1,240}?)$",
-"Delete the homework “$1"
-],
-[
-"^Editar a aula de (.{1,240}?)$",
-"Edit $1's class"
-],
-[
-"^Ficha da aula de (.{1,240}?)$",
-"$1's class sheet"
-],
-[
-"^Todas as aulas \\((.{1,240}?)$",
-"All classes ($1"
-],
-[
-"^Ficha da aula — (.{1,240}?)$",
-"Class sheet — $1"
-],
-[
-"^Sugestões para “(.{1,240}?)$",
-"Suggestions for “$1"
-],
-[
-"^Lição de casa · (.{1,240}?)$",
-"Homework · $1"
-],
-[
-"^Lição de casa — (.{1,240}?)$",
-"Homework — $1"
-],
-[
-"^Nome do jogador (.{1,240}?)$",
+"^Nome do jogador ([^·]{1,240}?)$",
 "Player $1 name"
 ],
 [
-"^Ficha da aula: (.{1,240}?)$",
+"^Ficha da aula: ([^·]{1,240}?)$",
 "Class sheet: $1"
 ],
 [
-"^Livro online — (.{1,240}?)$",
+"^Livro online — ([^·]{1,240}?)$",
 "Online book — $1"
 ],
 [
-"^Entregar até: (.{1,240}?)$",
+"^Entregar até: ([^·]{1,240}?)$",
 "Due by: $1"
 ],
 [
-"^Lição pedida: (.{1,240}?)$",
+"^Lição pedida: ([^·]{1,240}?)$",
 "Homework assigned: $1"
 ],
 [
-"^Trocar o link (.{1,240}?)$",
+"^Trocar o link ([^·]{1,240}?)$",
 "Change the $1 link"
 ],
 [
-"^Copiar “(.{1,240}?)” para$",
+"^Copiar “([^·]{1,240}?)” para$",
 "Copy \"$1\" to"
 ],
 [
-"^Mostrar pista (.{1,240}?)$",
+"^Mostrar pista ([^·]{1,240}?)$",
 "Show clue $1"
+],
+[
+"^Memória: ([^·]{1,240}?) de 5$",
+"Memory: $1 of 5"
+],
+[
+"^Copiada para ([^·]{1,240}?)$",
+"Copied to $1"
+],
+[
+"^Automático — ([^·]{1,240}?)$",
+"Automatic — $1"
+],
+[
+"^aula hoje às ([^·]{1,240}?)$",
+"class today at $1"
+],
+[
+"^e acertou \\*([^·]{1,240}?)$",
+"and got *$1"
+],
+[
+"^com sino, ([^·]{1,240}?)os$",
+"with a bell, $1the"
+],
+[
+"^Salvo como ([^·]{1,240}?)$",
+"Saved as $1"
+],
+[
+"^Não é aí\\. ([^·]{1,240}?)$",
+"Not there. $1"
 ],
 [
 "^(\\S{1,30}) \\(minha versão$",
 "$1 (my version"
 ],
 [
+"^Memória de ([^·]{1,240}?)$",
+"$1's memory"
+],
+[
+"^Atalhos de ([^·]{1,240}?)$",
+"$1's shortcuts"
+],
+[
 "^Pela idade((?:s|es|is)?)$",
 "By age$1"
 ],
 [
-"^Copiada para (.{1,240}?)$",
-"Copied to $1"
+"^Livro p\\. ([^·]{1,240}?)$",
+"Book p. $1"
 ],
 [
-"^Automático — (.{1,240}?)$",
-"Automatic — $1"
-],
-[
-"^e acertou \\*(.{1,240}?)$",
-"and got *$1"
+"^Livro de ([^·]{1,240}?)$",
+"$1's book"
 ],
 [
 "^(\\S{1,30})% de presença$",
@@ -2431,135 +2512,115 @@ IGLang.addPatterns([
 "$1 didn't load"
 ],
 [
-"^com sino, (.{1,240}?)os$",
-"with a bell, $1the"
+"^em ([^·]{1,240}?) dias$",
+"in $1 days"
 ],
 [
-"^Salvo como (.{1,240}?)$",
-"Saved as $1"
+"^Só para ([^·]{1,240}?)$",
+"Only for $1"
 ],
 [
-"^Não é aí\\. (.{1,240}?)$",
-"Not there. $1"
+"^Link de ([^·]{1,240}?)$",
+"$1's link"
+],
+[
+"^Próxima ([^·]{1,240}?)$",
+"Next $1"
+],
+[
+"^Aula de ([^·]{1,240}?)$",
+"$1's class"
+],
+[
+"^Degradê ([^·]{1,240}?)$",
+"$1 gradient"
 ],
 [
 "^(\\S{1,30}) — e mais em$",
 "$1 — and more in"
 ],
 [
+"^Livro — ([^·]{1,240}?)$",
+"Book — $1"
+],
+[
+"^pago em ([^·]{1,240}?)$",
+"paid on $1"
+],
+[
+"^Certo! ([^·]{1,240}?)$",
+"Correct! $1"
+],
+[
+"^Nome \\(([^·]{1,240}?)$",
+"Name ($1"
+],
+[
+"^Livro: ([^·]{1,240}?)$",
+"Book: $1"
+],
+[
+"^Página ([^·]{1,240}?)$",
+"Page $1"
+],
+[
+"^e mais ([^·]{1,240}?)$",
+"and $1 more"
+],
+[
+"^hoje · ([^·]{1,240}?)$",
+"today · $1"
+],
+[
 "^(\\S{1,30}) aulas hoje$",
 "$1 classes today"
 ],
 [
-"^Livro p\\. (.{1,240}?)$",
-"Book p. $1"
+"^Livro ([^·]{1,240}?)$",
+"Book $1"
 ],
 [
-"^Livro de (.{1,240}?)$",
-"$1's book"
+"^Abrir ([^·]{1,240}?)$",
+"Open $1"
+],
+[
+"^turma ([^·]{1,240}?)$",
+"group $1"
 ],
 [
 "^(\\S{1,30}) aula hoje$",
 "$1 class today"
 ],
 [
-"^em (.{1,240}?) dias$",
-"in $1 days"
+"^Olá, ([^·]{1,240}?)$",
+"Hello, $1"
 ],
 [
 "^(\\S{1,30}) palavras$",
 "$1 words"
 ],
 [
-"^Só para (.{1,240}?)$",
-"Only for $1"
-],
-[
 "^(\\S{1,30}) sem link$",
 "$1 no link"
-],
-[
-"^Link de (.{1,240}?)$",
-"$1's link"
-],
-[
-"^Próxima (.{1,240}?)$",
-"Next $1"
 ],
 [
 "^áudio((?:s|es|is)?)$",
 "audio$1"
 ],
 [
-"^Aula de (.{1,240}?)$",
-"$1's class"
-],
-[
-"^Degradê (.{1,240}?)$",
-"$1 gradient"
-],
-[
-"^Livro — (.{1,240}?)$",
-"Book — $1"
-],
-[
-"^pago em (.{1,240}?)$",
-"paid on $1"
-],
-[
-"^Certo! (.{1,240}?)$",
-"Correct! $1"
-],
-[
-"^Nome \\((.{1,240}?)$",
-"Name ($1"
-],
-[
-"^Livro: (.{1,240}?)$",
-"Book: $1"
-],
-[
-"^Página (.{1,240}?)$",
-"Page $1"
-],
-[
 "^(\\S{1,30}) \\(cópia$",
 "$1 (copy"
-],
-[
-"^e mais (.{1,240}?)$",
-"and $1 more"
-],
-[
-"^hoje · (.{1,240}?)$",
-"today · $1"
 ],
 [
 "^(\\S{1,30}) palavra$",
 "$1 word"
 ],
 [
-"^Livro (.{1,240}?)$",
-"Book $1"
-],
-[
-"^Abrir (.{1,240}?)$",
-"Open $1"
-],
-[
-"^turma (.{1,240}?)$",
-"group $1"
-],
-[
-"^Olá, (.{1,240}?)$",
-"Hello, $1"
+"^às ([^·]{1,240}?)$",
+"at $1"
 ],
 [
 "^(\\S{1,30}) aulas$",
 "$1 classes"
-],
-[
-"^às (.{1,240}?)$",
-"at $1"
 ]
 ]);
