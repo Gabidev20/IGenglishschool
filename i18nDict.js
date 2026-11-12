@@ -1073,6 +1073,7 @@ IGLang.add({
  "São só três perguntas. O site mostra os conteúdos, jogos e ferramentas certos para a idade e o nível dos seus alunos — e dá para mudar depois": "Just three questions. The site shows the right content, games and tools for your students' age and level — and you can change it later",
  "Só o que já foi dado": "Only what's been taught",
  "Só os tópicos que já estão no registro das aulas": "Only topics already in the class log",
+ "Takeaway do livro nesta data: palavras, pronúncia e frases": "Takeaway on this date: words, pronunciation and sentences",
  "Tamanho da cartela": "Card size",
  "Tamanho da letra": "Text size",
  "Também dá para trocar de aluno a qualquer momento pelo botão com o nome dele, no canto de cima": "You can also switch students at any time with the button with their name, in the top corner",
@@ -1132,6 +1133,9 @@ IGLang.add({
  "Tradução": "Translation",
  "Travar": "Lock",
  "Travar / destravar": "Lock / unlock",
+ "Traz o que o aluno anotou no": "Brings in what the student noted in the book's",
+ "Traz o que o aluno anotou no 🧠 Takeaway do livro nesta data: palavras, pronúncia e frases": "Brings in what the student noted in the book's 🧠 Takeaway on this date: words, pronunciation and sentences",
+ "Trazer o takeaway do livro": "Bring in the takeaway from the book",
  "Trazer para a frente": "Bring to front",
  "Traço": "Stroke",
  "Treinar": "Practice",
@@ -1153,6 +1157,7 @@ IGLang.add({
  "Tudo certo": "All good",
  "Tudo começa no": "Everything starts at the",
  "Tudo em dia": "All caught up",
+ "Tudo isso já está na ficha": "All of this is already on the class sheet",
  "Tudo é editável: títulos, números, habilidades, assinatura e data — e dá para tirar uma seção desmarcando": "Everything is editable: titles, numbers, skills, signature and date — and you can remove a section by unchecking it",
  "Tudo é montado a partir dos bancos de palavras do curso": "Everything is built from the course's word banks",
  "Turma / aluno": "Group / student",
@@ -1846,12 +1851,20 @@ IGLang.addPatterns([
 "The image link for \"$1\" doesn't look valid — it must start with https"
 ],
 [
+"^(.{1,240}?) itens trazidos do livro \\(p\\. (.{1,240}?)\\)\\. Confira e salve a aula$",
+"$1 items brought in from the book (p. $2). Check them and save the class"
+],
+[
 "^Resultado de (.{1,240}?) — lição: (.{1,240}?)\\. Veja o que foi feito na página$",
 "$1's result — homework: $2. See what was done on the page"
 ],
 [
 "^(.{1,240}?) nova\\(s\\) · (.{1,240}?) aguardando resposta · (.{1,240}?) no total$",
 "$1 new · $2 awaiting reply · $3 total"
+],
+[
+"^(.{1,240}?) item trazido do livro \\(p\\. (.{1,240}?)\\)\\. Confira e salve a aula$",
+"$1 item brought in from the book (p. $2). Check it and save the class"
 ],
 [
 "^(.{1,240}?) de (.{1,240}?) aulas concluídas - (.{1,240}?)% de frequência$",
@@ -2080,6 +2093,10 @@ IGLang.addPatterns([
 [
 "^Slide (.{1,240}?) — arraste para reordenar$",
 "Slide $1 — drag to reorder"
+],
+[
+"^Trazer o takeaway do livro \\((.{1,240}?)\\)$",
+"Bring in the takeaway from the book ($1)"
 ],
 [
 "^(.{1,240}?) questões · (.{1,240}?) partes$",
