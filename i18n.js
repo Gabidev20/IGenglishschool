@@ -266,7 +266,18 @@ const IGLang = (() => {
     const b = document.getElementById('langToggleBtn');
     if (!b) return;
     const en = lang === 'en';
-    b.textContent = en ? 'EN' : 'PT';
+    // Built once: globe, the word "Idioma" (translated like any text), and
+    // the PT | EN track whose gold thumb slides to the language on.
+    if (!b.querySelector('.ls-track')) {
+      b.innerHTML = `
+        <svg class="ls-ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5S14.6 18.7 12 21.5M12 2.5C9.4 5.3 8.1 8.5 8.1 12s1.3 6.7 3.9 9.5"/></svg>
+        <span class="ls-label">Idioma</span>
+        <span class="ls-track" aria-hidden="true"><span class="ls-thumb"></span><span class="ls-opt" data-l="pt">PT</span><span class="ls-opt" data-l="en">EN</span></span>
+        <span class="ls-code" aria-hidden="true"></span>`;
+    }
+    b.classList.toggle('is-en', en);
+    const code = b.querySelector('.ls-code');
+    if (code) code.textContent = en ? 'EN' : 'PT';
     b.setAttribute('aria-pressed', en ? 'true' : 'false');
     // set after the walk so this label is never translated back
     const label = en ? 'Language: English' : 'Idioma: Português';

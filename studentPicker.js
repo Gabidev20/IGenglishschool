@@ -57,7 +57,8 @@ function pkToday() {
   try {
     if (typeof dashToday === 'function' && typeof DASH_DAYS !== 'undefined' && typeof dashScheduleFor === 'function') {
       const dow = DASH_DAYS.find(d => d.dow === dashToday().getDay());
-      if (dow) loadStudents().forEach(s => { const sc = dashScheduleFor(s.id); if (sc.days.includes(dow.id)) out.set(s.id, sc.time || ''); });
+      if (typeof agClassesOn === 'function') agClassesOn(dashKey(dashToday())).forEach(c => { if (!out.has(c.sid)) out.set(c.sid, c.time || ''); });
+      else if (dow) loadStudents().forEach(s => { const sc = dashScheduleFor(s.id); if (sc.days.includes(dow.id)) out.set(s.id, sc.time || ''); });
     }
   } catch (e) { /* no schedule */ }
   return out;

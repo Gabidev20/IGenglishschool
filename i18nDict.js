@@ -47,6 +47,7 @@ IGLang.add({
  "Adolescente 15+ / Adulto": "Teen 15+ / Adult",
  "Adolescentes": "Teens",
  "Adultos": "Adults",
+ "Agenda": "Calendar",
  "Ainda não há mensagens com este aluno": "No messages with this student yet",
  "Ainda não há slides por aqui. Quando a teacher fizer slides na aula, eles aparecem aqui": "There are no slides here yet. When the teacher makes slides in class, they appear here",
  "Ainda não lê": "Doesn't read yet",
@@ -84,6 +85,7 @@ IGLang.add({
  "Aperte Ctrl+V para colar a foto": "Press Ctrl+V to paste the photo",
  "Aplicado": "Applied",
  "Aplicar liberações do grupo a todos": "Apply group releases to everyone",
+ "Aplicar…": "Apply…",
  "Apresentar": "Present",
  "Apresentar: esconde os botões da professora para compartilhar a tela": "Present: hides the teacher's buttons so you can share the screen",
  "Apresentação": "Presentation",
@@ -91,6 +93,7 @@ IGLang.add({
  "Armário": "Cupboard",
  "Arquivos": "Files",
  "Arraste para mover a página. Dois dedos (ou a rodinha do mouse) para zoom": "Drag to move the page. Two fingers (or the mouse wheel) to zoom",
+ "Arraste uma aula para mudar o dia ou a hora · puxe a borda de baixo para mudar a duração · clique num espaço vazio para marcar uma aula": "Drag a class to change its day or time · pull its bottom edge to change its length · click an empty slot to add a class",
  "As aulas aparecem aqui quando os alunos têm dia e horário em": "Classes appear here when students have a day and time in",
  "As aulas são registradas na turma": "Classes are logged in the group",
  "As palavras em vermelho são as que faltaram — ouça o modelo e tente de novo": "The words in red are the ones that were missing — listen to the model and try again",
@@ -123,6 +126,8 @@ IGLang.add({
  "Bimestre": "Two-month term",
  "Bimestre atual": "Current term",
  "Bimestre do livro": "Book term",
+ "Boa noite": "Good evening",
+ "Boa tarde": "Good afternoon",
  "Boa! Anotado": "Nice! Noted",
  "Boletim": "Report card",
  "Boletim (Progress Report": "Report card (Progress Report",
@@ -152,6 +157,7 @@ IGLang.add({
  "Campo do manual": "Manual field",
  "Cancelar": "Cancel",
  "Cancelar edição": "Cancel editing",
+ "Cancelar só esta aula": "Cancel this class only",
  "Canva, Zoom) de cada aluno": "Canva, Zoom) of each student",
  "Cards da aula — depois pratique para não esquecer": "Class cards — then practice so you don't forget",
  "Carregando": "Loading",
@@ -282,6 +288,7 @@ IGLang.add({
  "Destaques do Aluno": "Student Highlights",
  "Detalhes": "Details",
  "Devagar": "Slow",
+ "Dia": "Day",
  "Dia do pagamento": "Payment day",
  "Dias da semana": "Days of the week",
  "Dias do mês": "Days of the month",
@@ -361,6 +368,7 @@ IGLang.add({
  "Escolha um livro": "Choose a book",
  "Escolha um tópico com pelo menos 4 palavras": "Pick a topic with at least 4 words",
  "Escolha um tópico para jogar": "Choose a topic to play",
+ "Escolha…": "Choose…",
  "Escolher aluno": "Choose student",
  "Escolher arquivo": "Choose file",
  "Escolher outra cor": "Choose another color",
@@ -452,6 +460,7 @@ IGLang.add({
  "Feita": "Done",
  "Ferramentas": "Tools",
  "Ferramentas da aula": "Class tools",
+ "Ficha": "File",
  "Ficha do aluno": "Student sheet",
  "Ficha do aluno: cadastro, contrato, aulas, lições e pagamentos": "Student record: registration, contract, classes, homework and payments",
  "Ficha salva": "Record saved",
@@ -511,6 +520,8 @@ IGLang.add({
  "I want a pizza with two tomatoes and cheese, please!\" — o pedido é falado e desenhado; a criança monta a pizza": "I want a pizza with two tomatoes and cheese, please!\" — the order is spoken and drawn; the child builds the pizza",
  "IGenglishschool] As tabelas foram encontradas em": "IGenglishschool] The tables were found in",
  "Idade": "Age",
+ "Idioma": "Language",
+ "Idioma: Português": "Language: Português",
  "Idioma: Português (mudar para English": "Language: Portuguese (switch to English",
  "Imagem": "Image",
  "Imagem baixada. No WhatsApp, abra a conversa do aluno e anexe o arquivo": "Image downloaded. In WhatsApp, open the student's chat and attach the file",
@@ -580,6 +591,7 @@ IGLang.add({
  "Link não encontrado neste navegador": "Link not found in this browser",
  "Links da Aula": "Class Links",
  "Links do grupo": "Group links",
+ "Lista": "List",
  "Lista copiada": "List copied",
  "Lista de vocabulário": "Vocabulary list",
  "Listen to the story · Ouvir a história": "Listen to the story",
@@ -667,6 +679,7 @@ IGLang.add({
  "Mostrar só as últimas": "Show only the latest",
  "Mostrar “Slides da aula” no link do aluno": "Show \"Class slides\" on the student's link",
  "Mover": "Move",
+ "Mudar dia, hora ou duração": "Change day, time or length",
  "Mudar jogo / jogadores": "Change game / players",
  "Mude o que precisar — o site se ajusta na hora": "Change whatever you need — the site adjusts right away",
  "Muito bem": "Well done",
@@ -737,6 +750,7 @@ IGLang.add({
  "Nota": "Note",
  "Nota (opcional": "Note (optional",
  "Nova apresentação": "New presentation",
+ "Nova aula": "New class",
  "Nova lição de casa": "New homework",
  "Nova palavra (ex.: banana": "New word (e.g.: banana",
  "Novo": "New",
@@ -893,6 +907,7 @@ IGLang.add({
  "Pistas (opcional) — uma por linha. Ex.: I live in Africa": "Clues (optional) — one per line. E.g., I live in Africa",
  "Placar": "Scoreboard",
  "Plano": "Plan",
+ "Plano da aula": "Class plan",
  "Plural dos substantivos": "Plural nouns",
  "Pontos desta aula": "Points from this class",
  "Português": "Portuguese",
@@ -1087,6 +1102,8 @@ IGLang.add({
  "Sábado": "Saturday",
  "São precisos pelo menos 2 jogadores": "At least 2 players are required",
  "São só três perguntas. O site mostra os conteúdos, jogos e ferramentas certos para a idade e o nível dos seus alunos — e dá para mudar depois": "Just three questions. The site shows the right content, games and tools for your students' age and level — and you can change it later",
+ "Só esta vez (aula extra)": "Just this once (extra class)",
+ "Só nesta semana": "This week only",
  "Só no seu login": "Only in your account",
  "Só o que já foi dado": "Only what's been taught",
  "Só os tópicos que já estão no registro das aulas": "Only topics already in the class log",
@@ -1125,6 +1142,8 @@ IGLang.add({
  "Toca um som (cachorro, chuva, tambor, telefone, trem…) e a criança acha a figura. \"It's a dog": "A sound plays (dog, rain, drum, phone, train…) and the child finds the picture. \"It's a dog",
  "Tocar / pausar (espaço no áudio": "Play / pause (space on the audio",
  "Tocar ou pausar": "Play or pause",
+ "Toda semana (horário fixo)": "Every week (fixed time)",
+ "Toda semana neste horário": "Every week at this time",
  "Todas as idades": "All ages",
  "Todas as lições": "All homework",
  "Todas registradas": "All logged",
@@ -1231,6 +1250,7 @@ IGLang.add({
  "Verifique a internet e tente de novo": "Check the internet and try again",
  "Versão corrigida": "Corrected version",
  "Violão / guitarra": "Acoustic guitar",
+ "Visualização": "View",
  "Vocabulário (crianças": "Vocabulary (kids",
  "Vocabulário, leitura e jogos dos meus tópicos": "Vocabulary, reading and games for my topics",
  "Você": "You",
@@ -1241,6 +1261,7 @@ IGLang.add({
  "Voltar 5 segundos": "Back 5 seconds",
  "Voltar a usar o link único do grupo": "Go back to the group's shared link",
  "Voltar ao automático": "Back to automatic",
+ "Voltar ao horário fixo": "Back to the fixed time",
  "Voltar ao início": "Back to the start",
  "Voltar ao álbum padrão": "Back to the default album",
  "Voltar para a escolha do grupo": "Back to group selection",
@@ -1287,6 +1308,7 @@ IGLang.add({
  "atrás": "behind",
  "aula": "class",
  "aula atual": "current class",
+ "aula extra": "extra class",
  "aula hoje": "class today",
  "aula registrada": "class logged",
  "aulas": "classes",
@@ -1515,7 +1537,9 @@ IGLang.add({
  "pelo 📖 e pelo 🔗 de cada um você vê o livro e o progresso individual. A aula do grupo continua sendo registrada no aluno-grupo": "with the 📖 and 🔗 of each person you see their book and individual progress. The group class keeps being recorded under the group student",
  "pintar": "paint",
  "plano da aula": "class plan",
+ "plano da aula…": "class plan…",
  "por pessoa": "per person",
+ "preparada": "prepared",
  "preposição": "preposition",
  "preposições": "prepositions",
  "presente contínuo": "present continuous",
@@ -1531,7 +1555,10 @@ IGLang.add({
  "que": "that",
  "quer que eu…? / devo…? (oferecer ajuda": "do you want me to…? / shall I…? (offering help",
  "questões dominadas": "questions mastered",
+ "registrada": "logged",
+ "registradas": "logged",
  "registrar a aula": "log the class",
+ "remarcada": "rescheduled",
  "responda à pergunta — \"How do you say 20 in English?\", \"How do you say lápis in English?\". Você escolhe o assunto: números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou qualquer tópico do currículo": "gates, answer a question — \"How do you say 20 in English?\", \"How do you say lápis in English?\". You pick the subject: numbers, school supplies, colors, animals, fruit, body, feelings, weather, house or any topic in the curriculum",
  "resposta": "answer",
  "resposta curta": "short answer",
@@ -1922,6 +1949,10 @@ IGLang.addPatterns([
 [
 "^significa \"([^·]{1,240}?)\" — começa com \"([^·]{1,240}?)\" \\(([^·]{1,240}?) letras$",
 "means \"$1\" — starts with \"$2\" ($3 letters"
+],
+[
+"^Sem hora definida nesta semana: ([^·]{1,240}?) — clique em ⚙️ Horários & valores$",
+"No time set this week: $1 — click ⚙️ Schedule & fees"
 ],
 [
 "^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) palavra\\(s\\) · ([^·]{1,240}?) pergunta\\(s$",
@@ -2364,6 +2395,10 @@ IGLang.addPatterns([
 "No student matches “$1”"
 ],
 [
+"^(\\S{1,30})\\/(\\S{1,30}) preparadas$",
+"$1/$2 prepared"
+],
+[
 "^(\\S{1,30}) questões · (\\S{1,30})$",
 "$1 questions · $2"
 ],
@@ -2418,6 +2453,10 @@ IGLang.addPatterns([
 [
 "^Nome do jogador ([^·]{1,240}?)$",
 "Player $1 name"
+],
+[
+"^Mudar a aula de ([^·]{1,240}?)$",
+"Move $1's class"
 ],
 [
 "^Ficha da aula: ([^·]{1,240}?)$",
@@ -2492,12 +2531,24 @@ IGLang.addPatterns([
 "$1's shortcuts"
 ],
 [
+"^Boa tarde, ([^·]{1,240}?)$",
+"Good afternoon, $1"
+],
+[
+"^Boa noite, ([^·]{1,240}?)$",
+"Good evening, $1"
+],
+[
 "^Pela idade((?:s|es|is)?)$",
 "By age$1"
 ],
 [
 "^Livro p\\. ([^·]{1,240}?)$",
 "Book p. $1"
+],
+[
+"^Registrar ([^·]{1,240}?)$",
+"Log $1"
 ],
 [
 "^Livro de ([^·]{1,240}?)$",
@@ -2510,6 +2561,10 @@ IGLang.addPatterns([
 [
 "^(\\S{1,30}) não carregou$",
 "$1 didn't load"
+],
+[
+"^Bom dia, ([^·]{1,240}?)$",
+"Good morning, $1"
 ],
 [
 "^em ([^·]{1,240}?) dias$",

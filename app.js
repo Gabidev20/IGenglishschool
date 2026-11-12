@@ -72,10 +72,19 @@ initStudents();
   let folded = false;
   try { folded = localStorage.getItem(KEY) === '1'; } catch (e) { /* private mode */ }
   apply(folded);
-  btn.addEventListener('click', () => {
+  const toggle = () => {
     folded = !document.documentElement.classList.contains('side-collapsed');
     apply(folded);
     try { localStorage.setItem(KEY, folded ? '1' : '0'); } catch (e) { /* private mode */ }
+  };
+  btn.addEventListener('click', toggle);
+  // "[" folds and opens it too, unless the teacher is typing.
+  document.addEventListener('keydown', e => {
+    if (e.key !== '[' || e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (document.querySelector('.modal-overlay.open, .modal.open, #studentPicker')) return;
+    toggle();
   });
 })();
 

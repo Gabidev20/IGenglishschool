@@ -104,6 +104,9 @@ function dashScheduleFor(studentId) {
     days: Array.isArray(s && s.days) ? s.days.filter(d => DASH_DAYS.some(x => x.id === d)) : [],
     time: (s && s.time) || '',
     fee: Number(s && s.fee) || 0,
+    // agenda.js: a time per day ({ mon: '18:00' }) and the length in minutes.
+    times: s && s.times && typeof s.times === 'object' ? s.times : {},
+    dur: Number(s && s.dur) || 0,
   };
 }
 function dashSaveSchedule(studentId, patch) {
@@ -191,13 +194,18 @@ function dashMonthStats(student, monthKey) {
 // of the attendance grid so a day with no lesson is not shown as a gap.
 function dashScheduledDatesInMonth(studentId, monthKey) {
   const sched = dashScheduleFor(studentId);
-  if (!sched.days.length) return [];
   const [y, m] = monthKey.split('-').map(Number);
   const out = [];
   const d = new Date(y, m - 1, 1);
   while (d.getMonth() === m - 1) {
-    const day = DASH_DAYS.find(x => x.dow === d.getDay());
-    if (day && sched.days.includes(day.id)) out.push(dashKey(d));
+    const key = dashKey(d);
+    // The agenda knows the moved, cancelled and extra classes (agenda.js).
+    if (typeof agClassesOn === 'function') {
+      if (agClassesOn(key).some(c => c.sid === studentId)) out.push(key);
+    } else {
+      const day = DASH_DAYS.find(x => x.dow === d.getDay());
+      if (day && sched.days.includes(day.id)) out.push(key);
+    }
     d.setDate(d.getDate() + 1);
   }
   return out;
@@ -546,11 +554,17 @@ function dashOpenScheduleEditor() {
   document.getElementById('schedCancel').addEventListener('click', closeModal);
   document.getElementById('schedSave').addEventListener('click', () => {
     document.querySelectorAll('.sched-row').forEach(row => {
-      dashSaveSchedule(row.dataset.student, {
+      const before = dashScheduleFor(row.dataset.student);
+      const time = row.querySelector('[data-f="time"]').value;
+      const patch = {
         days: [...row.querySelectorAll('.sched-day.on')].map(b => b.dataset.day),
-        time: row.querySelector('[data-f="time"]').value,
+        time,
         fee: Number(row.querySelector('[data-f="fee"]').value) || 0,
-      });
+      };
+      // A new time here is the time of every day again (the agenda's
+      // per-day times are kept while this one is left alone).
+      if (time !== before.time) patch.times = {};
+      dashSaveSchedule(row.dataset.student, patch);
     });
     closeModal();
     renderDashboard();
