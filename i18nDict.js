@@ -18,8 +18,10 @@ IGLang.add({
  "Abra o tópico, assista ao vídeo e veja os flashcards. Já terminou de estudar": "Open the topic, watch the video and look at the flashcards. Done studying",
  "Abra, toque no seu nome e faça as atividades — o progresso de cada um fica separado": "Open it, tap your name and do the activities — each person's progress is kept separate",
  "Abre o livro do aluno direto na página": "Opens the student book right at the page",
+ "Abrindo": "Opening",
  "Abrindo a sua página": "Opening your page",
  "Abrindo o livro": "Opening the book",
+ "Abrindo os slides": "Opening the slides",
  "Abrir": "Open",
  "Abrir PDF": "Open PDF",
  "Abrir a lista completa": "Open the full list",
@@ -29,6 +31,10 @@ IGLang.add({
  "Abrir um jogo (a apresentação continua aberta": "Open a game (the presentation stays open",
  "Abrir um jogo sem sair dos slides": "Open a game without leaving the slides",
  "Acertou": "Correct",
+ "Adesivo livre": "Free sticker",
+ "Adesivos": "Stickers",
+ "Adicionar": "Add",
+ "Adicionar habilidade": "Add skill",
  "Adicionar imagem — ou cole com Ctrl+V / arraste um arquivo": "Add image — or paste with Ctrl+V / drag a file",
  "Adicionar palavra": "Add word",
  "Adicionar período": "Add period",
@@ -36,12 +42,17 @@ IGLang.add({
  "Adicionar texto": "Add text",
  "Adicionar à lista": "Add to list",
  "Adivinhação": "Guessing",
+ "Adolescente 15+ / Adulto": "Teen 15+ / Adult",
+ "Adolescentes": "Teens",
+ "Adultos": "Adults",
  "Ainda não há mensagens com este aluno": "No messages with this student yet",
  "Ainda não há slides por aqui. Quando a teacher fizer slides na aula, eles aparecem aqui": "There are no slides here yet. When the teacher makes slides in class, they appear here",
  "Ainda não lê": "Doesn't read yet",
  "Ainda não salvo": "Not saved yet",
  "Ainda não tem nada aqui. Jogue um jogo e ele aparece": "Nothing here yet. Play a game and it will show up",
+ "Ajuda": "Help",
  "Ajude a criança a abrir a lição nos dias combinados. Não precisa acertar tudo: os erros mostram para a teacher o que revisar": "Help your child open the homework on the agreed days. They don't have to get everything right: mistakes show the teacher what to review",
+ "Ajustar ao slide": "Fit to slide",
  "Alfabeto — ouvir e falar as letras": "Alphabet — listen and say the letters",
  "Alinhar": "Align",
  "Alterações salvas": "Changes saved",
@@ -67,12 +78,14 @@ IGLang.add({
  "Aparece a figura e a criança fala a palavra; o microfone confere (aceita o sotaque e as variações). Números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou um tópico. No Body Parts também tem o modo": "A picture appears and the child says the word; the microphone checks it (it accepts accents and variations). Numbers, school supplies, colors, animals, fruit, body, feelings, weather, house or a topic. Body Parts also has a",
  "Aparece a figura e a criança fala a palavra; o microfone confere (aceita o sotaque e as variações). Números, material escolar, cores, animais, frutas, corpo, sentimentos, clima, casa ou um tópico. No Body Parts também tem o modo 🎤 Say it": "A picture appears and the child says the word; the microphone checks it (it accepts accents and variations). Numbers, school supplies, colors, animals, fruit, body, feelings, weather, house or a topic. Body Parts also has a 🎤 Say it mode",
  "Aperte Ctrl+V para colar a foto": "Press Ctrl+V to paste the photo",
+ "Aplicado": "Applied",
  "Aplicar liberações do grupo a todos": "Apply group releases to everyone",
  "Apresentar": "Present",
  "Apresentar: esconde os botões da professora para compartilhar a tela": "Present: hides the teacher's buttons so you can share the screen",
  "Apresentação": "Presentation",
  "Aqui em cima aparecem o seu": "Up here you'll see your",
  "Armário": "Cupboard",
+ "Arquivos": "Files",
  "Arraste para mover a página. Dois dedos (ou a rodinha do mouse) para zoom": "Drag to move the page. Two fingers (or the mouse wheel) to zoom",
  "As aulas aparecem aqui quando os alunos têm dia e horário em": "Classes appear here when students have a day and time in",
  "As aulas são registradas na turma": "Classes are logged in the group",
@@ -105,6 +118,7 @@ IGLang.add({
  "Bimestre": "Two-month term",
  "Bimestre atual": "Current term",
  "Bimestre do livro": "Book term",
+ "Boa! Anotado": "Nice! Noted",
  "Boletim": "Report card",
  "Boletim (Progress Report": "Report card (Progress Report",
  "Boletim Trimestral · Quarterly Progress Report": "Quarterly Report · Quarterly Progress Report",
@@ -128,10 +142,12 @@ IGLang.add({
  "Cadastrar o primeiro aluno": "Add the first student",
  "Cadastre um aluno primeiro": "Add a student first",
  "Cadastre um aluno primeiro para fazer o relatório": "Add a student first to create the report",
+ "Cadastro": "Profile",
  "Campo do manual": "Manual field",
  "Cancelar": "Cancel",
  "Cancelar edição": "Cancel editing",
  "Canva, Zoom) de cada aluno": "Canva, Zoom) of each student",
+ "Carregando": "Loading",
  "Carregando as páginas": "Loading the pages",
  "Carregando o livro": "Loading the book",
  "Cartelas de bingo": "Bingo cards",
@@ -139,8 +155,10 @@ IGLang.add({
  "Cartões para recortar": "Cards to cut out",
  "Casa": "House",
  "Casa — parts of the house": "House — parts of the house",
+ "Caça-palavras": "Word search",
  "Centralizar na horizontal": "Center horizontally",
  "Centralizar na vertical": "Center vertically",
+ "Certificado": "Certificate",
  "Certificado do aluno": "Student certificate",
  "Certificados ainda não disponíveis": "Certificates not available yet",
  "Certo": "Correct",
@@ -154,6 +172,7 @@ IGLang.add({
  "Clique num objeto para formatar. Ctrl+V cola imagens. Duplo clique no slide cria um texto": "Click an object to format it. Ctrl+V pastes images. Double-click the slide to create a text box",
  "Clique para mudar o título desta seção": "Click to change this section's title",
  "Cobrir o pontilhado e copiar": "Trace over the dotted line and copy",
+ "Colar foto": "Paste photo",
  "Colar vários de uma vez": "Paste several at once",
  "Cole aqui a letra desta parte (apague este texto": "Paste the lyrics for this part here (delete this text",
  "Cole os links fixos de cada aluno. Deixe em branco para remover": "Paste each student's fixed links. Leave blank to remove",
@@ -165,6 +184,8 @@ IGLang.add({
  "Com o aluno escolhido, o Live Class mostra a": "With the student selected, Live Class shows the",
  "Com quem é a aula agora? O livro abre na última página que o aluno fez": "Who is the class with now? The book opens at the last page the student did",
  "Com sono": "Sleepy",
+ "Come-come · 2 jogadores": "Maze Muncher · 2 players",
+ "Comece assim": "Start like this",
  "Comentário": "Comment",
  "Comentário (opcional": "Comment (optional",
  "Começar": "Start",
@@ -175,21 +196,28 @@ IGLang.add({
  "Como mostrar a página": "How to show the page",
  "Como usar o site": "How to use the site",
  "Como usar o site (tutorial": "How to use the site (tutorial",
+ "Comparativos e superlativos": "Comparatives and superlatives",
  "Compartilhar → Copiar link": "Share → Copy link",
  "Compartilhe a tela no Zoom e use": "Share your screen on Zoom and use",
  "Compreensão oral (listening": "Listening comprehension (listening",
+ "Concluir": "Finish",
  "Conectado ao Supabase: o link abre em qualquer celular ou computador": "Connected to Supabase: the link opens on any phone or computer",
  "Confere se tudo carrega e funciona neste navegador. Leva uns 30 segundos — os jogos abrem e fecham sozinhos, sem som": "Checks that everything loads and works in this browser. Takes about 30 seconds — the games open and close by themselves, without sound",
  "Configure o Supabase para que ele funcione em outros aparelhos": "Set up Supabase so it works on other devices",
+ "Conquistada": "Earned",
+ "Consolidado": "Mastered",
  "Contar as aulas registradas no site entre as duas datas": "Count the classes recorded on the site between the two dates",
  "Contar de novo a partir das aulas registradas neste trimestre": "Count again from the classes recorded this quarter",
  "Conteúdos & Tópicos Trabalhados": "Content & Topics Covered",
+ "Continue assim": "Keep it up",
  "Contorno": "Outline",
  "Contrato": "Contract",
  "Contrato assinado": "Contract signed",
  "Conversa com o aluno": "Conversation with the student",
  "Conversação (speaking": "Conversation (speaking",
  "Copia livro, jogos liberados e slides do grupo para todos os membros": "Copies the group's book, unlocked games and slides to all members",
+ "Copiada": "Copied",
+ "Copiado": "Copied",
  "Copiar": "Copy",
  "Copiar e editar": "Copy and edit",
  "Copiar imagem": "Copy image",
@@ -199,7 +227,10 @@ IGLang.add({
  "Copiar para outro aluno": "Copy to another student",
  "Copiar texto": "Copy text",
  "Copiar todos os links (lista": "Copy all links (list",
+ "Copie": "Copy",
  "Copie o texto": "Copy the text",
+ "Cor de preenchimento": "Fill color",
+ "Cor do contorno": "Outline color",
  "Cor do texto": "Text color",
  "Cor do traço": "Stroke color",
  "Cor ou imagem de fundo": "Background color or image",
@@ -207,6 +238,9 @@ IGLang.add({
  "Cores — ouvir, tocar e falar": "Colors — listen, tap and speak",
  "Correção": "Correction",
  "Correção da professora": "Teacher's correction",
+ "Corrigir": "Correct",
+ "Corrigir textos": "Correct texts",
+ "Criando": "Creating",
  "Crianças": "Children",
  "Crianças pequenas": "Young children",
  "Criar": "Create",
@@ -227,16 +261,25 @@ IGLang.add({
  "Desenhando — arraste sobre o slide. Escolha “↖ Selecionar” para voltar": "Drawing — drag over the slide. Choose \"↖ Select\" to go back",
  "Desenhar": "Draw",
  "Desenhar (caneta e marca-texto": "Draw (pen and highlighter",
+ "Desenhe e adivinhe": "Draw and guess",
  "Desenhe no papel e mostre para a sua teacher ou para a família": "Draw it on paper and show it to your teacher or your family",
  "Desenho surpresa — abra a caixa e desenhe": "Surprise drawing — open the box and draw",
  "Desfazer": "Undo",
+ "Desfazer (Ctrl+Z": "Undo (Ctrl+Z",
+ "Desistir e revelar": "Give up and reveal",
  "Desliga o link único: cada pessoa recebe só o seu link, e ninguém vê os outros": "Turns off the shared link: each person gets only their own link, and nobody sees the others",
+ "Desmarcar": "Unmark",
+ "Despesas": "Expenses",
+ "Despesas da escola": "School expenses",
  "Destaques": "Highlights",
  "Destaques do Aluno": "Student Highlights",
+ "Detalhes": "Details",
+ "Devagar": "Slow",
  "Dia do pagamento": "Payment day",
  "Dias da semana": "Days of the week",
  "Dias do mês": "Days of the month",
  "Dias e horário": "Days and time",
+ "Dica": "Hint",
  "Dica: Win+Shift+S para recortar a tela e depois Ctrl+V aqui. Toque na foto para mover, ⤡ para o tamanho": "Tip: Win+Shift+S to snip the screen, then Ctrl+V here. Tap the photo to move it, ⤡ for the size",
  "Dica: ouça quantas vezes quiser antes de escrever": "Tip: listen as many times as you like before writing",
  "Dica: salve este link nos": "Tip: save this link in your",
@@ -250,15 +293,19 @@ IGLang.add({
  "Diminuir": "Decrease",
  "Diminuir letra": "Smaller text",
  "Dispensar": "Dismiss",
+ "Ditado": "Dictation",
  "Ditado — ouvir e escrever": "Dictation — listen and write",
  "Ditado — ouça e escreva": "Dictation — listen and write",
+ "Duplicada": "Duplicated",
  "Duplicar": "Duplicate",
+ "Duplicar (Ctrl+D": "Duplicate (Ctrl+D",
  "Duplicar este slide": "Duplicate this slide",
  "Duplicar slide": "Duplicate slide",
  "Dá para fechar no": "You can close it with",
  "Dá para fechar no ✕ e rever depois no botão": "You can close it with ✕ and see it again later with the button",
  "Dê um nome ao jogo": "Give the game a name",
  "Dê um nome à despesa": "Give the expense a name",
+ "ERRO": "ERROR",
  "Editar": "Edit",
  "Editar esta aula": "Edit this class",
  "Editar links": "Edit links",
@@ -269,10 +316,16 @@ IGLang.add({
  "Editável": "Editable",
  "Ela vai corrigir e você vai ver as correções aqui": "She will correct it and you will see the corrections here",
  "Em 2 minutos você vê": "In 2 minutes you'll see",
+ "Em andamento": "In progress",
+ "Em branco": "Blank",
+ "Em desenvolvimento": "In development",
  "Em dias chuvosos, você deve levar um guarda-chuva ou uma capa de chuva. Calçados confortáveis também são uma boa ideia para passear pela cidade": "On rainy days, you should bring an umbrella or a raincoat. Comfortable shoes are also a good idea for walking around the city",
  "Emoji do jogo": "Game emoji",
  "Emojis e adesivos": "Emojis and stickers",
+ "Entendi": "Got it",
  "Entregar até": "Due by",
+ "Entregas anteriores": "Previous submissions",
+ "Entregue": "Submitted",
  "Entrou no link": "Joined the link",
  "Enviado para a professora": "Sent to the teacher",
  "Enviado para a teacher": "Sent to the teacher",
@@ -283,6 +336,7 @@ IGLang.add({
  "Enviar para trás": "Send backward",
  "Enviar pelo WhatsApp": "Send via WhatsApp",
  "Enviar áudio": "Send audio",
+ "Erro desconhecido": "Unknown error",
  "Erros da turma": "Group mistakes",
  "Errou": "Wrong",
  "Errou alguma coisa? No histórico, no fim da mesma janela, toque em": "Got something wrong? In the history, at the bottom of the same window, tap",
@@ -304,6 +358,8 @@ IGLang.add({
  "Escolher arquivo": "Choose file",
  "Escolher outra cor": "Choose another color",
  "Escolher outra cor de fundo": "Choose another background color",
+ "Esconder": "Hide",
+ "Esconder nomes": "Hide names",
  "Esconder respostas": "Hide answers",
  "Escreva a frase": "Write the sentence",
  "Escreva a lição (ex.: IG Beyond pág 6 e 7) e aperte Enter": "Type the lesson (e.g., IG Beyond p. 6 and 7) and press Enter",
@@ -321,6 +377,8 @@ IGLang.add({
  "Escrever outra pergunta": "Write another question",
  "Escrever um texto para a professora corrigir": "Write a text for the teacher to correct",
  "Escrever uma mensagem para a teacher": "Write a message to the teacher",
+ "Escrita": "Writing",
+ "Escrita (writing": "Writing (writing",
  "Espaço": "Space",
  "Espaço entre linhas": "Line spacing",
  "Espessura": "Thickness",
@@ -355,9 +413,13 @@ IGLang.add({
  "Este é o álbum padrão, usado por todos os alunos que ainda não têm um próprio": "This is the default album, used by all students who don't have their own yet",
  "Este é o único slide da apresentação. Limpar o conteúdo dele": "This is the only slide in the presentation. Clear its content",
  "Estes tópicos ainda não têm jogos": "These topics don't have games yet",
+ "Estilo": "Style",
  "Estudar um tópico": "Study a topic",
+ "Esvaziar": "Empty",
  "Ex.: 2 aulas por semana, 1 h": "E.g., 2 classes per week, 1 h",
+ "Ex.: jan–jun": "E.g.: Jan–Jun",
  "Ex.: viajar, trabalho, escola, intercâmbio": "E.g., travel, work, school, study abroad",
+ "Excelente": "Excellent",
  "Excluir": "Delete",
  "Excluir este slide": "Delete this slide",
  "Excluir slide": "Delete slide",
@@ -368,18 +430,22 @@ IGLang.add({
  "Falar com a teacher": "Talk to the teacher",
  "Falar — ler em voz alta": "Speaking — read aloud",
  "Falar — veja a figura e diga a palavra": "Speaking — look at the picture and say the word",
+ "Falei bem": "I spoke well",
  "Faltam": "Left",
  "Faltas": "Absences",
+ "Faltou": "Absent",
  "Família": "Family",
  "Fazer agora": "Do it now",
  "Fazer uma cópia para editar": "Make a copy to edit",
  "Faça e depois toque em “Já fiz” para marcar como feita": "Do it, then tap “Done” to mark it as finished",
  "Fechar": "Close",
  "Fechar o tutorial": "Close the tutorial",
+ "Feita": "Done",
  "Ferramentas": "Tools",
  "Ferramentas da aula": "Class tools",
  "Ficha do aluno": "Student sheet",
  "Ficha do aluno: cadastro, contrato, aulas, lições e pagamentos": "Student record: registration, contract, classes, homework and payments",
+ "Ficha salva": "Record saved",
  "Figuras dos jogos (Twemoji": "Game pictures (Twemoji",
  "Figurinha anterior": "Previous sticker",
  "Financeiro": "Finance",
@@ -387,6 +453,7 @@ IGLang.add({
  "Fonte": "Font",
  "Formas": "Shapes",
  "Formatação": "Formatting",
+ "Foto": "Photo",
  "Foto colocada! Arraste para mover": "Photo placed! Drag to move",
  "Frase": "Sentence",
  "Frase certa": "Correct sentence",
@@ -396,17 +463,22 @@ IGLang.add({
  "Frequência": "Attendance",
  "Frequência & Engajamento": "Attendance & Engagement",
  "Frequência e engajamento": "Attendance and engagement",
+ "Fundo": "Background",
  "Fundo aplicado a todos os slides": "Background applied to all slides",
  "Fundo deste slide": "This slide's background",
  "Futuro com going to e will": "Future with going to and will",
  "Gabaritou! Está pronto para a prova": "Perfect score! You're ready for the test",
  "Gerador de Provas": "Test Generator",
+ "Gerais": "General",
+ "Geral": "General",
+ "Gerando imagem": "Generating image",
  "Gerar de novo do formulário": "Generate again from the form",
  "Gerar prova": "Generate test",
  "Gestão": "Management",
  "Grade 13×13 com a lista": "13×13 grid with the list",
  "Gramática": "Grammar",
  "Gramática fácil": "Easy grammar",
+ "Gravando": "Recording",
  "Gravar": "Record",
  "Gravar de novo": "Record again",
  "Gravar resposta": "Record answer",
@@ -416,6 +488,7 @@ IGLang.add({
  "Guias do professor": "Teacher guides",
  "Guitar, piano, drum e violin — ouvir o som de cada um (\"I'm playing the piano\") e separar em loud ou quiet": "Guitar, piano, drum and violin — hear the sound of each one (\"I'm playing the piano\") and sort them into loud or quiet",
  "Habilidade": "Skill",
+ "Habilidades Avaliadas": "Skills Assessed",
  "Happy, sad, angry, tired, surprised, sleepy, sick, hungry, scared — a criança arrasta o rosto certo para o emoji em branco quando ouve \"I'm sad": "Happy, sad, angry, tired, surprised, sleepy, sick, hungry, scared — the child drags the right face onto the blank emoji when they hear \"I'm sad",
  "Head, eyes, ears, nose, mouth, arms, hands, legs, knees, feet, toes… — toque no corpo e a parte acende (\"These are my eyes. I can see!\"), \"Touch your nose!\" e a música Head, shoulders, knees and toes": "Head, eyes, ears, nose, mouth, arms, hands, legs, knees, feet, toes… — tap the body and the part lights up (\"These are my eyes. I can see!\"), \"Touch your nose!\" and the song Head, shoulders, knees and toes",
  "Histórico de Frequência por Período": "Attendance History by Period",
@@ -442,14 +515,18 @@ IGLang.add({
  "In, on, under, next to, between, behind, in front of — a criança move o gato, o cachorro, a borboleta… em volta da caixa": "In, on, under, next to, between, behind, in front of — the child moves the cat, the dog, the butterfly… around the box",
  "Informe um valor maior que zero": "Enter a value greater than zero",
  "Inglês do dia a dia (15+ e adultos": "Everyday English (15+ and adults",
+ "Iniciante absoluto": "Absolute beginner",
  "Inserir como imagem": "Insert as image",
  "Inserir tópico do curso": "Insert course topic",
  "Inserir um tópico do curso": "Insert a course topic",
  "Intermediário": "Intermediate",
+ "Internet e nuvem": "Internet and cloud",
  "Início das aulas": "Classes start",
  "Início do contrato": "Contract start",
  "Isso! Tem mais": "That's it! There's more",
  "Itálico": "Italic",
+ "Jogador": "Player",
+ "Jogadores": "Players",
  "Jogar com as marcadas": "Play with the selected ones",
  "Jogar de novo": "Play again",
  "Jogo": "Game",
@@ -475,13 +552,17 @@ IGLang.add({
  "Já fez esta tarefa": "You already did this task",
  "Já fiz": "Done",
  "Já lê (fácil": "Already reads (easy",
+ "Labirinto come-come": "Maze Muncher",
  "Labirinto come-come — sozinho ou com um amigo": "Pac-Man maze — alone or with a friend",
+ "Leitura (reading": "Reading (reading",
  "Ler em voz alta — o microfone confere as palavras": "Read aloud — the microphone checks the words",
  "Ler frases em voz alta": "Read sentences aloud",
  "Leão": "Lion",
  "Ligar o modo privado? O link único do grupo deixa de mostrar os nomes dos colegas. Cada pessoa precisa usar o link individual que você mandar. Quem já abriu o link do grupo continua entrando na própria página normalmente": "Turn on private mode? The group's shared link will stop showing classmates' names. Each person needs to use the individual link you send. Anyone who already opened the group link can still get into their own page as usual",
  "Ligar ou desligar os sons de estrela e figurinha": "Turn the star and sticker sounds on or off",
+ "Limpar": "Clear",
  "Limpar a página": "Clear the page",
+ "Linha": "Line",
  "Link de imagem (opcional) — https": "Image link (optional) — https",
  "Link dele(a": "Their link",
  "Link do aluno": "Student link",
@@ -489,6 +570,7 @@ IGLang.add({
  "Link não encontrado neste navegador": "Link not found in this browser",
  "Links da Aula": "Class Links",
  "Links do grupo": "Group links",
+ "Lista copiada": "List copied",
  "Lista de vocabulário": "Vocabulary list",
  "Listen to the story · Ouvir a história": "Listen to the story",
  "Livro": "Book",
@@ -496,6 +578,7 @@ IGLang.add({
  "Livro da aula — fazer o livro com o aluno desta aula": "Class book — do the book with this class's student",
  "Livro online": "Online book",
  "Livro online do aluno": "Student's online book",
+ "Livros IG": "IG Books",
  "Livros do aluno": "Student books",
  "Lição completa": "Full homework",
  "Lição da semana": "Homework of the week",
@@ -535,17 +618,26 @@ IGLang.add({
  "Mensagens dos alunos": "Student messages",
  "Mensagens e textos dos alunos": "Students' messages and texts",
  "Mensalidade": "Monthly fee",
+ "Mensalidade (R": "Monthly fee (R",
  "Menu de jogos do livro": "Book games menu",
  "Meu livro": "My book",
  "Meu livro — fazer as páginas do livro aqui": "My book — do the book pages here",
+ "Meu progresso": "My progress",
  "Meus alunos": "My students",
+ "Meus erros": "My mistakes",
+ "Meus textos corrigidos": "My corrected texts",
+ "Minha lista": "My list",
  "Minha lição — tudo em dia": "My homework — all caught up",
  "Minha semana": "My week",
  "Minha voz — gravar os versos": "My voice — record the verses",
+ "Minhas figurinhas": "My stickers",
+ "Minimizar / expandir": "Minimize / expand",
  "Minimizar o player": "Minimize the player",
  "Mochila clássica": "Classic backpack",
+ "Modelo importado": "Imported template",
  "Modelo pronto": "Ready-made template",
  "Modelos de perguntas": "Question templates",
+ "Modo privado ligado": "Private mode on",
  "Modo slides": "Slide mode",
  "Modo slides (página do tamanho da tela": "Slides mode (page the size of the screen",
  "Mom, dad, sister, brother, grandpa, grandma, baby — Balloon Pop, Memory e os outros jogos de palavras com figuras. Também está no Maze Muncher, Jump & Learn e Talking Memory": "Mom, dad, sister, brother, grandpa, grandma, baby — Balloon Pop, Memory and the other picture word games. Also in Maze Muncher, Jump & Learn and Talking Memory",
@@ -563,10 +655,13 @@ IGLang.add({
  "Mostrar respostas (só a teacher vê este botão": "Show answers (only the teacher sees this button",
  "Mostrar só as últimas": "Show only the latest",
  "Mostrar “Slides da aula” no link do aluno": "Show \"Class slides\" on the student's link",
+ "Mover": "Move",
  "Mudar jogo / jogadores": "Change game / players",
  "Mude o que precisar — o site se ajusta na hora": "Change whatever you need — the site adjusts right away",
+ "Muito bem": "Well done",
  "Muito bem! Cuidado com o passado dos verbos": "Very good! Watch the past tense of verbs",
  "Muito bem! Página feita": "Well done! Page finished",
+ "Muito bom": "Very good",
  "My book” no link do aluno e em": "My book” on the student's link and in",
  "Mãos": "Hands",
  "Mês": "Month",
@@ -584,6 +679,7 @@ IGLang.add({
  "Nada pendente para revisar": "Nothing pending to review",
  "Nada registrado neste mês ainda": "Nothing recorded this month yet",
  "Negrito": "Bold",
+ "Negrito (Ctrl+B": "Bold (Ctrl+B",
  "Nenhum aluno cadastrado": "No students registered",
  "Nenhum aluno tem horário ainda": "No students have a schedule yet",
  "Nenhum erro desde que a página abriu": "No errors since the page opened",
@@ -626,6 +722,8 @@ IGLang.add({
  "Nome do aluno": "Student's name",
  "Nome do grupo": "Group name",
  "Nome do jogo (ex.: Unit 3 — Jobs": "Game name (e.g., Unit 3 — Jobs",
+ "Nota": "Note",
+ "Nota (opcional": "Note (optional",
  "Nova apresentação": "New presentation",
  "Nova lição de casa": "New homework",
  "Nova palavra (ex.: banana": "New word (e.g.: banana",
@@ -633,6 +731,7 @@ IGLang.add({
  "Novo slide em branco": "New blank slide",
  "Novo tópico — escreva e aperte Enter": "New topic — type and press Enter",
  "Novos jogos e tópicos liberados": "New games and topics unlocked",
+ "Nuvem (Supabase": "Cloud (Supabase",
  "Não consegui abrir agora": "I couldn't open it right now",
  "Não consegui abrir agora. Tente de novo em alguns minutos": "I couldn't open it right now. Try again in a few minutes",
  "Não consegui abrir esta imagem": "I couldn't open this image",
@@ -712,8 +811,11 @@ IGLang.add({
  "Ou responda também com a sua voz": "Or answer with your voice too",
  "Ou um tópico do curso": "Or a course topic",
  "Ou use a minha lista": "Or use my list",
+ "Outra cor": "Another color",
  "Outra versão": "Another version",
  "Outro lugar bonito é a Baía de Guaratuba. Os visitantes podem apreciar a paisagem natural e conhecer melhor a fauna local": "Another beautiful place is Guaratuba Bay. Visitors can enjoy the natural scenery and get to know the local wildlife better",
+ "Outros": "Others",
+ "Ouvi": "I heard",
  "Ouvir": "Listen",
  "Ouvir a frase": "Listen to the sentence",
  "Ouvir a frase e escrever": "Listen to the sentence and write it",
@@ -725,6 +827,7 @@ IGLang.add({
  "Ouvir o que escrevi": "Listen to what I wrote",
  "Ouça e toque": "Listen and tap",
  "Ouça e toque — cores, formas, números": "Listen and tap — colors, shapes, numbers",
+ "Pagamentos": "Payments",
  "Pagamentos indisponíveis": "Payments unavailable",
  "Painel": "Dashboard",
  "Painel da professora": "Teacher dashboard",
@@ -746,11 +849,15 @@ IGLang.add({
  "Para rever este tutorial, toque em": "To see this tutorial again, tap",
  "Para revisar hoje": "To review today",
  "Para todos os alunos": "For all students",
+ "Parar": "Stop",
  "Parar de usar o link do grupo": "Stop using the group link",
+ "Partes do site": "Parts of the site",
  "Passado contínuo": "Past continuous",
+ "Passar": "Pass",
  "Passe o dedo ou o mouse sobre o traço para apagar": "Swipe or move the mouse over the stroke to erase it",
  "Passe sobre um desenho para apagá-lo": "Hover over a drawing to erase it",
  "Países": "Countries",
+ "Perfeito": "Perfect",
  "Perfil das minhas turmas": "My groups profile",
  "Perfil de atividades (o que aparece no link do aluno": "Activity profile (what appears in the student's link",
  "Perguntar": "Ask",
@@ -758,6 +865,7 @@ IGLang.add({
  "Perguntas e respostas curtas": "Questions and short answers",
  "Perguntas que mais erraram": "Most-missed questions",
  "Permitir": "Allow",
+ "Personagem": "Character",
  "Personagem secreto": "Secret character",
  "Personagens": "Characters",
  "Período": "Period",
@@ -769,26 +877,33 @@ IGLang.add({
  "Peça um link novo para a professora": "Ask the teacher for a new link",
  "Pistas": "Clues",
  "Pistas (opcional) — uma por linha. Ex.: I live in Africa": "Clues (optional) — one per line. E.g., I live in Africa",
+ "Placar": "Scoreboard",
+ "Plano": "Plan",
  "Plural dos substantivos": "Plural nouns",
  "Pontos desta aula": "Points from this class",
  "Português": "Portuguese",
  "Posição do áudio": "Audio position",
  "Pra resolver": "To do",
  "Praticar em casa": "Practice at home",
+ "Preciso treinar": "Need to practice",
  "Preencha as datas \"De\" e \"Até\" primeiro": "Fill in the \"From\" and \"To\" dates first",
  "Preencha o nome do aluno antes de imprimir": "Fill in the student's name before printing",
  "Preencha o supabaseConfig.js para que a família consiga abrir do aparelho dela": "Fill in supabaseConfig.js so the family can open it from their own device",
  "Preencher": "Fill",
  "Preenchido com as aulas do trimestre — revise e corrija tudo antes de salvar e mandar": "Filled in with this quarter's classes — review and fix everything before saving and sending",
  "Preenchido sozinho com as aulas do trimestre. Em": "Filled in automatically with the quarter's classes. In",
+ "Preenchimento": "Fill",
+ "Preparando": "Preparing",
  "Preparando o link": "Preparing the link",
  "Preposições": "Prepositions",
  "Preposições de lugar e tempo": "Prepositions of place and time",
  "Presente contínuo": "Present continuous",
+ "Presente simples": "Present simple",
  "Presenças": "Attendance",
  "Primeira aula registrada": "First class logged",
  "Procure um tópico: family, animals, verb to be": "Search for a topic: family, animals, verb to be",
  "Profissões": "Jobs",
+ "Progresso": "Progress",
  "Progresso indisponível": "Progress unavailable",
  "Pronto": "Done",
  "Pronto — voltar ao jogo": "Done — back to the game",
@@ -807,6 +922,7 @@ IGLang.add({
  "Próximo slide": "Next slide",
  "Próximos Passos": "Next Steps",
  "Próximos passos": "Next steps",
+ "Pule e responda": "Jump and answer",
  "Pule e responda para abrir os portões": "Jump and answer to open the gates",
  "Página atualizada": "Page updated",
  "Página cheia demais — salva só neste aparelho": "Page too full — saved only on this device",
@@ -839,14 +955,18 @@ IGLang.add({
  "Quer um tour rápido pelo site": "Want a quick tour of the site",
  "Questões": "Questions",
  "Questões geradas dos tópicos escolhidos": "Questions generated from the chosen topics",
+ "Quiz ao vivo": "Live quiz",
  "Quiz ao vivo, no estilo Kahoot: você abre a sala e compartilha a tela; cada aluno entra pelo link no próprio celular ou computador e responde em botões coloridos. Quem acerta mais rápido ganha mais pontos — ranking a cada pergunta e pódio no final": "Live quiz, Kahoot style: you open the room and share your screen; each student joins through the link on their own phone or computer and answers with colored buttons. Whoever answers fastest earns more points — a ranking after each question and a podium at the end",
  "Recado para o aluno": "Message for the student",
  "Recalcular das aulas": "Recalculate from classes",
+ "Recebido": "Received",
  "Recolher esta seção": "Collapse this section",
  "Recolher o menu": "Collapse the menu",
  "Recomeçar": "Start over",
  "Recuar uma camada": "Send back one layer",
  "Refazer": "Redo",
+ "Refazer (Ctrl+Y": "Redo (Ctrl+Y",
+ "Registrar": "Log",
  "Registre a": "Log the",
  "Registros parados, mensalidades, aulas sem preparo, textos e mensagens": "Stalled records, tuition payments, unprepared classes, texts and messages",
  "Relatório dos pais": "Parents' report",
@@ -867,22 +987,29 @@ IGLang.add({
  "Repetir o áudio": "Repeat the audio",
  "Reports — boletim dos alunos": "Reports — student report cards",
  "Reposição, férias, desconto": "Make-up class, vacation, discount",
+ "Responder": "Answer",
  "Responsável (se menor de idade": "Guardian (if a minor",
  "Resposta da teacher em áudio": "Teacher's audio reply",
  "Restaurar as figurinhas originais? Todas as suas mudanças serão perdidas": "Restore the original stickers? All your changes will be lost",
  "Retângulo": "Rectangle",
  "Retângulo arredondado": "Rounded rectangle",
  "Reuniões → Sala Pessoal → Copiar convite": "Meetings → Personal Room → Copy invitation",
+ "Rever estas": "Review these",
  "Revisar agora": "Review now",
+ "Revisar meus erros": "Review my mistakes",
  "Revisão": "Review",
  "Revisão da aula": "Class review",
  "Revisão dos meus erros": "Review of my mistakes",
  "Revogar link": "Revoke link",
  "Revogar o link individual": "Revoke individual link",
+ "Roleta": "Wheel",
  "Régua": "Ruler",
+ "Sair (Esc": "Exit (Esc",
  "Sair da apresentação": "Exit presentation",
  "Sair da apresentação (Esc": "Exit the presentation (Esc",
  "Sair da visualização": "Exit preview",
+ "Saldo": "Balance",
+ "Salvando": "Saving",
  "Salvar": "Save",
  "Salvar alterações": "Save changes",
  "Salvar alterações e gerar ficha": "Save changes and generate sheet",
@@ -894,6 +1021,8 @@ IGLang.add({
  "Salvar ficha": "Save record",
  "Salvar jogo": "Save game",
  "Salvar resposta": "Save reply",
+ "Salvo": "Saved",
+ "Salvo neste aparelho": "Saved on this device",
  "Salvo — o Speaking do livro usa esta unidade": "Saved — the book's Speaking uses this unit",
  "Salvo — o link já mostra isso": "Saved — the link already shows this",
  "Say it": "Say it mode",
@@ -916,6 +1045,7 @@ IGLang.add({
  "Sem tópicos, a prova e o ditado usam frases gerais": "Without topics, the test and the dictation use general sentences",
  "Semana": "Week",
  "Semana anterior": "Previous week",
+ "Semestres deste ano": "Semesters this year",
  "Sempre que quiser ver este passo a passo de novo, toque em": "Whenever you want to see this walkthrough again, tap",
  "Seu nível e suas conquistas": "Your level and achievements",
  "Seus livros e guias do professor. Só você vê esta área": "Your books and teacher guides. Only you see this area",
@@ -928,12 +1058,15 @@ IGLang.add({
  "Slides da aula: abre as apresentações deste aluno": "Class slides: opens this student's presentations",
  "Sobre o aluno": "About the student",
  "Sofá": "Sofa",
+ "Sons desligados": "Sounds off",
+ "Sons ligados": "Sounds on",
  "Speaking · unidade do livro": "Speaking · book unit",
  "Sua resposta (o aluno vê no app, embaixo do áudio dele": "Your reply (the student sees it in the app, below their audio",
  "Sublinhado": "Underline",
  "Sunny, rainy, cloudy, snowy, stormy, windy — a criança arrasta o clima para o céu e a cena inteira muda: chuva caindo, raios, neve, vento… e a roupa da criança também": "Sunny, rainy, cloudy, snowy, stormy, windy — the child drags the weather into the sky and the whole scene changes: falling rain, lightning, snow, wind… and the child's clothes too",
  "Supabase não configurado": "Supabase not configured",
  "Supabase não responde": "Supabase not responding",
+ "Supabase responde": "Supabase responds",
  "Sáb": "Sat",
  "Sábado": "Saturday",
  "São precisos pelo menos 2 jogadores": "At least 2 players are required",
@@ -947,6 +1080,7 @@ IGLang.add({
  "Tarefas": "Tasks",
  "Teens e adultos": "Teens and adults",
  "Tela cheia": "Full screen",
+ "Tela cheia (F": "Full screen (F",
  "Tela cheia não disponível agora": "Full screen not available right now",
  "Tela cheia não disponível neste navegador": "Full screen not available in this browser",
  "Televisão": "Television",
@@ -958,7 +1092,9 @@ IGLang.add({
  "Terminar o jogo": "Finish the game",
  "Terminei esta página": "I finished this page",
  "Terça": "Tuesday",
+ "Testando": "Testing",
  "Testar de novo": "Test again",
+ "Testar o site": "Test the site",
  "Testar o site — confere se tudo carrega e funciona": "Test the site — checks that everything loads and works",
  "Texto": "Text",
  "Texto da assinatura": "Signature text",
@@ -966,6 +1102,7 @@ IGLang.add({
  "Textos para corrigir": "Texts to correct",
  "Tipo de aula": "Class type",
  "Tirar da mochila": "Take out of the backpack",
+ "Tirar do quarto": "Take out of the room",
  "Tirar um ponto": "Take a point",
  "Toca um som (cachorro, chuva, tambor, telefone, trem…) e a criança acha a figura. \"It's a dog": "A sound plays (dog, rain, drum, phone, train…) and the child finds the picture. \"It's a dog",
  "Tocar / pausar (espaço no áudio": "Play / pause (space on the audio",
@@ -975,6 +1112,7 @@ IGLang.add({
  "Todas registradas": "All logged",
  "Today's Class, no fim da aula": "Today's Class at the end of class",
  "Todos os alunos": "All students",
+ "Toque em": "Tap",
  "Toque na letra e ouça o nome dela em inglês (A \"ay\", B \"bee\", H \"aitch\"…), o A–Z inteiro em sequência, \"ache a letra que ouviu\" e \"fale a letra\" com o microfone": "Tap a letter and hear its name in English (A \"ay\", B \"bee\", H \"aitch\"…), the whole A–Z in sequence, \"find the letter you heard\" and \"say the letter\" with the microphone",
  "Toque na página onde quer escrever": "Tap the page where you want to write",
  "Toque na resposta certa. Para escrever, toque na linha. As outras ferramentas também funcionam aqui": "Tap the right answer. To write, tap the line. The other tools work here too",
@@ -993,13 +1131,20 @@ IGLang.add({
  "Touch the small red star!\", \"Touch three hearts!\" — cores, formas, big/small e números, só ouvindo": "Touch the small red star!\", \"Touch three hearts!\" — colors, shapes, big/small and numbers, by listening only",
  "Tradução": "Translation",
  "Travar": "Lock",
+ "Travar / destravar": "Lock / unlock",
  "Trazer para a frente": "Bring to front",
  "Traço": "Stroke",
+ "Treinar": "Practice",
  "Treinar a escrita — completar e montar frases": "Practice writing — complete and build sentences",
  "Treinar de novo": "Practice again",
+ "Treinar jogando": "Practice by playing",
+ "Treino livre": "Free practice",
  "Trimestre": "Quarter",
  "Triângulo": "Triangle",
+ "Trocar": "Switch",
  "Trocar aluno": "Switch student",
+ "Trocar de pessoa": "Switch person",
+ "Trocar mochila": "Change backpack",
  "Trocar o link": "Change the link",
  "Trocar o personagem": "Change the character",
  "Tubarão": "Shark",
@@ -1080,6 +1225,7 @@ IGLang.add({
  "Voltar para as conversas": "Back to conversations",
  "Voltar para o início": "Back to the start",
  "Voltar à edição": "Back to editing",
+ "Voz e microfone": "Voice and microphone",
  "Voz em inglês": "English voice",
  "Vídeo, leitura e flashcards do tópico": "Video, reading and flashcards for the topic",
  "Weather Report (vídeo YouTube) — Ana Clara": "Weather Report (YouTube video) — Ana Clara",
@@ -1096,6 +1242,7 @@ IGLang.add({
  "abaixo): não existe tela de escolha de nomes, e ninguém consegue abrir a página dos colegas": "below): there is no name picker screen, and nobody can open their classmates' pages",
  "abre o WhatsApp com a mensagem escrita": "opens WhatsApp with the message written",
  "abrir": "open",
+ "abriu vazio": "opened empty",
  "acerto na semana": "correct this week",
  "acontecendo agora": "happening now",
  "adesivos": "stickers",
@@ -1141,17 +1288,21 @@ IGLang.add({
  "concluída": "completed",
  "confira e corrija aqui antes de copiar. O que estiver nesta caixa é o que vai ser copiado": "check and fix here before copying. What is in this box is what will be copied",
  "conta ainda não criada": "account not created yet",
+ "conta criada": "account created",
  "conversa com alguma fluência": "conversation with some fluency",
  "cores, alfabeto, sentimentos, clima, corpo, animais, música, a casa… Não precisa saber ler": "colors, alphabet, feelings, weather, body, animals, music, the house… No need to know how to read",
  "cria a ficha da aula para mandar à família. Esse registro alimenta a frequência, o boletim e os assuntos liberados no link do aluno": "creates the class sheet to send to the family. This record feeds attendance, the report card and the topics unlocked in the student's link",
  "da IG English School. Aqui você pratica o que vimos nas aulas, faz a lição de casa e manda mensagens para a teacher": "of IG English School. Here you practice what we covered in class, do your homework and send messages to the teacher",
+ "da minha lista": "from my list",
  "dançando": "dancing",
  "dançar": "dance",
  "dar um show / fazer escândalo": "to put on a show / make a scene",
  "das palavras saíram certinhas": "of the words were spot on",
  "data": "date",
  "data:/.test(c.image || '') ? 'desenho do site' : 'emoji ou link": "data:/.test(c.image || '') ? 'site drawing' : 'emoji or link",
+ "de acerto": "correct",
  "de cada um você vê o livro e o progresso individual. A aula do grupo continua sendo registrada no aluno-grupo": "of each person you see their book and individual progress. The group class keeps being recorded under the group student",
+ "de estrelas": "of stars",
  "de novo": "again",
  "de presença": "attendance",
  "de óculos escuros": "wearing sunglasses",
@@ -1186,10 +1337,13 @@ IGLang.add({
  "e um aviso aparece no topo": "and a notice appears at the top",
  "edite o texto; o aluno verá a diferença marcada": "edit the text; the student will see the difference highlighted",
  "em Painel → Horários & valores": "in Dashboard → Schedules & rates",
+ "em aberto": "open",
+ "em breve": "coming soon",
  "em cada uma": "on each one",
  "em média": "on average",
  "emoji ou link de uma imagem, nome, e pistas — uma por linha, da mais difícil para a mais fácil": "emoji or image link, name, and clues — one per line, from hardest to easiest",
  "enviar": "send",
+ "erro desconhecido": "unknown error",
  "escolha uma": "pick one",
  "escolher": "choose",
  "escolhido por você": "chosen by you",
@@ -1226,6 +1380,7 @@ IGLang.add({
  "grudarem na memória": "stick in memory",
  "hoje": "today",
  "há": "ago",
+ "identificar tempos verbais": "identify verb tenses",
  "igualzinho aos outros / sem originalidade (cookie cutter = forminha de biscoito": "just like all the others / unoriginal (cookie cutter = a mold for cutting cookies",
  "incluir no boletim": "include in report card",
  "janela anônima": "incognito window",
@@ -1238,6 +1393,7 @@ IGLang.add({
  "ler": "read",
  "limão": "lemon",
  "links da aula": "class links",
+ "lista de verbos": "verb list",
  "livro online: envio": "online book: upload",
  "livro online: leitura da nuvem": "online book: reading from the cloud",
  "livro salvo": "book saved",
@@ -1245,6 +1401,7 @@ IGLang.add({
  "lições": "assignments",
  "lições pendentes": "pending homework",
  "lá em cima. As setas ← → do teclado também funcionam": "up there. The keyboard ← → arrows also work",
+ "marcar pago": "mark as paid",
  "marque as que quer revisar": "select the ones you want to review",
  "março": "March",
  "maçã": "apple",
@@ -1252,6 +1409,7 @@ IGLang.add({
  "mensagens novas": "new messages",
  "mensalidade em aberto": "monthly fee open",
  "mensalidades em aberto": "monthly fees open",
+ "meses pagos": "paid months",
  "meu jogo": "my game",
  "milhões": "millions",
  "minutos para ver onde fica cada coisa e como usar com os alunos": "minutes to see where everything is and how to use it with students",
@@ -1262,6 +1420,7 @@ IGLang.add({
  "na ficha da aula e gere de novo": "in the class sheet and generate again",
  "nenhum": "none",
  "nenhuma apresentação ainda": "no presentations yet",
+ "neste navegador": "in this browser",
  "no SQL Editor do Supabase. Se já rodou, verifique a internet e tente de novo": "in Supabase's SQL Editor. If you already ran it, check your internet and try again",
  "no botão do aluno": "on the student's button",
  "no botão do aluno) toque em": "on the student's button) tap",
@@ -1294,6 +1453,7 @@ IGLang.add({
  "obrigação": "obligation",
  "onde fica cada coisa": "where everything is",
  "orégano": "oregano",
+ "os slides": "the slides",
  "ou a tecla": "or the key",
  "ou mais — podem ser times": "or more — can be teams",
  "ou na": "or on the",
@@ -1331,6 +1491,7 @@ IGLang.add({
  "presença no mês": "attendance for the month",
  "presença ou falta": "present or absent",
  "previsões": "predictions",
+ "primeira em": "first on",
  "pronto": "done",
  "pág": "p.",
  "páginas feitas": "pages done",
@@ -1360,6 +1521,8 @@ IGLang.add({
  "seu cantinho de inglês": "your English corner",
  "seu nome": "your name",
  "simple as that” = simples assim": "simple as that” = simples assim",
+ "slides: envio": "slides: sending",
+ "slides: leitura": "slides: reading",
  "sua correção (salva para as próximas vezes": "your correction (saved for next time",
  "sáb": "Sat",
  "sábado": "Saturday",
@@ -1375,7 +1538,9 @@ IGLang.add({
  "terça": "Tuesday",
  "texto": "text",
  "texto esperando": "text waiting",
+ "textos esperando": "texts waiting",
  "tocar, arrastar e ouvir": "tap, drag and listen",
+ "toque em": "tap",
  "toque em “Terminei esta página": "tap “I finished this page",
  "toque em “Terminei esta página ✓” em cada uma": "tap “I finished this page ✓” on each one",
  "tradução": "translation",
@@ -1383,6 +1548,7 @@ IGLang.add({
  "troque se registrou no aluno errado": "change it if you recorded it under the wrong student",
  "tudo fica só neste navegador": "everything stays in this browser only",
  "turma": "group",
+ "turmas e individuais": "groups and individuals",
  "tênis": "sneakers",
  "tópico": "topic",
  "tópico de hoje": "today's topic",
@@ -1518,6 +1684,7 @@ IGLang.add({
  "usam as palavras de qualquer tópico, no nível do aluno escolhido": "use the words from any topic, at the chosen student's level",
  "usam o nível do aluno selecionado": "use the selected student's level",
  "usando um chapéu": "wearing a hat",
+ "usar sugerida": "use suggested",
  "use o Chrome ou o Edge": "use Chrome or Edge",
  "vai direto para a teacher": "goes straight to the teacher",
  "vai na ficha, em um bloco próprio": "goes on the sheet, in its own block",
@@ -1931,6 +2098,10 @@ IGLang.addPatterns([
 "$1 Leave blank to remove"
 ],
 [
+"^A resposta é \"(.{1,240}?)\"\\.(.{1,240}?)$",
+"The answer is \"$1\".$2"
+],
+[
 "^(.{1,240}?)\\/(.{1,240}?) nos exercícios$",
 "$1/$2 in the exercises"
 ],
@@ -1963,10 +2134,6 @@ IGLang.addPatterns([
 "$1) — check if these students"
 ],
 [
-"^A resposta é \"(\\S{1,30})\"\\.(\\S{1,30})$",
-"The answer is \"$1\".$2"
-],
-[
 "^Quase — a frase certa é: \"(.{1,240}?)$",
 "Almost — the correct sentence is: \"$1"
 ],
@@ -1985,6 +2152,10 @@ IGLang.addPatterns([
 [
 "^(.{1,240}?) textos esperando correção$",
 "$1 texts waiting for correction"
+],
+[
+"^Resposta: \"(.{1,240}?)\"\\.(.{1,240}?)$",
+"Answer: \"$1\".$2"
 ],
 [
 "^Nenhuma lição para (.{1,240}?) ainda$",
@@ -2027,12 +2198,20 @@ IGLang.addPatterns([
 "$1% pronunciation accuracy"
 ],
 [
+"^para ganhar (.{1,240}?) (.{1,240}?)$",
+"to earn $1 $2"
+],
+[
 "^(.{1,240}?) mensagem nova de alunos$",
 "$1 new message from students"
 ],
 [
-"^Resposta: \"(\\S{1,30})\"\\.(\\S{1,30})$",
-"Answer: \"$1\".$2"
+"^Próxima: (.{1,240}?) às (.{1,240}?)$",
+"Next: $1 at $2"
+],
+[
+"^Questão (.{1,240}?) de (.{1,240}?)$",
+"Question $1 of $2"
 ],
 [
 "^(.{1,240}?) fez atividade no livro$",
@@ -2053,14 +2232,6 @@ IGLang.addPatterns([
 [
 "^Sem horário definido: (.{1,240}?)$",
 "No schedule set: $1"
-],
-[
-"^para ganhar (\\S{1,30}) (\\S{1,30})$",
-"to earn $1 $2"
-],
-[
-"^Questão (\\S{1,30}) de (\\S{1,30})$",
-"Question $1 of $2"
 ],
 [
 "^(\\S{1,30}) questões · (\\S{1,30})$",
@@ -2167,32 +2338,48 @@ IGLang.addPatterns([
 "All classes ($1"
 ],
 [
+"^Ficha da aula — (.{1,240}?)$",
+"Class sheet — $1"
+],
+[
 "^Sugestões para “(.{1,240}?)$",
 "Suggestions for “$1"
+],
+[
+"^Lição de casa · (.{1,240}?)$",
+"Homework · $1"
+],
+[
+"^Lição de casa — (.{1,240}?)$",
+"Homework — $1"
 ],
 [
 "^Nome do jogador (.{1,240}?)$",
 "Player $1 name"
 ],
 [
-"^Ficha da aula — (\\S{1,30})$",
-"Class sheet — $1"
-],
-[
-"^Lição de casa · (\\S{1,30})$",
-"Homework · $1"
-],
-[
-"^Lição de casa — (\\S{1,30})$",
-"Homework — $1"
-],
-[
-"^Ficha da aula: (\\S{1,30})$",
+"^Ficha da aula: (.{1,240}?)$",
 "Class sheet: $1"
 ],
 [
-"^Livro online — (\\S{1,30})$",
+"^Livro online — (.{1,240}?)$",
 "Online book — $1"
+],
+[
+"^Entregar até: (.{1,240}?)$",
+"Due by: $1"
+],
+[
+"^Lição pedida: (.{1,240}?)$",
+"Homework assigned: $1"
+],
+[
+"^Trocar o link (.{1,240}?)$",
+"Change the $1 link"
+],
+[
+"^Copiar “(.{1,240}?)” para$",
+"Copy \"$1\" to"
 ],
 [
 "^Mostrar pista (.{1,240}?)$",
@@ -2203,24 +2390,20 @@ IGLang.addPatterns([
 "$1 (my version"
 ],
 [
-"^Entregar até: (\\S{1,30})$",
-"Due by: $1"
-],
-[
 "^Pela idade((?:s|es|is)?)$",
 "By age$1"
 ],
 [
-"^Lição pedida: (\\S{1,30})$",
-"Homework assigned: $1"
+"^Copiada para (.{1,240}?)$",
+"Copied to $1"
 ],
 [
-"^Trocar o link (\\S{1,30})$",
-"Change the $1 link"
+"^Automático — (.{1,240}?)$",
+"Automatic — $1"
 ],
 [
-"^Copiar “(\\S{1,30})” para$",
-"Copy \"$1\" to"
+"^e acertou \\*(.{1,240}?)$",
+"and got *$1"
 ],
 [
 "^(\\S{1,30})% de presença$",
@@ -2231,139 +2414,135 @@ IGLang.addPatterns([
 "$1 didn't load"
 ],
 [
-"^Copiada para (\\S{1,30})$",
-"Copied to $1"
-],
-[
-"^Automático — (\\S{1,30})$",
-"Automatic — $1"
-],
-[
-"^e acertou \\*(\\S{1,30})$",
-"and got *$1"
-],
-[
-"^com sino, (\\S{1,30})os$",
+"^com sino, (.{1,240}?)os$",
 "with a bell, $1the"
+],
+[
+"^Salvo como (.{1,240}?)$",
+"Saved as $1"
+],
+[
+"^Não é aí\\. (.{1,240}?)$",
+"Not there. $1"
 ],
 [
 "^(\\S{1,30}) — e mais em$",
 "$1 — and more in"
 ],
 [
-"^Salvo como (\\S{1,30})$",
-"Saved as $1"
-],
-[
-"^Não é aí\\. (\\S{1,30})$",
-"Not there. $1"
-],
-[
 "^(\\S{1,30}) aulas hoje$",
 "$1 classes today"
+],
+[
+"^Livro p\\. (.{1,240}?)$",
+"Book p. $1"
+],
+[
+"^Livro de (.{1,240}?)$",
+"$1's book"
 ],
 [
 "^(\\S{1,30}) aula hoje$",
 "$1 class today"
 ],
 [
-"^Livro p\\. (\\S{1,30})$",
-"Book p. $1"
+"^em (.{1,240}?) dias$",
+"in $1 days"
 ],
 [
 "^(\\S{1,30}) palavras$",
 "$1 words"
 ],
 [
+"^Só para (.{1,240}?)$",
+"Only for $1"
+],
+[
 "^(\\S{1,30}) sem link$",
 "$1 no link"
 ],
 [
-"^Livro de (\\S{1,30})$",
-"$1's book"
+"^Link de (.{1,240}?)$",
+"$1's link"
+],
+[
+"^Próxima (.{1,240}?)$",
+"Next $1"
 ],
 [
 "^áudio((?:s|es|is)?)$",
 "audio$1"
 ],
 [
-"^em (\\S{1,30}) dias$",
-"in $1 days"
-],
-[
-"^Só para (\\S{1,30})$",
-"Only for $1"
-],
-[
-"^Link de (\\S{1,30})$",
-"$1's link"
-],
-[
-"^Próxima (\\S{1,30})$",
-"Next $1"
-],
-[
-"^Aula de (\\S{1,30})$",
+"^Aula de (.{1,240}?)$",
 "$1's class"
 ],
 [
-"^Degradê (\\S{1,30})$",
+"^Degradê (.{1,240}?)$",
 "$1 gradient"
+],
+[
+"^Livro — (.{1,240}?)$",
+"Book — $1"
+],
+[
+"^pago em (.{1,240}?)$",
+"paid on $1"
+],
+[
+"^Certo! (.{1,240}?)$",
+"Correct! $1"
+],
+[
+"^Nome \\((.{1,240}?)$",
+"Name ($1"
+],
+[
+"^Livro: (.{1,240}?)$",
+"Book: $1"
+],
+[
+"^Página (.{1,240}?)$",
+"Page $1"
 ],
 [
 "^(\\S{1,30}) \\(cópia$",
 "$1 (copy"
 ],
 [
+"^e mais (.{1,240}?)$",
+"and $1 more"
+],
+[
+"^hoje · (.{1,240}?)$",
+"today · $1"
+],
+[
 "^(\\S{1,30}) palavra$",
 "$1 word"
 ],
 [
-"^Certo! (\\S{1,30})$",
-"Correct! $1"
-],
-[
-"^Nome \\((\\S{1,30})$",
-"Name ($1"
-],
-[
-"^Livro: (\\S{1,30})$",
-"Book: $1"
-],
-[
-"^Página (\\S{1,30})$",
-"Page $1"
-],
-[
-"^e mais (\\S{1,30})$",
-"and $1 more"
-],
-[
-"^hoje · (\\S{1,30})$",
-"today · $1"
-],
-[
-"^Livro (\\S{1,30})$",
+"^Livro (.{1,240}?)$",
 "Book $1"
+],
+[
+"^Abrir (.{1,240}?)$",
+"Open $1"
+],
+[
+"^turma (.{1,240}?)$",
+"group $1"
+],
+[
+"^Olá, (.{1,240}?)$",
+"Hello, $1"
 ],
 [
 "^(\\S{1,30}) aulas$",
 "$1 classes"
 ],
 [
-"^Abrir (\\S{1,30})$",
-"Open $1"
-],
-[
-"^turma (\\S{1,30})$",
-"group $1"
-],
-[
-"^Olá, (\\S{1,30})$",
-"Hello, $1"
-],
-[
-"^às (\\S{1,30})$",
+"^às (.{1,240}?)$",
 "at $1"
 ]
 ]);

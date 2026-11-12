@@ -27,6 +27,7 @@ const IGLang = (() => {
   const ATTRS = ['title', 'placeholder', 'aria-label'];
   const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'SELECT', 'CODE', 'PRE', 'svg', 'SVG', 'CANVAS', 'NOSCRIPT']);
 
+  const INPUTISH = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
   const origText = new WeakMap();   // text node -> its Portuguese
   const outText = new WeakMap();    // text node -> what we wrote
   const origAttr = new WeakMap();   // element -> { attr: Portuguese }
@@ -74,6 +75,7 @@ const IGLang = (() => {
     const W = w ? wd(w) : ''; if (w && !W) return null;
     return (W ? W + ', ' : '') + M + ' ' + d + (y ? ', ' + y : '');
   }]);
+  PATTERNS.push([/^(\d+) de (\d+)$/u, '$1 of $2']);
   PATTERNS.push([/^([A-Za-zç]+)\s+de\s+(\d{4})$/u, (all, m, y) => { const M = mo(m); return M ? M + ' ' + y : null; }]);
   PATTERNS.push([/^([A-Za-zçá-]+)$/u, (all, w) => wd(w) || mo(w) && w.length > 3 && mo(w) || null]);
 
@@ -103,16 +105,35 @@ const IGLang = (() => {
     }
     return null;
   }
+  function translateCore(t) {
+    const hit = lookup(t);
+    if (hit != null) return hit;
+    const m = t.match(EDGE);
+    if (m && m[2] && (m[1] || m[3])) {
+      // "12 de nov. ·": keep what comes before ("12 "), cut only the end
+      if (m[3]) {
+        // the abbreviation's dot belongs to the date ("12 de nov." -> "Nov 12")
+        if (m[3].charAt(0) === '.') {
+          const dotted = lookup(m[1] + m[2] + '.');
+          if (dotted != null) return dotted + m[3].slice(1);
+        }
+        const head = lookup(m[1] + m[2]);
+        if (head != null) return head + m[3];
+      }
+      const core = lookup(m[2]);
+      if (core != null) return m[1] + core + m[3];
+    }
+    return null;
+  }
   function translate(s) {
     if (!s || !/\p{L}/u.test(s)) return null;
     const t = norm(s);
-    let hit = lookup(t);
-    if (hit == null) {
-      const m = t.match(EDGE);
-      if (m && m[2] && (m[1] || m[3])) {
-        const core = lookup(m[2]);
-        if (core != null) hit = m[1] + core + m[3];
-      }
+    let hit = translateCore(t);
+    // "Speak Up! A1+ · 09 de nov.": each part on its own
+    if (hit == null && t.includes(' · ')) {
+      let any = false;
+      const parts = t.split(' · ').map(p => { const r = p.trim() ? translateCore(p) : null; if (r != null) any = true; return r == null ? p : r; });
+      if (any) hit = parts.join(' · ');
     }
     if (hit == null || hit === t) return null;
     // keep the spaces around the text (they separate it from its neighbours)
@@ -149,7 +170,7 @@ const IGLang = (() => {
     if (!el.getAttribute) return;
     let orig = origAttr.get(el);
     let out = outAttr.get(el);
-    const skip = !active() || skipped(el);
+    const skip = !active() || skipped(INPUTISH.has(el.tagName) ? el.parentElement : el);
     ATTRS.forEach(a => {
       if (!el.hasAttribute(a)) return;
       const cur = el.getAttribute(a);
@@ -185,22 +206,30 @@ const IGLang = (() => {
   let scheduled = false;
   function flush() {
     scheduled = false;
+    handle(observer.takeRecords());
+    scheduled = false;
     const nodes = queue; queue = new Set();
     observer.disconnect();
-    nodes.forEach(n => { if (n.isConnected) walk(n); });
-    observe();
+    try {
+      nodes.forEach(n => {
+        try { if (n.isConnected) walk(n); }
+        catch (e) { (window.__i18nErrors = window.__i18nErrors || []).push(String(e && e.stack || e).slice(0, 300)); }
+      });
+    } finally { observe(); }
   }
   function schedule(n) {
     queue.add(n);
     if (!scheduled) { scheduled = true; Promise.resolve().then(flush); }
   }
-  const observer = new MutationObserver(records => {
+  // disconnect() throws away changes not yet delivered: take them first
+  function handle(records) {
     records.forEach(r => {
       if (r.type === 'childList') r.addedNodes.forEach(schedule);
       else if (r.type === 'characterData') schedule(r.target);
       else if (r.type === 'attributes') schedule(r.target.nodeType === 1 ? { nodeType: 0, isConnected: r.target.isConnected, el: r.target } : r.target);
     });
-  });
+  }
+  const observer = new MutationObserver(handle);
   function observe() {
     if (!document.body) return;
     observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
@@ -209,7 +238,8 @@ const IGLang = (() => {
   function refresh() {
     if (!document.body) return;
     observer.disconnect();
-    walk(document.body);
+    try { walk(document.body); }
+    catch (e) { (window.__i18nErrors = window.__i18nErrors || []).push(String(e && e.stack || e).slice(0, 300)); }
     // the tab's title too
     if (!origTitle) origTitle = document.title;
     document.title = active() ? (translate(origTitle) ?? origTitle) : origTitle;
