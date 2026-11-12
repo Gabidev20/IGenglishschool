@@ -591,6 +591,9 @@ function renderStudentHome(shell, studentId) {
   // English first, Portuguese underneath: the page is part of the lesson.
   const mistakes = typeof msCards === 'function' ? msCards(student.id).filter(c => !msPracticedToday(c)).length : due;
   const review = typeof latestReview === 'function' ? latestReview(student.id) : null;
+  // Words of past class reviews due today (reviewPractice.js), on the tile.
+  const rvSum = review && typeof rpSummary === 'function' ? rpSummary(student.id) : null;
+  const rvDue = rvSum ? rvSum.due + Math.min(rvSum.fresh, 6) : 0;
   const tile = (go, icon, en, pt, cls) => `
         <button class="stu-tile${cls ? ' ' + cls : ''}" data-go="${go}"><span>${icon}</span><b>${en}</b><small>${pt}</small></button>`;
 
@@ -611,7 +614,7 @@ function renderStudentHome(shell, studentId) {
     homework: () => tile('homework', '📚', 'My homework', pending.length
       ? say(`Minha lição — ${pending.length} pendente(s)`, `${pending.length} to do`)
       : say('Minha lição — tudo em dia 🎉', 'All done 🎉')),
-    review: () => (review ? tile('review-class', '🧠', 'Class review', `${say('Revisão da aula', 'Review the class')} — ${shareEsc(review.title || 'flashcards')}`, 'stu-tile--review') : ''),
+    review: () => (review ? tile('review-class', '🧠', 'Class review', `${say('Revisão da aula', 'Review the class')} — ${shareEsc(review.title || 'flashcards')}${rvDue ? ` · 🔁 ${rvDue} ${say('para praticar', 'to practice')}` : ''}`, 'stu-tile--review') : ''),
     games: () => tile('games', '🎮', prof === 'adult' ? 'Topics & games' : 'Games', prof === 'adult'
       ? say('Vocabulário, leitura e jogos dos meus tópicos', 'Vocabulary, reading and games for your topics')
       : say('Jogos com as palavras do meu nível', 'Games with the words of your level')),
