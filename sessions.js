@@ -780,6 +780,8 @@ function paintSessionDrawer() {
     if (typeof renderDashboardStatsOnly === 'function') renderDashboardStatsOnly();
   });
   renderSessionHistory(student.id);
+  // 💡 What to reinforce today (recommend.js), on top of the class form.
+  if (typeof rkMount === 'function') { try { rkMount(body, student); } catch (e) { console.error(e); } }
 }
 
 // The number that goes in "Class 16" — one more than the highest number
