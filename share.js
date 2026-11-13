@@ -648,6 +648,8 @@ function renderStudentHome(shell, studentId) {
       ? say(`Mensagens — ${chatUnreadForStudent(student.id)} nova(s) da teacher`, `${chatUnreadForStudent(student.id)} new from your teacher`)
       : say('Mensagens com a teacher — escrever ou mandar áudio', 'Chat with your teacher: text or audio'), 'stu-tile--review'),
     manual: () => tile('manual', '📘', 'Student Manual', say('Manual do Aluno — como usar o curso e o site', 'How the course and this site work'), 'stu-tile--review'),
+    // 🏆 This week's league (league.js): only when the teacher turned it on.
+    ranking: () => { const t = typeof lgTileText === 'function' ? lgTileText(student) : null; return t ? tile('ranking', '🏆', 'Ranking', t, 'stu-tile--ranking') : ''; },
     mistakes: () => tile('review', '🔁', 'My mistakes', mistakes
       ? say(`Meus erros — ${mistakes} para revisar`, `${mistakes} to review`)
       : say('Meus erros — nada pendente', 'Nothing to review')),
@@ -661,13 +663,13 @@ function renderStudentHome(shell, studentId) {
     const focus = typeof teacherSkills === 'function' ? teacherSkills() : [];
     const lead = [...new Set(focus.flatMap(f => order[f] || []))];
     const rest = ['speaking', 'dictation', 'write', 'games', 'practice', 'writingPractice', 'audio'].filter(k => !lead.includes(k));
-    return ['homework', 'review'].concat(lead, rest, ['manual', 'mistakes', 'progress']);
+    return ['homework', 'ranking', 'review'].concat(lead, rest, ['manual', 'mistakes', 'progress']);
   };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
     prereader: ['review', 'sayit', 'farm', 'touch', 'sounds', 'pizza', 'memory', 'colors', 'alphabet', 'maze', 'jump', 'drawing', 'feelings', 'weather', 'body', 'family', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
     reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'sayit', 'maze', 'jump', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'practice', 'dictation', 'speaking', 'write', 'audio', 'mistakes'],
-    writer: ['progress', 'homework', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'maze', 'jump', 'drawing', 'games', 'sayit', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'mistakes'],
+    writer: ['progress', 'homework', 'ranking', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'maze', 'jump', 'drawing', 'games', 'sayit', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
     .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []))
@@ -752,6 +754,7 @@ function renderStudentHome(shell, studentId) {
     backpack: () => openBackpackGame(),
     house: () => openHouseGame(),
     'review-class': () => { const r = latestReview(student.id); if (r) openClassReviewPlayer(r); },
+    ranking: () => { if (typeof openLeague === 'function') openLeague(student); },
     animals: () => openAnimalGame(),
     feelings: () => openFeelingsGame(),
     instruments: () => openInstrumentsGame(),

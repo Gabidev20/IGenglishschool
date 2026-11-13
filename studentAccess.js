@@ -171,6 +171,8 @@ function saRefreshTaughtAll() {
     }
   });
   if (changed) IGStore.setJSON(STUDENT_ACCESS_KEY, map);
+  // 🏆 This week's league tables, to each player's link (league.js).
+  if (typeof lgPublishAll === 'function') { try { lgPublishAll(); } catch (e) { console.error(e); } }
 }
 // After a class is saved, edited or deleted. Cloud pulls save many lists in
 // a row, so the refresh waits for the last one.

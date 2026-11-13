@@ -3,6 +3,7 @@
    the object below ("Texto": "Text"); texts with a number or name in the
    middle go in the patterns list ($1, $2 = the parts that change). */
 IGLang.add({
+ ", ou crie as contas dos alunos de um grupo": ", or create the accounts of a group's students",
  "1 ponto": "1 point",
  "A cidade tem belas praias, uma baía, rios e áreas de Mata Atlântica. Seu clima é úmido, com verões quentes e invernos amenos": "The city has beautiful beaches, a bay, rivers and areas of Atlantic Forest. Its climate is humid, with hot summers and mild winters",
  "A criança escolhe o animal e o descreve com figuras — big or small, a cor, long tail, long neck, mane, wings… O animal vai sendo montado e no final aparece no habitat dele com a frase": "The child picks the animal and describes it with pictures — big or small, the color, long tail, long neck, mane, wings… The animal is built piece by piece and at the end it appears in its habitat with the sentence",
@@ -34,6 +35,7 @@ IGLang.add({
  "Abrir tópico": "Open topic",
  "Abrir um jogo (a apresentação continua aberta": "Open a game (the presentation stays open",
  "Abrir um jogo sem sair dos slides": "Open a game without leaving the slides",
+ "Acerte 50 respostas": "Get 50 answers right",
  "Acertou": "Correct",
  "Adesivo livre": "Free sticker",
  "Adesivos": "Stickers",
@@ -277,6 +279,8 @@ IGLang.add({
  "Deixe o valor em branco para usar a mensalidade do aluno (que você define em": "Leave the value blank to use the student's monthly fee (which you set in",
  "Depois": "Later",
  "Depois de cada aula, a teacher pode deixar aqui uma": "After each class, the teacher can leave here a",
+ "Desafio da semana": "Challenge of the week",
+ "Desafio da semana:": "Challenge of the week:",
  "Desenhando — arraste sobre o slide. Escolha “↖ Selecionar” para voltar": "Drawing — drag over the slide. Choose \"↖ Select\" to go back",
  "Desenhar": "Draw",
  "Desenhar (caneta e marca-texto": "Draw (pen and highlighter",
@@ -288,6 +292,7 @@ IGLang.add({
  "Desistir e revelar": "Give up and reveal",
  "Desliga o link único: cada pessoa recebe só o seu link, e ninguém vê os outros": "Turns off the shared link: each person gets only their own link, and nobody sees the others",
  "Desmarcar": "Unmark",
+ "Desmarcar todos": "Clear all",
  "Despesas": "Expenses",
  "Despesas da escola": "School expenses",
  "Destaques": "Highlights",
@@ -590,6 +595,7 @@ IGLang.add({
  "Leão": "Lion",
  "Ligar o modo privado? O link único do grupo deixa de mostrar os nomes dos colegas. Cada pessoa precisa usar o link individual que você mandar. Quem já abriu o link do grupo continua entrando na própria página normalmente": "Turn on private mode? The group's shared link will stop showing classmates' names. Each person needs to use the individual link you send. Anyone who already opened the group link can still get into their own page as usual",
  "Ligar ou desligar os sons de estrela e figurinha": "Turn the star and sticker sounds on or off",
+ "Ligue para os alunos de 14+ verem a liga da semana no link deles. Cada grupo (como o MONDAY) tem a sua liga; a liga geral é com quem você escolher em": "Turn it on so students 14+ see this week's league on their link. Each group (like MONDAY) has its own league; the general league is with whoever you choose in",
  "Limpar": "Clear",
  "Limpar a página": "Clear the page",
  "Linha": "Line",
@@ -628,6 +634,7 @@ IGLang.add({
  "Marcar": "Mark",
  "Marcar como enviado": "Mark as sent",
  "Marcar como preparada": "Mark as prepared",
+ "Marcar todos": "Select all",
  "Marque ou desmarque para escolher você mesma": "Check or uncheck to choose it yourself",
  "Marque pelo menos 3 palavras": "Select at least 3 words",
  "Marque pelo menos um nível": "Check at least one level",
@@ -738,6 +745,7 @@ IGLang.add({
  "Nenhuma aula registrada neste trimestre ainda": "No classes recorded this quarter yet",
  "Nenhuma aula registrada no site nesse intervalo. Digite os números das suas anotações": "No classes recorded on the site in this range. Type the numbers from your notes",
  "Nenhuma conversa ainda. Escolha um aluno abaixo para começar": "No conversations yet. Choose a student below to start",
+ "Nenhuma liga ainda: escolha pelo menos 2 alunos em": "No league yet: choose at least 2 students in",
  "Nenhuma lição criada ainda. Monte a primeira em “Nova lição de casa": "No homework created yet. Build the first one in “New homework",
  "Nenhuma lição de casa ainda": "No homework yet",
  "Nenhuma lição por enquanto": "No homework for now",
@@ -822,6 +830,7 @@ IGLang.add({
  "O que você escrever fica salvo": "What you write is saved",
  "O que você levou da aula: revise e pratique falando": "What you took from class: review and practice speaking",
  "O quiz ao vivo precisa do Supabase configurado": "The live quiz needs Supabase to be set up",
+ "O ranking está desligado": "The ranking is off",
  "O resumo da semana de cada aluno, pronto para mandar aos pais. Confira, mude o que quiser e toque em": "Each student's weekly summary, ready to send to the parents. Check it, change whatever you like, and tap",
  "O site segue funcionando sem login até você trocar": "The site keeps working without sign-in until you change it",
  "Objetivo com o inglês": "Goal with English",
@@ -928,6 +937,8 @@ IGLang.add({
  "Pra resolver": "To do",
  "Praticar": "Practice",
  "Praticar em casa": "Practice at home",
+ "Pratique 3 dias seguidos": "Practice 3 days in a row",
+ "Pratique em 4 dias diferentes": "Practice on 4 different days",
  "Preciso treinar": "Need to practice",
  "Preencha as datas \"De\" e \"Até\" primeiro": "Fill in the \"From\" and \"To\" dates first",
  "Preencha o nome do aluno antes de imprimir": "Fill in the student's name before printing",
@@ -992,6 +1003,8 @@ IGLang.add({
  "Que som é": "What's that sound",
  "Que som é esse": "What sound is this",
  "Quem acertou": "Who got it",
+ "Quem participa": "Who takes part",
+ "Quem participa da liga geral": "Who takes part in the general league",
  "Quem sou eu? Ouçam as pistas e perguntem": "Who am I? Listen to the clues and ask",
  "Quem tem aula agora": "Who has class now",
  "Quem tiver o link do grupo consegue abrir a página de qualquer membro (aparecem só os nomes e os bonequinhos, nunca o progresso dos outros). Combine com a turma de cada um abrir só o próprio nome": "Anyone with the group link can open any member's page (only names and little characters show, never anyone else's progress). Agree with the group that each person opens only their own name",
@@ -1001,6 +1014,8 @@ IGLang.add({
  "Questões geradas dos tópicos escolhidos": "Questions generated from the chosen topics",
  "Quiz ao vivo": "Live quiz",
  "Quiz ao vivo, no estilo Kahoot: você abre a sala e compartilha a tela; cada aluno entra pelo link no próprio celular ou computador e responde em botões coloridos. Quem acerta mais rápido ganha mais pontos — ranking a cada pergunta e pódio no final": "Live quiz, Kahoot style: you open the room and share your screen; each student joins through the link on their own phone or computer and answers with colored buttons. Whoever answers fastest earns more points — a ranking after each question and a podium at the end",
+ "Ranking da semana": "This week's ranking",
+ "Ranking ligado": "Ranking on",
  "Recado para o aluno": "Message for the student",
  "Recalcular das aulas": "Recalculate from classes",
  "Recebido": "Received",
@@ -1031,6 +1046,8 @@ IGLang.add({
  "Repetir o áudio": "Repeat the audio",
  "Reports — boletim dos alunos": "Reports — student report cards",
  "Reposição, férias, desconto": "Make-up class, vacation, discount",
+ "Responda 10 perguntas da revisão da aula": "Answer 10 class-review questions",
+ "Responda 80 perguntas": "Answer 80 questions",
  "Responder": "Answer",
  "Responsável (se menor de idade": "Guardian (if a minor",
  "Resposta da teacher em áudio": "Teacher's audio reply",
@@ -1116,6 +1133,7 @@ IGLang.add({
  "Sábado": "Saturday",
  "São precisos pelo menos 2 jogadores": "At least 2 players are required",
  "São só três perguntas. O site mostra os conteúdos, jogos e ferramentas certos para a idade e o nível dos seus alunos — e dá para mudar depois": "Just three questions. The site shows the right content, games and tools for your students' age and level — and you can change it later",
+ "Só alunos de 14+. Os alunos de um grupo também têm a liga do grupo, automaticamente": "Students 14+ only. A group's students also get the group's league automatically",
  "Só esta vez (aula extra)": "Just this once (extra class)",
  "Só nesta semana": "This week only",
  "Só no seu login": "Only in your account",
@@ -1139,6 +1157,7 @@ IGLang.add({
  "Tente o outro grupo": "Try the other group",
  "Terminar": "Finish",
  "Terminar o jogo": "Finish the game",
+ "Termine 5 jogos": "Finish 5 games",
  "Terminei esta página": "I finished this page",
  "Terça": "Tuesday",
  "Testando": "Testing",
@@ -1798,10 +1817,15 @@ IGLang.add({
  "ão": "on",
  "óculos escuros": "sunglasses",
  "ões": "ons",
- "última aula": "last class"
+ "última aula": "last class",
+ "✅ desafio": "✅ challenge"
 });
 
 IGLang.addPatterns([
+[
+"^Pontos: acerto ([^·]{1,240}?) · erro ([^·]{1,240}?) \\(tentar conta\\) · ([^·]{1,240}?) por dia praticado · desafio \\+([^·]{1,240}?)\\. O aluno vê o ranking no link dele \\(só o primeiro nome\\) — atualiza quando você abre a plataforma$",
+"Points: right $1 · wrong $2 (trying counts) · $3 per day practiced · challenge +$4. Students see the ranking on their link (first name only) — it updates when you open the platform"
+],
 [
 "^Toque numa página para fazer junto com ([^·]{1,240}?)\\. Tudo é salvo no livro de ([^·]{1,240}?) — e aparece no link do aluno\\. 🎯 = exercícios com correção automática$",
 "Tap a page to do it together with $1. Everything is saved in $2's book — and shows up on the student's link. 🎯 = exercises with automatic feedback"
@@ -2259,6 +2283,10 @@ IGLang.addPatterns([
 "New message from $1 — click to read"
 ],
 [
+"^\\(([^·]{1,240}?)\\) · vale \\+([^·]{1,240}?) pontos$",
+"($1) · worth +$2 points"
+],
+[
 "^Limite de ([^·]{1,240}?) apresentações por aluno$",
 "Limit of $1 presentations per student"
 ],
@@ -2493,6 +2521,10 @@ IGLang.addPatterns([
 [
 "^(\\S{1,30}) (\\S{1,30}) de alunos$",
 "$1 $2 from students"
+],
+[
+"^→ aparece como “([^·]{1,240}?)”$",
+"→ shows as “$1”"
 ],
 [
 "^Ficha da aula — ([^·]{1,240}?)$",
@@ -2749,5 +2781,13 @@ IGLang.addPatterns([
 [
 "^(\\S{1,30}) aulas$",
 "$1 classes"
+],
+[
+"^(\\S{1,30}) dias$",
+"$1 days"
+],
+[
+"^(\\S{1,30}) dia$",
+"$1 day"
 ]
 ]);

@@ -10864,3 +10864,40 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 .rec-box--compact .rec-item { grid-template-columns: 26px 1fr auto; padding: 6px 8px; }
 .sp-rec:empty { display: none; }
 @media (max-width: 520px) { .rec-item { grid-template-columns: 26px 1fr; } .rec-act { grid-column: 2; justify-self: start; } }
+
+/* 🏆 Ranking (league.js) */
+.lg-week { color: var(--ink-faint); font-weight: 600; margin-left: 6px; }
+.lg-switch { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .9rem; cursor: pointer; }
+.lg-challenge { display: flex; gap: 12px; align-items: center; margin: 10px 0; padding: 12px 14px; border-radius: 14px; background: linear-gradient(135deg, #FFF8E6, #FCE4E8); border: 1px solid rgba(239,200,104,.55); color: #2E1E2C; }
+.lg-challenge > span { font-size: 1.8rem; }
+.lg-challenge small { color: #6F4863; }
+.lg-challenge--student > div { flex: 1; }
+.lg-bar { height: 10px; margin: 8px 0 4px; border-radius: 99px; background: rgba(255,255,255,.8); overflow: hidden; }
+.lg-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #EFC868, #EF445E); transition: width .4s ease; }
+.lg-rules { font-size: .8rem; color: var(--ink-faint); margin: 6px 0 12px; }
+.lg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.lg-card { padding: 12px 14px; border-radius: 16px; border: 1px solid var(--border, #eee); background: var(--surface, #fff); margin-bottom: 12px; }
+.lg-card h4 { margin: 0 0 8px; font-size: 1rem; }
+.lg-card h4 small { color: var(--ink-faint); font-weight: 600; }
+.lg-table { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lg-table li { display: grid; grid-template-columns: 34px 32px 1fr auto; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 12px; }
+.lg-table li:nth-child(1) { background: linear-gradient(90deg, rgba(239,200,104,.35), transparent); }
+.lg-table li:nth-child(2) { background: linear-gradient(90deg, rgba(180,180,190,.25), transparent); }
+.lg-table li:nth-child(3) { background: linear-gradient(90deg, rgba(205,127,50,.2), transparent); }
+.lg-table li.is-me { box-shadow: inset 0 0 0 2px var(--primary); background: color-mix(in srgb, var(--primary) 8%, transparent); }
+.lg-table li.is-zero { opacity: .6; }
+.lg-pos { font-weight: 800; text-align: center; font-size: 1.05rem; }
+.lg-av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-alt, #F5F0F7); font-size: 1rem; }
+.lg-name { display: flex; flex-direction: column; font-weight: 700; min-width: 0; }
+.lg-name small { font-weight: 500; font-size: .76rem; color: var(--ink-faint); }
+.lg-pts { font-family: var(--font-display); font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.lg-last { margin: 8px 0 0; font-size: .85rem; color: var(--ink-soft); }
+.lg-me { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 10px; }
+.lg-me div { text-align: center; padding: 10px; border-radius: 14px; background: var(--surface-alt, #F5F0F7); }
+.lg-me b { display: block; font-family: var(--font-display); font-size: 1.6rem; color: var(--ink); }
+.lg-me span { font-size: .8rem; color: var(--ink-faint); font-weight: 700; }
+.lg-who { display: flex; flex-direction: column; gap: 4px; max-height: 55vh; overflow-y: auto; }
+.lg-who-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 10px; cursor: pointer; }
+.lg-who-row:hover { background: var(--surface-alt, rgba(0,0,0,.04)); }
+.lg-who-row small { color: var(--ink-faint); }
+.stu-tile--ranking { background: linear-gradient(135deg, #FFF3CC, #FCE4E8); }
