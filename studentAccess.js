@@ -197,6 +197,9 @@ function saDefaultKeys(student) {
     const inRange = young ? i <= own : i === own;
     l.topics.forEach(t => {
       const key = saTopicKey(l.id, t.id);
+      // Syllabus A1 (syllabusA1.js): every lesson open from the start, for
+      // learners of 14+ placed at A1.
+      if (t.syllabus) { if (typeof syForStudent === 'function' && syForStudent(student)) keys.push(key); return; }
       if (taught.has(key)) { keys.push(key); return; }
       if (!inRange) return;
       if (t.audience === 'adult' && !grown) return;
@@ -216,6 +219,7 @@ function saDefaultKeys(student) {
       if (t.id === 'easy-prescont' && !/presentcontinuous/.test(taughtTitles)) return;
     }
     if (prof === 'adult' && saLevelIndex(t.level || SA_PRACTICE_LEVEL[t.id]) > own) return;
+    if (t.syllabus && !(typeof syForStudent === 'function' && syForStudent(student))) return;
     keys.push(`p:${t.id}`);
   });
   return keys;
@@ -262,7 +266,8 @@ function saEditorHTML(student) {
     </label>`;
 
   const levels = (typeof LEVELS !== 'undefined' ? LEVELS : []).map((l, i) => {
-    const topics = l.topics.filter(t => grown || t.audience !== 'adult');
+    const syOk = typeof syForStudent === 'function' && syForStudent(student);
+    const topics = l.topics.filter(t => (t.syllabus ? syOk : grown || t.audience !== 'adult'));
     if (!topics.length) return '';
     const on = topics.filter(t => allowed.has(saTopicKey(l.id, t.id))).length;
     return `
@@ -270,7 +275,7 @@ function saEditorHTML(student) {
         <summary><b>${esc(l.code)} · ${esc(l.name)}</b>${i === own ? ' <span class="sa-badge">nível do aluno</span>' : ''} <small>${on} de ${topics.length} liberados</small></summary>
         <div class="sa-grid">
           ${topics.map(t => box(saTopicKey(l.id, t.id), `${esc(t.emoji || '')} ${esc(t.title)}`,
-            `${saIsGrammar(t) ? ' <small class="sa-tag">gramática</small>' : ''}${taught.has(saTopicKey(l.id, t.id)) ? ' <small class="sa-tag sa-tag--ok">já dado</small>' : ''}`)).join('')}
+            `${t.syllabus ? ` <small class="sa-tag">syllabus · aula ${t.syllabus.n}</small>` : saIsGrammar(t) ? ' <small class="sa-tag">gramática</small>' : ''}${taught.has(saTopicKey(l.id, t.id)) ? ' <small class="sa-tag sa-tag--ok">já dado</small>' : ''}`)).join('')}
         </div>
       </details>`;
   }).join('');

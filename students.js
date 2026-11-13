@@ -316,6 +316,9 @@ function addXP(studentId, delta) {
 // guarded with `typeof` checks wherever it's invoked, since this file may
 // not have loaded yet at that call site's definition time.
 function awardProgress(xp, stars) {
+  // Every win in the app passes here: the Syllabus A1 track (syllabusA1.js)
+  // listens to count the activity of the lesson on screen.
+  try { document.dispatchEvent(new CustomEvent('ig:award', { detail: { xp, stars } })); } catch (e) { /* old browser */ }
   const id = getActiveStudentId();
   if (!id) return;
   if (xp) addXP(id, xp);
