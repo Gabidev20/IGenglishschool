@@ -243,7 +243,7 @@ const ShareMode = (() => {
       if (payload.syllabus && payload.syllabus.lessons && typeof syMerge === 'function') {
         const mine = IGStore.getJSON('syllabus_' + sid, null);
         const merged = syMerge(mine, payload.syllabus);
-        if (JSON.stringify(merged.lessons) !== JSON.stringify((mine && mine.lessons) || {})) IGStore.setJSON('syllabus_' + sid, merged);
+        if (JSON.stringify([merged.lessons, merged.can]) !== JSON.stringify([(mine && mine.lessons) || {}, (mine && mine.can) || {}])) IGStore.setJSON('syllabus_' + sid, merged);
       }
       // The Student Manual's answers: the newest copy wins.
       if (payload.manual && typeof payload.manual === 'object') {

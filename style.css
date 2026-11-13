@@ -11026,3 +11026,32 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
   .sy-bubble { max-width: 92%; }
   .sy-lessons { grid-template-columns: 1fr; }
 }
+
+/* Syllabus A1: "I can…" ticks (Start) and the vocabulary bank (Words) */
+.sy-can { display: grid; gap: 6px; margin-top: 8px; }
+.sy-can-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border-radius: var(--radius-sm);
+  background: var(--bg); cursor: pointer; }
+.sy-can-item input { width: 20px; height: 20px; margin: 1px 0 0; flex: 0 0 auto; accent-color: var(--color-secondary-deep); cursor: pointer; }
+.sy-can-item input:disabled { cursor: default; }
+.sy-can-item:has(input:checked) span { font-weight: 600; }
+.sy-can-count { margin: 6px 0 0; font-weight: 700; color: var(--color-secondary-deep); min-height: 1.2em; }
+.sy-can-mini { font-size: .74rem; font-weight: 700; color: var(--color-secondary-deep); align-self: center; margin-left: 4px; }
+
+.sy-words { display: grid; gap: 16px; }
+.sy-words-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.sy-words-head .sy-small { margin: 0; }
+.sy-words-toggle { display: inline-flex; gap: 6px; align-items: center; font-size: .9rem; cursor: pointer; }
+.sy-word-group h4 { margin: 0 0 8px; font-size: 1rem; }
+.sy-word-group h4 small { font-weight: 600; color: var(--ink-faint); margin-left: 4px; }
+.sy-word-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.sy-word-card { display: grid; justify-items: center; gap: 3px; padding: 10px 8px; text-align: center; font: inherit; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+  transition: border-color .15s, background .15s; }
+.sy-word-card:hover { border-color: var(--primary); }
+.sy-word-card.is-seen { background: color-mix(in srgb, var(--color-secondary-deep) 8%, var(--surface)); }
+.sy-word-card b { font-size: .95rem; line-height: 1.25; }
+.sy-word-card small { color: var(--ink-soft); font-size: .82rem; line-height: 1.25; }
+.sy-word-vis { font-size: 1.7rem; line-height: 1; height: 2rem; display: grid; place-items: center; }
+.sy-word-vis img { max-height: 2rem; width: auto; }
+@media (max-width: 560px) { .sy-word-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sy-word-note { font-size: .78rem; color: var(--ink-faint); font-style: normal; }

@@ -12,8 +12,10 @@
      • three new activities only these lessons have: 💬 Real talk (the
        lesson's social skill, a dialogue to complete), 🛠️ Fix it (typical
        mistakes of Brazilian learners) and 🔊 Sounds (the pronunciation
-       focus, by ear), plus a ⭐ Start tab with the goals, the grammar, the
-       chunks and the social skill;
+       focus, by ear), plus a ⭐ Start tab with the goals (the student ticks
+       "I can…"), the grammar, the chunks and the social skill, and a
+       📚 Words tab with the lesson's whole vocabulary bank (`vocab`), which
+       also feeds every game, Flashcards and Practice;
      • the track itself (openSyllabusTrack): the 23 lessons in order, with
        each student's progress per lesson and the next lesson to do.
 
@@ -38,7 +40,8 @@ const SY_KEY_PREFIX = 'syllabus_';
 // "lesson complete"; the others are extra practice.
 const SY_ACTS = [
   { id: 'start', icon: '⭐', label: 'Start', need: true },
-  { id: 'game', icon: '🎮', label: 'Games', need: true },
+  { id: 'words', icon: '📚', label: 'Words', need: true },
+  { id: 'game',icon: '🎮', label: 'Games', need: true },
   { id: 'quiz', icon: '📝', label: 'Quiz', need: true },
   { id: 'talk', icon: '💬', label: 'Real talk', need: true },
   { id: 'fixit', icon: '🛠️', label: 'Fix it', need: true },
@@ -68,6 +71,21 @@ function syTopic(id) {
   return (level && level.topics.find(t => t.id === id)) || syLessons().find(l => l.id === id) || null;
 }
 
+// Every word of a lesson: its vocabulary bank (vocab groups) when it has one,
+// else the short `words` list.
+function syAllWords(lesson) {
+  if (!Array.isArray(lesson.vocab) || !lesson.vocab.length) return lesson.words || [];
+  const seen = new Set();
+  const out = [];
+  lesson.vocab.forEach(g => (g.items || []).forEach(w => {
+    const key = String(w.en || '').toLowerCase();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    out.push(w);
+  }));
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 // INTO THE CURRICULUM
 // ---------------------------------------------------------------------------
@@ -81,6 +99,8 @@ function syTopic(id) {
     if (level.topics.some(t => t.id === l.id)) return;
     level.topics.push({
       ...l,
+      // The whole vocabulary bank feeds every game, Flashcards and Practice.
+      words: syAllWords(l),
       cefr: 'A1',
       audience: 'adult',
       description: `Syllabus A1 · Lesson ${l.n} · ${l.description}`,
@@ -95,7 +115,7 @@ function syTopic(id) {
   if (typeof EXAM_TOPICS === 'undefined' || typeof adultExamTopic !== 'function' || typeof exMC !== 'function') return;
   syLessons().forEach(l => {
     if (EXAM_TOPICS.some(x => x.id === l.id)) return;
-    const t = adultExamTopic(SY_LEVEL_ID, l);
+    const t = adultExamTopic(SY_LEVEL_ID, { ...l, words: syAllWords(l) });
     t.label = `A1 · ${l.n} ${l.title}`;
     t.syllabus = true;
     (l.mistakes || []).forEach(m => {
@@ -129,12 +149,29 @@ function syMark(studentId, lessonId, act, score) {
 // Two copies of the same student's progress (the link and the teacher):
 // the best score of each activity wins.
 function syMerge(a, b) {
-  const out = { lessons: {}, _t: Math.max((a && a._t) || 0, (b && b._t) || 0) };
+  const out = { lessons: {}, can: {}, _t: Math.max((a && a._t) || 0, (b && b._t) || 0) };
   [a, b].forEach(p => Object.entries((p && p.lessons) || {}).forEach(([id, acts]) => {
     const cur = out.lessons[id] || (out.lessons[id] = {});
     Object.entries(acts || {}).forEach(([k, v]) => { cur[k] = Math.max(cur[k] || 0, Number(v) || 0); });
   }));
+  // The "I can…" ticks can be undone, so the newest copy of each lesson wins.
+  [a, b].forEach(p => Object.entries((p && p.can) || {}).forEach(([id, c]) => {
+    if (c && (!out.can[id] || (c.t || 0) > (out.can[id].t || 0))) out.can[id] = c;
+  }));
   return out;
+}
+
+// The student's own "I can…" ticks on the Start tab (self-assessment).
+function syCanGet(studentId, lessonId) {
+  const c = (syLoad(studentId).can || {})[lessonId];
+  return c && Array.isArray(c.v) ? c.v : [];
+}
+function syCanSet(studentId, lessonId, list) {
+  if (!studentId) return;
+  const p = syLoad(studentId);
+  p.can = { ...(p.can || {}), [lessonId]: { v: list.map(Boolean), t: Date.now() } };
+  p._t = Date.now();
+  IGStore.setJSON(SY_KEY_PREFIX + studentId, p);
 }
 function syLessonState(studentId, lessonId) {
   const acts = syLoad(studentId).lessons[lessonId] || {};
@@ -195,6 +232,7 @@ function syModalTabs() {
 function syRenderPane(kind, mountEl, level, topic) {
   syActive(topic, kind);
   if (kind === 'start') { syRenderStart(mountEl, topic); return true; }
+  if (kind === 'words') { syRenderWords(mountEl, topic); return true; }
   if (kind === 'talk') { syRenderTalk(mountEl, topic); return true; }
   if (kind === 'fixit') { syRenderFixIt(mountEl, topic); return true; }
   if (kind === 'sounds') { syRenderSounds(mountEl, topic); return true; }
@@ -224,12 +262,22 @@ function syRenderStart(mount, topic) {
   const chunks = topic.chunks || [];
   const soc = topic.social || {};
   const pron = topic.pron || {};
-  const hi = (ex, form) => syEsc(ex).replace(new RegExp(`(^|[^A-Za-z])(${String(form).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![A-Za-z])`, 'i'), '$1<mark>$2</mark>');
+  const sid = syOnScreen && syOnScreen.studentId;
+  const can = syCanGet(sid, topic.id);
+  const hi =(ex, form) => syEsc(ex).replace(new RegExp(`(^|[^A-Za-z])(${String(form).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![A-Za-z])`, 'i'), '$1<mark>$2</mark>');
   mount.innerHTML = `
     <div class="sy-start">
       <section class="sy-card sy-goals">
         <h4>🎯 In this lesson</h4>
-        <ul>${goals.map(g => `<li>${syEsc(g)}</li>`).join('')}</ul>
+        <p class="sy-small">${sid ? 'Tick what you can do. Come back at the end of the lesson and tick again!' : 'The student ticks what they can do (choose the student at the top).'}</p>
+        <div class="sy-can">
+          ${goals.map((g, i) => `
+            <label class="sy-can-item">
+              <input type="checkbox" id="syCan${i}" data-can="${i}" ${can[i] ? 'checked' : ''} ${sid ? '' : 'disabled'} />
+              <span>${syEsc(g)}</span>
+            </label>`).join('')}
+        </div>
+        <p class="sy-can-count" aria-live="polite">${sid ? `${can.filter(Boolean).length} / ${goals.length}` : ''}</p>
       </section>
       <section class="sy-card">
         <h4>🧩 Grammar</h4>
@@ -268,12 +316,76 @@ function syRenderStart(mount, topic) {
         </section>
       </div>
     </div>`;
+  mount.querySelectorAll('[data-can]').forEach(box => box.addEventListener('change', () => {
+    const list = goals.map((_, i) => Boolean(mount.querySelector(`#syCan${i}`).checked));
+    syCanSet(sid, topic.id, list);
+    mount.querySelector('.sy-can-count').textContent = `${list.filter(Boolean).length} / ${goals.length}${list.every(Boolean) ? ' 🎉' : ''}`;
+  }));
   mount.querySelectorAll('.sy-say').forEach(b => b.addEventListener('click', () => sySay(b.dataset.say)));
   mount.querySelectorAll('.sy-chunk').forEach(b => b.addEventListener('click', () => {
     const pt = b.querySelector('small');
     pt.hidden = !pt.hidden;
     sySay(b.dataset.say);
   }));
+}
+
+// ---------------------------------------------------------------------------
+// 📚 WORDS — the lesson's whole vocabulary bank, by group: tap a word to hear
+// it and see it in Portuguese. Exploring most of them counts the activity.
+// ---------------------------------------------------------------------------
+function syRenderWords(mount, topic) {
+  const lesson = syLessons().find(l => l.id === topic.id) || topic;
+  const groups = Array.isArray(lesson.vocab) && lesson.vocab.length
+    ? lesson.vocab : [{ title: 'Words', items: topic.words || [] }];
+  const total = groups.reduce((n, g) => n + (g.items || []).length, 0);
+  const sid = syOnScreen && syOnScreen.studentId;
+  const seen = new Set();
+  let counted = false;
+  const visual = w => (typeof igWordVisualHTML === 'function' ? igWordVisualHTML(w, 'sy-word-pic') : syEsc(w.emoji || ''));
+
+  mount.innerHTML = `
+    <div class="sy-words">
+      <div class="sy-words-head">
+        <p class="sy-small">All the words of this lesson (${total}). Tap a word to hear it and see it in Portuguese.</p>
+        <div class="game-btn-row">
+          <label class="sy-words-toggle"><input type="checkbox" id="syWordsPt" /> Show Portuguese</label>
+          <span class="game-status-pill" id="syWordsCount">0 / ${total}</span>
+        </div>
+      </div>
+      ${groups.map((g, gi) => `
+        <section class="sy-word-group">
+          <h4>${syEsc(g.title)} <small>${(g.items || []).length}</small></h4>
+          <div class="sy-word-grid">
+            ${(g.items || []).map((w, wi) => `
+              <button type="button" class="sy-word-card" data-w="${gi}:${wi}">
+                <span class="sy-word-vis">${visual(w)}</span>
+                <b>${syEsc(w.en)}</b>
+                ${w.note ? `<i class="sy-word-note">${syEsc(w.note)}</i>` : ''}
+                <small hidden>${syEsc(w.pt || '')}</small>
+              </button>`).join('')}
+          </div>
+        </section>`).join('')}
+      <p class="sy-small">Then practise them: 🎮 Games and, under ➕, 🗂️ Flashcards.</p>
+    </div>`;
+
+  const count = mount.querySelector('#syWordsCount');
+  mount.querySelectorAll('.sy-word-card').forEach(card => card.addEventListener('click', () => {
+    const [gi, wi] = card.dataset.w.split(':').map(Number);
+    const w = groups[gi].items[wi];
+    card.querySelector('small').hidden = false;
+    card.classList.add('is-seen');
+    sySay(w.en, 0.85);
+    seen.add(card.dataset.w);
+    count.textContent = `${seen.size} / ${total}`;
+    if (!counted && seen.size >= Math.ceil(total * 0.6)) {
+      counted = true;
+      syMark(sid, topic.id, 'words', 100);
+      count.textContent += ' ✅';
+    }
+  }));
+  mount.querySelector('#syWordsPt').addEventListener('change', (e) => {
+    mount.querySelectorAll('.sy-word-card small').forEach(s => { s.hidden = !e.target.checked && !s.closest('.is-seen'); });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -546,7 +658,7 @@ function openSyllabusTrack(student) {
                   <span class="sy-lesson-body">
                     <b>${syEsc(l.emoji)} ${syEsc(l.title)}</b>
                     <small>${syEsc((l.social && l.social.skill) || l.description)}</small>
-                    ${sid ? `<span class="sy-dots">${dots(state)}</span>` : ''}
+                    ${sid ? `<span class="sy-dots">${dots(state)}${syCanGet(sid, l.id).filter(Boolean).length ? `<span class="sy-can-mini" title="I can…">✔ ${syCanGet(sid, l.id).filter(Boolean).length}/${(l.goals || []).length}</span>` : ''}</span>` : ''}
                   </span>
                   ${isNext ? '<span class="sy-next-tag">next</span>' : ''}
                 </button>`;
