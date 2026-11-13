@@ -3,6 +3,7 @@
    the object below ("Texto": "Text"); texts with a number or name in the
    middle go in the patterns list ($1, $2 = the parts that change). */
 IGLang.add({
+ "1 ponto": "1 point",
  "A cidade tem belas praias, uma baía, rios e áreas de Mata Atlântica. Seu clima é úmido, com verões quentes e invernos amenos": "The city has beautiful beaches, a bay, rivers and areas of Atlantic Forest. Its climate is humid, with hot summers and mild winters",
  "A criança escolhe o animal e o descreve com figuras — big or small, a cor, long tail, long neck, mane, wings… O animal vai sendo montado e no final aparece no habitat dele com a frase": "The child picks the animal and describes it with pictures — big or small, the color, long tail, long neck, mane, wings… The animal is built piece by piece and at the end it appears in its habitat with the sentence",
  "A presença vem sozinha do": "Attendance comes automatically from the",
@@ -30,6 +31,7 @@ IGLang.add({
  "Abrir as páginas só para ver": "Open the pages just to look",
  "Abrir o contrato": "Open the contract",
  "Abrir o menu": "Expand the menu",
+ "Abrir tópico": "Open topic",
  "Abrir um jogo (a apresentação continua aberta": "Open a game (the presentation stays open",
  "Abrir um jogo sem sair dos slides": "Open a game without leaving the slides",
  "Acertou": "Correct",
@@ -52,6 +54,7 @@ IGLang.add({
  "Ainda não há slides por aqui. Quando a teacher fizer slides na aula, eles aparecem aqui": "There are no slides here yet. When the teacher makes slides in class, they appear here",
  "Ainda não lê": "Doesn't read yet",
  "Ainda não praticada": "Not practiced yet",
+ "Ainda não praticou no link": "Hasn't practiced on the link yet",
  "Ainda não salvo": "Not saved yet",
  "Ainda não tem nada aqui. Jogue um jogo e ele aparece": "Nothing here yet. Play a game and it will show up",
  "Ajuda": "Help",
@@ -197,6 +200,8 @@ IGLang.add({
  "Com o aluno escolhido, o Live Class mostra a": "With the student selected, Live Class shows the",
  "Com quem é a aula agora? O livro abre na última página que o aluno fez": "Who is the class with now? The book opens at the last page the student did",
  "Com sono": "Sleepy",
+ "Combine 10 minutos por dia no link": "Agree on 10 minutes a day on the link",
+ "Combine uma meta pequena: 10 minutos por dia, 3 vezes na semana": "Agree on a small goal: 10 minutes a day, 3 times a week",
  "Come-come · 2 jogadores": "Maze Muncher · 2 players",
  "Comece assim": "Start like this",
  "Comentário": "Comment",
@@ -253,6 +258,7 @@ IGLang.add({
  "Correção da professora": "Teacher's correction",
  "Corrigir": "Correct",
  "Corrigir textos": "Correct texts",
+ "Corrija antes da aula e comente com ela": "Correct it before class and talk it through",
  "Criando": "Creating",
  "Crianças": "Children",
  "Crianças pequenas": "Young children",
@@ -329,6 +335,7 @@ IGLang.add({
  "Editor — editar os temas, palavras, vídeos e leituras": "Editor — edit themes, words, videos and readings",
  "Editável": "Editable",
  "Ela vai corrigir e você vai ver as correções aqui": "She will correct it and you will see the corrections here",
+ "Elogie quem está praticando": "Praise who's practicing",
  "Em 2 minutos você vê": "In 2 minutes you'll see",
  "Em andamento": "In progress",
  "Em branco": "Blank",
@@ -352,6 +359,8 @@ IGLang.add({
  "Enviar áudio": "Send audio",
  "Erro desconhecido": "Unknown error",
  "Erros da turma": "Group mistakes",
+ "Erros que se repetem": "Mistakes that keep coming back",
+ "Erros que se repetem no grupo": "Mistakes that keep coming back in the group",
  "Errou": "Wrong",
  "Errou alguma coisa? No histórico, no fim da mesma janela, toque em": "Got something wrong? In the history, at the bottom of the same window, tap",
  "Escolha as tarefas acima — de 2 a 4 é o tamanho certo para casa": "Pick the tasks above — 2 to 4 is the right size for home",
@@ -602,6 +611,7 @@ IGLang.add({
  "Livro online do aluno": "Student's online book",
  "Livros IG": "IG Books",
  "Livros do aluno": "Student books",
+ "Lição com nota baixa (menos de 70%)": "Homework with a low score (under 70%)",
  "Lição completa": "Full homework",
  "Lição da semana": "Homework of the week",
  "Lição de Casa": "Homework",
@@ -701,6 +711,7 @@ IGLang.add({
  "Nada para revisar por enquanto — nenhum erro pendente": "Nothing to review for now — no pending mistakes",
  "Nada para revisar — este aluno não tem erros pendentes": "Nothing to review — this student has no pending mistakes",
  "Nada pendente para revisar": "Nothing pending to review",
+ "Nada pendente: lições em dia, sem erros repetidos. Aula livre para avançar!": "Nothing pending: homework up to date, no repeated mistakes. Free to move on!",
  "Nada registrado neste mês ainda": "Nothing recorded this month yet",
  "Negrito": "Bold",
  "Negrito (Ctrl+B": "Bold (Ctrl+B",
@@ -803,6 +814,7 @@ IGLang.add({
  "O navegador fala inglês": "The browser speaks English",
  "O navegador não guarda dados": "The browser doesn't save data",
  "O que o aluno escreveu": "What the student wrote",
+ "O que reforçar hoje": "What to reinforce today",
  "O que rolou nas aulas": "What happened in class",
  "O que seus alunos mais precisam praticar": "What your students most need to practice",
  "O que treinar": "What to practice",
@@ -864,6 +876,7 @@ IGLang.add({
  "Pais e responsáveis também podem acompanhar por aqui": "Parents and guardians can follow along here too",
  "Palavra": "Word",
  "Palavra em inglês": "Word in English",
+ "Palavras da revisão ainda fracas": "Review words still weak",
  "Palavras e frases da unidade do seu livro": "Words and phrases from your book unit",
  "Palavras que mais erraram": "Most-missed words",
  "Para adolescentes e adultos aparece uma pergunta de": "For teens and adults, a question for",
@@ -1027,6 +1040,7 @@ IGLang.add({
  "Reuniões → Sala Pessoal → Copiar convite": "Meetings → Personal Room → Copy invitation",
  "Rever estas": "Review these",
  "Revisar agora": "Review now",
+ "Revisar erros": "Review mistakes",
  "Revisar meus erros": "Review my mistakes",
  "Revisão": "Review",
  "Revisão da aula": "Class review",
@@ -1212,8 +1226,10 @@ IGLang.add({
  "Um come-come no labirinto: cada criança escolhe o avatar (dinosaur, monkey, butterfly, Pac-Man, frog) e você escolhe a comida — moedas, frutas, legumes, material escolar, letras, números, cores, doces. Cuidado com as aranhas! A palavra é falada quando é comida. Dá para jogar 2 ao mesmo tempo": "A maze chomper: each child picks an avatar (dinosaur, monkey, butterfly, Pac-Man, frog) and you pick the food — coins, fruit, vegetables, school supplies, letters, numbers, colors, sweets. Watch out for spiders! The word is spoken when it's eaten. 2 can play at the same time",
  "Um jogador não olha; a turma vê o personagem. Ele faz perguntas de sim/não (\"Am I an animal?\") até adivinhar. Menos perguntas = mais pontos": "One player doesn't look; the group sees the character. They ask yes/no questions (\"Am I an animal?\") until they guess. Fewer questions = more points",
  "Um por linha: emoji, nome e (se quiser) pistas separadas por": "One per line: emoji, name and (if you like) clues separated by",
+ "Um texto esperando correção": "One text waiting for correction",
  "Uma frase por linha — ex.: This is a cat": "One sentence per line — e.g.: This is a cat",
  "Uma lista com o nome e o link de cada pessoa": "A list with each person's name and link",
+ "Uma lição atrasada": "One late homework",
  "Unidade automática, pelo Today's Class": "Automatic unit, from Today's Class",
  "Ursinho de pelúcia": "Teddy bear",
  "Usar como fundo do slide": "Use as slide background",
@@ -1221,7 +1237,9 @@ IGLang.add({
  "Usar uma página do livro": "Use a book page",
  "Usar uma página do livro online": "Use an online book page",
  "Use": "Use",
+ "Use no warm-up:": "Use them in the warm-up:",
  "Use “✅ I said it!” se o microfone não funcionar": "Use “✅ I said it!” if the microphone doesn't work",
+ "Vale corrigir junto o que ela errou": "Worth going over the mistakes together",
  "Vale treinar mais um pouco antes da prova": "Worth practicing a little more before the test",
  "Valor": "Amount",
  "Valor pago": "Amount paid",
@@ -1244,6 +1262,7 @@ IGLang.add({
  "Ver em inglês": "See in English",
  "Ver em português": "See in Portuguese",
  "Ver ficha da aula / enviar pelo WhatsApp": "View class sheet / send by WhatsApp",
+ "Ver lições": "See homework",
  "Ver o tutorial de novo": "See the tutorial again",
  "Ver respostas": "Show answers",
  "Ver resultado": "See result",
@@ -1607,6 +1626,7 @@ IGLang.add({
  "tradução": "translation",
  "treina a escrita: completar e montar frases": "practices writing: completing and building sentences",
  "troque se registrou no aluno errado": "change it if you recorded it under the wrong student",
+ "tudo em dia": "all caught up",
  "tudo fica só neste navegador": "everything stays in this browser only",
  "turma": "group",
  "turmas e individuais": "groups and individuals",
@@ -1995,6 +2015,10 @@ IGLang.addPatterns([
 "$1. Fix what you need and click"
 ],
 [
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?)\\/([^·]{1,240}?) acertos nesta semana$",
+"$1/$2 right this week"
+],
+[
 "^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) mensagem\\(ns\\) nova\\(s\\) dos alunos$",
 "$1 new message(s) from students"
 ],
@@ -2013,6 +2037,10 @@ IGLang.addPatterns([
 [
 "^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) exercícios · ([^·]{1,240}?) certos$",
 "$1 exercises · $2 correct"
+],
+[
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) dias seguidos praticando — elogie!$",
+"$1 days in a row practicing — praise them!"
 ],
 [
 "^Limite de ([^·]{1,240}?) apresentações por aluno\\. Exclua alguma antiga$",
@@ -2131,6 +2159,10 @@ IGLang.addPatterns([
 "$1 characters · my game"
 ],
 [
+"^Comece retomando a aula de ([^·]{1,240}?) \\(([^·]{1,240}?)\\)$",
+"Start by picking up the class of $1 ($2)"
+],
+[
 "^Escolha um jogo — ao fechar, você volta para ([^·]{1,240}?)$",
 "Pick a game — when you close it, you go back to $1"
 ],
@@ -2153,6 +2185,10 @@ IGLang.addPatterns([
 [
 "^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) ainda não praticadas$",
 "$1 not practiced yet"
+],
+[
+"^Sem praticar há 7\\+ dias: ([^·]{1,240}?) de ([^·]{1,240}?)$",
+"No practice for 7+ days: $1 of $2"
 ],
 [
 "^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) fez a lição de casa$",
@@ -2199,6 +2235,10 @@ IGLang.addPatterns([
 "$1 to review today"
 ],
 [
+"^([^\\s·]{1,30}(?: [^\\s·]{1,30}){0,3}?) lições atrasadas$",
+"$1 late homework tasks"
+],
+[
 "^Fazer o livro com ([^·]{1,240}?) \\(p\\. ([^·]{1,240}?)$",
 "Do the book with $1 (p. $2"
 ],
@@ -2225,6 +2265,10 @@ IGLang.addPatterns([
 [
 "^Limite de ([^·]{1,240}?) slides por apresentação$",
 "Limit of $1 slides per presentation"
+],
+[
+"^Lição atrasada: ([^·]{1,240}?) de ([^·]{1,240}?)$",
+"Late homework: $1 of $2"
 ],
 [
 "^Mensagens — ([^·]{1,240}?) nova\\(s\\) da teacher$",
@@ -2283,6 +2327,10 @@ IGLang.addPatterns([
 "Everything works, with $1 warning(s"
 ],
 [
+"^“([^·]{1,240}?)” ficou com ([^·]{1,240}?)%$",
+"“$1” scored $2%"
+],
+[
 "^Criar contas dos membros \\(([^·]{1,240}?)$",
 "Create member accounts ($1"
 ],
@@ -2297,6 +2345,10 @@ IGLang.addPatterns([
 [
 "^Próxima: ([^·]{1,240}?) às ([^·]{1,240}?)$",
 "Next: $1 at $2"
+],
+[
+"^Comece retomando a aula de ([^·]{1,240}?)$",
+"Start by picking up the class of $1"
 ],
 [
 "^Quase — a frase certa é: \"([^·]{1,240}?)$",
@@ -2327,8 +2379,16 @@ IGLang.addPatterns([
 "Monthly fee of $1 outstanding"
 ],
 [
+"^Próximo tópico sugerido: ([^·]{1,240}?)$",
+"Suggested next topic: $1"
+],
+[
 "^Obrigada pela parceria! ([^·]{1,240}?)$",
 "Thank you for the partnership! $1"
+],
+[
+"^O que reforçar hoje com ([^·]{1,240}?)$",
+"What to reinforce today with $1"
 ],
 [
 "^O contrato terminou em ([^·]{1,240}?)$",
@@ -2361,6 +2421,10 @@ IGLang.addPatterns([
 [
 "^aulas registradas em ([^·]{1,240}?)$",
 "classes logged in $1"
+],
+[
+"^Não pratica há ([^·]{1,240}?) dias$",
+"No practice for $1 days"
 ],
 [
 "^Para treinar mais: ([^·]{1,240}?)$",
@@ -2459,6 +2523,10 @@ IGLang.addPatterns([
 "Move $1's class"
 ],
 [
+"^Use no warm-up: ([^·]{1,240}?)$",
+"Use them in the warm-up: $1"
+],
+[
 "^Ficha da aula: ([^·]{1,240}?)$",
 "Class sheet: $1"
 ],
@@ -2472,7 +2540,7 @@ IGLang.addPatterns([
 ],
 [
 "^Lição pedida: ([^·]{1,240}?)$",
-"Homework assigned: $1"
+"Homework set: $1"
 ],
 [
 "^Trocar o link ([^·]{1,240}?)$",
@@ -2673,6 +2741,10 @@ IGLang.addPatterns([
 [
 "^às ([^·]{1,240}?)$",
 "at $1"
+],
+[
+"^(\\S{1,30}) pontos$",
+"$1 points"
 ],
 [
 "^(\\S{1,30}) aulas$",

@@ -168,6 +168,7 @@ function openStudentPicker(startOnActions) {
         <div><b>${pkEsc(s.name)}</b><small>${pkEsc(typeof igLevelText === 'function' ? igLevelText(s) : '')}${t !== undefined ? ` · 📅 aula hoje${t ? ` às ${pkEsc(t)}` : ''}` : ''}</small></div>
         <button class="sp-link" data-sp="list">⇄ Trocar aluno</button>
       </div>
+      <div class="sp-rec" id="spRec"></div>
       <div class="sp-actions">
         <button class="sp-act sp-act--main" data-sp-act="class">📋<b>Today's Class</b><small>registrar a aula</small></button>
         <button class="sp-act" data-sp-act="book">📖<b>Livro da aula</b><small>fazer o livro juntos</small></button>
@@ -182,6 +183,8 @@ function openStudentPicker(startOnActions) {
         <button class="sp-link" data-sp="close">Fechar</button>
         <button class="sp-link sp-link--right" data-sp="showlive" title="Só no seu login">👁️ Mostrar a Live Class</button>
       </div>`;
+    // 💡 The main points to reinforce, before choosing what to open (recommend.js).
+    if (typeof rkMount === 'function') { try { rkMount(panel.querySelector('#spRec'), s, { compact: true, max: 4, onAction: () => close() }); } catch (e) { console.error(e); } }
     const first = panel.querySelector('[data-sp-act="class"]');
     if (first) first.focus();
     const run = fn => { close(); setTimeout(fn, 0); };
