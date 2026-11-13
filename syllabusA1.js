@@ -243,14 +243,20 @@ function syRenderPane(kind, mountEl, level, topic) {
 function syDecorateModal(topic) {
   if (!syIsLesson(topic)) return;
   const head = document.querySelector('#modalBody .modal-head-text');
-  if (!head || head.querySelector('.sy-back')) return;
+  if (!head || head.querySelector('.syl-back')) return;
+  // On a phone or tablet the lesson's nine tabs wrap instead of scrolling
+  // out of sight, and a long lesson title may take two lines (style.css).
+  const tabs = document.getElementById('modalTabs');
+  if (tabs) tabs.classList.add('syl-tabs');
+  const box = head.closest('.modal-head');
+  if (box) box.classList.add('syl-head');
   const bar = document.createElement('div');
-  bar.className = 'sy-modal-bar';
+  bar.className = 'syl-modal-bar';
   bar.innerHTML = `
-    <button type="button" class="sy-back">← All lessons</button>
-    <span class="sy-modal-num">Lesson ${topic.syllabus.n} of ${syLessons().length} · Module ${topic.syllabus.module}</span>`;
+    <button type="button" class="syl-back">← All lessons</button>
+    <span class="syl-modal-num">Lesson ${topic.syllabus.n} of ${syLessons().length} · Module ${topic.syllabus.module}</span>`;
   head.prepend(bar);
-  bar.querySelector('.sy-back').addEventListener('click', () => openSyllabusTrack(syTrackStudent));
+  bar.querySelector('.syl-back').addEventListener('click', () => openSyllabusTrack(syTrackStudent));
 }
 
 // ---------------------------------------------------------------------------
@@ -266,63 +272,63 @@ function syRenderStart(mount, topic) {
   const can = syCanGet(sid, topic.id);
   const hi =(ex, form) => syEsc(ex).replace(new RegExp(`(^|[^A-Za-z])(${String(form).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![A-Za-z])`, 'i'), '$1<mark>$2</mark>');
   mount.innerHTML = `
-    <div class="sy-start">
-      <section class="sy-card sy-goals">
+    <div class="syl-start">
+      <section class="syl-card syl-goals">
         <h4>🎯 In this lesson</h4>
-        <p class="sy-small">${sid ? 'Tick what you can do. Come back at the end of the lesson and tick again!' : 'The student ticks what they can do (choose the student at the top).'}</p>
-        <div class="sy-can">
+        <p class="syl-small">${sid ? 'Tick what you can do. Come back at the end of the lesson and tick again!' : 'The student ticks what they can do (choose the student at the top).'}</p>
+        <div class="syl-can">
           ${goals.map((g, i) => `
-            <label class="sy-can-item">
+            <label class="syl-can-item">
               <input type="checkbox" id="syCan${i}" data-can="${i}" ${can[i] ? 'checked' : ''} ${sid ? '' : 'disabled'} />
               <span>${syEsc(g)}</span>
             </label>`).join('')}
         </div>
-        <p class="sy-can-count" aria-live="polite">${sid ? `${can.filter(Boolean).length} / ${goals.length}` : ''}</p>
+        <p class="syl-can-count" aria-live="polite">${sid ? `${can.filter(Boolean).length} / ${goals.length}` : ''}</p>
       </section>
-      <section class="sy-card">
+      <section class="syl-card">
         <h4>🧩 Grammar</h4>
-        <p class="sy-tip">${syEsc(topic.grammarTip || '')}</p>
-        <div class="sy-rules">
+        <p class="syl-tip">${syEsc(topic.grammarTip || '')}</p>
+        <div class="syl-rules">
           ${rules.map(r => `
-            <div class="sy-rule">
-              <p class="sy-rule-head"><b>${syEsc(r.label)}</b> <span class="sy-form">${syEsc(r.form)}</span></p>
-              ${r.hint ? `<p class="sy-rule-hint">${syEsc(r.hint)}</p>` : ''}
-              <ul>${(r.examples || []).map(ex => `<li><button type="button" class="sy-say" data-say="${syEsc(ex)}" aria-label="Listen">🔊</button> ${hi(ex, r.form)}</li>`).join('')}</ul>
+            <div class="syl-rule">
+              <p class="syl-rule-head"><b>${syEsc(r.label)}</b> <span class="syl-form">${syEsc(r.form)}</span></p>
+              ${r.hint ? `<p class="syl-rule-hint">${syEsc(r.hint)}</p>` : ''}
+              <ul>${(r.examples || []).map(ex => `<li><button type="button" class="syl-say" data-say="${syEsc(ex)}" aria-label="Listen">🔊</button> ${hi(ex, r.form)}</li>`).join('')}</ul>
             </div>`).join('')}
         </div>
       </section>
-      <section class="sy-card">
+      <section class="syl-card">
         <h4>💬 Useful chunks</h4>
-        <p class="sy-small">Tap a chunk to see it in Portuguese.</p>
-        <div class="sy-chunks">
+        <p class="syl-small">Tap a chunk to see it in Portuguese.</p>
+        <div class="syl-chunks">
           ${chunks.map(c => `
-            <button type="button" class="sy-chunk" data-say="${syEsc(c.en)}">
+            <button type="button" class="syl-chunk" data-say="${syEsc(c.en)}">
               <b>${syEsc(c.en)}</b><small hidden>${syEsc(c.pt)}</small>
             </button>`).join('')}
         </div>
       </section>
-      <div class="sy-two">
-        <section class="sy-card sy-social">
+      <div class="syl-two">
+        <section class="syl-card syl-social">
           <h4>🤝 Social skill</h4>
           <p><b>${syEsc(soc.skill || '')}</b></p>
-          <p class="sy-tip">${syEsc(soc.tip || '')}</p>
-          <p class="sy-small">Practise it in 💬 Real talk.</p>
+          <p class="syl-tip">${syEsc(soc.tip || '')}</p>
+          <p class="syl-small">Practise it in 💬 Real talk.</p>
         </section>
-        <section class="sy-card sy-pron">
+        <section class="syl-card syl-pron">
           <h4>🔊 Sound of the lesson</h4>
           <p><b>${syEsc(pron.focus || '')}</b></p>
-          <p class="sy-tip">${syEsc(pron.tip || '')}</p>
-          <p class="sy-small">Train your ear in 🔊 Sounds.</p>
+          <p class="syl-tip">${syEsc(pron.tip || '')}</p>
+          <p class="syl-small">Train your ear in 🔊 Sounds.</p>
         </section>
       </div>
     </div>`;
   mount.querySelectorAll('[data-can]').forEach(box => box.addEventListener('change', () => {
     const list = goals.map((_, i) => Boolean(mount.querySelector(`#syCan${i}`).checked));
     syCanSet(sid, topic.id, list);
-    mount.querySelector('.sy-can-count').textContent = `${list.filter(Boolean).length} / ${goals.length}${list.every(Boolean) ? ' 🎉' : ''}`;
+    mount.querySelector('.syl-can-count').textContent = `${list.filter(Boolean).length} / ${goals.length}${list.every(Boolean) ? ' 🎉' : ''}`;
   }));
-  mount.querySelectorAll('.sy-say').forEach(b => b.addEventListener('click', () => sySay(b.dataset.say)));
-  mount.querySelectorAll('.sy-chunk').forEach(b => b.addEventListener('click', () => {
+  mount.querySelectorAll('.syl-say').forEach(b => b.addEventListener('click', () => sySay(b.dataset.say)));
+  mount.querySelectorAll('.syl-chunk').forEach(b => b.addEventListener('click', () => {
     const pt = b.querySelector('small');
     pt.hidden = !pt.hidden;
     sySay(b.dataset.say);
@@ -341,35 +347,35 @@ function syRenderWords(mount, topic) {
   const sid = syOnScreen && syOnScreen.studentId;
   const seen = new Set();
   let counted = false;
-  const visual = w => (typeof igWordVisualHTML === 'function' ? igWordVisualHTML(w, 'sy-word-pic') : syEsc(w.emoji || ''));
+  const visual = w => (typeof igWordVisualHTML === 'function' ? igWordVisualHTML(w, 'syl-word-pic') : syEsc(w.emoji || ''));
 
   mount.innerHTML = `
-    <div class="sy-words">
-      <div class="sy-words-head">
-        <p class="sy-small">All the words of this lesson (${total}). Tap a word to hear it and see it in Portuguese.</p>
+    <div class="syl-words">
+      <div class="syl-words-head">
+        <p class="syl-small">All the words of this lesson (${total}). Tap a word to hear it and see it in Portuguese.</p>
         <div class="game-btn-row">
-          <label class="sy-words-toggle"><input type="checkbox" id="syWordsPt" /> Show Portuguese</label>
+          <label class="syl-words-toggle"><input type="checkbox" id="syWordsPt" /> Show Portuguese</label>
           <span class="game-status-pill" id="syWordsCount">0 / ${total}</span>
         </div>
       </div>
       ${groups.map((g, gi) => `
-        <section class="sy-word-group">
+        <section class="syl-word-group">
           <h4>${syEsc(g.title)} <small>${(g.items || []).length}</small></h4>
-          <div class="sy-word-grid">
+          <div class="syl-word-grid">
             ${(g.items || []).map((w, wi) => `
-              <button type="button" class="sy-word-card" data-w="${gi}:${wi}">
-                <span class="sy-word-vis">${visual(w)}</span>
+              <button type="button" class="syl-word-card" data-w="${gi}:${wi}">
+                <span class="syl-word-vis">${visual(w)}</span>
                 <b>${syEsc(w.en)}</b>
-                ${w.note ? `<i class="sy-word-note">${syEsc(w.note)}</i>` : ''}
+                ${w.note ? `<i class="syl-word-note">${syEsc(w.note)}</i>` : ''}
                 <small hidden>${syEsc(w.pt || '')}</small>
               </button>`).join('')}
           </div>
         </section>`).join('')}
-      <p class="sy-small">Then practise them: 🎮 Games and, under ➕, 🗂️ Flashcards.</p>
+      <p class="syl-small">Then practise them: 🎮 Games and, under ➕, 🗂️ Flashcards.</p>
     </div>`;
 
   const count = mount.querySelector('#syWordsCount');
-  mount.querySelectorAll('.sy-word-card').forEach(card => card.addEventListener('click', () => {
+  mount.querySelectorAll('.syl-word-card').forEach(card => card.addEventListener('click', () => {
     const [gi, wi] = card.dataset.w.split(':').map(Number);
     const w = groups[gi].items[wi];
     card.querySelector('small').hidden = false;
@@ -384,7 +390,7 @@ function syRenderWords(mount, topic) {
     }
   }));
   mount.querySelector('#syWordsPt').addEventListener('change', (e) => {
-    mount.querySelectorAll('.sy-word-card small').forEach(s => { s.hidden = !e.target.checked && !s.closest('.is-seen'); });
+    mount.querySelectorAll('.syl-word-card small').forEach(s => { s.hidden = !e.target.checked && !s.closest('.is-seen'); });
   });
 }
 
@@ -399,14 +405,14 @@ function syRenderTalk(mount, topic) {
   let shown = 0, gaps = 0, right = 0, tries = 0;
 
   mount.innerHTML = `
-    <div class="sy-talk">
-      <div class="sy-card sy-talk-head">
-        <p class="sy-kicker">Social skill</p>
+    <div class="syl-talk">
+      <div class="syl-card syl-talk-head">
+        <p class="syl-kicker">Social skill</p>
         <h4>${syEsc(soc.skill || '')}</h4>
-        <p class="sy-tip">${syEsc(soc.tip || '')}</p>
+        <p class="syl-tip">${syEsc(soc.tip || '')}</p>
       </div>
-      <div class="sy-chat" id="syChat" aria-live="polite"></div>
-      <div class="sy-choices" id="syChoices"></div>
+      <div class="syl-chat" id="syChat" aria-live="polite"></div>
+      <div class="syl-choices" id="syChoices"></div>
     </div>`;
   const chat = mount.querySelector('#syChat');
   const choices = mount.querySelector('#syChoices');
@@ -414,10 +420,10 @@ function syRenderTalk(mount, topic) {
   const bubble = (l, text) => {
     const side = people.indexOf(l.who) % 2 ? 'right' : 'left';
     const el = document.createElement('div');
-    el.className = `sy-bubble sy-bubble--${side}`;
-    el.innerHTML = `<span class="sy-who">${syEsc(l.who)}</span><p>${text}</p>
-      <button type="button" class="sy-say" aria-label="Listen">🔊</button>`;
-    el.querySelector('.sy-say').addEventListener('click', () => sySay(el.querySelector('p').textContent));
+    el.className = `syl-bubble syl-bubble--${side}`;
+    el.innerHTML = `<span class="syl-who">${syEsc(l.who)}</span><p>${text}</p>
+      <button type="button" class="syl-say" aria-label="Listen">🔊</button>`;
+    el.querySelector('.syl-say').addEventListener('click', () => sySay(el.querySelector('p').textContent));
     chat.appendChild(el);
     el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     return el;
@@ -429,17 +435,17 @@ function syRenderTalk(mount, topic) {
     if (!l.gap) {
       bubble(l, syEsc(l.line));
       shown++;
-      choices.innerHTML = `<button type="button" class="btn btn-primary sy-next">Next ›</button>`;
-      choices.querySelector('.sy-next').addEventListener('click', next);
-      choices.querySelector('.sy-next').focus();
+      choices.innerHTML = `<button type="button" class="btn btn-primary syl-next">Next ›</button>`;
+      choices.querySelector('.syl-next').addEventListener('click', next);
+      choices.querySelector('.syl-next').focus();
       return;
     }
     gaps++;
-    const el = bubble(l, syEsc(l.line).replace('___', '<span class="sy-gap">______</span>'));
+    const el = bubble(l, syEsc(l.line).replace('___', '<span class="syl-gap">______</span>'));
     let firstTry = true;
-    choices.innerHTML = `<p class="sy-small">What does ${syEsc(l.who)} say?</p>` +
-      syShuffle(l.options).map(o => `<button type="button" class="sy-option" data-o="${syEsc(o)}">${syEsc(o)}</button>`).join('');
-    choices.querySelectorAll('.sy-option').forEach(btn => btn.addEventListener('click', () => {
+    choices.innerHTML = `<p class="syl-small">What does ${syEsc(l.who)} say?</p>` +
+      syShuffle(l.options).map(o => `<button type="button" class="syl-option" data-o="${syEsc(o)}">${syEsc(o)}</button>`).join('');
+    choices.querySelectorAll('.syl-option').forEach(btn => btn.addEventListener('click', () => {
       const ok = btn.dataset.o === l.gap;
       tries++;
       syRecord(topic, `${l.who}: ${l.line}`, l.gap, l.options, ok);
@@ -452,7 +458,7 @@ function syRenderTalk(mount, topic) {
       }
       if (firstTry) right++;
       if (typeof IGSound !== 'undefined') IGSound.correct();
-      el.querySelector('p').innerHTML = syEsc(l.line).replace('___', `<span class="sy-gap is-filled">${syEsc(l.gap)}</span>`);
+      el.querySelector('p').innerHTML = syEsc(l.line).replace('___', `<span class="syl-gap is-filled">${syEsc(l.gap)}</span>`);
       sySay(el.querySelector('p').textContent);
       shown++;
       setTimeout(next, 700);
@@ -464,9 +470,9 @@ function syRenderTalk(mount, topic) {
     syMark(syOnScreen && syOnScreen.studentId, topic.id, 'talk', score);
     if (typeof awardProgress === 'function') awardProgress(right * 5, score === 100 ? 2 : score >= 60 ? 1 : 0);
     choices.innerHTML = `
-      <div class="sy-result">
+      <div class="syl-result">
         <p><b>${right} / ${gaps}</b> on the first try. ${score === 100 ? 'Perfect!' : score >= 60 ? 'Well done!' : 'Read it again and try once more.'}</p>
-        <p class="sy-small">Now read the whole conversation aloud. Be ${syEsc(people[0])}, then be ${syEsc(people[1] || people[0])}.</p>
+        <p class="syl-small">Now read the whole conversation aloud. Be ${syEsc(people[0])}, then be ${syEsc(people[1] || people[0])}.</p>
         <div class="game-btn-row">
           <button type="button" class="game-btn secondary" id="syTalkListen">🔊 Listen to all</button>
           <button type="button" class="btn btn-primary" id="syTalkAgain">🔄 Again</button>
@@ -491,9 +497,9 @@ function syRenderFixIt(mount, topic) {
       syMark(syOnScreen && syOnScreen.studentId, topic.id, 'fixit', score);
       if (typeof awardProgress === 'function') awardProgress(right * 5, score === 100 ? 2 : score >= 60 ? 1 : 0);
       mount.innerHTML = `
-        <div class="sy-fix">
-          <div class="sy-result">
-            <p class="sy-big">${right} / ${items.length}</p>
+        <div class="syl-fix">
+          <div class="syl-result">
+            <p class="syl-big">${right} / ${items.length}</p>
             <p>${score === 100 ? 'You fixed them all!' : score >= 60 ? 'Good eye!' : 'These mistakes are very common. Try again!'}</p>
             <button type="button" class="btn btn-primary" id="syFixAgain">🔄 Again</button>
           </div>
@@ -503,30 +509,30 @@ function syRenderFixIt(mount, topic) {
     }
     const m = items[i];
     mount.innerHTML = `
-      <div class="sy-fix">
-        <div class="sy-fix-head"><span class="game-status-pill">${i + 1} / ${items.length} · ✅ ${right}</span></div>
-        <p class="sy-kicker">This sentence has a mistake</p>
-        <p class="sy-wrong">${syEsc(m.wrong)}</p>
-        <p class="sy-small">Which sentence is correct?</p>
-        <div class="sy-options">
-          ${syShuffle(m.options).map(o => `<button type="button" class="sy-option" data-o="${syEsc(o)}">${syEsc(o)}</button>`).join('')}
+      <div class="syl-fix">
+        <div class="syl-fix-head"><span class="game-status-pill">${i + 1} / ${items.length} · ✅ ${right}</span></div>
+        <p class="syl-kicker">This sentence has a mistake</p>
+        <p class="syl-wrong">${syEsc(m.wrong)}</p>
+        <p class="syl-small">Which sentence is correct?</p>
+        <div class="syl-options">
+          ${syShuffle(m.options).map(o => `<button type="button" class="syl-option" data-o="${syEsc(o)}">${syEsc(o)}</button>`).join('')}
         </div>
-        <div class="sy-why" hidden></div>
+        <div class="syl-why" hidden></div>
       </div>`;
-    mount.querySelectorAll('.sy-option').forEach(btn => btn.addEventListener('click', () => {
+    mount.querySelectorAll('.syl-option').forEach(btn => btn.addEventListener('click', () => {
       const ok = btn.dataset.o === m.right;
       if (ok) right++;
       syRecord(topic, `Fix it: ${m.wrong}`, m.right, m.options, ok, m.why);
       if (typeof IGSound !== 'undefined') { if (ok) IGSound.correct(); else IGSound.wrong(); }
-      mount.querySelectorAll('.sy-option').forEach(b => {
+      mount.querySelectorAll('.syl-option').forEach(b => {
         b.disabled = true;
         if (b.dataset.o === m.right) b.classList.add('correct');
       });
       if (!ok) btn.classList.add('wrong');
-      const why = mount.querySelector('.sy-why');
+      const why = mount.querySelector('.syl-why');
       why.hidden = false;
       why.innerHTML = `
-        <p><span class="sy-pt">PT</span> ${syEsc(m.why)}</p>
+        <p><span class="syl-pt">PT</span> ${syEsc(m.why)}</p>
         <button type="button" class="btn btn-primary">${i + 1 === items.length ? 'See my score ›' : 'Next ›'}</button>`;
       sySay(m.right);
       const nextBtn = why.querySelector('button');
@@ -560,9 +566,9 @@ function syRenderSounds(mount, topic) {
       syMark(syOnScreen && syOnScreen.studentId, topic.id, 'sounds', score);
       if (typeof awardProgress === 'function') awardProgress(right * 3, score === 100 ? 2 : score >= 60 ? 1 : 0);
       mount.innerHTML = `
-        <div class="sy-sounds">
-          <div class="sy-result">
-            <p class="sy-big">${right} / ${rounds.length}</p>
+        <div class="syl-sounds">
+          <div class="syl-result">
+            <p class="syl-big">${right} / ${rounds.length}</p>
             <p>${score >= 80 ? 'Great ears!' : 'Listen again: your ears get better every time.'}</p>
             <button type="button" class="btn btn-primary" id="sySoundAgain">🔄 Again</button>
           </div>
@@ -572,35 +578,35 @@ function syRenderSounds(mount, topic) {
     }
     const r = rounds[i];
     mount.innerHTML = `
-      <div class="sy-sounds">
-        <div class="sy-card sy-sounds-head">
-          <p class="sy-kicker">${syEsc(p.focus || 'Sounds')}</p>
-          <p class="sy-tip">${syEsc(p.tip || '')}</p>
+      <div class="syl-sounds">
+        <div class="syl-card syl-sounds-head">
+          <p class="syl-kicker">${syEsc(p.focus || 'Sounds')}</p>
+          <p class="syl-tip">${syEsc(p.tip || '')}</p>
         </div>
         <span class="game-status-pill">${i + 1} / ${rounds.length} · ✅ ${right}</span>
-        <div class="sy-listen">
+        <div class="syl-listen">
           <button type="button" class="lt-speaker" id="sySay" aria-label="Listen again">🔊</button>
           <button type="button" class="game-btn secondary" id="sySlow">🐢 Slow</button>
         </div>
-        ${pairs ? '<p class="sy-small">Which word do you hear?</p>' : `<p class="sy-word">${syEsc(r.text)}</p><p class="sy-small">Listen. Which sound group is it in?</p>`}
-        <div class="sy-options ${pairs ? 'sy-options--pair' : ''}">
-          ${r.options.map(o => `<button type="button" class="sy-option" data-o="${syEsc(o)}">${syEsc(o)}</button>`).join('')}
+        ${pairs ? '<p class="syl-small">Which word do you hear?</p>' : `<p class="syl-word">${syEsc(r.text)}</p><p class="syl-small">Listen. Which sound group is it in?</p>`}
+        <div class="syl-options ${pairs ? 'syl-options--pair' : ''}">
+          ${r.options.map(o => `<button type="button" class="syl-option" data-o="${syEsc(o)}">${syEsc(o)}</button>`).join('')}
         </div>
-        <p class="sy-feedback" aria-live="polite">&nbsp;</p>
+        <p class="syl-feedback" aria-live="polite">&nbsp;</p>
       </div>`;
     mount.querySelector('#sySay').addEventListener('click', () => sySay(r.say, 0.8));
     mount.querySelector('#sySlow').addEventListener('click', () => sySay(r.say, 0.5));
     let answered = false;
-    mount.querySelectorAll('.sy-option').forEach(btn => btn.addEventListener('click', () => {
+    mount.querySelectorAll('.syl-option').forEach(btn => btn.addEventListener('click', () => {
       if (answered) return;
       answered = true;
       const ok = btn.dataset.o === r.correct;
       if (ok) right++;
       syRecord(topic, pairs ? `Sounds: ${r.options.join(' or ')}?` : `Sounds: ${r.text}`, r.correct, r.options, ok);
       if (typeof IGSound !== 'undefined') { if (ok) IGSound.correct(); else IGSound.wrong(); }
-      mount.querySelectorAll('.sy-option').forEach(b => { b.disabled = true; if (b.dataset.o === r.correct) b.classList.add('correct'); });
+      mount.querySelectorAll('.syl-option').forEach(b => { b.disabled = true; if (b.dataset.o === r.correct) b.classList.add('correct'); });
       if (!ok) btn.classList.add('wrong');
-      mount.querySelector('.sy-feedback').textContent = ok ? '✅ Yes!' : `It was: ${pairs ? r.correct : `${r.text} → ${r.correct}`}`;
+      mount.querySelector('.syl-feedback').textContent = ok ? '✅ Yes!' : `It was: ${pairs ? r.correct : `${r.text} → ${r.correct}`}`;
       setTimeout(() => { if (mount.isConnected) { i++; paint(); } }, ok ? 1100 : 2200);
     }));
     setTimeout(() => sySay(r.say, 0.8), 250);
@@ -627,40 +633,40 @@ function openSyllabusTrack(student) {
   list.forEach(l => (byModule[l.module] = byModule[l.module] || []).push(l));
   const dots = state => SY_ACTS.filter(a => a.need).map(a => {
     const v = state.acts[a.id];
-    return `<span class="sy-dot${(v || 0) >= SY_DONE_AT ? ' is-done' : v != null ? ' is-tried' : ''}" title="${syEsc(a.label)}">${a.icon}</span>`;
+    return `<span class="syl-dot${(v || 0) >= SY_DONE_AT ? ' is-done' : v != null ? ' is-tried' : ''}" title="${syEsc(a.label)}">${a.icon}</span>`;
   }).join('');
 
   openModal(`
-    <div class="modal-content-pad sy-track">
-      <header class="sy-track-head">
+    <div class="modal-content-pad syl-track">
+      <header class="syl-track-head">
         <div>
-          <p class="sy-kicker">IG English · Syllabus</p>
+          <p class="syl-kicker">IG English · Syllabus</p>
           <h3 id="modalTitle">A1 course · 23 lessons</h3>
-          <p class="sy-small">${sid
+          <p class="syl-small">${sid
             ? `${syEsc(st.name)}: <b>${sum.complete} of ${sum.total}</b> lessons complete.`
             : 'Choose the student of the class at the top to see their progress.'}
             Every lesson has games, a quiz, a real-life conversation, mistakes to fix, sounds, a text and speaking, listening and writing.</p>
         </div>
-        ${next ? `<button type="button" class="btn btn-primary sy-continue" data-lesson="${syEsc(next.id)}">
-          ${sid && syLessonState(sid, next.id).started ? 'Continue' : 'Start'}: Lesson ${next.n} ›</button>` : '<p class="sy-allDone">🏆 All lessons complete!</p>'}
+        ${next ? `<button type="button" class="btn btn-primary syl-continue" data-lesson="${syEsc(next.id)}">
+          ${sid && syLessonState(sid, next.id).started ? 'Continue' : 'Start'}: Lesson ${next.n} ›</button>` : '<p class="syl-allDone">🏆 All lessons complete!</p>'}
       </header>
-      ${sid ? `<div class="sy-progress" role="img" aria-label="${sum.complete} of ${sum.total} lessons complete"><span style="width:${Math.round((sum.complete / Math.max(1, sum.total)) * 100)}%"></span></div>` : ''}
+      ${sid ? `<div class="syl-progress" role="img" aria-label="${sum.complete} of ${sum.total} lessons complete"><span style="width:${Math.round((sum.complete / Math.max(1, sum.total)) * 100)}%"></span></div>` : ''}
       ${Object.keys(byModule).sort((a, b) => a - b).map(m => `
-        <section class="sy-module">
+        <section class="syl-module">
           <h4><span>Module ${m}</span> ${syEsc(SY_MODULES[m] || '')}</h4>
-          <div class="sy-lessons">
+          <div class="syl-lessons">
             ${byModule[m].map(l => {
               const state = syLessonState(sid, l.id);
               const isNext = next && next.id === l.id;
               return `
-                <button type="button" class="sy-lesson${state.complete ? ' is-complete' : ''}${isNext ? ' is-next' : ''}" data-lesson="${syEsc(l.id)}">
-                  <span class="sy-lesson-n">${state.complete ? '✓' : l.n}</span>
-                  <span class="sy-lesson-body">
+                <button type="button" class="syl-lesson${state.complete ? ' is-complete' : ''}${isNext ? ' is-next' : ''}" data-lesson="${syEsc(l.id)}">
+                  <span class="syl-lesson-n">${state.complete ? '✓' : l.n}</span>
+                  <span class="syl-lesson-body">
                     <b>${syEsc(l.emoji)} ${syEsc(l.title)}</b>
                     <small>${syEsc((l.social && l.social.skill) || l.description)}</small>
-                    ${sid ? `<span class="sy-dots">${dots(state)}${syCanGet(sid, l.id).filter(Boolean).length ? `<span class="sy-can-mini" title="I can…">✔ ${syCanGet(sid, l.id).filter(Boolean).length}/${(l.goals || []).length}</span>` : ''}</span>` : ''}
+                    ${sid ? `<span class="syl-dots">${dots(state)}${syCanGet(sid, l.id).filter(Boolean).length ? `<span class="syl-can-mini" title="I can…">✔ ${syCanGet(sid, l.id).filter(Boolean).length}/${(l.goals || []).length}</span>` : ''}</span>` : ''}
                   </span>
-                  ${isNext ? '<span class="sy-next-tag">next</span>' : ''}
+                  ${isNext ? '<span class="syl-next-tag">next</span>' : ''}
                 </button>`;
             }).join('')}
           </div>
@@ -700,7 +706,7 @@ function syRenderTeacherEntry() {
   if (!el) {
     el = document.createElement('div');
     el.id = 'syTeacherEntry';
-    el.className = 'sy-entry';
+    el.className = 'syl-entry';
     grid.parentNode.insertBefore(el, grid);
   }
   el.innerHTML = `
