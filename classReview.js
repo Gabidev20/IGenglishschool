@@ -511,7 +511,10 @@ function openClassReviewEditor(student, session) {
         const hit = reviewLookup(card.en);
         if (hit) { card.image = hit.image; card.emoji = hit.emoji; save(true); paint(); }
       });
-      row.querySelector('[data-resentences]').addEventListener('click', () => {
+      // A phrase card from the class has no "✨ sugerir frases" button: without
+      // this check the error stopped every button after it (🗑️, ➕, ▶ Ver…).
+      const resent = row.querySelector('[data-resentences]');
+      if (resent) resent.addEventListener('click', () => {
         card.sentences = card.type === 'phrase' ? [card.en]
           : typeof rpSentencesFor === 'function' ? rpSentencesFor(card.en, student, session) : reviewSentences(card.en);
         save(true); paint();
