@@ -255,6 +255,8 @@ function renderTopics() {
       </span>
     </button>
   `).join('');
+  // The Syllabus A1 banner above the grid (syllabusA1.js).
+  if (typeof syRenderTeacherEntry === 'function') syRenderTeacherEntry();
 }
 
 function setActiveTier(id) {
@@ -415,6 +417,8 @@ function openTopicModal(levelId, topicId) {
   `).join('') + (hasExtra ? `<button class="modal-tab modal-tab--more" type="button" aria-expanded="false">➕ Mais</button>` : '');
 
   renderModalPane(tabs[0].id, level, topic);
+  // Syllabus A1 lessons (syllabusA1.js): "← All lessons" and the lesson number.
+  if (typeof syDecorateModal === 'function') syDecorateModal(topic);
 
   const moreBtn = tabsEl.querySelector('.modal-tab--more');
   if (moreBtn) moreBtn.addEventListener('click', () => {
@@ -441,6 +445,8 @@ function openTopicModal(levelId, topicId) {
 // Phonics is a young-learner tool: it is not shown to a teacher with no
 // students under 11, on a grown-up topic, or while teaching a grown-up.
 function getModalTabs(level, topic) {
+  // A Syllabus A1 lesson has its own route (syllabusA1.js).
+  if (typeof syIsLesson === 'function' && syIsLesson(topic)) return syModalTabs();
   const tabs = [
     { id: 'watch', label: 'Watch', icon: '📺' },
     { id: 'game', label: 'Game', icon: '🎮' },
@@ -462,6 +468,11 @@ function getModalTabs(level, topic) {
 
 function renderModalPane(kind, level, topic) {
   const mountEl = document.getElementById('modalPaneContent');
+
+  // Syllabus A1 lessons: Start, Real talk, Fix it and Sounds are painted
+  // there, and every tab tells the lesson's progress what is on screen.
+  if (typeof syRenderPane === 'function' && typeof syIsLesson === 'function' && syIsLesson(topic)
+    && syRenderPane(kind, mountEl, level, topic)) return;
 
   if (kind === 'watch') { renderWatchStation(mountEl, level, topic); return; }
   if (kind === 'quiz') { renderTopicQuiz(mountEl, level, topic); return; }

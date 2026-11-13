@@ -239,6 +239,12 @@ const ShareMode = (() => {
         const all = IGStore.getJSON('student_looks', {}) || {};
         if (JSON.stringify(all[sid]) !== JSON.stringify(payload.look)) { all[sid] = payload.look; IGStore.setJSON('student_looks', all); }
       }
+      // Syllabus A1 progress: the best score of each activity wins.
+      if (payload.syllabus && payload.syllabus.lessons && typeof syMerge === 'function') {
+        const mine = IGStore.getJSON('syllabus_' + sid, null);
+        const merged = syMerge(mine, payload.syllabus);
+        if (JSON.stringify(merged.lessons) !== JSON.stringify((mine && mine.lessons) || {})) IGStore.setJSON('syllabus_' + sid, merged);
+      }
       // The Student Manual's answers: the newest copy wins.
       if (payload.manual && typeof payload.manual === 'object') {
         const mine = IGStore.getJSON('manual_' + sid, {}) || {};
@@ -290,6 +296,8 @@ const ShareMode = (() => {
       bank: IGStore.getJSON('bank_' + studentId, {}),
       manual: IGStore.getJSON('manual_' + studentId, {}),
       look: typeof myavGet === 'function' ? myavGet(studentId) : null,
+      // Syllabus A1: best score per lesson and activity (syllabusA1.js).
+      syllabus: IGStore.getJSON('syllabus_' + studentId, null),
     }]];
     (IGStore.getJSON('homework', []) || []).forEach(hw => {
       const tasks = (hw.tasks || [])
@@ -326,7 +334,8 @@ const ShareMode = (() => {
     IGStore.onWrite(key => {
       if (!studentId) return;
       if (key === 'homework' || key.startsWith('progress_') || key.startsWith('log_')
-        || key.startsWith('bank_') || key.startsWith('writing_') || key.startsWith('manual_') || key === 'student_looks') scheduleFlush();
+        || key.startsWith('bank_') || key.startsWith('writing_') || key.startsWith('manual_') || key.startsWith('syllabus_')
+        || key === 'student_looks') scheduleFlush();
     });
     window.addEventListener('beforeunload', () => { try { flush(); } catch (e) {} });
   }
@@ -587,6 +596,11 @@ function renderStudentHome(shell, studentId) {
     && (!practiceTopics || practiceTopics.some(t => t.id === 'easy-hobbies'))
     ? [{ ...HOBBIES_TOPIC, levelId: 'extra' }] : [];
   const topics = extraTopics.concat(levelTopics);
+  // Syllabus A1 (syllabusA1.js): the lessons have a tile and a track of their
+  // own, so "Topics & games" keeps only the other topics.
+  const courseOn = typeof syForStudent === 'function' && syForStudent(student) && topics.some(t => t.syllabus);
+  const gameTopics = topics.filter(t => !t.syllabus);
+  const course = courseOn && typeof sySummary === 'function' ? sySummary(student.id) : null;
 
   // English first, Portuguese underneath: the page is part of the lesson.
   const mistakes = typeof msCards === 'function' ? msCards(student.id).filter(c => !msPracticedToday(c)).length : due;
@@ -610,6 +624,9 @@ function renderStudentHome(shell, studentId) {
   const T = {
     slides: () => tile('slides', '📝', say('Slides da aula', 'Class slides'), say('Class slides — rever o que vimos na aula', 'Look back at what we did in class'), 'stu-tile--slides'),
     book: () => (myBook ? tile('book', '📖', 'My book', say('Meu livro — fazer as páginas do livro aqui', 'Do the pages of your book here'), 'stu-tile--book') : ''),
+    course: () => (course ? tile('course', '📚', 'My course', course.next
+      ? `A1 · ${course.complete} of ${course.total} lessons · next: ${shareEsc(course.next.n + '. ' + course.next.title)}`
+      : `A1 · all ${course.total} lessons complete 🏆`, 'stu-tile--book') : ''),
     progress: () => tile('progress', '📈', 'My progress', say('Meu progresso — estrelas e figurinhas', 'See what you have practiced')),
     homework: () => tile('homework', '📚', 'My homework', pending.length
       ? say(`Minha lição — ${pending.length} pendente(s)`, `${pending.length} to do`)
@@ -672,9 +689,9 @@ function renderStudentHome(shell, studentId) {
     writer: ['progress', 'homework', 'ranking', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'maze', 'jump', 'drawing', 'games', 'sayit', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
-    .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []))
+    .reduce((list, k) => list.concat([k]), (myBook ? ['book'] : []).concat(slidesOn ? ['slides'] : []).concat(courseOn ? ['course'] : []))
     .filter(k => !READY_TILE[k] || gameOk(READY_TILE[k]))
-    .filter(k => k !== 'games' || topics.length)
+    .filter(k => k !== 'games' || gameTopics.length)
     .map(k => T[k]());
 
   // The teacher's answers (a correction, a comment, a reply under an audio):
@@ -750,7 +767,8 @@ function renderStudentHome(shell, studentId) {
       openHomeworkRunner(hw, () => renderStudentHome(shell, studentId));
     },
     review: () => openMistakes(student.id),
-    games: () => openStudentGames(shell, student, topics),
+    games: () => openStudentGames(shell, student, gameTopics),
+    course: () => openSyllabusTrack(student),
     backpack: () => openBackpackGame(),
     house: () => openHouseGame(),
     'review-class': () => { const r = latestReview(student.id); if (r) openClassReviewPlayer(r); },
