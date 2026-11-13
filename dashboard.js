@@ -242,8 +242,8 @@ function renderDashboard() {
       <div class="dash-stats">${dashStatCardsHTML()}</div>
 
       <div class="dash-tabs" role="tablist">
-        ${[['week', '📅', 'Semana'], ['month', '📊', 'Mês'], ['money', '💰', 'Financeiro'], ['errors', '🔁', 'Erros da turma'], ['parents', '📲', 'Relatório dos pais']]
-          .filter(([id]) => (id !== 'errors' || typeof dashPaintErrors === 'function') && (id !== 'parents' || typeof dashPaintParents === 'function'))
+        ${[['week', '📅', 'Semana'], ['month', '📊', 'Mês'], ['money', '💰', 'Financeiro'], ['errors', '🔁', 'Erros da turma'], ['parents', '📲', 'Relatório dos pais'], ['league', '🏆', 'Ranking']]
+          .filter(([id]) => (id !== 'errors' || typeof dashPaintErrors === 'function') && (id !== 'parents' || typeof dashPaintParents === 'function') && (id !== 'league' || typeof dashPaintLeague === 'function'))
           .map(([id, icon, label]) => {
             // Friday to Sunday: how many weekly notes are still to send.
             const due = id === 'parents' && typeof ciParentsDue === 'function' ? ciParentsDue() : 0;
@@ -318,6 +318,7 @@ function dashPaintPane() {
   const pane = document.getElementById('dashPane');
   if (!pane) return;
   if (dashTab === 'week') dashPaintWeek(pane);
+  else if (dashTab === 'league') dashPaintLeague(pane);
   else if (dashTab === 'month') dashPaintMonth(pane);
   else if (dashTab === 'errors') dashPaintErrors(pane);
   else if (dashTab === 'parents') dashPaintParents(pane);
