@@ -552,7 +552,110 @@
     list(['✅  I can name clothes and say the price.', '✅  I can say I like it / I like them.', '✅  I can say where places are in the city.'], 220, 38, true),
     T(70, 560, 1140, 'Good luck on your test! 🍀 You are a shopping champion! 🏆🛍️', 32, '#faefc2')]));
 
+  // ---- Pizza Workshop: how our class works (4 kids, 6–8: big pictures, few words) ----
+  const pz = [];
+  const PZ = { red: '#e5484d', cheese: '#f6cf3a', basil: '#3fae5a', crust: '#e9a55c', ink: '#5a2d1a', sky: '#3d8bd9', grape: '#8e5fc2' };
+  const pzBg = { cheese: { grad: ['#fff6d6', '#ffd98a', 135] }, tomato: { grad: ['#ffe1d6', '#ff9f8a', 135] }, oven: { grad: ['#7a2e1f', '#e5484d', 135] }, basil: { grad: ['#e9f8e4', '#b6e3a8', 135] } };
+  const pzSlide = (bg, objects) => ({ bg: pzBg[bg], objects });
+  const pzTag = (t, dark) => T(70, 36, 1140, t.toUpperCase(), 24, dark ? '#fff6d6' : PZ.ink, { b: true });
+  const pzTitle = (t, dark) => T(70, 78, 1140, t, 58, dark ? '#ffffff' : PZ.ink, { b: true, al: 'center' });
+  // Light colors (cheese, crust) are too pale for words: a darker shade.
+  const pzInk = c => (c === PZ.cheese ? '#a87400' : c === PZ.crust ? '#b5601e' : c);
+  // A round picture with its word under it.
+  const pzDot = (x, y, d, emoji, label, color, fs) => [
+    R(x, y, d, d, '#ffffff', { shape: 'ellipse', stroke: color, sw: 8 }),
+    T(x, y + d * 0.2, d, emoji, Math.round(d * 0.45), PZ.ink, { al: 'center' }),
+    T(x - 30, y + d + 8, d + 60, label, fs || 30, pzInk(color), { b: true, al: 'center' })];
+  // A rule card: big emoji, the English line, the gesture.
+  const pzRule = (x, y, n, emoji, en, how, color) => [
+    R(x, y, 560, 200, '#ffffff', { stroke: color, sw: 7 }),
+    R(x + 20, y + 20, 64, 64, color, { shape: 'ellipse' }), T(x + 20, y + 30, 64, String(n), 34, '#ffffff', { b: true, al: 'center' }),
+    T(x + 90, y + 18, 140, emoji, 80, PZ.ink, { al: 'center' }),
+    T(x + 240, y + 30, 300, en, 34, PZ.ink, { b: true }),
+    T(x + 240, y + 140, 300, how, 22, color, { b: true })];
+
+  pz.push(pzSlide('oven', [pzTag('IG English School · Pizza Workshop', true),
+    T(70, 110, 1140, '🍕', 170, '#ffffff', { al: 'center' }),
+    T(70, 330, 1140, "Let's make a pizza!", 92, '#ffffff', { b: true, al: 'center' }),
+    T(70, 470, 1140, 'Letícia  ·  Théo  ·  Jasmine  ·  Ravi', 44, PZ.cheese, { b: true, al: 'center' }),
+    T(70, 560, 1140, '👩‍🍳 👨‍🍳 👩‍🍳 👨‍🍳', 64, '#ffffff', { al: 'center' })]));
+
+  // The map of the class: six stops on a road.
+  const stops = [['👋', 'Hello!'], ['🎵', 'Hello Song'], ['🧀', 'Ingredients'], ['✂️', 'Make a pizza'], ['😋', 'Show your pizza'], ['🎶', 'Bye Bye Song']];
+  const stopColors = [PZ.sky, PZ.grape, PZ.cheese, PZ.red, PZ.basil, PZ.crust];
+  pz.push(pzSlide('cheese', [pzTag('Our class today'), pzTitle('Our pizza map 🗺️'),
+    R(120, 330, 1040, 16, PZ.crust, { shape: 'rect' }),
+    ...stops.flatMap(([e, l], i) => pzDot(70 + i * 196, 250, 170, e, l, stopColors[i], 26)),
+    ...stops.map((s, i) => T(70 + i * 196, 205, 170, String(i + 1), 34, pzInk(stopColors[i]), { b: true, al: 'center' })),
+    T(70, 600, 1140, 'One step at a time. Together! 💛', 36, PZ.ink, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('tomato', [pzTag('Pizza chef rules'), pzTitle('Pizza chefs have rules! 👩‍🍳'),
+    ...pzRule(70, 180, 1, '🗣️', 'Teacher calls your name.', '👉 Everybody has a turn!', PZ.sky),
+    ...pzRule(650, 180, 2, '👂', 'When a friend talks, we listen.', '👂 Hand on your ear', PZ.grape),
+    ...pzRule(70, 410, 3, '✋', 'Raise your hand to talk.', '✋ Hand up and wait', PZ.basil),
+    ...pzRule(650, 410, 4, '👍', 'Every pizza is special!', '👍 No race. No winner.', PZ.red)]));
+
+  pz.push(pzSlide('basil', [pzTag('Pizza chef rules · Show me!'), pzTitle('Show me! 👀'),
+    ...pzDot(130, 210, 250, '👂', 'We listen!', PZ.grape, 40),
+    ...pzDot(515, 210, 250, '✋', 'Raise your hand!', PZ.basil, 40),
+    ...pzDot(900, 210, 250, '👍', 'Every pizza is special!', PZ.red, 34),
+    T(70, 600, 1140, 'Great pizza chefs! ⭐', 40, PZ.ink, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('cheese', [pzTag('Step 1 · Hello!'), pzTitle('Hello! Who are you? 👋'),
+    R(170, 170, 940, 400, '#ffffff', { stroke: PZ.sky, sw: 7 }),
+    T(220, 205, 860, '😊  My name is ________.\n🎂  I’m ____ years old.\n🎨  My favorite color is ________.\n🏠  I live in ________.', 42, PZ.ink, { lh: 1.9 }),
+    T(70, 610, 1140, 'Then everybody says: “Hi, ___!” 👋', 34, PZ.sky, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('basil', [pzTag('Our helpers'), pzTitle('Show me your helper! 🧸'),
+    T(70, 190, 1140, '🧸  🐶  🐱  🦖  🐰', 120, PZ.ink, { al: 'center' }),
+    T(70, 380, 1140, 'Hello, helpers!', 60, PZ.basil, { b: true, al: 'center' }),
+    T(70, 480, 1140, 'Helpers sit and watch the pizza. 👀🍕', 44, PZ.ink, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('tomato', [pzTag('Step 2 · Hello Song'), pzTitle("Let's sing! 🎵"),
+    T(70, 190, 1140, '🎤 🎶 👋', 150, PZ.ink, { al: 'center' }),
+    T(70, 420, 1140, 'Stand up! Wave your hands! Sing!', 50, PZ.red, { b: true, al: 'center' })]));
+
+  const ingr = [['🫓', 'pizza dough'], ['🍅', 'tomato sauce'], ['🧀', 'cheese'], ['🌭', 'sausage'],
+    ['🫒', 'olives'], ['🍗', 'shredded chicken'], ['🧅', 'onion rings'], ['🌿', 'oregano']];
+  const ingrColors = [PZ.crust, PZ.red, PZ.cheese, PZ.red, PZ.basil, PZ.crust, PZ.grape, PZ.basil];
+  pz.push(pzSlide('cheese', [pzTag('Step 3 · Ingredients'), pzTitle('Pizza ingredients 🍕 Repeat!'),
+    ...ingr.flatMap(([e, l], i) => pzDot(110 + (i % 4) * 280, 170 + Math.floor(i / 4) * 250, 180, e, l, ingrColors[i], 28))]));
+
+  pz.push(pzSlide('basil', [pzTag('Step 3 · Action words'), pzTitle('Pizza action words! 💪'),
+    ...pzDot(70, 200, 230, '✂️', 'Cut!', PZ.red, 54),
+    ...pzDot(365, 200, 230, '🧴', 'Glue!', PZ.sky, 54),
+    ...pzDot(660, 200, 230, '✏️', 'Draw!', PZ.grape, 54),
+    ...pzDot(955, 200, 230, '🖍️', 'Color!', PZ.basil, 54),
+    T(70, 580, 1140, 'Do it with me! 🙌', 40, PZ.ink, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('tomato', [pzTag('Step 4 · Make a pizza'), pzTitle("Let's make a pizza! ✂️"),
+    R(170, 170, 940, 420, '#ffffff', { stroke: PZ.red, sw: 7 }),
+    T(220, 190, 860, '1.  ✂️  Cut the dough.\n2.  🧴  Glue it on the paper.\n3.  🧀  Put the cheese on the dough.\n4.  🫒  Put the other ingredients.\n5.  🌿  Draw the oregano. (GREEN!)\n6.  🖍️  Color your pizza.', 38, PZ.ink, { lh: 1.5 }),
+    T(70, 620, 1140, 'Finished? Draw your favorite topping! 🎨', 32, PZ.red, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('oven', [pzTag('Step 4 · Time to bake', true), pzTitle('Time to bake! 🔥', true),
+    T(70, 190, 1140, '3 … 2 … 1 …', 110, PZ.cheese, { b: true, al: 'center' }),
+    T(70, 350, 1140, '⏰ Ding!', 100, '#ffffff', { b: true, al: 'center' }),
+    T(70, 500, 1140, "It's ready! 🍕", 70, '#ffffff', { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('cheese', [pzTag('Step 5 · Show your pizza'), pzTitle('Show me your pizza! 😋'),
+    R(170, 180, 940, 170, '#ffffff', { stroke: PZ.basil, sw: 7 }),
+    T(200, 215, 880, '🍕  “My pizza is yummy!”', 52, PZ.ink, { b: true, al: 'center' }),
+    T(70, 400, 1140, 'Everybody: 👏👏  “Yummy!”', 56, PZ.red, { b: true, al: 'center' }),
+    T(70, 520, 1140, 'Every pizza is special! 👍', 40, PZ.ink, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('basil', [pzTag('Our pizza shop'), pzTitle('Our pizza shop is open! 🏪'),
+    T(70, 200, 1140, '🍕 🍕 🍕 🍕', 140, PZ.ink, { al: 'center' }),
+    T(70, 400, 1140, 'We made 4 pizzas!', 64, PZ.basil, { b: true, al: 'center' }),
+    T(70, 500, 1140, 'Great job, pizza chefs! ⭐⭐⭐⭐', 44, PZ.ink, { b: true, al: 'center' })]));
+
+  pz.push(pzSlide('oven', [pzTag('Step 6 · Bye Bye Song', true), pzTitle('Bye bye! 👋🎶', true),
+    T(70, 200, 1140, 'Bye bye, Letícia!  Bye bye, Théo!\nBye bye, Jasmine!  Bye bye, Ravi!', 48, '#ffffff', { b: true, al: 'center', lh: 1.6 }),
+    T(70, 430, 1140, 'See you next time! 💛', 64, PZ.cheese, { b: true, al: 'center' }),
+    T(70, 560, 1140, '🍕 👋 🧸', 80, '#ffffff', { al: 'center' })]));
+
   window.SLIDES_MODELOS = [
+    { id: 'pizza-workshop', title: 'Pizza Workshop — como vai ser nossa aula (Letícia, Théo, Jasmine, Ravi)', slides: pz },
     { id: 'shopping-city-alicia', title: 'Test prep: Shopping + Walking Home — Alicia · 1 h', slides: al },
     { id: 'av2-review-ana', title: 'AV2 Review: Weather + Past Continuous — Ana Clara', slides: av },
     { id: 'debut-katseye', title: 'Debut (KATSEYE) — Aninha · 30 min', slides: db },
