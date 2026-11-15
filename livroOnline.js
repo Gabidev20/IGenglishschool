@@ -47,7 +47,10 @@
      interactive.json (made by livros/_geradores/build_interactive.py) gives
      pages choice / fill / match items in page millimetres; the 👆 Responder
      tool answers them, the page keeps { answers, score } in the same record
-     (+ ixDone, xp). The teacher has 🔑 "Mostrar respostas". Other exercise
+     (+ ixDone, xp). Open items (the Speak Up! books, made by
+     apostila-a1/sala_ig.py) are never marked right or wrong and score nothing:
+       write  a typing box on a gap / answer line: answers[id] = { v: 'text' }
+       mark   a box to tick or an option to circle: answers[id] = { v: true } The teacher has 🔑 "Mostrar respostas". Other exercise
      types can still be plugged in through LO_INTERACTIVE[type].mount().
    ========================================================================== */
 
@@ -299,7 +302,8 @@ const LivroOnline = (() => {
   function writeLocal(sid, id, page) {
     try { localStorage.setItem(lsKey(sid, id), JSON.stringify(page)); return true; } catch (e) { return false; }
   }
-  const hasWork = p => Boolean(p && (p.strokes.length || p.texts.length || p.stickers.length || takeCount(p.take)));
+  const hasWork = p => Boolean(p && (p.strokes.length || p.texts.length || p.stickers.length || takeCount(p.take)
+    || (p.answers && Object.keys(p.answers).length)));
   const contentPages = m => m.pages.filter(p => p.kind !== 'stickers');
 
   // -------------------------------------------------------------------------
@@ -885,7 +889,7 @@ const LivroOnline = (() => {
       const spans = items.map(it => {
         const ys = [];
         (it.options || []).forEach(o => { ys.push(o.y, o.y + o.h); });
-        if (it.type === 'fill') ys.push(it.y, it.y + it.h);
+        if (it.type === 'fill' || it.type === 'write' || it.type === 'mark') ys.push(it.y, it.y + it.h);
         (it.left || []).concat(it.right || []).forEach(d => { ys.push(d.y - 4, d.y + 4); });
         return ys.length ? [Math.min(...ys) - 1.5, Math.max(...ys) + 1.5] : null;
       }).filter(Boolean);
@@ -1069,7 +1073,7 @@ const LivroOnline = (() => {
       root.querySelector('[data-a="view-half"]').classList.toggle('is-on', view === 'half');
       root.querySelector('[data-a="slides"]').classList.toggle('is-on', slides);
       const sc = $('score');
-      if (hasIx()) {
+      if (hasIx() && ixScore().total) {
         const s = ixScore();
         sc.textContent = `⭐ ${s.ok}/${s.total}`;
         sc.hidden = false;
@@ -1207,6 +1211,27 @@ const LivroOnline = (() => {
           } else if (a.v) h += `<text class="lo-ix-txt${a.ok ? ' is-ok' : ' is-bad'}" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc(a.v)}</text>`;
           else if (key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${ty}" font-size="${fs}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
           if (a.v && !a.ok && key) h += `<text class="lo-ix-txt is-key" x="${tx}" y="${f2(y - 0.6)}" font-size="${f2(fs * 0.7)}" text-anchor="middle">${esc((it.accept || [])[0] || '')}</text>`;
+        } else if (it.type === 'write') {
+          // Open answer: the student's own words, in plum, never marked right or wrong.
+          const x = f2(it.x), y = f2(it.y), w = f2(it.w), hh = f2(it.h);
+          const typing = answering && answering.id === it.id;
+          const v = typing ? liveVal : String(a.v || '');
+          h += `<rect class="lo-ix-hit lo-ix-fill lo-ix-write${v ? ' is-done' : ''}${typing ? ' is-active' : ''}" data-q="${esc(it.id)}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1"/>`;
+          if (v) {
+            const base = num(it.size, Math.min(hh * 0.62, 4.4));
+            const room = Math.max(w - 1.2, 2);
+            const fs = f2(Math.max(1.6, Math.min(base, room / (v.length * 0.5))));
+            const fit = v.length * 0.5 * fs > room ? ` textLength="${f2(room)}" lengthAdjust="spacingAndGlyphs"` : '';
+            const left = it.align === 'left';
+            h += `<text class="lo-ix-txt is-open${typing ? ' is-live' : ''}" x="${left ? f2(x + 0.6) : f2(x + w / 2)}" y="${f2(y + hh * 0.5 + fs * 0.35)}" font-size="${fs}" text-anchor="${left ? 'start' : 'middle'}"${fit}>${esc(v)}</text>`;
+          }
+        } else if (it.type === 'mark') {
+          const x = f2(it.x), y = f2(it.y), w = f2(it.w), hh = f2(it.h);
+          if (a.v) {
+            if (it.style === 'ring') h += `<ellipse class="lo-ix-mark" cx="${f2(x + w / 2)}" cy="${f2(y + hh / 2)}" rx="${f2(w / 2 + 0.8)}" ry="${f2(hh / 2 + 0.6)}"/>`;
+            else h += `<path class="lo-ix-mark" d="M${f2(x + w * 0.2)} ${f2(y + hh * 0.5)} L${f2(x + w * 0.42)} ${f2(y + hh * 0.78)} L${f2(x + w * 0.85)} ${f2(y + hh * 0.15)}"/>`;
+          }
+          h += `<rect class="lo-ix-hit lo-ix-opt lo-ix-markbox" data-q="${esc(it.id)}" x="${x}" y="${y}" width="${w}" height="${hh}" rx="1"/>`;
         } else if (it.type === 'match') {
           const L = it.left || [], R = it.right || [];
           const pt = (side, id) => (side === 'l' ? L : R).find(d => d.id === id);
@@ -1254,6 +1279,20 @@ const LivroOnline = (() => {
       }
       changed();
     }
+    // Open items: saved as they are, no right / wrong, no score.
+    function openCommit(q, v) {
+      remember();
+      const rest = { ...(data.answers || {}) };
+      if (v === '' || v == null || v === false) delete rest[q]; else rest[q] = { v };
+      data.answers = rest;
+      data.score = ixScore();
+      changed();
+    }
+    function nextWrite(from) {
+      const list = ixItems().filter(x => x.type === 'write');
+      const i = list.findIndex(x => x.id === from.id);
+      return i >= 0 ? list[i + 1] || null : null;
+    }
     function celebrate(text) {
       toast(text);
       const box = document.createElement('div');
@@ -1300,8 +1339,10 @@ const LivroOnline = (() => {
           data.updatedAt = Date.now(); if (o.save) o.save(pg, data);
           tryAgain();
         }
-      } else if (it.type === 'fill') {
+      } else if (it.type === 'fill' || it.type === 'write') {
         openAnswer(it);
+      } else if (it.type === 'mark') {
+        openCommit(it.id, !a.v);
       } else if (it.type === 'match') {
         const side = el.dataset.side, id = el.dataset.id;
         const found = { ...((a.v && typeof a.v === 'object') ? a.v : {}) };
@@ -1332,11 +1373,11 @@ const LivroOnline = (() => {
       answering = it;
       const a = answerOf(it.id);
       const cells = fillCells(it);
-      input.maxLength = cells || 80;
+      input.maxLength = it.type === 'write' ? 200 : (cells || 80);
       // A wrong try is cleared so the next key press is simply the next try.
       input.value = a && a.v && (a.ok || !cells) ? a.v : '';
-      liveVal = cells > 1 ? input.value : '';
-      $('ansq').textContent = it.hint || (cells > 1 ? 'Escreva as letras / Write the letters' : cells === 1 ? 'Escreva a letra / Write the letter' : 'Escreva a resposta / Write the answer');
+      liveVal = cells > 1 || it.type === 'write' ? input.value : '';
+      $('ansq').textContent = it.type === 'write' ? (it.hint || 'Escreva aqui · Enter = próximo / Type here · Enter = next') : it.hint || (cells > 1 ? 'Escreva as letras / Write the letters' : cells === 1 ? 'Escreva a letra / Write the letter' : 'Escreva a resposta / Write the answer');
       sheet.hidden = false;
       renderIx();
       setTimeout(() => { try { input.focus({ preventScroll: true }); input.select(); } catch (e) { input.focus(); } }, 30);
@@ -1369,6 +1410,7 @@ const LivroOnline = (() => {
     // One key press = the answer: check it, and move on to the next box with the keyboard still open.
     function submitLetter() {
       const input = $('ansin');
+      if (answering && answering.type === 'write') { liveVal = input.value; renderIx(); return; }
       if (!answering || !isLetterBox(answering)) return;
       const v = input.value.replace(/\s+/g, '').trim();
       const n = fillCells(answering);
@@ -1397,6 +1439,7 @@ const LivroOnline = (() => {
       const sheet = $('ans'), input = $('ansin');
       if (!sheet || !answering) return;
       const it = answering;
+      if (it.type === 'write') check = true;          // a typing box keeps what was typed (Esc / ✕ too)
       answering = null;
       liveVal = '';
       sheet.hidden = true;
@@ -1409,6 +1452,7 @@ const LivroOnline = (() => {
         if (a.v) { remember(); const rest = { ...(data.answers || {}) }; delete rest[it.id]; data.answers = rest; data.score = ixScore(); changed(); }
         return;
       }
+      if (it.type === 'write') { if (v !== a.v) openCommit(it.id, v); return; }
       const ok = (it.accept || []).some(x => normAns(x) === normAns(v));
       if (ok) ixCommit(it.id, { ok: true, v, t: a.t || 0 });
       else {
@@ -1425,7 +1469,13 @@ const LivroOnline = (() => {
       });
       $('ansin').addEventListener('input', () => submitLetter());
       $('ansin').addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); closeAnswer(true); }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const was = answering;
+          closeAnswer(true);
+          const nx = was && was.type === 'write' ? nextWrite(was) : null;     // gap after gap, keyboard stays open
+          if (nx) openAnswer(nx);
+        }
         else if (e.key === 'Escape') { e.preventDefault(); closeAnswer(false); }
       });
     }
@@ -2255,14 +2305,15 @@ const LivroOnline = (() => {
   // BOOK HOME — units, thumbnails, ✓ (student) / progress (teacher)
   // -------------------------------------------------------------------------
   // Points of a page's auto-checked exercises (phase 2) and what was earned.
-  const ixPoints = it => (it.type === 'match' ? Object.keys(it.pairs || {}).length : 1);
+  const isOpenIx = it => it.type === 'write' || it.type === 'mark';
+  const ixPoints = it => (isOpenIx(it) ? 0 : it.type === 'match' ? Object.keys(it.pairs || {}).length : 1);
   function ixTotal(p) { return p && p.interactive ? p.interactive.items.reduce((n, it) => n + ixPoints(it), 0) : 0; }
   function ixEarned(p, w) {
     if (!p || !p.interactive) return 0;
     const a = (w && w.answers) || {};
     return p.interactive.items.reduce((n, it) => {
       const r = a[it.id];
-      if (!r) return n;
+      if (!r || isOpenIx(it)) return n;
       if (it.type === 'match') return n + Object.keys(r.v || {}).filter(k => (it.pairs || {})[k] === r.v[k]).length;
       return n + (r.ok ? 1 : 0);
     }, 0);
