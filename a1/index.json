@@ -1,0 +1,18 @@
+{
+ "v": 1,
+ "id": "a1",
+ "title": "Speak Up! A1+",
+ "ages": "15+",
+ "color": "#6F4863",
+ "single": true,
+ "bimesters": [
+  {
+   "n": 2,
+   "path": "a1/b2/manifest.json",
+   "pages": 255,
+   "first": 1,
+   "last": 255,
+   "interactive": true
+  }
+ ]
+}

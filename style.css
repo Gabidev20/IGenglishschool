@@ -8975,6 +8975,11 @@ html.lo-open, html.lo-open body { overflow: hidden; }
 .lo-ix-txt.is-ok { fill: #2f7d3b; }
 .lo-ix-txt.is-bad { fill: #d0342f; }
 .lo-ix-txt.is-key { fill: #2f7d3b; opacity: .55; font-style: italic; }
+/* Open typing boxes (Speak Up! books): the student's words in plum, never red / green */
+.lo-ix-txt.is-open { fill: #432c3e; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 700; stroke-width: .35; }
+.lo-ix-write.is-done { stroke: none; fill: transparent; }
+.lo-ed.ix-on .lo-ix-write.is-done { stroke: rgba(111, 72, 99, .25); fill: rgba(111, 72, 99, .04); }
+.lo-ix-mark { fill: none; stroke: #ce2c46; stroke-width: .55; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .lo-ix-ok { fill: none; stroke: #3f9a4d; stroke-width: .9; pointer-events: none; }
 .lo-ix-key { fill: none; stroke: #3f9a4d; stroke-width: .6; stroke-dasharray: 1.4 1; opacity: .8; pointer-events: none; }
 .lo-ix-dot { fill: #fff; stroke: #3d8bd9; stroke-width: .6; }
