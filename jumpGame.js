@@ -14,6 +14,11 @@
    Controls: ← → (or A D) to run, ↑ / W / space to jump, P to pause;
    big touch buttons under the game. 5 hearts: a snail or a fall takes one.
    Wrong answers go to "My mistakes" like every other game.
+
+   PHASES: 4 worlds (🌳 meadow · 🏖️ beach · ❄️ snow · 🌙 night). Answer all
+   the gates of a phase (3 or 5 questions) and the next phase starts by
+   itself: a new background, faster animals, wider gaps, one more answer to
+   choose from, and the last phase ends at the castle 🏰.
    ========================================================================== */
 
 // side: 'left' = the picture looks left (mirrored when running right);
@@ -30,6 +35,22 @@ const JL_NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', '
   'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
 const JL_TENS = { 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'one hundred' };
 const JL_SETTINGS_KEY = 'ig_jump_settings';
+// The phases, easiest first. diff: 0–3 (level pieces, animal speed, gaps);
+// opts: how many answers to choose from.
+const JL_PHASES = [
+  { id: 'meadow', en: 'Green Meadow', icon: '🌳', diff: 0, opts: 3, enemy: '🐌',
+    sky: ['#7ec8f3', '#d9f1ff'], hills: ['#9ed58a', '#b5e2a2'], clouds: 'rgba(255,255,255,.9)',
+    dirt: '#b8783e', dots: '#a3672f', top: '#5cbf4a', edge: '#4aa83a' },
+  { id: 'beach', en: 'Sunny Beach', icon: '🏖️', diff: 1, opts: 3, enemy: '🦀',
+    sky: ['#4fb8ec', '#c9f0ff'], hills: ['#2f8fd0', '#56b3e6'], clouds: 'rgba(255,255,255,.95)',
+    dirt: '#e8c27a', dots: '#d4a95c', top: '#f7e3a6', edge: '#e6c97e' },
+  { id: 'snow', en: 'Snowy Mountains', icon: '❄️', diff: 2, opts: 4, enemy: '🐧',
+    sky: ['#9fc2e6', '#eef5fc'], hills: ['#ffffff', '#dbe7f2'], clouds: 'rgba(255,255,255,.85)',
+    dirt: '#8fa3b8', dots: '#7c90a6', top: '#ffffff', edge: '#d3e0ec' },
+  { id: 'night', en: 'Starry Night', icon: '🌙', diff: 3, opts: 4, enemy: '🦔', stars: true,
+    sky: ['#1c2353', '#4a3f86'], hills: ['#2c3570', '#3b4589'], clouds: 'rgba(255,255,255,.18)',
+    dirt: '#6b4a3a', dots: '#583b2d', top: '#3f8f5a', edge: '#2f7447' },
+];
 // The avatars on offer: the student's own look first, when there is one.
 function jlAvatarList() {
   const look = typeof myavCurrent === 'function' ? myavCurrent() : null;
@@ -87,7 +108,7 @@ const JL_SETS = [
 ];
 
 function jlLoadSettings() {
-  const base = { avatar: 'dino', set: 'numbers', topic: null, questions: 8 };
+  const base = { avatar: 'dino', set: 'numbers', topic: null, questions: 8, perPhase: 3 };
   try { return { ...base, ...(JSON.parse(localStorage.getItem(JL_SETTINGS_KEY) || '{}') || {}) }; } catch (e) { return base; }
 }
 function jlSaveSettings(s) { try { localStorage.setItem(JL_SETTINGS_KEY, JSON.stringify(s)); } catch (e) {} }
@@ -129,7 +150,7 @@ function jlSay(text, rate) {
 // ---------------------------------------------------------------------------
 // QUESTIONS — one per locked gate, every answer a different word.
 // ---------------------------------------------------------------------------
-function jlMakeQuestions(words, n) {
+function jlMakeQuestions(words, n, nOpts) {
   const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
   const clean = words.filter(w => w && w.en);
   const seen = new Set();
@@ -138,7 +159,7 @@ function jlMakeQuestions(words, n) {
   const targets = [];
   while (targets.length < n) targets.push(...shuffle(uniq));
   return targets.slice(0, n).map(w => {
-    const others = shuffle(uniq.filter(x => x.en !== w.en)).slice(0, 2);
+    const others = shuffle(uniq.filter(x => x.en !== w.en)).slice(0, Math.max(2, Math.min((nOpts || 3) - 1, uniq.length - 1)));
     const options = shuffle([w, ...others]);
     const hasPic = Boolean(w.image || w.emoji);
     const hasPt = Boolean(w.pt) && String(w.pt).toLowerCase() !== String(w.en).toLowerCase();
@@ -160,7 +181,9 @@ function jlMakeQuestions(words, n) {
 // 3 pipe · 4 locked gate · 5 ? block · 6 used block · 7 stone
 // ---------------------------------------------------------------------------
 const JL_H = 13, JL_TOP = 10;   // the ground's top row
-function jlBuildLevel(nGates) {
+function jlBuildLevel(nGates, diff) {
+  diff = diff || 0;
+  const sp = 1.2 + diff * 0.45;            // how fast the animals walk
   const cols = [];             // each: Uint8Array(JL_H)
   const coins = [], enemies = [], gates = [];
   const col = () => { const c = new Uint8Array(JL_H); for (let y = JL_TOP; y < JL_H; y++) c[y] = 1; cols.push(c); return c; };
@@ -169,7 +192,7 @@ function jlBuildLevel(nGates) {
   const x = () => cols.length;
 
   const pieces = {
-    gap() { flat(2); const w = 2 + Math.floor(Math.random() * 2); const x0 = x(); gap(w);
+    gap() { flat(2); const w = 2 + Math.floor(Math.random() * 2) + (diff >= 2 ? 1 : 0); const x0 = x(); gap(w);
       for (let i = 0; i < w + 1; i++) coins.push({ x: x0 - 0.5 + i, y: JL_TOP - 2.6 - Math.sin((i / w) * Math.PI) * 0.8 }); flat(2); },
     pipe() { flat(2); const h = 2; for (let k = 0; k < 2; k++) { const c = col(); for (let y = JL_TOP - h; y < JL_TOP; y++) c[y] = 3; }
       coins.push({ x: x() - 1.5, y: JL_TOP - h - 1.6 }); flat(3); },
@@ -177,15 +200,19 @@ function jlBuildLevel(nGates) {
       coins.push({ x: x() - 3.5, y: JL_TOP - 4.6 }, { x: x() - 2.5, y: JL_TOP - 4.6 }); flat(2); },
     platform() { flat(2); const x0 = x(); flat(6);
       for (let i = 1; i < 5; i++) { cols[x0 + i][JL_TOP - 3] = 2; coins.push({ x: x0 + i + 0.5, y: JL_TOP - 4.4 }); } flat(1); },
-    snail() { flat(3); enemies.push({ x: x() + 2, y: JL_TOP - 0.8, vx: -1.2 }); flat(7); },
-    snailgap() { flat(2); enemies.push({ x: x() + 1, y: JL_TOP - 0.8, vx: -1.2 }); flat(4); gap(2); flat(3); },
+    snail() { flat(3); enemies.push({ x: x() + 2, y: JL_TOP - 0.8, vx: -sp }); flat(7); },
+    snailgap() { flat(2); enemies.push({ x: x() + 1, y: JL_TOP - 0.8, vx: -sp }); flat(4); gap(2 + (diff >= 3 ? 1 : 0)); flat(3); },
+    twosnails() { flat(3); enemies.push({ x: x() + 2, y: JL_TOP - 0.8, vx: -sp }, { x: x() + 6, y: JL_TOP - 0.8, vx: sp }); flat(10); },
   };
-  const kinds = Object.keys(pieces);
-  const pickTwo = () => { const a = kinds[Math.floor(Math.random() * kinds.length)]; let b; do { b = kinds[Math.floor(Math.random() * kinds.length)]; } while (b === a); return [a, b]; };
+  // Phase 1 has the gentle pieces; later phases add two animals at once
+  // and put more obstacles before each gate.
+  const kinds = Object.keys(pieces).filter(k => diff >= 1 || k !== 'twosnails');
+  const perGate = diff >= 2 ? 3 : 2;
+  const pickSome = () => { const out = []; while (out.length < perGate) { const k = kinds[Math.floor(Math.random() * kinds.length)]; if (!out.includes(k)) out.push(k); } return out; };
 
   flat(8);
   for (let g = 0; g < nGates; g++) {
-    (g === 0 ? ['pipe', 'snail'] : pickTwo()).forEach(k => pieces[k]());
+    (g === 0 && diff === 0 ? ['pipe', 'snail'] : pickSome()).forEach(k => pieces[k]());
     // The gate: a ? block to bump and a tall locked wall that cannot be jumped.
     flat(3);
     const qx = x(); const qc = col(); qc[JL_TOP - 4] = 5;
@@ -200,7 +227,7 @@ function jlBuildLevel(nGates) {
   const W = cols.length;
   const tiles = new Uint8Array(W * JL_H);
   cols.forEach((c, cx) => c.forEach((v, y) => { tiles[y * W + cx] = v; }));
-  return { W, tiles, coins: coins.map(c => ({ ...c, taken: false })), enemies: enemies.map(e => ({ ...e, w: 0.9, h: 0.8, vy: 0, alive: true, squash: 0 })), gates, flagX };
+  return { W, tiles, coins: coins.map(c => ({ ...c, taken: false })), enemies: enemies.map(e => ({ ...e, sp: Math.abs(e.vx), w: 0.9, h: 0.8, vy: 0, alive: true, squash: 0 })), gates, flagX };
 }
 
 // opts.words: play with exactly these words (e.g. the class's mistakes).
@@ -272,11 +299,12 @@ function openJumpGame(opts) {
             </div>
           </div>` : ''}
         <div class="mz-row">
-          <span class="mz-row-label">Gates 🔒</span>
+          <span class="mz-row-label">Phases 🗺️</span>
           <div class="mz-opts">
-            ${[5, 8, 12].map(n => `<button type="button" class="mz-opt mz-opt--wide${settings.questions === n ? ' on' : ''}" data-q="${n}">${n} questions</button>`).join('')}
+            ${[3, 5].map(n => `<button type="button" class="mz-opt mz-opt--wide${settings.perPhase === n ? ' on' : ''}" data-q="${n}">${n} questions per phase</button>`).join('')}
           </div>
         </div>
+        <p class="mz-keys">${JL_PHASES.map((ph, i) => `${i + 1}. ${ph.icon} ${ph.en}`).join(' → ')} 🏰 · each phase is a little harder!</p>
         <p class="mz-keys">👆 Drag your finger on the game: sideways to run, up to jump · ⌨️ ← → run · ↑ or space jump · P pause · ❤️ ${JL_HEARTS} hearts</p>
         <button type="button" class="btn btn-primary mz-start" data-start>▶ Start!</button>
         <p class="jl-error" data-error></p>
@@ -287,7 +315,7 @@ function openJumpGame(opts) {
       settings.avatar = b.dataset.av; jlSay(jlAvatarById(b.dataset.av).en); repaint();
     }));
     m.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => { settings.set = b.dataset.set; repaint(); }));
-    m.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => { settings.questions = Number(b.dataset.q); repaint(); }));
+    m.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => { settings.perPhase = Number(b.dataset.q); repaint(); }));
     const search = m.querySelector('#jlTopicSearch');
     if (search) {
       const list = m.querySelector('#jlTopicList');
@@ -309,22 +337,30 @@ function openJumpGame(opts) {
       paintList();
     }
     m.querySelector('[data-start]').addEventListener('click', () => {
-      const qs = jlMakeQuestions(wordsFor(), settings.questions);
+      const qs = phaseQuestions(0);
       if (!qs.length) { m.querySelector('[data-error]').textContent = 'Choose a subject with at least 3 words. 📚'; return; }
       jlSaveSettings(settings.set === 'custom' ? { ...settings, set: 'numbers' } : settings);
-      play(qs);
+      play(qs, 0, null);
     });
   }
 
+  const perPhase = () => (settings.perPhase === 5 ? 5 : 3);
+  const phaseQuestions = i => jlMakeQuestions(wordsFor(), perPhase(), JL_PHASES[i].opts);
+
   // ---- the game ----------------------------------------------------------------
-  function play(questions) {
+  // phase: 0–3 (JL_PHASES). carry: what the last phase leaves to the next
+  // (hearts, coins, mistakes, gates opened).
+  function play(questions, phase, carry) {
     const m = mount();
     if (!m) return;
-    const level = jlBuildLevel(questions.length);
+    phase = phase || 0;
+    const th = JL_PHASES[phase];
+    const lastPhase = phase === JL_PHASES.length - 1;
+    const level = jlBuildLevel(questions.length, th.diff);
     const { W, tiles, coins, enemies, gates, flagX } = level;
     const H = JL_H;
     const avatar = jlAvatarById(settings.avatar);
-    ['🐌', '🔒', '🏰', '🪙', avatar.emoji].forEach(jlImage);
+    [th.enemy, '🔒', '🏰', '🪙', avatar.emoji].forEach(jlImage);
     if (avatar.look && typeof myavPreload === 'function') myavPreload(avatar.look);
 
     const tile = (x, y) => (x < 0 || x >= W ? 7 : y < 0 || y >= H ? 0 : tiles[y * W + x]);
@@ -332,9 +368,13 @@ function openJumpGame(opts) {
     const solid = (x, y) => (x < 0 || x >= W) ? true : (y < 0 || y >= H) ? false : tiles[y * W + x] !== 0;
 
     const P = { x: 2, y: JL_TOP - 0.95, w: 0.8, h: 0.95, vx: 0, vy: 0, ground: false, face: 1,
-      hearts: JL_HEARTS, coins: 0, inv: 0, coyote: 0, buffer: 0, cp: 2, squash: 0 };
+      hearts: carry ? Math.min(JL_HEARTS, carry.hearts + 1) : JL_HEARTS,   // a new phase gives back one heart
+      coins: carry ? carry.coins : 0, inv: 0, coyote: 0, buffer: 0, cp: 2, squash: 0 };
     const input = { left: false, right: false, jump: false };
-    let solvedCount = 0, mistakes = 0, paused = false, asking = null, done = false;
+    let solvedCount = 0, mistakes = carry ? carry.mistakes : 0, paused = false, asking = null, done = false;
+    const gatesBefore = carry ? carry.gates : 0;
+    let banner = 2.2;    // "Phase 2 · Sunny Beach" over the game for a moment
+    jlSay(`Phase ${JL_NUMBER_WORDS[phase + 1]}! ${th.en}!`);
     const particles = [];
     const bump = { x: -1, t: 0 };
     openJumpGame.debug = { P, input, gates, tile };   // for tests in the console
@@ -344,6 +384,7 @@ function openJumpGame(opts) {
         <div class="mz-scores">
           <span class="jl-hud">${jlAvatarHTML(avatar, 'mz-av-img')}<span class="jl-hearts" data-hearts></span></span>
           <span class="jl-hud">${jlEmojiHTML('🪙', 'jl-hud-img')}<b data-coins>0</b></span>
+          <span class="jl-hud jl-hud--phase">${th.icon} <b>${phase + 1}/${JL_PHASES.length}</b></span>
           <span class="jl-hud">🔒 <b data-gates>0/${questions.length}</b></span>
           <span class="mz-left"></span>
           <button type="button" class="game-btn secondary" data-pause title="Pause (P)">⏸ Pause</button>
@@ -437,7 +478,7 @@ function openJumpGame(opts) {
       const pic = q.picture ? (typeof igWordVisualHTML === 'function' ? igWordVisualHTML(q.picture, 'jl-ask-pic') : jlEmojiHTML(q.picture.emoji, 'jl-ask-pic')) : '';
       askEl.innerHTML = `
         <div class="jl-ask-card">
-          <p class="jl-ask-n">🔒 ${gate.i + 1} / ${questions.length}</p>
+          <p class="jl-ask-n">${th.icon} Phase ${phase + 1} · 🔒 ${gate.i + 1} / ${questions.length}</p>
           ${pic}
           <p class="jl-ask-q">${q.prompt}</p>
           <div class="jl-ask-opts">
@@ -481,6 +522,34 @@ function openJumpGame(opts) {
       P.cp = gate.wx - 1.5;
       if (typeof IGSound !== 'undefined') IGSound.pop && IGSound.pop();
       paintHud();
+      if (solvedCount === questions.length && !lastPhase) setTimeout(phaseClear, 700);
+    }
+
+    // Every question of this phase answered: a short party, then the next
+    // phase starts by itself (new world, a little harder).
+    function phaseClear() {
+      if (done || !canvas.isConnected) return;
+      done = true;
+      const nx = JL_PHASES[phase + 1];
+      if (typeof IGSound !== 'undefined') IGSound.win && IGSound.win();
+      jlSay('Great job! Next phase!');
+      const end = document.createElement('div');
+      end.className = 'mz-end jl-phase-end';
+      end.innerHTML = `
+        <div class="mz-end-card">
+          <p class="mz-end-title">Phase ${phase + 1} complete! ⭐</p>
+          <p class="jl-end-line">🔒 ${questions.length}/${questions.length} · ${jlEmojiHTML('🪙', 'jl-hud-img')} ${P.coins}</p>
+          <p class="jl-next">Next: ${nx.icon} <b>${nx.en}</b></p>
+          <p class="jl-next-sub">Get ready… 3, 2, 1!</p>
+        </div>`;
+      m.querySelector('.jl-stage').appendChild(end);
+      const next = { hearts: P.hearts, coins: P.coins, mistakes, gates: gatesBefore + solvedCount };
+      setTimeout(() => {
+        if (!canvas.isConnected) return;
+        cleanup();
+        const qs = phaseQuestions(phase + 1);
+        if (qs.length) play(qs, phase + 1, next);
+      }, 2600);
     }
 
     function hurt(fell) {
@@ -569,7 +638,7 @@ function openJumpGame(opts) {
         const front = e.vx > 0 ? Math.floor(e.x + e.w + 0.05) : Math.floor(e.x - 0.05);
         if (e.ground && !solid(front, Math.floor(e.y + e.h + 0.1))) e.vx = -e.vx;
         const dir = Math.sign(e.vx) || -1;
-        if (moveX(e, e.vx * dt)) e.vx = -dir * 1.2;      // a wall: turn round
+        if (moveX(e, e.vx * dt)) e.vx = -dir * e.sp;     // a wall: turn round
         moveY(e, e.vy * dt);
         if (e.y > H + 1) e.alive = false;
         const over = P.x < e.x + e.w && P.x + P.w > e.x && P.y < e.y + e.h && P.y + P.h > e.y;
@@ -581,7 +650,9 @@ function openJumpGame(opts) {
       });
       particles.forEach(p => { p.vy += G * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; });
       for (let i = particles.length - 1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i, 1);
-      if (P.x >= flagX) finish(true);
+      if (banner > 0) banner -= dt;
+      if (P.x >= flagX && lastPhase) finish(true);
+      if (P.x >= flagX && !lastPhase && solvedCount === questions.length) phaseClear();
     }
 
     // ---- drawing --------------------------------------------------------------------
@@ -591,15 +662,25 @@ function openJumpGame(opts) {
       camX += ((Math.max(0, Math.min(W - viewW, P.x - viewW * 0.35))) - camX) * 0.2;
       // sky, far hills, clouds
       const g = ctx.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, '#7ec8f3'); g.addColorStop(1, '#d9f1ff');
+      g.addColorStop(0, th.sky[0]); g.addColorStop(1, th.sky[1]);
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
       for (let i = -1; i < viewW / 12 + 2; i++) {
         const hx = (Math.floor(camX * 0.4 / 12) + i) * 12;
         const sx = (hx - camX * 0.4) * S;
-        ctx.fillStyle = '#9ed58a'; ctx.beginPath(); ctx.ellipse(sx + 4 * S, JL_TOP * S, 5 * S, 3.2 * S, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle = '#b5e2a2'; ctx.beginPath(); ctx.ellipse(sx + 9 * S, JL_TOP * S, 3.5 * S, 2 * S, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = th.hills[0]; ctx.beginPath(); ctx.ellipse(sx + 4 * S, JL_TOP * S, 5 * S, 3.2 * S, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = th.hills[1]; ctx.beginPath(); ctx.ellipse(sx + 9 * S, JL_TOP * S, 3.5 * S, 2 * S, 0, Math.PI, 0); ctx.fill();
       }
-      ctx.fillStyle = 'rgba(255,255,255,.9)';
+      if (th.stars) {
+        // the moon and twinkling stars, far away
+        ctx.fillStyle = '#fff6c9'; ctx.beginPath(); ctx.arc(w * 0.82, S * 1.8, S * 0.9, 0, Math.PI * 2); ctx.fill();
+        for (let i = 0; i < 40; i++) {
+          const sx = ((i * 97.3 - camX * 0.1 * S) % w + w) % w, sy = ((i * 53.7) % (JL_TOP * 0.6)) * S;
+          ctx.globalAlpha = 0.5 + 0.5 * Math.abs(Math.sin(now / 500 + i));
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(sx, sy, 2, 2);
+        }
+        ctx.globalAlpha = 1;
+      }
+      ctx.fillStyle = th.clouds;
       for (let i = -1; i < viewW / 9 + 2; i++) {
         const cx = (Math.floor(camX * 0.2 / 9) + i) * 9;
         const sx = (cx - camX * 0.2) * S, sy = (1.5 + ((cx * 7) % 3)) * S;
@@ -615,9 +696,9 @@ function openJumpGame(opts) {
         const py = y * S + by;
         if (t === 1) {
           const top = y === 0 || tiles[(y - 1) * W + x] === 0;
-          ctx.fillStyle = '#b8783e'; ctx.fillRect(px, py, S + 0.5, S + 0.5);
-          ctx.fillStyle = '#a3672f'; ctx.fillRect(px + S * 0.2, py + S * 0.55, S * 0.15, S * 0.15); ctx.fillRect(px + S * 0.65, py + S * 0.3, S * 0.12, S * 0.12);
-          if (top) { ctx.fillStyle = '#5cbf4a'; ctx.fillRect(px, py, S + 0.5, S * 0.3); ctx.fillStyle = '#4aa83a'; ctx.fillRect(px, py + S * 0.26, S + 0.5, S * 0.06); }
+          ctx.fillStyle = th.dirt; ctx.fillRect(px, py, S + 0.5, S + 0.5);
+          ctx.fillStyle = th.dots; ctx.fillRect(px + S * 0.2, py + S * 0.55, S * 0.15, S * 0.15); ctx.fillRect(px + S * 0.65, py + S * 0.3, S * 0.12, S * 0.12);
+          if (top) { ctx.fillStyle = th.top; ctx.fillRect(px, py, S + 0.5, S * 0.3); ctx.fillStyle = th.edge; ctx.fillRect(px, py + S * 0.26, S + 0.5, S * 0.06); }
         } else if (t === 2) {
           ctx.fillStyle = '#d8743a'; ctx.fillRect(px, py, S, S);
           ctx.strokeStyle = '#8f3f17'; ctx.lineWidth = Math.max(1, S * 0.06); ctx.strokeRect(px + 0.5, py + 0.5, S - 1, S - 1);
@@ -662,15 +743,15 @@ function openJumpGame(opts) {
         ctx.fillStyle = '#ffd400'; ctx.strokeStyle = '#b8860b'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.ellipse(c.x * S, c.y * S, S * 0.3 * Math.max(0.2, sw), S * 0.3, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       });
-      // the flag and the castle
+      // the flag and (last phase) the castle
       ctx.fillStyle = '#6b6f76'; ctx.fillRect((flagX + 0.45) * S, 2 * S, S * 0.1, (JL_TOP - 2) * S);
       ctx.fillStyle = '#e5484d'; ctx.beginPath(); ctx.moveTo((flagX + 0.55) * S, 2.1 * S); ctx.lineTo((flagX + 2) * S, 2.7 * S); ctx.lineTo((flagX + 0.55) * S, 3.3 * S); ctx.fill();
-      const castle = jlImage('🏰');
+      const castle = lastPhase ? jlImage('🏰') : null;
       if (castle && castle.complete && castle.naturalWidth) ctx.drawImage(castle, (flagX + 3) * S, (JL_TOP - 4) * S, 4 * S, 4 * S);
       // snails
       enemies.forEach(e => {
         if (!e.alive && e.squash <= 0) return;
-        const img = jlImage('🐌');
+        const img = jlImage(th.enemy);
         const ex = e.x * S, ey = e.y * S;
         ctx.save(); ctx.translate(ex + e.w * S / 2, ey + e.h * S);
         if (e.vx > 0) ctx.scale(-1, 1);
@@ -702,6 +783,13 @@ function openJumpGame(opts) {
         } else { ctx.fillStyle = p.c; ctx.fillRect(p.x * S, p.y * S, S * 0.25, S * 0.25); }
       });
       ctx.restore();
+      if (banner > 0 && !paused) {
+        ctx.globalAlpha = Math.min(1, banner);
+        ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(0, h * 0.3, w, S * 2.6);
+        ctx.fillStyle = '#fff'; ctx.font = `900 ${S * 1.25}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(`Phase ${phase + 1} · ${th.en}`, w / 2, h * 0.3 + S * 1.3);
+        ctx.globalAlpha = 1;
+      }
       if (paused) {
         ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(0, 0, w, h);
         ctx.fillStyle = '#fff'; ctx.font = `900 ${S * 1.6}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -730,23 +818,25 @@ function openJumpGame(opts) {
       if (done) return;
       done = true;
       if (typeof IGSound !== 'undefined') (won ? IGSound.win : IGSound.wrong) && (won ? IGSound.win() : IGSound.wrong());
-      const stars = won ? (mistakes === 0 ? 3 : mistakes <= Math.ceil(questions.length / 3) ? 2 : 1) : 0;
-      if (won && typeof awardProgress === 'function') awardProgress(10 + solvedCount * 2, stars >= 2 ? 1 : 0);
+      const allGates = gatesBefore + solvedCount;
+      const stars = won ? (mistakes === 0 ? 3 : mistakes <= Math.ceil(allGates / 3) ? 2 : 1) : 0;
+      if (won && typeof awardProgress === 'function') awardProgress(10 + allGates * 2, stars >= 2 ? 1 : 0);
       jlSay(won ? 'You did it! Great job!' : 'Oh no! Try again!');
       const end = document.createElement('div');
       end.className = 'mz-end';
       end.innerHTML = `
         <div class="mz-end-card">
-          <p class="mz-end-title">${won ? 'You did it! 🏰' : 'Oh no! 🐌'}</p>
+          <p class="mz-end-title">${won ? 'You did it! 🏰' : `Oh no! ${th.enemy}`}</p>
+          <p class="jl-end-line">${th.icon} Phase ${phase + 1} / ${JL_PHASES.length}</p>
           ${won ? `<p class="jl-stars">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</p>` : ''}
-          <p class="jl-end-line">🔒 ${solvedCount}/${questions.length} gates · ${jlEmojiHTML('🪙', 'jl-hud-img')} ${P.coins}${won && mistakes ? ` · ❌ ${mistakes}` : ''}</p>
+          <p class="jl-end-line">🔒 ${allGates} gates · ${jlEmojiHTML('🪙', 'jl-hud-img')} ${P.coins}${won && mistakes ? ` · ❌ ${mistakes}` : ''}</p>
           <div class="an-done-actions">
             <button type="button" class="btn btn-primary" data-again>🔄 Play again</button>
             <button type="button" class="game-btn secondary" data-menu2>⚙️ Menu</button>
           </div>
         </div>`;
       m.querySelector('.jl-stage').appendChild(end);
-      end.querySelector('[data-again]').addEventListener('click', () => play(jlMakeQuestions(wordsFor(), settings.questions)));
+      end.querySelector('[data-again]').addEventListener('click', () => play(phaseQuestions(0), 0, null));
       end.querySelector('[data-menu2]').addEventListener('click', setup);
     }
 

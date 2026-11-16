@@ -11060,3 +11060,10 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 .sy-word-vis img { max-height: 2rem; width: auto; }
 @media (max-width: 560px) { .sy-word-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .sy-word-note { font-size: .78rem; color: var(--ink-faint); font-style: normal; }
+
+/* Jump & Learn: phases */
+.jl-hud--phase b { font-variant-numeric: tabular-nums; }
+.jl-phase-end .mz-end-card { animation: jlPhasePop .35s ease-out; }
+.jl-next { margin: 10px 0 0; font-size: 1.25rem; }
+.jl-next-sub { margin: 4px 0 0; color: var(--ink-faint); }
+@keyframes jlPhasePop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
