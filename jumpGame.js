@@ -141,6 +141,7 @@ function jlVisibleCustomSets() {
 }
 
 // Ready-made question sets (same shape as "My questions", not editable).
+// say: what the voice reads instead of q (the English voice cannot read Portuguese).
 // KATSEYE songs: the expressions of Aninha's song lessons (slidesModelos.js).
 // Shown to Aninha, and to the teacher when no other student is selected.
 function jlIsAninha() {
@@ -160,8 +161,8 @@ const JL_BUILTIN_QSETS = [
     { q: 'He didn’t answer the call on purpose. He ___ the call.', emoji: '📞', right: 'ignored', wrong: ['loved', 'opened', 'cooked'] },
     { q: 'We need to ___ a better plan.', emoji: '💡', right: 'come up with', wrong: ['come in', 'go out', 'give back'] },
     { q: 'What does “keep in touch” mean?', emoji: '💬', right: 'keep talking', wrong: ['stop talking', 'keep walking', 'touch your phone'] },
-    { q: '“Seguir em frente” in English is…', emoji: '🇧🇷', right: 'move on', wrong: ['move out', 'mess up', 'overthink'] },
-    { q: '“Perder o contato” in English is…', emoji: '🇧🇷', right: 'be out of touch', wrong: ['lose interest', 'waste time', 'move on'] },
+    { q: '“Seguir em frente” in English is…', say: 'How do you say this in English?', emoji: '🇧🇷', right: 'move on', wrong: ['move out', 'mess up', 'overthink'] },
+    { q: '“Perder o contato” in English is…', say: 'How do you say this in English?', emoji: '🇧🇷', right: 'be out of touch', wrong: ['lose interest', 'waste time', 'move on'] },
     // Debut
     { q: 'The first time a singer shows her work is her ___.', emoji: '🎤', right: 'debut', wrong: ['goodbye', 'ticket', 'homework'] },
     { q: 'Stop ___ your new phone!', emoji: '📱', right: 'showing off', wrong: ['showing up', 'turning off', 'taking off'] },
@@ -172,9 +173,9 @@ const JL_BUILTIN_QSETS = [
     { q: 'What does “flexing” mean?', emoji: '😎', right: 'showing off', wrong: ['sleeping', 'studying', 'crying'] },
     { q: 'What does “simple as that” mean?', emoji: '👌', right: 'it’s easy', wrong: ['it’s very hard', 'I don’t know', 'say it again'] },
     { q: 'We’re at the park. Can you ___ in 10 minutes? (= arrive)', emoji: '🚗', right: 'pull up', wrong: ['wake up', 'give up', 'clean up'] },
-    { q: '“Estrear” in English is…', emoji: '🇧🇷', right: 'make your debut', wrong: ['make a scene', 'show off', 'roll the dice'] },
-    { q: '“Fazer escândalo” in English is…', emoji: '🇧🇷', right: 'make a scene', wrong: ['make your debut', 'move on', 'ride or die'] },
-    { q: '“Arriscar / tentar a sorte” in English is…', emoji: '🇧🇷', right: 'roll the dice', wrong: ['show off', 'make a scene', 'cookie-cutter'] },
+    { q: '“Estrear” in English is…', say: 'How do you say this in English?', emoji: '🇧🇷', right: 'make your debut', wrong: ['make a scene', 'show off', 'roll the dice'] },
+    { q: '“Fazer escândalo” in English is…', say: 'How do you say this in English?', emoji: '🇧🇷', right: 'make a scene', wrong: ['make your debut', 'move on', 'ride or die'] },
+    { q: '“Arriscar / tentar a sorte” in English is…', say: 'How do you say this in English?', emoji: '🇧🇷', right: 'roll the dice', wrong: ['show off', 'make a scene', 'cookie-cutter'] },
   ] },
 ];
 const jlCustomPlayable = set => (set.questions || []).filter(q => q && (q.q || q.emoji) && q.right && (q.wrong || []).some(Boolean));
@@ -195,7 +196,7 @@ function jlCustomQuestions(set, n, queue) {
     return {
       word: { en: String(q.right).trim(), emoji: q.emoji || '' },
       kind: 'custom',
-      say: q.q || '',
+      say: q.say != null ? q.say : (q.q || ''),
       prompt: q.q ? igEscapeHtml(q.q) : 'What is this?',
       picture: q.emoji ? { en: q.right, emoji: q.emoji } : null,
       options: opts,
@@ -340,7 +341,8 @@ function jlSay(text, rate) {
   if (!text || !('speechSynthesis' in window)) return;
   try {
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    // A blank (___) is a short pause, not “underscore underscore”.
+    const u = new SpeechSynthesisUtterance(String(text).replace(/_{2,}/g, '…'));
     u.lang = 'en-US'; u.rate = rate || 0.9;
     window.speechSynthesis.speak(u);
   } catch (e) {}
