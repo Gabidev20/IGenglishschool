@@ -300,47 +300,47 @@ const BOOK_SPEAKING = {
       phrases: ["That's a good question!", "What about you?", "I work in a bank.", "I'm reading a good book.", "I went to Chile.", "It was great.", "I'm going to travel.", "I've been to Peru."],
     },
   },
-  // Speak Up! Teens
+  // IG Beyond Teens
   "teens": {
     1: {
       title: "Lesson 1 · Hi there!",
-      words: ["Hello! / Hi!", "Good morning!", "Good afternoon!", "Good evening!", "How are you?", "Bye! / See you!", "/eɪ/", "/iː/", "/e/", "/aɪ/", "/əʊ/", "/uː/", "/ɑː/", "zero", "one", "two"],
-      phrases: ["Nice to meet you.", "How are you?", "I'm fine, thanks.", "What's your name?", "How old are you?", "Can you repeat, please?", "See you on Thursday!", "Hi!", "I'm Lucas.", "Are you a gamer?", "Yes, I am!", "Are you 14 too?"],
+      words: ["Hello! / Hi!", "Good morning!", "Good afternoon!", "Good evening!", "How are you?", "Bye! / See you!", "zero", "one", "two", "Turn on your camera.", "Mute / Unmute.", "Write in the chat.", "Share your screen.", "Raise your hand.", "Can you repeat, please?", "How do you spell it?"],
+      phrases: ["Hey guys!", "What's up?", "No way!", "Same here!", "That's so cool!", "Nice to meet you.", "How are you?", "I'm fine, thanks.", "What's your name?", "How old are you?", "I'm 14.", "Can you repeat, please?"],
     },
     2: {
       title: "Lesson 2 · Around the world",
       words: ["Brazil", "Argentina", "Mexico", "the USA", "Canada", "the UK", "Ireland", "Spain", "France", "Italy", "Sweden", "Nigeria", "India", "China", "Japan", "South Korea"],
-      phrases: ["Where are you from?", "I'm from Ireland.", "Where's she from?", "She's from Japan.", "What's his job?", "He's a singer.", "Who's this?", "It's Rayssa Leal!", "Really?", "That's cool!", "I'm not sure.", "He's Irish."],
+      phrases: ["For real?", "No idea!", "She's a legend!", "I'm obsessed!", "Let me guess!", "Where are you from?", "I'm from Ireland.", "Where's she from?", "She's from Japan.", "What's his job?", "He's a singer.", "Who's this?"],
     },
     3: {
       title: "Lesson 3 · My stuff",
       words: ["phone", "headphones", "earbuds", "backpack", "laptop", "tablet", "charger", "water bottle", "sneakers", "cap", "keys", "wallet", "notebook", "pen", "glasses", "watch"],
-      phrases: ["What's this in English?", "What colour is it?", "It's blue.", "Is this your phone?", "Yes, it is.", "Oh no!", "Where are my keys?", "Here you are.", "Thanks!", "Can I borrow your charger?", "What's that?", "It's a new phone!"],
+      phrases: ["It's brand new!", "Love it!", "My bad!", "Here you go!", "a must-have", "What's this in English?", "What color is it?", "It's blue.", "Is this your phone?", "Yes, it is.", "Oh no! Where are my keys?", "Here you are."],
     },
     4: {
       title: "Lesson 4 · Review 1",
       words: ["Hello!", "Good evening!", "Mute!", "chat", "Japan", "Ireland", "Nigeria", "Argentina", "singer", "skater", "YouTuber", "athlete", "earbuds", "an umbrella", "keys", "charger"],
-      phrases: ["Are you ready?", "Yes, let's go!", "Your turn!", "My turn!", "Correct!", "Wrong!", "I don't know.", "Can I have a clue?", "Well done, everyone!", "Ready for the quiz?", "Yes!", "Question 1: Where's Kenji from?"],
+      phrases: ["Let's go!", "Your turn!", "Good luck!", "Nice one!", "Check this out!", "Are you ready?", "Yes, let's go!", "Your turn! / My turn!", "One point for Team A!", "Correct! / Wrong!", "I don't know. Can I have a clue?", "Well done, everyone!"],
     },
     5: {
       title: "Lesson 5 · The crew",
       words: ["happy", "sad", "tired", "bored", "excited", "nervous", "angry", "hungry", "funny", "shy", "friendly", "smart", "cool", "lazy", "my crew", "best friend"],
-      phrases: ["How are you today?", "I'm a bit tired.", "Are you OK?", "Yes, I'm fine.", "What's wrong?", "I'm nervous.", "Don't worry!", "We're in the same class.", "They're my best friends.", "We're friends.", "They aren't here.", "Yes, they are."],
+      phrases: ["This is my squad!", "my bestie", "I'm good!", "I'm so hyped!", "No worries!", "How are you today?", "I'm a bit tired.", "Are you OK?", "Yes, I'm fine.", "What's wrong?", "I'm nervous.", "Don't worry!"],
     },
     6: {
       title: "Lesson 6 · Family and fame",
-      words: ["grandpa · grandma", "dad · mum", "uncle · aunt", "brother · sister", "cousin", "son · daughter", "parents", "grandparents", "children", "husband · wife", "twins", "an only child", "stepdad · stepmum", "a pet"],
-      phrases: ["This is my mum.", "Her name's Laura.", "What's your brother's name?", "I'm an only child.", "We're twins!", "How old is your sister?", "Say hi to your family!", "This is my mum!", "Wow!", "What's her name?", "Ngozi.", "And that's my brother's cat."],
+      words: ["grandpa · grandma", "dad · mom", "uncle · aunt", "brother · sister", "cousin", "son · daughter", "parents", "grandparents", "children", "husband · wife", "twins", "an only child", "stepdad · stepmom", "a pet"],
+      phrases: ["my fam", "mini me", "Family first!", "Aww, so cute!", "my bro / my sis", "This is my mom. Her name's Laura.", "What's your brother's name?", "I'm an only child.", "We're twins!", "How old is your sister?", "She's 10.", "Say hi to your family!"],
     },
     7: {
       title: "Lesson 7 · Who's who?",
-      words: ["long hair", "short hair", "curly hair", "blond hair", "red hair", "bald", "a beard", "a moustache", "glasses", "blue eyes", "brown eyes", "green eyes", "tall", "short", "straight", "wavy"],
-      phrases: ["What does he look like?", "He's tall and he has short dark hair.", "She has blue eyes.", "She wears glasses.", "Is it Theo?", "Yes, it is!", "She has green eyes.", "Is it Sofía?", "No!", "She has braids, and she doesn't have a ponytail.", "It's Amara!", "I have green eyes."],
+      words: ["long hair", "short hair", "curly hair", "blond hair", "red hair", "bald", "a beard", "a mustache", "glasses", "blue eyes", "brown eyes", "green eyes", "tall", "short", "straight", "wavy"],
+      phrases: ["Give me a hint!", "No clue!", "Nailed it!", "Twins!", "Iconic!", "What does he look like?", "He's tall and he has short dark hair.", "She has blue eyes.", "She wears glasses.", "Is it Theo?", "Yes, it is!", "the girl with the red hair"],
     },
     8: {
       title: "Lesson 8 · Review 2",
-      words: ["happy", "tired", "nervous", "shy", "funny", "smart", "grandma", "uncle", "cousin", "brother", "curly hair", "a beard", "How are you?", "What are they like?", "What does she look like?", "What's your mum's name?"],
-      phrases: ["Who's your favourite singer?", "What's the name of her fans?", "Her new album is amazing!", "Let's go to the concert!", "Me too!", "Quiz time!", "Who's Finneas?", "He's Billie Eilish's brother!", "Correct!", "What does Mario look like?", "He has a red cap and a moustache!", "We're friends."],
+      words: ["happy", "tired", "nervous", "shy", "funny", "smart", "grandma", "uncle", "cousin", "brother", "curly hair", "a beard", "How are you?", "What are they like?", "What does she look like?", "What's your mom's name?"],
+      phrases: ["Let's go!", "My turn! / Your turn!", "So close!", "Check it out!", "Mind blown!", "I'm a huge fan of BTS!", "Who's your favorite singer?", "What's the name of her fans?", "Her new album is amazing!", "Let's go to the concert!", "Me too!", "Quiz time! Who's Finneas?"],
     },
   },
 };
