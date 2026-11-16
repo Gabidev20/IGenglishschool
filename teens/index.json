@@ -1,7 +1,7 @@
 {
  "v": 1,
  "id": "teens",
- "title": "Speak Up! Teens",
+ "title": "IG Beyond Teens",
  "ages": "14+",
  "color": "#EF445E",
  "single": true,
@@ -9,9 +9,9 @@
   {
    "n": 1,
    "path": "teens/b1/manifest.json",
-   "pages": 87,
+   "pages": 90,
    "first": 1,
-   "last": 87,
+   "last": 90,
    "interactive": false
   }
  ]
