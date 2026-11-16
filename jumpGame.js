@@ -15,6 +15,11 @@
    big touch buttons under the game. 5 hearts: a snail or a fall takes one.
    Wrong answers go to "My mistakes" like every other game.
 
+   MY QUESTIONS: the teacher writes her own sets (a question, a picture if
+   she wants, the right answer and 1–3 wrong ones) with "✏️ Minhas
+   perguntas". They are kept in teacher_setup.jlSets, which the student's
+   link receives too, so each set can be for everyone or for some students.
+
    PHASES: 4 worlds (🌳 meadow · 🏖️ beach · ❄️ snow · 🌙 night). Answer all
    the gates of a phase (3 or 5 questions) and the next phase starts by
    itself: a new background, faster animals, wider gaps, one more answer to
@@ -112,6 +117,161 @@ function jlLoadSettings() {
   try { return { ...base, ...(JSON.parse(localStorage.getItem(JL_SETTINGS_KEY) || '{}') || {}) }; } catch (e) { return base; }
 }
 function jlSaveSettings(s) { try { localStorage.setItem(JL_SETTINGS_KEY, JSON.stringify(s)); } catch (e) {} }
+
+// ---------------------------------------------------------------------------
+// MY QUESTIONS — the teacher's own question sets
+// ---------------------------------------------------------------------------
+// { id, title, icon, students: [] (empty = everyone), questions: [{ q, emoji, right, wrong: [] }] }
+function jlCustomSets() {
+  const raw = IGStore.getJSON('teacher_setup', null);
+  const list = raw && Array.isArray(raw.jlSets) ? raw.jlSets : [];
+  return list.filter(x => x && x.id && Array.isArray(x.questions));
+}
+function jlSaveCustomSets(list) {
+  const raw = IGStore.getJSON('teacher_setup', null);
+  IGStore.setJSON('teacher_setup', { ...(raw && typeof raw === 'object' ? raw : {}), jlSets: list });
+}
+// The sets this player may use: the teacher sees all of them; on a
+// student's link, the ones for everybody and the ones made for them.
+function jlVisibleCustomSets() {
+  const me = typeof getActiveStudentId === 'function' ? getActiveStudentId() : null;
+  return jlCustomSets().filter(x => jlCustomPlayable(x).length
+    && (!window.IG_SHARE_MODE || !(x.students || []).length || (me && x.students.includes(me))));
+}
+const jlCustomPlayable = set => (set.questions || []).filter(q => q && (q.q || q.emoji) && q.right && (q.wrong || []).some(Boolean));
+// Questions for one phase, from a queue so a set is played through before
+// any question comes back.
+function jlCustomQuestions(set, n, queue) {
+  const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+  const pool = jlCustomPlayable(set);
+  if (!pool.length) return [];
+  const out = [];
+  while (out.length < n) {
+    if (!queue.length) queue.push(...shuffle(pool));
+    out.push(queue.shift());
+  }
+  return out.map(q => {
+    const opts = shuffle([{ label: String(q.right).trim(), ok: true }]
+      .concat((q.wrong || []).map(w => String(w || '').trim()).filter(Boolean).slice(0, 3).map(label => ({ label, ok: false }))));
+    return {
+      word: { en: String(q.right).trim(), emoji: q.emoji || '' },
+      kind: 'custom',
+      say: q.q || '',
+      prompt: q.q ? igEscapeHtml(q.q) : 'What is this?',
+      picture: q.emoji ? { en: q.right, emoji: q.emoji } : null,
+      options: opts,
+    };
+  });
+}
+
+// The editor (teacher only), drawn inside the game's window.
+function jlOpenQuestionEditor(host, onDone) {
+  const esc = v => igEscapeHtml(String(v == null ? '' : v));
+  const students = typeof loadStudents === 'function' ? loadStudents() : [];
+  let sets = jlCustomSets();
+  const blankQ = () => ({ q: '', emoji: '', right: '', wrong: ['', ''] });
+
+  function list() {
+    host.innerHTML = `
+      <div class="jlq">
+        <div class="jlq-head">
+          <h4>✏️ Minhas perguntas</h4>
+          <button type="button" class="game-btn secondary" data-back>← Voltar ao jogo</button>
+        </div>
+        <p class="jlq-lead">Crie conjuntos de perguntas com as suas alternativas. Cada conjunto aparece no Jump &amp; Learn como um assunto — aqui e no link dos alunos que você escolher.</p>
+        ${sets.length ? `<div class="jlq-list">${sets.map((x, i) => `
+          <div class="jlq-row">
+            <span class="jlq-row-icon">${esc(x.icon || '✏️')}</span>
+            <span class="jlq-row-text"><b>${esc(x.title)}</b>
+              <small>${jlCustomPlayable(x).length} pergunta(s) · ${(x.students || []).length ? (x.students || []).map(id => esc((students.find(st => st.id === id) || {}).name || '?')).join(', ') : 'todos os alunos'}</small></span>
+            <button type="button" class="game-btn secondary" data-edit="${i}">✏️ Editar</button>
+            <button type="button" class="game-btn secondary" data-del="${i}" aria-label="Apagar">🗑️</button>
+          </div>`).join('')}</div>` : '<p class="jlq-empty">Você ainda não criou nenhum conjunto.</p>'}
+        <button type="button" class="btn btn-primary" data-new>➕ Novo conjunto de perguntas</button>
+      </div>`;
+    host.querySelector('[data-back]').addEventListener('click', onDone);
+    host.querySelector('[data-new]').addEventListener('click', () => edit({ id: 'q' + Date.now().toString(36), title: '', icon: '✏️', students: [], questions: [blankQ(), blankQ(), blankQ()] }, -1));
+    host.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => edit(JSON.parse(JSON.stringify(sets[Number(b.dataset.edit)])), Number(b.dataset.edit))));
+    host.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => {
+      const x = sets[Number(b.dataset.del)];
+      if (!confirm(`Apagar o conjunto "${x.title}"?`)) return;
+      sets.splice(Number(b.dataset.del), 1); jlSaveCustomSets(sets); list();
+    }));
+  }
+
+  function edit(set, at) {
+    set.questions = set.questions.map(q => ({ ...q, wrong: (q.wrong || []).concat(['', '']).slice(0, Math.max(2, (q.wrong || []).length)) }));
+    const qHTML = (q, i) => `
+      <div class="jlq-q" data-qi="${i}">
+        <div class="jlq-q-top"><b>Pergunta ${i + 1}</b><button type="button" class="jlq-x" data-rmq="${i}" aria-label="Apagar pergunta">🗑️</button></div>
+        <div class="jlq-q-main">
+          <input type="text" class="jlq-emoji" data-f="emoji" value="${esc(q.emoji)}" placeholder="🖼️" maxlength="16" title="Figura (emoji) — opcional" />
+          <input type="text" class="jlq-text" data-f="q" value="${esc(q.q)}" placeholder="Pergunta — ex.: What color is the sky?" />
+        </div>
+        <label class="jlq-ans jlq-ans--ok"><span>✅ Certa</span><input type="text" data-f="right" value="${esc(q.right)}" placeholder="blue" /></label>
+        ${q.wrong.map((w, k) => `<label class="jlq-ans"><span>❌ Errada ${k + 1}</span><input type="text" data-w="${k}" value="${esc(w)}" placeholder="${['red', 'green', 'yellow'][k] || ''}" /></label>`).join('')}
+        ${q.wrong.length < 3 ? `<button type="button" class="jlq-more" data-addw="${i}">➕ mais uma errada</button>` : ''}
+      </div>`;
+    const paint = () => {
+      host.innerHTML = `
+        <div class="jlq">
+          <div class="jlq-head">
+            <h4>${at < 0 ? '➕ Novo conjunto' : '✏️ Editar conjunto'}</h4>
+          </div>
+          <div class="jlq-meta">
+            <input type="text" class="jlq-emoji" id="jlqIcon" value="${esc(set.icon)}" maxlength="16" title="Ícone" />
+            <input type="text" class="jlq-text" id="jlqTitle" value="${esc(set.title)}" placeholder="Nome do conjunto — ex.: Colors quiz" />
+          </div>
+          <p class="jlq-label">Para quem?</p>
+          <div class="jlq-who">
+            <label><input type="checkbox" data-all ${(set.students || []).length ? '' : 'checked'} /> Todos os alunos</label>
+            ${students.map(st => `<label><input type="checkbox" data-st="${esc(st.id)}" ${(set.students || []).includes(st.id) ? 'checked' : ''} /> ${esc(st.name)}</label>`).join('')}
+          </div>
+          <p class="jlq-hint">A figura é opcional (cole um emoji, ex.: 🍎). O jogo lê a pergunta em voz alta e embaralha as respostas.</p>
+          <div class="jlq-qs">${set.questions.map(qHTML).join('')}</div>
+          <button type="button" class="game-btn secondary" data-addq>➕ Adicionar pergunta</button>
+          <p class="jl-error" data-err></p>
+          <div class="jlq-actions">
+            <button type="button" class="btn btn-primary" data-save>💾 Salvar</button>
+            <button type="button" class="game-btn secondary" data-cancel>Cancelar</button>
+          </div>
+        </div>`;
+      const read = () => {
+        set.icon = host.querySelector('#jlqIcon').value.trim() || '✏️';
+        set.title = host.querySelector('#jlqTitle').value.trim();
+        host.querySelectorAll('[data-qi]').forEach(box => {
+          const q = set.questions[Number(box.dataset.qi)];
+          box.querySelectorAll('[data-f]').forEach(inp => { q[inp.dataset.f] = inp.value.trim(); });
+          box.querySelectorAll('[data-w]').forEach(inp => { q.wrong[Number(inp.dataset.w)] = inp.value.trim(); });
+        });
+        const all = host.querySelector('[data-all]').checked;
+        set.students = all ? [] : [...host.querySelectorAll('[data-st]:checked')].map(x => x.dataset.st);
+      };
+      host.querySelector('[data-all]').addEventListener('change', e => { if (e.target.checked) host.querySelectorAll('[data-st]').forEach(x => { x.checked = false; }); });
+      host.querySelectorAll('[data-st]').forEach(x => x.addEventListener('change', () => { host.querySelector('[data-all]').checked = !host.querySelector('[data-st]:checked'); }));
+      host.querySelector('[data-addq]').addEventListener('click', () => { read(); set.questions.push(blankQ()); paint(); const all = host.querySelectorAll('[data-qi] [data-f="q"]'); all[all.length - 1].focus(); });
+      host.querySelectorAll('[data-rmq]').forEach(b => b.addEventListener('click', () => { read(); set.questions.splice(Number(b.dataset.rmq), 1); if (!set.questions.length) set.questions.push(blankQ()); paint(); }));
+      host.querySelectorAll('[data-addw]').forEach(b => b.addEventListener('click', () => { read(); set.questions[Number(b.dataset.addw)].wrong.push(''); paint(); }));
+      host.querySelector('[data-cancel]').addEventListener('click', list);
+      host.querySelector('[data-save]').addEventListener('click', () => {
+        read();
+        const err = host.querySelector('[data-err]');
+        if (!set.title) { err.textContent = 'Dê um nome ao conjunto.'; return; }
+        // Empty question cards are dropped; a half-filled one is pointed out.
+        set.questions = set.questions.filter(q => q.q || q.emoji || q.right || q.wrong.some(Boolean));
+        const bad = set.questions.findIndex(q => !(q.q || q.emoji) || !q.right || !q.wrong.some(Boolean));
+        if (bad >= 0) { err.textContent = `Pergunta ${bad + 1}: escreva a pergunta (ou uma figura), a resposta certa e pelo menos uma errada.`; paint(); host.querySelector('[data-err]').textContent = err.textContent; return; }
+        if (!set.questions.length) { err.textContent = 'Escreva pelo menos uma pergunta.'; set.questions.push(blankQ()); return; }
+        set.questions = set.questions.map(q => ({ q: q.q, emoji: q.emoji, right: q.right, wrong: q.wrong.filter(Boolean) }));
+        if (at < 0) sets.push(set); else sets[at] = set;
+        jlSaveCustomSets(sets);
+        list();
+      });
+    };
+    paint();
+  }
+  list();
+}
 
 // A curriculum topic, saved as { levelId, topicId, title }.
 function jlTopicWords(ref) {
@@ -263,6 +423,7 @@ function openJumpGame(opts) {
     const m = mount();
     if (!m) return;
     const sets = JL_SETS.filter(s => s.words().length >= 3);
+    const mine = jlVisibleCustomSets();
     const topicLabel = settings.topic ? igEscapeHtml(settings.topic.title) : 'Choose a topic…';
     m.innerHTML = `
       <div class="mz-setup">
@@ -288,6 +449,13 @@ function openJumpGame(opts) {
             <button type="button" class="mz-opt${settings.set === 'topic' ? ' on' : ''}" data-set="topic">
               ${jlEmojiHTML('📚', 'mz-av-img')}<small>${topicLabel}</small><small class="mz-pt">Tópico do currículo</small>
             </button>
+            ${mine.map(x => `
+              <button type="button" class="mz-opt${settings.set === 'q:' + x.id ? ' on' : ''}" data-set="q:${igEscapeHtml(x.id)}">
+                ${jlEmojiHTML(x.icon || '✏️', 'mz-av-img')}<small>${igEscapeHtml(x.title)}</small><small class="mz-pt">${jlCustomPlayable(x).length} perguntas</small>
+              </button>`).join('')}
+            ${window.IG_SHARE_MODE ? '' : `<button type="button" class="mz-opt jlq-open" data-myq>
+              ${jlEmojiHTML('✏️', 'mz-av-img')}<small>Minhas perguntas</small><small class="mz-pt">criar / editar</small>
+            </button>`}
           </div>
         </div>
         ${settings.set === 'topic' ? `
@@ -309,12 +477,15 @@ function openJumpGame(opts) {
         <button type="button" class="btn btn-primary mz-start" data-start>▶ Start!</button>
         <p class="jl-error" data-error></p>
       </div>`;
+    if (String(settings.set).startsWith('q:') && !mine.some(x => 'q:' + x.id === settings.set)) settings.set = 'numbers';
     // A custom list is for this time only: it is not remembered.
     const repaint = () => { jlSaveSettings(settings.set === 'custom' ? { ...settings, set: 'numbers' } : settings); setup(); };
     m.querySelectorAll('[data-av]').forEach(b => b.addEventListener('click', () => {
       settings.avatar = b.dataset.av; jlSay(jlAvatarById(b.dataset.av).en); repaint();
     }));
     m.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => { settings.set = b.dataset.set; repaint(); }));
+    const myq = m.querySelector('[data-myq]');
+    if (myq) myq.addEventListener('click', () => jlOpenQuestionEditor(m, setup));
     m.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => { settings.perPhase = Number(b.dataset.q); repaint(); }));
     const search = m.querySelector('#jlTopicSearch');
     if (search) {
@@ -338,14 +509,20 @@ function openJumpGame(opts) {
     }
     m.querySelector('[data-start]').addEventListener('click', () => {
       const qs = phaseQuestions(0);
-      if (!qs.length) { m.querySelector('[data-error]').textContent = 'Choose a subject with at least 3 words. 📚'; return; }
+      if (!qs.length) { m.querySelector('[data-error]').textContent = String(settings.set).startsWith('q:') ? 'Este conjunto não tem perguntas completas. ✏️' : 'Choose a subject with at least 3 words. 📚'; return; }
       jlSaveSettings(settings.set === 'custom' ? { ...settings, set: 'numbers' } : settings);
       play(qs, 0, null);
     });
   }
 
   const perPhase = () => (settings.perPhase === 5 ? 5 : 3);
-  const phaseQuestions = i => jlMakeQuestions(wordsFor(), perPhase(), JL_PHASES[i].opts);
+  let customQueue = [];
+  const customSet = () => (String(settings.set).startsWith('q:') ? jlVisibleCustomSets().find(x => 'q:' + x.id === settings.set) : null);
+  const phaseQuestions = i => {
+    const own = customSet();
+    if (own) { if (i === 0) customQueue = []; return jlCustomQuestions(own, perPhase(), customQueue); }
+    return jlMakeQuestions(wordsFor(), perPhase(), JL_PHASES[i].opts);
+  };
 
   // ---- the game ----------------------------------------------------------------
   // phase: 0–3 (JL_PHASES). carry: what the last phase leaves to the next
@@ -487,6 +664,7 @@ function openJumpGame(opts) {
         </div>`;
       askEl.hidden = false;
       if (q.kind === 'picture') jlSay('What is this?');
+      else if (q.kind === 'custom') jlSay(q.say || 'What is this?');
       askEl.querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => answer(b, q.options[Number(b.dataset.opt)])));
     }
     function answer(btn, opt) {

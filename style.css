@@ -11067,3 +11067,32 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 .jl-next { margin: 10px 0 0; font-size: 1.25rem; }
 .jl-next-sub { margin: 4px 0 0; color: var(--ink-faint); }
 @keyframes jlPhasePop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Jump & Learn: my questions (editor) */
+.jlq { display: grid; gap: 12px; padding: 4px 2px 12px; }
+.jlq-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.jlq-head h4 { margin: 0; font-size: 1.2rem; }
+.jlq-lead, .jlq-hint, .jlq-empty { margin: 0; color: var(--ink-soft, #6b5f6a); font-size: .92rem; }
+.jlq-list { display: grid; gap: 8px; }
+.jlq-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 2px solid var(--line, #eadfe6); border-radius: 14px; background: #fff; }
+.jlq-row-icon { font-size: 1.6rem; }
+.jlq-row-text { flex: 1; display: grid; min-width: 0; }
+.jlq-row-text small { color: var(--ink-faint, #8a7f88); }
+.jlq-meta, .jlq-q-main { display: flex; gap: 8px; }
+.jlq input[type=text] { border: 2px solid var(--line, #eadfe6); border-radius: 10px; padding: 8px 10px; font: inherit; min-width: 0; background: #fff; }
+.jlq .jlq-emoji { width: 64px; text-align: center; font-size: 1.3rem; flex: none; }
+.jlq .jlq-text { flex: 1; }
+.jlq-label { margin: 0; font-weight: 700; }
+.jlq-who { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.jlq-who label { display: inline-flex; gap: 6px; align-items: center; }
+.jlq-qs { display: grid; gap: 10px; }
+.jlq-q { display: grid; gap: 6px; padding: 12px; border-radius: 14px; background: #fbf6f9; border: 2px solid var(--line, #eadfe6); }
+.jlq-q-top { display: flex; justify-content: space-between; align-items: center; }
+.jlq-x, .jlq-more { border: 0; background: none; cursor: pointer; font: inherit; color: var(--ink-soft, #6b5f6a); }
+.jlq-more { justify-self: start; font-size: .9rem; }
+.jlq-ans { display: flex; align-items: center; gap: 8px; }
+.jlq-ans span { width: 92px; flex: none; font-size: .9rem; }
+.jlq-ans input { flex: 1; }
+.jlq-ans--ok input { border-color: #9fd8a6 !important; }
+.jlq-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.mz-opt.jlq-open { border-style: dashed; }

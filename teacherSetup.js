@@ -61,7 +61,11 @@ function teacherSetup() {
 }
 
 function saveTeacherSetup(setup) {
-  IGStore.setJSON(TEACHER_SETUP_KEY, { ...setup, at: new Date().toISOString() });
+  // Other things ride in this record (Jump & Learn's own questions, jlSets):
+  // keep them when the setup is saved again.
+  const raw = IGStore.getJSON(TEACHER_SETUP_KEY, null);
+  const keep = raw && typeof raw === 'object' && Array.isArray(raw.jlSets) ? { jlSets: raw.jlSets } : {};
+  IGStore.setJSON(TEACHER_SETUP_KEY, { ...keep, ...setup, at: new Date().toISOString() });
 }
 
 // ---------------------------------------------------------------------------
