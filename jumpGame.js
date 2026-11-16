@@ -135,9 +135,48 @@ function jlSaveCustomSets(list) {
 // student's link, the ones for everybody and the ones made for them.
 function jlVisibleCustomSets() {
   const me = typeof getActiveStudentId === 'function' ? getActiveStudentId() : null;
-  return jlCustomSets().filter(x => jlCustomPlayable(x).length
-    && (!window.IG_SHARE_MODE || !(x.students || []).length || (me && x.students.includes(me))));
+  const builtin = JL_BUILTIN_QSETS.filter(x => x.only());
+  return builtin.concat(jlCustomSets().filter(x => jlCustomPlayable(x).length
+    && (!window.IG_SHARE_MODE || !(x.students || []).length || (me && x.students.includes(me)))));
 }
+
+// Ready-made question sets (same shape as "My questions", not editable).
+// KATSEYE songs: the expressions of Aninha's song lessons (slidesModelos.js).
+// Shown to Aninha, and to the teacher when no other student is selected.
+function jlIsAninha() {
+  const st = typeof getActiveStudent === 'function' ? getActiveStudent() : null;
+  if (!st) return !window.IG_SHARE_MODE;
+  return /\baninha\b/i.test(String(st.name || ''));
+}
+const JL_BUILTIN_QSETS = [
+  { id: 'songs-aninha', title: 'KATSEYE songs', icon: '🎤', only: jlIsAninha, questions: [
+    // Touch
+    { q: 'We haven’t talked for months. We are out of ___.', emoji: '📵', right: 'touch', wrong: ['time', 'love', 'school'] },
+    { q: 'You think too much about one small text. You ___.', emoji: '🤯', right: 'overthink', wrong: ['oversleep', 'forget', 'relax'] },
+    { q: 'What does “lose interest” mean?', emoji: '🥱', right: 'stop caring', wrong: ['start liking', 'win a prize', 'get lost'] },
+    { q: 'It’s over. It’s time to ___.', emoji: '➡️', right: 'move on', wrong: ['look back', 'stay here', 'sit down'] },
+    { q: 'Don’t ___ your time on bad games.', emoji: '⏳', right: 'waste', wrong: ['save', 'keep', 'give'] },
+    { q: 'Oops! I ___ my drawing!', emoji: '🙈', right: 'messed up', wrong: ['made up', 'looked up', 'woke up'] },
+    { q: 'He didn’t answer the call on purpose. He ___ the call.', emoji: '📞', right: 'ignored', wrong: ['loved', 'opened', 'cooked'] },
+    { q: 'We need to ___ a better plan.', emoji: '💡', right: 'come up with', wrong: ['come in', 'go out', 'give back'] },
+    { q: 'What does “keep in touch” mean?', emoji: '💬', right: 'keep talking', wrong: ['stop talking', 'keep walking', 'touch your phone'] },
+    { q: '“Seguir em frente” in English is…', emoji: '🇧🇷', right: 'move on', wrong: ['move out', 'mess up', 'overthink'] },
+    { q: '“Perder o contato” in English is…', emoji: '🇧🇷', right: 'be out of touch', wrong: ['lose interest', 'waste time', 'move on'] },
+    // Debut
+    { q: 'The first time a singer shows her work is her ___.', emoji: '🎤', right: 'debut', wrong: ['goodbye', 'ticket', 'homework'] },
+    { q: 'Stop ___ your new phone!', emoji: '📱', right: 'showing off', wrong: ['showing up', 'turning off', 'taking off'] },
+    { q: 'Don’t shout in the store. Don’t make a ___.', emoji: '😱', right: 'scene', wrong: ['cake', 'bed', 'friend'] },
+    { q: 'All the houses look the same. They are ___.', emoji: '🍪', right: 'cookie-cutter', wrong: ['unique', 'original', 'colorful'] },
+    { q: 'She is 100% loyal and always with me. She is my ___.', emoji: '🤝', right: 'ride or die', wrong: ['roll the dice', 'cookie-cutter', 'debut'] },
+    { q: 'Take a chance: ___ the dice!', emoji: '🎲', right: 'roll', wrong: ['eat', 'break', 'hide'] },
+    { q: 'What does “flexing” mean?', emoji: '😎', right: 'showing off', wrong: ['sleeping', 'studying', 'crying'] },
+    { q: 'What does “simple as that” mean?', emoji: '👌', right: 'it’s easy', wrong: ['it’s very hard', 'I don’t know', 'say it again'] },
+    { q: 'We’re at the park. Can you ___ in 10 minutes? (= arrive)', emoji: '🚗', right: 'pull up', wrong: ['wake up', 'give up', 'clean up'] },
+    { q: '“Estrear” in English is…', emoji: '🇧🇷', right: 'make your debut', wrong: ['make a scene', 'show off', 'roll the dice'] },
+    { q: '“Fazer escândalo” in English is…', emoji: '🇧🇷', right: 'make a scene', wrong: ['make your debut', 'move on', 'ride or die'] },
+    { q: '“Arriscar / tentar a sorte” in English is…', emoji: '🇧🇷', right: 'roll the dice', wrong: ['show off', 'make a scene', 'cookie-cutter'] },
+  ] },
+];
 const jlCustomPlayable = set => (set.questions || []).filter(q => q && (q.q || q.emoji) && q.right && (q.wrong || []).some(Boolean));
 // Questions for one phase, from a queue so a set is played through before
 // any question comes back.
