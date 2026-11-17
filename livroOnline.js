@@ -72,7 +72,7 @@ const LivroOnline = (() => {
     // never chosen by age (bookByAge skips `manual` books).
     { id: 'a1', title: 'Speak Up! A1+', ages: '15+', min: null, max: null, manual: true, single: true },
     // Teens coursebook (A0–A1, 14+): one volume in teens/b1/, assigned by hand like A1+.
-    { id: 'teens', title: 'IG Beyond Teens', ages: '14+', min: null, max: null, manual: true, single: true },
+    { id: 'teens', title: 'IG Beyond Teens', ages: '11–15', min: null, max: null, manual: true, single: true },
   ];
   const COLORS = [
     ['#2e2b2e', 'preto'], ['#e5403f', 'vermelho'], ['#f39237', 'laranja'], ['#f6cf3a', 'amarelo'],

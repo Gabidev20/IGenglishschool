@@ -2,17 +2,17 @@
  "v": 1,
  "id": "teens",
  "title": "IG Beyond Teens",
- "ages": "14+",
+ "ages": "11–15",
  "color": "#EF445E",
  "single": true,
  "bimesters": [
   {
-   "n": 1,
-   "path": "teens/b1/manifest.json",
-   "pages": 90,
+   "n": 2,
+   "path": "teens/b2/manifest.json",
+   "pages": 102,
    "first": 1,
-   "last": 90,
-   "interactive": false
+   "last": 102,
+   "interactive": true
   }
  ]
 }
