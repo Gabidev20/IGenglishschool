@@ -11103,3 +11103,11 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 .ts .ts-list > .ts-level, .ts .ts-list > .gs-hint { grid-column: 1 / -1; }
 .ts .ts-level small { font-weight: 400; color: var(--ink-faint, #8a7f88); }
 .gs-topic--game small { color: var(--primary-dark, #8e3a5c); }
+
+/* Maze Muncher: arrows set further apart, so little fingers don't hit the wrong one */
+.mz-pad { gap: 16px; }
+.mz-pad--big { gap: 22px; }
+@media (max-width: 560px) {
+  .mz-pad { gap: 12px; }
+  .mz-pad--big { gap: 16px; }
+}
