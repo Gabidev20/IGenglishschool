@@ -1823,6 +1823,171 @@ const LEVELS = [
           "title": "Fruits & Vegetables (v1) [Kids Vocab] 🍎 Fun Fruit & Veggie Words for Kids",
           "channel": "English Singsing"
         }
+      },
+      {
+        "id": "aoran",
+        "title": "A or An?",
+        "emoji": "🍎",
+        "description": "a book, an apple: one thing, two little words",
+        "cefr": "A0",
+        "grammarTip": "A and an mean one. Use a before a word that starts with a consonant sound: a book, a cat, a dog. Use an before a word that starts with a vowel sound (a, e, i, o, u): an apple, an egg, an umbrella.",
+        "words": [
+          {
+            "id": "anapple",
+            "en": "an apple",
+            "pt": "uma maçã",
+            "emoji": "🍎"
+          },
+          {
+            "id": "anegg",
+            "en": "an egg",
+            "pt": "um ovo",
+            "emoji": "🥚"
+          },
+          {
+            "id": "anorange",
+            "en": "an orange",
+            "pt": "uma laranja",
+            "emoji": "🍊"
+          },
+          {
+            "id": "anumbrella",
+            "en": "an umbrella",
+            "pt": "um guarda-chuva",
+            "emoji": "☂️"
+          },
+          {
+            "id": "anelephant",
+            "en": "an elephant",
+            "pt": "um elefante",
+            "emoji": "🐘"
+          },
+          {
+            "id": "anant",
+            "en": "an ant",
+            "pt": "uma formiga",
+            "emoji": "🐜"
+          },
+          {
+            "id": "anowl",
+            "en": "an owl",
+            "pt": "uma coruja",
+            "emoji": "🦉"
+          },
+          {
+            "id": "anicecream",
+            "en": "an ice cream",
+            "pt": "um sorvete",
+            "emoji": "🍦"
+          },
+          {
+            "id": "abook",
+            "en": "a book",
+            "pt": "um livro",
+            "emoji": "📘"
+          },
+          {
+            "id": "adog",
+            "en": "a dog",
+            "pt": "um cachorro",
+            "emoji": "🐶"
+          },
+          {
+            "id": "acat",
+            "en": "a cat",
+            "pt": "um gato",
+            "emoji": "🐱"
+          },
+          {
+            "id": "abanana",
+            "en": "a banana",
+            "pt": "uma banana",
+            "emoji": "🍌"
+          },
+          {
+            "id": "acar",
+            "en": "a car",
+            "pt": "um carro",
+            "emoji": "🚗"
+          },
+          {
+            "id": "aball",
+            "en": "a ball",
+            "pt": "uma bola",
+            "emoji": "⚽"
+          },
+          {
+            "id": "apencil",
+            "en": "a pencil",
+            "pt": "um lápis",
+            "emoji": "✏️"
+          },
+          {
+            "id": "afish",
+            "en": "a fish",
+            "pt": "um peixe",
+            "emoji": "🐟"
+          }
+        ],
+        "readingTime": {
+          "text": "Tom has a bag. In the bag, there is a book, a pencil and an apple. His sister Ana has an orange and an egg for lunch. At the park, they see a dog, a cat and an owl in a tree!",
+          "questions": [
+            {
+              "prompt": "What fruit is in Tom's bag?",
+              "options": [
+                "an apple",
+                "a banana",
+                "an orange"
+              ],
+              "correct": "an apple"
+            },
+            {
+              "prompt": "What animal is in the tree?",
+              "options": [
+                "a dog",
+                "a cat",
+                "an owl"
+              ],
+              "correct": "an owl"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "label": "Consonant sound",
+            "form": "a",
+            "hint": "a + a word that starts with b, c, d, f, g… (a consonant sound).",
+            "examples": [
+              "I have a book.",
+              "It is a dog.",
+              "She wants a banana.",
+              "This is a car."
+            ]
+          },
+          {
+            "label": "Vowel sound: a, e, i, o, u",
+            "form": "an",
+            "hint": "an + a word that starts with a, e, i, o, u (a vowel sound).",
+            "examples": [
+              "I have an apple.",
+              "It is an elephant.",
+              "She wants an orange.",
+              "This is an umbrella."
+            ]
+          }
+        ],
+        "practiceSentences": [
+          "I have an apple",
+          "It is a big dog",
+          "She has an orange",
+          "This is a red car",
+          "I see an elephant",
+          "He wants a banana",
+          "It is an egg",
+          "I have a pencil",
+          "There is an ant",
+          "I want an ice cream"
+        ]
       }
     ]
   },

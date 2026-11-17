@@ -108,6 +108,9 @@ const JL_SETS = [
   // the set is empty, so it does not show.
   { id: 'pastcont', en: 'Past Continuous', pt: 'Passado contínuo', icon: '⏳', words: () =>
     (jlIsAnaClara() ? jlLevelTopicWords('pastcontinuous') : []) },
+  // A or An? (topicsData.js, A0): the picture and "___ apple" — a or an?
+  { id: 'aoran', en: 'A or An?', pt: 'A ou An', icon: '🍎', words: () => jlLevelTopicWords('aoran'),
+    quiz: (n, queue) => jlAoranQuestions(n, queue) },
   { id: 'countries', en: 'Countries', pt: 'Países', icon: '🌎', words: () =>
     typeof KID_VOCAB !== 'undefined' && KID_VOCAB.countries ? jlFromTriples(KID_VOCAB.countries) : [] },
 ];
@@ -311,6 +314,26 @@ function jlOpenQuestionEditor(host, onDone) {
     paint();
   }
   list();
+}
+
+// "A or An?": each question shows the picture and the word with a blank;
+// the two buttons are a and an. Played through before any word comes back.
+function jlAoranQuestions(n, queue) {
+  const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+  const pool = jlLevelTopicWords('aoran').filter(w => /^(a|an) /i.test(w.en));
+  if (!pool.length) return [];
+  const out = [];
+  while (out.length < n) { if (!queue.length) queue.push(...shuffle(pool)); out.push(queue.shift()); }
+  return out.map(w => {
+    const [art, ...rest] = w.en.split(' ');
+    const noun = rest.join(' ');
+    return {
+      word: w, kind: 'custom', say: `A or an? ___ ${noun}`,
+      prompt: `A or an? <b class="jl-big">___ ${igEscapeHtml(noun)}</b>`,
+      picture: { en: w.en, emoji: w.emoji },
+      options: ['a', 'an'].map(label => ({ label, ok: label === art.toLowerCase(), big: true })),
+    };
+  });
 }
 
 // A curriculum topic, saved as { levelId, topicId, title }.
@@ -562,6 +585,8 @@ function openJumpGame(opts) {
   const phaseQuestions = i => {
     const own = customSet();
     if (own) { if (i === 0) customQueue = []; return jlCustomQuestions(own, perPhase(), customQueue); }
+    const js = JL_SETS.find(x => x.id === settings.set);
+    if (js && js.quiz) { if (i === 0) customQueue = []; return js.quiz(perPhase(), customQueue); }
     return jlMakeQuestions(wordsFor(), perPhase(), JL_PHASES[i].opts);
   };
 
