@@ -708,6 +708,7 @@ const LivroOnline = (() => {
           <span class="lo-who" title="Aluno e livro desta aula">👤 <b>${esc(o.who.name)}</b> · ${esc(o.who.book)}</span>
           ${o.onSwitch ? '<button type="button" class="lo-chip" data-a="switch" title="Trocar aluno">🔄<span class="lo-chip-l"> Trocar aluno</span></button>' : ''}
           <button type="button" class="lo-chip lo-chip--games" data-a="games" title="Jogos: abre um jogo e volta para esta página">🎮<span class="lo-chip-l"> Jogos</span></button>
+          <button type="button" class="lo-chip lo-chip--games" data-a="topics" title="Assuntos: procure um assunto do site (A or An, Alphabet…) e volte para esta página">🔍<span class="lo-chip-l"> Assuntos</span></button>
           <button type="button" class="lo-chip lo-chip--dice" data-a="dice" title="Virtual dice and coin: how many spaces to move">🎲<span class="lo-chip-l"> Dice</span></button>
           <button type="button" class="lo-chip" data-a="slides" title="Slides da aula: abre as apresentações deste aluno">🖼️<span class="lo-chip-l"> Slides</span></button>
           <button type="button" class="lo-chip" data-a="present" title="Apresentar: esconde os botões da professora para compartilhar a tela">🖥️<span class="lo-chip-l"> Apresentar</span></button>
@@ -726,6 +727,7 @@ const LivroOnline = (() => {
           <button type="button" data-a="zout" aria-label="Diminuir">－</button>
           <button type="button" data-a="fit" aria-label="Página inteira" title="Página inteira">⤢</button>
           ${o.who ? '<button type="button" class="lo-games-fab" data-a="games" aria-label="Jogos" title="Jogos">🎮</button>' : ''}
+          ${o.who ? '<button type="button" class="lo-games-fab" data-a="topics" aria-label="Assuntos" title="Assuntos do site">🔍</button>' : ''}
           ${o.who ? '<button type="button" class="lo-games-fab lo-dice-fab" data-a="dice" aria-label="Dice" title="Dice and coin">🎲</button>' : ''}
           ${o.who ? '<button type="button" class="lo-present-exit" data-a="present" aria-label="Sair da apresentação" title="Sair da apresentação">🖥️</button>' : ''}
         </div>
@@ -2227,6 +2229,12 @@ const LivroOnline = (() => {
           if (typeof openGamesMenu === 'function') {
             const t = root.querySelector('[data-ref="ptitle"]');
             openGamesMenu({ pageTitle: t ? t.textContent.trim() : '' });
+          }
+          break;
+        case 'topics':
+          if (typeof openTopicSearch === 'function') {
+            const t = root.querySelector('[data-ref="ptitle"]');
+            openTopicSearch({ pageTitle: t ? t.textContent.trim() : '' });
           }
           break;
         case 'dice': { const dp = root.querySelector('[data-ref="dice"]'); if (dp) dp.hidden = !dp.hidden; break; }

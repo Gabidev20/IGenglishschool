@@ -21,7 +21,7 @@ const GS_CLASS_GAMES = [
 
 // Picture games: made for children, hidden for a teacher of grown-ups only.
 const GS_PICTURE_GAMES = [
-  { icon: '🔤', en: 'ABC', pt: 'Alfabeto', open: () => openAlphabetGame() },
+  { icon: '🔤', en: 'ABC', pt: 'Alfabeto', kw: 'alphabet letters', open: () => openAlphabetGame() },
   { icon: '🎤', en: 'Say it!', pt: 'Falar a palavra', open: () => openSayItGame() },
   { icon: '🐄', en: 'Old MacDonald', pt: 'A fazenda', open: () => openFarmGame() },
   { icon: '🎈', en: 'Touch it!', pt: 'Ouça e toque', open: () => openTouchGame() },
@@ -133,4 +133,74 @@ function openGamesMenu(ctx) {
     const found = gsMatchTopics(q, 20);
     list.innerHTML = found.length ? found.map(topicRow).join('') : '<p class="gs-hint">Nenhum tópico com esse nome.</p>';
   });
+}
+
+// ---------------------------------------------------------------------------
+// 🔍 SUBJECTS — every topic of the site, one search away (online book bar).
+// A topic opens its own page (lesson, words, games); a picture game whose
+// name matches opens straight away. Empty search: the page's suggestions,
+// then all the topics by level.
+// ---------------------------------------------------------------------------
+function openTopicSearch(ctx) {
+  const c = ctx || {};
+  const esc = s => igEscapeHtml(String(s == null ? '' : s));
+  const grownOnly = typeof teacherAdultOnly === 'function' && teacherAdultOnly();
+  const games = GS_CLASS_GAMES.map((g, i) => ({ g, key: `class:${i}` }))
+    .concat(grownOnly ? [] : GS_PICTURE_GAMES.map((g, i) => ({ g, key: `pic:${i}` })));
+  const topicRow = x => `
+    <button class="gs-topic" type="button" data-topic="${esc(x.level.id)}|${esc(x.topic.id)}">
+      <span class="gs-topic-emoji">${esc(x.topic.emoji || '📘')}</span>
+      <b>${esc(x.topic.title)}</b>
+      <small>${esc(x.level.code || '')}</small>
+    </button>`;
+  const gameRow = x => `
+    <button class="gs-topic gs-topic--game" type="button" data-gs="${x.key}">
+      <span class="gs-topic-emoji">${x.g.icon}</span>
+      <b>${esc(x.g.en)}</b>
+      <small>🎮 ${esc(x.g.pt)}</small>
+    </button>`;
+  const suggested = c.pageTitle ? gsMatchTopics(c.pageTitle, 4) : [];
+  const browse = () => {
+    const byLevel = {};
+    gsAllTopics().forEach(x => { (byLevel[x.level.id] = byLevel[x.level.id] || { level: x.level, list: [] }).list.push(x); });
+    return `${suggested.length ? `<p class="gs-hint">Sugestões para esta página:</p>${suggested.map(topicRow).join('')}` : ''}
+      ${Object.values(byLevel).map(v => `<p class="gs-label ts-level">${esc(v.level.code || v.level.id)} <small>${esc(v.level.title || '')}</small></p>${v.list.map(topicRow).join('')}`).join('')}`;
+  };
+  const search = q => {
+    const n = gsNorm(q);
+    const g = games.filter(x => gsNorm(`${x.g.en} ${x.g.pt} ${x.g.kw || ''}`).includes(n));
+    const t = gsMatchTopics(q, 30);
+    if (!g.length && !t.length) return '<p class="gs-hint">Nenhum assunto com esse nome. Tente em inglês ou português: colors, cores, verb to be…</p>';
+    return `${t.map(topicRow).join('')}${g.length ? `<p class="gs-hint">🎮 Jogos com esse nome:</p>${g.map(gameRow).join('')}` : ''}`;
+  };
+
+  openModal(`
+    <div class="modal-content-pad gs ts">
+      <div class="modal-head">
+        <span class="modal-head-thumb modal-head-thumb--icon">🔍</span>
+        <div class="modal-head-text">
+          <h3 id="modalTitle">Assuntos do site</h3>
+          <p class="modal-head-sub"><span class="modal-head-desc">Procure um assunto e abra a lição e os jogos — ao fechar, você volta para ${esc(c.backTo || 'a página do livro')}.</span></p>
+        </div>
+      </div>
+      <input class="gs-search" type="search" id="tsSearch" placeholder="🔍 A or An, alphabet, family, verb to be…" autocomplete="off" />
+      <div class="gs-topics ts-list" id="tsList">${browse()}</div>
+    </div>`, true);
+
+  const body = document.querySelector('.ts');
+  body.addEventListener('click', e => {
+    const g = e.target.closest('[data-gs]');
+    if (g) {
+      const [kind, i] = g.dataset.gs.split(':');
+      const game = (kind === 'class' ? GS_CLASS_GAMES : GS_PICTURE_GAMES)[Number(i)];
+      try { game.open(); } catch (err) { console.error('topic search', err); }
+      return;
+    }
+    const t = e.target.closest('[data-topic]');
+    if (t) { const [levelId, topicId] = t.dataset.topic.split('|'); openTopicModal(levelId, topicId); }
+  });
+  const input = document.getElementById('tsSearch');
+  const list = document.getElementById('tsList');
+  input.addEventListener('input', () => { const q = input.value.trim(); list.innerHTML = q ? search(q) : browse(); });
+  setTimeout(() => input.focus(), 50);
 }

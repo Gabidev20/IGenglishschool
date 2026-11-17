@@ -11096,3 +11096,10 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 .jlq-ans--ok input { border-color: #9fd8a6 !important; }
 .jlq-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .mz-opt.jlq-open { border-style: dashed; }
+
+/* Online book: 🔍 subjects search */
+.ts .ts-list { max-height: 60vh; overflow: auto; }
+.ts .ts-level { margin: 12px 0 4px; }
+.ts .ts-list > .ts-level, .ts .ts-list > .gs-hint { grid-column: 1 / -1; }
+.ts .ts-level small { font-weight: 400; color: var(--ink-faint, #8a7f88); }
+.gs-topic--game small { color: var(--primary-dark, #8e3a5c); }
