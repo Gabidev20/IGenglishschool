@@ -7,11 +7,11 @@
  "single": true,
  "bimesters": [
   {
-   "n": 2,
-   "path": "a1/b2/manifest.json",
-   "pages": 255,
+   "n": 3,
+   "path": "a1/b3/manifest.json",
+   "pages": 282,
    "first": 1,
-   "last": 255,
+   "last": 282,
    "interactive": true
   }
  ]
