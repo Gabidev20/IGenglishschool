@@ -11141,3 +11141,12 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 /* Test yourself: the words hide until tapped */
 .is-quiz .mt-chip:not(.is-shown) .mt-w, .is-quiz .mt-chip:not(.is-shown) .mt-ipa { filter: blur(6px); user-select: none; }
 .is-quiz .mt-chip:not(.is-shown) { background: repeating-linear-gradient(135deg, #F5F0F7 0 8px, #FCE4E8 8px 16px); }
+/* ---- Class slides with the book's tools (livroOnline.js openSlides) ---- */
+.lo-root.is-widepage { z-index: 2800; }           /* above the slides list (.sl-root 2750) */
+.lo-page > .lo-pagehtml { position: absolute; inset: 0; overflow: hidden; pointer-events: none; user-select: none; }
+.lo-page > .lo-pagehtml > .sl-stage { transform-origin: 0 0; }
+.lo-root.is-widepage .lo-viewtog { display: none; }
+.lo-root.is-widepage .lo-sthumb { width: 76px; height: 46px; }
+.lo-root.is-widepage .lo-sthumb .sl-mini { border-radius: 0; box-shadow: none; }
+.sl-card.is-opening { opacity: .6; pointer-events: none; }
+.sl-card.is-opening .sl-card-go::after { content: ' …'; }

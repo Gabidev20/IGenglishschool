@@ -62,7 +62,10 @@ const LivroOnline = (() => {
   // that folder level and put the books at the site root, so fall back there.
   let BASE = 'livro-online/';
   const W = 10000;
-  const H = 14143;
+  const PAGE_H = 14143;
+  // A class-slides deck opened in the editor (openSlides, below) has 16:9
+  // pages: H follows the open editor and goes back to A4 when it closes.
+  let H = PAGE_H;
   const BOOKS = [
     { id: 'little-steps', title: 'IG Little Steps', ages: '3–6', min: 3, max: 6 },
     { id: 'explorers', title: 'IG Explorers', ages: '7–8', min: 7, max: 8 },
@@ -620,7 +623,9 @@ const LivroOnline = (() => {
   function pushView(el, onClose) {
     document.body.appendChild(el);
     const token = uid();
-    stack.push({ el, onClose, token });
+    // Opened on top of a slides view (slidesAula.js: the student's class slides)?
+    const overSl = (history.state && history.state.sl) || null;
+    stack.push({ el, onClose, token, overSl });
     document.documentElement.classList.add('lo-open');
     try { history.pushState({ lo: token }, ''); } catch (e) { /* sandboxed */ }
   }
@@ -638,7 +643,13 @@ const LivroOnline = (() => {
   }
   window.addEventListener('popstate', () => {
     const t = history.state && history.state.lo;
-    if (history.state && history.state.sl) return;       // a slides view (slidesAula.js) sits on top of the book
+    if (history.state && history.state.sl) {
+      // Back to a slides view: close what we opened above it (the slides
+      // with the book's tools); a slides view on top of the book stays.
+      const k = stack.findIndex(v => v.overSl === history.state.sl);
+      if (k >= 0) while (stack.length > k) closeTop();
+      return;
+    }
     const keep = stack.findIndex(v => v.token === t);   // -1: none of ours -> close all
     while (stack.length > keep + 1) closeTop();
   });
@@ -655,6 +666,7 @@ const LivroOnline = (() => {
   //       save(pg, page), subtitle, onLeave() }
   function openEditor(o) {
     const m = o.manifest;
+    H = m.h || PAGE_H;
     const book = m.book;
     const dir = dirOf(m);
     const sm = stickerMap(m);
@@ -677,13 +689,13 @@ const LivroOnline = (() => {
     // frame; "Meia página" shows each page as two slides (top / bottom half).
     // Coordinates never change — only the part of the page on screen does.
     let slides = false;
-    let view = pf.view === 'full' ? 'full' : 'half';   // half by default: bigger text on screen-share
+    let view = m.h || pf.view === 'full' ? 'full' : 'half';   // half by default: bigger text on screen-share (a slide is always whole)
     let part = 'full';                       // 'full' | 'top' | 'bottom'
     let frame = { x: 0, y: 0, w: 300, h: 424, pad: 6 };
     const audio = new Audio();
 
     const root = document.createElement('div');
-    root.className = 'lo-root lo-ed' + (ro ? ' is-readonly' : '');
+    root.className = 'lo-root lo-ed' + (ro ? ' is-readonly' : '') + (m.h ? ' is-widepage' : '');
     root.innerHTML = `
       <div class="lo-top">
         <button class="lo-ico" data-a="back" type="button" aria-label="Voltar" title="Voltar">←</button>
@@ -718,6 +730,7 @@ const LivroOnline = (() => {
         <div class="lo-slidebox" data-ref="slidebox" aria-hidden="true"></div>
         <div class="lo-page" data-ref="page">
           <img data-ref="img" alt="" draggable="false" />
+          <div class="lo-pagehtml" data-ref="phtml" hidden></div>
           <svg class="lo-ink" data-ref="ink" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><g data-ref="strokes"></g><path data-ref="live" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <svg class="lo-over" data-ref="over" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"></svg>
           <svg class="lo-ix" data-ref="ix" viewBox="0 0 210 297" preserveAspectRatio="none"></svg>
@@ -865,6 +878,7 @@ const LivroOnline = (() => {
     let unStatus = null;
 
     pushView(root, () => {
+      H = PAGE_H;
       leavePage();
       audio.pause();
       window.removeEventListener('keydown', onKey);
@@ -936,6 +950,10 @@ const LivroOnline = (() => {
       clampView();
       pageEl.style.width = `${bw * z}px`;
       pageEl.style.height = `${bh * z}px`;
+      if (m.renderPage) {
+        const inner = $('phtml').firstElementChild;
+        if (inner) inner.style.transform = `scale(${(bw * z / (m.pageW || 1280)).toFixed(4)})`;
+      }
       pageEl.style.transform = `translate(${tx}px, ${ty}px)`;
       pageEl.style.clipPath = part === 'top' ? `inset(0 0 ${((1 - split) * 100).toFixed(2)}% 0)` : part === 'bottom' ? `inset(${(split * 100).toFixed(2)}% 0 0 0)` : '';
       if (selected) renderOver();
@@ -1008,7 +1026,7 @@ const LivroOnline = (() => {
       strip.innerHTML = o.pages.map((p, i) => {
         const d = normalize(o.load(p)).done;
         return `<button type="button" class="lo-sthumb${i === idx ? ' is-on' : ''}${d ? ' is-done' : ''}" data-goto="${i}" title="p. ${p.n}${p.title ? ' · ' + esc(p.title) : ''}">
-          <img src="${esc(resUrl(m, p.thumb))}" alt="" loading="lazy" draggable="false" /><small>${p.n}</small></button>`;
+          ${m.thumbHTML ? m.thumbHTML(p) : `<img src="${esc(resUrl(m, p.thumb))}" alt="" loading="lazy" draggable="false" />`}<small>${p.n}</small></button>`;
       }).join('');
       markStrip();
     }
@@ -1066,9 +1084,10 @@ const LivroOnline = (() => {
 
     function paintChrome() {
       const partLabel = part === 'top' ? ' · parte de cima' : part === 'bottom' ? ' · parte de baixo' : '';
-      $('pnum').textContent = `p. ${pg.n}${partLabel}`;
+      const pl = m.pageLabel || 'p.';
+      $('pnum').textContent = `${pl} ${pg.n}${partLabel}`;
       $('ptitle').textContent = pg.title || '';
-      $('slabel').textContent = `p. ${pg.n} / ${o.pages[o.pages.length - 1].n}${partLabel}`;
+      $('slabel').textContent = `${pl} ${pg.n} / ${o.pages[o.pages.length - 1].n}${partLabel}`;
       root.querySelector('[data-a="prev"]').disabled = idx <= 0 && part !== 'bottom';
       root.querySelector('[data-a="next"]').disabled = idx >= o.pages.length - 1 && part !== 'top';
       root.querySelector('[data-a="view-full"]').classList.toggle('is-on', view === 'full');
@@ -1095,7 +1114,9 @@ const LivroOnline = (() => {
       const done = root.querySelector('[data-a="done"]');
       // 14+ read it in English (igSay, teacherSetup.js).
       const say = (pt, en) => (typeof igSay === 'function' ? igSay(pt, en) : pt);
-      done.textContent = data.done ? say('✓ Página feita!', '✓ Page done!') : say('Terminei esta página ✓', 'I finished this page ✓');
+      done.textContent = m.h
+        ? (data.done ? say('✓ Slide feito!', '✓ Slide done!') : say('Terminei este slide ✓', 'I finished this slide ✓'))
+        : (data.done ? say('✓ Página feita!', '✓ Page done!') : say('Terminei esta página ✓', 'I finished this page ✓'));
       done.classList.toggle('is-done', data.done);
       root.querySelector('[data-a="undo"]').disabled = !hist.length;
       root.querySelector('[data-a="redo"]').disabled = !redoStack.length;
@@ -1527,10 +1548,17 @@ const LivroOnline = (() => {
       data = normalize(o.load(pg));
       hist = []; redoStack = []; selected = null;
       ixOnPage();
-      img.src = resUrl(m, pg.img);
-      img.alt = `Página ${pg.n}: ${pg.title || ''}`;
-      const nxt = o.pages[idx + 1];
-      if (nxt) { const pre = new Image(); pre.src = resUrl(m, nxt.img); }
+      if (m.renderPage) {
+        // A class slide: its own HTML (slidesAula.js), scaled in applyView.
+        img.hidden = true; img.removeAttribute('src');
+        $('phtml').hidden = false;
+        try { m.renderPage(pg, $('phtml')); } catch (e) { console.error(e); }
+      } else {
+        img.src = resUrl(m, pg.img);
+        img.alt = `Página ${pg.n}: ${pg.title || ''}`;
+        const nxt = o.pages[idx + 1];
+        if (nxt) { const pre = new Image(); pre.src = resUrl(m, nxt.img); }
+      }
       computeBase(); z = 1; applyView();
       fadeIn();
       render();
@@ -2283,7 +2311,7 @@ const LivroOnline = (() => {
 
     function onKey(e) {
       if (stack[stack.length - 1] && stack[stack.length - 1].el !== root) return;
-      if (typeof SlidesAula !== 'undefined' && SlidesAula.isOpen()) return;   // slides are on top
+      if (!m.h && typeof SlidesAula !== 'undefined' && SlidesAula.isOpen()) return;   // slides are on top (a slides deck in this editor is the top itself)
       const typing = e.target.matches && e.target.matches('input, textarea, select');
       if (typing) return;
       const mod = e.ctrlKey || e.metaKey;
@@ -2911,10 +2939,65 @@ const LivroOnline = (() => {
         if (x && x.v) out.push({ kind: k, v: x.v, at: x.at || '', page: p.n });
       }));
     }));
+    // …and the 🧠 notes written on the class slides (openSlides) on this device.
+    try {
+      const pre = lsKey(student.id, 'slides-');
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        const mm = k && k.startsWith(pre) && /:p(\d+)$/.exec(k);
+        if (!mm) continue;
+        const page = readLocal(student.id, k.slice(lsKey(student.id, '').length));
+        if (!page || !page.take) continue;
+        TAKE_KINDS.forEach(kk => (page.take[kk] || []).forEach(x => {
+          if (x && x.v) out.push({ kind: kk, v: x.v, at: x.at || '', page: 'slide ' + Number(mm[1]) });
+        }));
+      }
+    } catch (e) { /* private mode */ }
     return out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
   }
 
+  // ---- CLASS SLIDES WITH THE BOOK'S TOOLS ------------------------------------
+  // slidesAula.js opens a deck here so the student can write on the slides
+  // exactly as in the book (pencil, highlighter, eraser, text, stickers,
+  // photo, 🧠 Takeaway). Each slide is a 16:9 page of the pseudo-book
+  // 'slides-<deckId>': one row per slide, kind 'book', id
+  // 'slides-<deckId>:b1:pNN' (NN = slide position), saved and synced by the
+  // same StudentSync / TeacherSync as the book, so the teacher sees it live.
+  // deck = { id, meta: { title }, slides: [slide…] }
+  // view = { stageHTML(slide) -> html of a 1280x720 stage, thumbHTML(slide, width) }
+  const SLIDE_STICKERS = [['⭐', 'star'], ['✅', 'right'], ['❌', 'wrong'], ['❓', 'question'], ['❤️', 'love'], ['👍', 'good'],
+    ['👏', 'well done'], ['💯', '100'], ['😀', 'happy'], ['😍', 'love it'], ['🤔', 'hmm'], ['😂', 'funny'], ['😎', 'cool'],
+    ['🔥', 'great'], ['💡', 'idea'], ['🎉', 'yay'], ['🌟', 'super'], ['📌', 'remember'], ['✏️', 'write'], ['🗣️', 'say it'],
+    ['👂', 'listen'], ['👀', 'look'], ['🏆', 'winner'], ['🙌', 'yes!']];
+  const SLIDE_H = Math.round(W * 720 / 1280);
+  const emojiImg = e => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="56" font-size="78" text-anchor="middle" dominant-baseline="middle" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif">${e}</text></svg>`);
+  async function openSlides(student, deck, view, opts) {
+    opts = opts || {};
+    if (!student || !deck || !deck.slides || !deck.slides.length) return null;
+    const teacher = !window.IG_SHARE_MODE;
+    const m = {
+      book: `slides-${deck.id}`, bimester: 1, single: true, title: deck.meta.title,
+      h: SLIDE_H, pageW: 1280, pageLabel: 'Slide',
+      pages: deck.slides.map((s, k) => ({ n: k + 1, title: deck.meta.title, slide: s })),
+      stickers: SLIDE_STICKERS.map(([e, label], i) => ({ id: `emo${i}`, label, img: emojiImg(e), w: 0.07, h: 0.07 * W / SLIDE_H })),
+      renderPage: (pg, el) => { el.innerHTML = view.stageHTML(pg.slide); },
+      thumbHTML: p => view.thumbHTML(p.slide, 72),
+    };
+    const sync = teacher ? TeacherSync : StudentSync;
+    try { await sync.open(student.id, m.book, m); } catch (e) { /* stay with the local copy */ }
+    return openEditor({
+      manifest: m, pages: m.pages, sync, teacher, studentId: student.id,
+      index: clamp(opts.index || 0, 0, m.pages.length - 1),
+      load: p => readLocal(student.id, pid(m, p.n)),
+      save: (p, work) => { const id = pid(m, p.n); writeLocal(student.id, id, work); sync.mark(id); },
+      onLeave: opts.onLeave,
+      subtitle: teacher ? `✍️ ${esc(student.name)} · ${esc(deck.meta.title)} — o que você e ${esc(student.name)} escrevem aqui aparece para os dois` : '',
+    });
+  }
+
   return {
+    openSlides,
     resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest, takeawayFor, takeawayItems,
     // Homework: open the student's book right on the pages the teacher set.
     // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }

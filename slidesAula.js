@@ -433,6 +433,34 @@ const SlidesAula = (() => {
   const studentCloud = () => Boolean(isShare() && window.IG_SUPABASE && window.IG_SUPABASE.configured
     && typeof IGCloud !== 'undefined' && IGCloud.anonClient && linkCode());
 
+  // The student's copy of each deck (slides with their images are heavy, so
+  // they live in IndexedDB, not in localStorage next to the book's work):
+  // 'full:<sid>:<deckId>' -> { at: meta.updatedAt, slides: { id: slide } }.
+  // A deck the teacher has not changed since opens at once, without the network.
+  const Idb = (() => {
+    let dbp = null;
+    const db = () => dbp || (dbp = new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open('igslides', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('rec');
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+      } catch (e) { rej(e); }
+    }));
+    const run = (mode, fn) => db().then(d => new Promise((res, rej) => {
+      const t = d.transaction('rec', mode);
+      const req = fn(t.objectStore('rec'));
+      t.oncomplete = () => res(req && req.result);
+      t.onerror = () => rej(t.error);
+    }));
+    return {
+      get: k => run('readonly', s => s.get(k)).catch(() => null),
+      set: (k, v) => run('readwrite', s => s.put(v, k)).catch(() => {}),
+    };
+  })();
+  const fullKey = (sid, deckId) => `full:${sid}:${deckId}`;
+  const opening = new Map();        // deckId -> the open() already on its way
+
   const StudentData = {
     // -> { decks:[{id,...meta}], hidden:boolean, error:boolean }
     async list(sid) {
@@ -458,24 +486,52 @@ const SlidesAula = (() => {
       }
       return { decks: localDecks(sid), hidden: false };
     },
-    async open(sid, deckId) {
+    open(sid, deckId) {
+      const k = `${sid}:${deckId}`;
+      if (!opening.has(k)) opening.set(k, this._open(sid, deckId).finally(() => opening.delete(k)));
+      return opening.get(k);
+    },
+    async _open(sid, deckId) {
+      const build = (meta, get) => ({ id: deckId, meta, slides: meta.slideIds.map(x => ({ id: x, ...(get(x) || blankSlide()) })) });
+      let meta = readRec(sid, metaId(deckId));
+      const cached = await Idb.get(fullKey(sid, deckId));
+      // Unchanged since the last visit (the deck list just refreshed the meta): no network.
+      if (meta && !meta.deleted && cached && cached.at === meta.updatedAt && meta.slideIds.every(x => cached.slides && cached.slides[x])) {
+        return build(meta, x => normSlide(cached.slides[x]));
+      }
       if (studentCloud()) {
         try {
           const sb = await IGCloud.anonClient();
           const { data, error } = await sb.rpc('igenglish_slides_read', { p_code: linkCode(), p_deck: deckId });
           if (error) throw error;
           if (data && data.ok && data.enabled !== false) {
+            const slides = {};
             (data.rows || []).forEach(row => {
               const p = parseRecId(row.id);
               if (!p || p.deck !== deckId) return;
-              writeRec(sid, row.id, p.meta ? normMeta(row.payload) : normSlide(row.payload));
+              if (p.meta) { const mm = normMeta(row.payload); if (mm) writeRec(sid, row.id, mm); }
+              else slides[p.slide] = normSlide(row.payload);
             });
+            meta = readRec(sid, metaId(deckId));
+            if (meta && !meta.deleted) {
+              Idb.set(fullKey(sid, deckId), { at: meta.updatedAt, slides });
+              // older visits kept the slides in localStorage: free that room for the book
+              meta.slideIds.forEach(x => delRec(sid, slideRecId(deckId, x)));
+              return build(meta, x => slides[x]);
+            }
           }
         } catch (e) { console.warn('slides: leitura do deck', e); }
       }
-      const meta = readRec(sid, metaId(deckId));
+      meta = readRec(sid, metaId(deckId));
       if (!meta || meta.deleted) return null;
-      return { id: deckId, meta, slides: meta.slideIds.map(x => ({ id: x, ...slideOf(sid, deckId, x) })) };
+      if (cached && cached.slides) return build(meta, x => (cached.slides[x] ? normSlide(cached.slides[x]) : slideOf(sid, deckId, x)));
+      return build(meta, x => slideOf(sid, deckId, x));
+    },
+    // The first slide of a deck from the student's cache (deck card preview).
+    async firstSlide(sid, d) {
+      const c = await Idb.get(fullKey(sid, d.id));
+      const s = c && c.slides && c.slides[d.slideIds[0]];
+      return s ? normSlide(s) : null;
     },
   };
 
@@ -669,6 +725,10 @@ const SlidesAula = (() => {
     const ov = document.getElementById('modalOverlay');
     if (ov && !ov.hidden) return;
     const top = stack[stack.length - 1];
+    // The book's editor (the slides with its tools) opened on top owns the keyboard.
+    const lo = document.querySelectorAll('body > .lo-root');
+    const loTop = lo[lo.length - 1];
+    if (top && loTop && (top.el.compareDocumentPosition(loTop) & Node.DOCUMENT_POSITION_FOLLOWING)) return;
     if (top && top.onKey) top.onKey(e);
   });
   const isOpen = () => stack.length > 0;
@@ -1051,7 +1111,22 @@ const SlidesAula = (() => {
     ensureFonts();
     const root = document.createElement('div');
     root.className = 'sl-root sl-home' + (teacher ? '' : ' is-student');
-    let unStatus = null, loading = !teacher, hidden = false, failed = false;
+    // The student sees the decks kept from the last visit at once; the list refreshes behind.
+    let unStatus = null, loading = !teacher && !localDecks(sid).length, hidden = false, failed = false;
+    const canWrite = () => typeof LivroOnline !== 'undefined' && LivroOnline.openSlides;
+    const viewFor = meta => ({
+      stageHTML: s => `<div class="sl-stage" style="${bgStyle(bgOf(meta, s))}"><div class="sl-layer">${layerHTML(s.objects)}</div></div>`,
+      thumbHTML: (s, w) => miniHTML(meta, s, w),
+    });
+    // The student's slides open with the book's tools (write, draw, stickers…).
+    async function openForStudentWork(deckId, card) {
+      if (card) card.classList.add('is-opening');
+      try {
+        const deck = await StudentData.open(sid, deckId);
+        if (!deck) { toast(root, 'Não consegui abrir este slide agora.'); return; }
+        if (canWrite()) { ensureFonts(); await LivroOnline.openSlides(student, deck, viewFor(deck.meta)); } else openViewer(deck);
+      } finally { if (card) card.classList.remove('is-opening'); }
+    }
     const color = esc(student.color || '#8e6d86');
 
     const paint = () => {
@@ -1064,7 +1139,7 @@ const SlidesAula = (() => {
             <div class="sl-home-title">
               ${teacher
                 ? `<h2>🖼️ Slides da aula <small>${esc(student.avatar || '🙂')} ${esc(student.name)}</small></h2><p>As apresentações de ${esc(student.name)} — cada aluno tem as suas.</p>`
-                : `<h2>📝 Slides da aula <small>Class slides</small></h2><p>O que vimos na aula — toque para rever. Só leitura.</p>`}
+                : `<h2>📝 Slides da aula <small>Class slides</small></h2><p>O que vimos na aula — toque para rever${canWrite() ? ' e escrever, desenhar e colar adesivos como no livro ✏️' : '. Só leitura.'}</p>`}
             </div>
             ${teacher ? '<span class="sl-status" data-ref="status"></span>' : ''}
           </header>
@@ -1088,6 +1163,7 @@ const SlidesAula = (() => {
                 ${teacher ? `<div class="sl-card-acts">
                   <button type="button" class="sl-btn sl-btn--ok" data-a="present" title="Apresentar em tela cheia">▶ Apresentar</button>
                   <button type="button" class="sl-btn" data-a="open" title="Editar os slides">✏️ Editar</button>
+                  ${canWrite() ? '<button type="button" class="sl-btn" data-a="work" title="Escrever nos slides com as ferramentas do livro — o que o aluno escreve aparece aqui, ao vivo">✍️ Com o aluno</button>' : ''}
                   <button type="button" class="sl-btn sl-btn--ico" data-a="rename" aria-label="Renomear" title="Renomear">🏷️</button>
                   <button type="button" class="sl-btn sl-btn--ico" data-a="dup" aria-label="Duplicar" title="Duplicar">⧉</button>
                   <button type="button" class="sl-btn sl-btn--ico" data-a="copyto" aria-label="Copiar para outro aluno" title="Copiar para outro aluno">👥</button>
@@ -1100,6 +1176,11 @@ const SlidesAula = (() => {
         if (unStatus) unStatus();
         unStatus = Sync.onStatus(s => paintStatus(root.querySelector('[data-ref="status"]'), s));
         wireVisibility(root, student);
+      } else {
+        decks.forEach(d => StudentData.firstSlide(sid, d).then(s => {
+          const b = s && root.querySelector(`[data-deck="${d.id}"] .sl-card-prev`);
+          if (b) b.innerHTML = miniHTML(d, s, 220);
+        }));
       }
     };
 
@@ -1144,14 +1225,14 @@ const SlidesAula = (() => {
       const meta = readRec(sid, metaId(deckId));
       if (!meta) return;
       if (!teacher) {
-        if (a === 'open') {
-          const deck = await StudentData.open(sid, deckId);
-          if (!deck) { toast(root, 'Não consegui abrir este slide agora.'); return; }
-          openViewer(deck);
-        }
+        if (a === 'open') openForStudentWork(deckId, card);
         return;
       }
       if (a === 'open') openEditor(student, deckId, paint);
+      else if (a === 'work') {
+        const full = await loadDeck(sid, deckId);
+        if (full) await LivroOnline.openSlides(student, { id: deckId, meta: full.meta, slides: full.meta.slideIds.map(x => full.slides[x] || blankSlide()) }, viewFor(full.meta));
+      }
       else if (a === 'present') {
         const full = await loadDeck(sid, deckId);
         if (full) openPresent(full.meta, k => full.slides[full.meta.slideIds[k]], 0);
@@ -1193,7 +1274,12 @@ const SlidesAula = (() => {
     if (teacher) {
       Sync.pullMetas(sid).then(changed => { if (changed) paint(); });
     } else {
-      StudentData.list(sid).then(r => { loading = false; hidden = r.hidden; failed = Boolean(r.error); paint(); });
+      StudentData.list(sid).then(r => {
+        loading = false; hidden = r.hidden; failed = Boolean(r.error); paint();
+        // the newest deck comes down now, so tapping it opens at once
+        const first = !r.hidden && localDecks(sid)[0];
+        if (first) StudentData.open(sid, first.id).catch(() => {});
+      });
     }
   }
 
@@ -1435,6 +1521,7 @@ const SlidesAula = (() => {
     // ---- saving + history ------------------------------------------------------
     function saveNow() {
       clearTimeout(saveT);
+      if (pending.size) { D.meta = { ...D.meta, updatedAt: nowMs() }; metaPending = true; }   // the student's copy then knows it is old
       pending.forEach(id => {
         const s = D.slides[id];
         if (!s) return;
