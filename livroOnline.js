@@ -394,6 +394,7 @@ const LivroOnline = (() => {
       if (busy) { again = true; return; }
       busy = true;
       const who = sid;
+      let skipped = false;
       try {
         for (const id of [...dirty]) {
           const payload = readLocal(who, id);
@@ -403,9 +404,10 @@ const LivroOnline = (() => {
           if (res === 'nosql') { mode = 'nosql'; dirty.clear(); break; }
           dirty.delete(id);
           if (res === 'toobig') status('toobig');
+          if (res === 'skip') { skipped = true; console.warn('livro online: a nuvem recusou', id); }
           if (mode === 'offline') mode = 'cloud';
         }
-        status(dirty.size ? 'offline' : settled());
+        status(dirty.size ? 'offline' : skipped ? 'skip' : settled());
       } catch (e) {
         if (missingErr(e)) { mode = 'nosql'; dirty.clear(); status('local'); }
         else { mode = 'offline'; status('offline'); }
@@ -478,6 +480,7 @@ const LivroOnline = (() => {
     local: ['Salvo neste aparelho ✓', 'is-ok'],
     offline: ['Sem internet — salvo neste aparelho', 'is-warn'],
     toobig: ['Página cheia demais — salva só neste aparelho', 'is-warn'],
+    skip: ['⚠ A nuvem recusou — salvo só neste aparelho', 'is-warn'],
   };
   function paintStatus(el, s) {
     if (!el) return;
@@ -1531,12 +1534,31 @@ const LivroOnline = (() => {
       const opened = pg, id = pid(m, opened.n);
       if (o.sync.isDirty && o.sync.isDirty(id)) return;
       o.sync.refresh(id).then(fresh => {
+        if (!fresh && o.studentId) {
+          // the same page saved by another tab of this browser (e.g. the student preview)
+          const l = readLocal(o.studentId, id);
+          if (l && l.updatedAt > (data.updatedAt || 0)) fresh = l;
+        }
         if (!fresh || o.pages[idx] !== opened || act || editing || answering || pts.size) return;
         data = normalize(fresh);
         hist = []; redoStack = []; selected = null;
         render();
       }).catch(() => {});
     }, 4000);
+
+    // Another tab of this browser saved the page that is open: show it at once.
+    const onStorage = e => {
+      if (!root.isConnected) { window.removeEventListener('storage', onStorage); return; }
+      if (!o.studentId || !e.key || e.key !== lsKey(o.studentId, pid(m, pg.n)) || !e.newValue) return;
+      if (act || editing || answering || pinch || pts.size) return;
+      try {
+        const fresh = normalize(JSON.parse(e.newValue));
+        if (fresh.updatedAt <= (data.updatedAt || 0)) return;
+        data = fresh; hist = []; redoStack = []; selected = null;
+        render();
+      } catch (err) { /* ignore */ }
+    };
+    window.addEventListener('storage', onStorage);
 
     function goto(i, wantPart) {
       if (i < 0 || i >= o.pages.length) return;
