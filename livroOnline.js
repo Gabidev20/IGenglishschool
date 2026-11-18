@@ -2893,8 +2893,29 @@ const LivroOnline = (() => {
     return out;
   }
 
+  // Every note of the student's 🧠 Takeaway, with its day and page:
+  // [{ kind: 'words'|'pron'|'phrases', v, at: 'YYYY-MM-DD', page }], newest first.
+  async function takeawayItems(student) {
+    const book = student ? bookFor(student) : null;
+    if (!book) return [];
+    let ms;
+    try { ms = await loadBook(book); } catch (e) { return []; }
+    if (!Array.isArray(ms)) return [];
+    const sync = window.IG_SHARE_MODE ? StudentSync : TeacherSync;
+    for (const m of ms) { try { await sync.open(student.id, book, m); } catch (e) { /* stay with the local copy */ } }
+    const out = [];
+    ms.forEach(m => m.pages.forEach(p => {
+      const page = readLocal(student.id, pid(m, p.n));
+      if (!page || !page.take) return;
+      TAKE_KINDS.forEach(k => (page.take[k] || []).forEach(x => {
+        if (x && x.v) out.push({ kind: k, v: x.v, at: x.at || '', page: p.n });
+      }));
+    }));
+    return out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  }
+
   return {
-    resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest, takeawayFor,
+    resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest, takeawayFor, takeawayItems,
     // Homework: open the student's book right on the pages the teacher set.
     // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }
     openHomeworkPages: (student, hw) => openBookHome(student, { teacher: !window.IG_SHARE_MODE, homework: hw }),

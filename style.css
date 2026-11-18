@@ -11111,3 +11111,33 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
   .mz-pad { gap: 12px; }
   .mz-pad--big { gap: 16px; }
 }
+
+/* 🧠 My takeaway on the student's link (myTakeaway.js) */
+.stu-tile--takeaway { background: linear-gradient(135deg, #F5F0F7, #FFF3CC); }
+.mt-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.mt-tabs { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-alt, rgba(0,0,0,.05)); }
+.mt-tabs button { border: 0; background: transparent; font: inherit; font-size: .85rem; font-weight: 700; padding: 6px 12px; border-radius: 999px; color: var(--ink-soft); cursor: pointer; }
+.mt-tabs button.on { background: var(--surface, #fff); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+#mtQuery { flex: 1 1 140px; min-width: 0; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border, #ddd); font: inherit; }
+.mt-quiz { border: 1px solid var(--primary); background: #fff; color: var(--primary); font: inherit; font-weight: 800; font-size: .85rem; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+.mt-quiz.on { background: var(--primary); color: #fff; }
+.mt-hint { margin: 0 0 10px; font-size: .88rem; color: var(--ink-soft); }
+.mt-day { padding: 12px 14px; border-radius: 16px; border: 1px solid var(--border, #eee); background: var(--surface, #fff); margin-bottom: 10px; }
+.mt-day--mine { background: linear-gradient(135deg, #FFFBEF, #fff); border-color: rgba(239,200,104,.6); }
+.mt-day header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 6px; }
+.mt-day header small { color: var(--ink-faint); }
+.mt-play { margin-left: auto; border: 0; background: var(--surface-alt, #F5F0F7); color: #6F4863; font: inherit; font-weight: 800; font-size: .8rem; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
+.mt-label { margin: 8px 0 4px; font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); }
+.mt-chips, .mt-lines { display: flex; flex-wrap: wrap; gap: 6px; }
+.mt-lines { flex-direction: column; align-items: stretch; }
+.mt-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(111,72,99,.2); background: #F5F0F7; color: #2E1E2C; font: inherit; font-weight: 700; font-size: .92rem; cursor: pointer; text-align: left; }
+.mt-chip:hover { border-color: var(--primary); }
+.mt-chip--line { border-radius: 12px; font-weight: 600; }
+.mt-chip--line .mt-w { flex: 1; }
+.mt-ipa { font-weight: 500; color: #6F4863; font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', sans-serif; }
+.mt-ear { font-size: .8rem; opacity: .6; }
+.mt-k { font-size: .85rem; }
+.mt-empty, .mt-wait { padding: 12px 14px; border-radius: 14px; background: var(--surface-alt, #F5F0F7); color: var(--ink-soft); font-size: .92rem; }
+/* Test yourself: the words hide until tapped */
+.is-quiz .mt-chip:not(.is-shown) .mt-w, .is-quiz .mt-chip:not(.is-shown) .mt-ipa { filter: blur(6px); user-select: none; }
+.is-quiz .mt-chip:not(.is-shown) { background: repeating-linear-gradient(135deg, #F5F0F7 0 8px, #FCE4E8 8px 16px); }
