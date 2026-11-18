@@ -1026,7 +1026,7 @@ const LivroOnline = (() => {
       strip.innerHTML = o.pages.map((p, i) => {
         const d = normalize(o.load(p)).done;
         return `<button type="button" class="lo-sthumb${i === idx ? ' is-on' : ''}${d ? ' is-done' : ''}" data-goto="${i}" title="p. ${p.n}${p.title ? ' · ' + esc(p.title) : ''}">
-          ${m.thumbHTML ? m.thumbHTML(p) : `<img src="${esc(resUrl(m, p.thumb))}" alt="" loading="lazy" draggable="false" />`}<small>${p.n}</small></button>`;
+          ${m.thumbHTML ? m.thumbHTML(p) : `<img src="${esc(resUrl(m, p.thumb))}" alt="" loading="lazy" draggable="false" />`}<small>${p.label || p.n}</small></button>`;
       }).join('');
       markStrip();
     }
@@ -1085,9 +1085,9 @@ const LivroOnline = (() => {
     function paintChrome() {
       const partLabel = part === 'top' ? ' · parte de cima' : part === 'bottom' ? ' · parte de baixo' : '';
       const pl = m.pageLabel || 'p.';
-      $('pnum').textContent = `${pl} ${pg.n}${partLabel}`;
+      $('pnum').textContent = `${pl} ${pg.label || pg.n}${partLabel}`;
       $('ptitle').textContent = pg.title || '';
-      $('slabel').textContent = `${pl} ${pg.n} / ${o.pages[o.pages.length - 1].n}${partLabel}`;
+      $('slabel').textContent = `${pl} ${pg.label || pg.n} / ${o.pages[o.pages.length - 1].label || o.pages[o.pages.length - 1].n}${partLabel}`;
       root.querySelector('[data-a="prev"]').disabled = idx <= 0 && part !== 'bottom';
       root.querySelector('[data-a="next"]').disabled = idx >= o.pages.length - 1 && part !== 'top';
       root.querySelector('[data-a="view-full"]').classList.toggle('is-on', view === 'full');
@@ -2976,15 +2976,28 @@ const LivroOnline = (() => {
     opts = opts || {};
     if (!student || !deck || !deck.slides || !deck.slides.length) return null;
     const teacher = !window.IG_SHARE_MODE;
+    const real = bookFor(student);
+    let hsh = 0;
+    for (const ch of String(deck.id)) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0;
+    const base = 100000 + (hsh % 9000) * 100;
     const m = {
-      book: `slides-${deck.id}`, bimester: 1, single: true, title: deck.meta.title,
+      // The student's link may only write pages of a real book: the slides ride
+      // in the student's own book (bimester 1) as pages 100000+ (one block of
+      // 100 per deck), which no printed page ever uses.
+      book: real || `slides-${deck.id}`, bimester: 1, single: true, title: deck.meta.title,
       h: SLIDE_H, pageW: 1280, pageLabel: 'Slide',
-      pages: deck.slides.map((s, k) => ({ n: k + 1, title: deck.meta.title, slide: s })),
+      pages: deck.slides.map((s, k) => ({ n: real ? base + k : k + 1, label: k + 1, title: deck.meta.title, slide: s })),
       stickers: SLIDE_STICKERS.map(([e, label], i) => ({ id: `emo${i}`, label, img: emojiImg(e), w: 0.07, h: 0.07 * W / SLIDE_H })),
       renderPage: (pg, el) => { el.innerHTML = view.stageHTML(pg.slide); },
       thumbHTML: p => view.thumbHTML(p.slide, 72),
     };
     const sync = teacher ? TeacherSync : StudentSync;
+    // Notes written before this change (kept only on that device) move over.
+    if (real) m.pages.forEach(p => {
+      const old = readLocal(student.id, pageId(`slides-${deck.id}`, p.label, 1));
+      const id = pid(m, p.n);
+      if (old && hasWork(old) && !hasWork(readLocal(student.id, id) || emptyPage())) { old.updatedAt = Date.now(); writeLocal(student.id, id, old); }
+    });
     try { await sync.open(student.id, m.book, m); } catch (e) { /* stay with the local copy */ }
     return openEditor({
       manifest: m, pages: m.pages, sync, teacher, studentId: student.id,
