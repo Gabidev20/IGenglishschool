@@ -3001,11 +3001,13 @@ const LivroOnline = (() => {
     const real = bookFor(student);
     let hsh = 0;
     for (const ch of String(deck.id)) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0;
-    const base = 100000 + (hsh % 9000) * 100;
+    // Pages 500-999 (3 digits, like printed pages; no book goes that far): a block of 20 per deck.
+    const base = 500 + (hsh % 25) * 20;
+    const oldBase = 100000 + (hsh % 9000) * 100;
     const m = {
       // The student's link may only write pages of a real book: the slides ride
-      // in the student's own book (bimester 1) as pages 100000+ (one block of
-      // 100 per deck), which no printed page ever uses.
+      // in the student's own book (bimester 1) as pages 500-999 (one block of
+      // 20 per deck), which no printed page ever uses.
       book: real || `slides-${deck.id}`, bimester: 1, single: true, title: deck.meta.title,
       h: SLIDE_H, pageW: 1280, pageLabel: 'Slide',
       pages: deck.slides.map((s, k) => ({ n: real ? base + k : k + 1, label: k + 1, title: deck.meta.title, slide: s })),
@@ -3016,7 +3018,7 @@ const LivroOnline = (() => {
     const sync = teacher ? TeacherSync : StudentSync;
     // Notes written before this change (kept only on that device) move over.
     if (real) m.pages.forEach(p => {
-      const old = readLocal(student.id, pageId(`slides-${deck.id}`, p.label, 1));
+      const old = readLocal(student.id, pageId(real, oldBase + p.label - 1, 1)) || readLocal(student.id, pageId(`slides-${deck.id}`, p.label, 1));
       const id = pid(m, p.n);
       if (old && hasWork(old) && !hasWork(readLocal(student.id, id) || emptyPage())) { old.updatedAt = Date.now(); writeLocal(student.id, id, old); }
     });
