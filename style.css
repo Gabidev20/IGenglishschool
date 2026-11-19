@@ -11150,3 +11150,9 @@ html.ig-student-mode .lang-switch, html.ig-public-game .lang-switch { display: n
 .lo-root.is-widepage .lo-sthumb .sl-mini { border-radius: 0; box-shadow: none; }
 .sl-card.is-opening { opacity: .6; pointer-events: none; }
 .sl-card.is-opening .sl-card-go::after { content: ' …'; }
+
+/* Exam Maker: every site topic and book unit, folded by level / book */
+.exam-chip-fold { display: block; }
+.exam-chip-fold > summary { cursor: pointer; list-style: revert; padding: 4px 0; }
+.exam-chip-fold[open] { display: flex; }
+.exam-chip-fold[open] > summary { width: 100%; }

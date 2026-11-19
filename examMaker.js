@@ -999,6 +999,9 @@ function exNormTerm(s) {
 function exBestTopic(line) {
   const q = exNormTerm(line);
   if (!q) return null;
+  // A topic's own name (what a chip writes) is that topic, before any alias.
+  const named = EXAM_TOPICS.find(t => exNormTerm(t.label) === q);
+  if (named) return named;
   let best = null;
   let bestScore = 0;
   EXAM_TOPICS.forEach(topic => {
@@ -1350,11 +1353,12 @@ function exChipGroups() {
   const groups = [
     { label: '🧸 Vocabulário (crianças)', topics: EXAM_TOPICS.filter(t => t.kids && young && !adultOnly) },
     { label: '✍️ Gramática fácil', topics: EXAM_TOPICS.filter(t => t.writers && !adultOnly) },
-    { label: '🧩 Gramática', topics: EXAM_TOPICS.filter(t => !t.kids && !t.writers && !t.adult
+    { label: '🧩 Gramática', topics: EXAM_TOPICS.filter(t => !t.kids && !t.writers && !t.adult && !t.site
         && (EX_LEVEL_ORDER.indexOf(EX_GRAMMAR_LEVEL[t.id] || 'a0') <= top)) },
     { label: '💼 Inglês do dia a dia (15+ e adultos)', topics: EXAM_TOPICS.filter(t => t.adult && grown && levels.includes(t.level)) },
   ];
-  return groups.filter(g => g.topics.length);
+  const extra = typeof exaChipGroups === 'function' ? exaChipGroups() : [];
+  return groups.filter(g => g.topics.length).concat(extra);
 }
 
 function renderExamMaker(container) {
@@ -1372,7 +1376,11 @@ function renderExamMaker(container) {
 
         <div class="exam-chips">
           <span class="exam-chips-label">Tópicos prontos:</span>
-          ${exChipGroups().map(g => `
+          ${exChipGroups().map(g => g.folded ? `
+            <details class="exam-chip-group exam-chip-fold">
+              <summary class="exam-chip-group-label">${exEsc(g.label)} <small>(${g.topics.length})</small></summary>
+              ${g.topics.map(t => `<button type="button" class="exam-chip" data-add="${t.id}">+ ${exEsc(t.label)}</button>`).join('')}
+            </details>` : `
             <div class="exam-chip-group">
               <span class="exam-chip-group-label">${g.label}</span>
               ${g.topics.map(t => `<button type="button" class="exam-chip" data-add="${t.id}">+ ${exEsc(t.label)}</button>`).join('')}
