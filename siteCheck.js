@@ -18,7 +18,7 @@ const SC_PARTS = [
   ['Avatar', 'openAvatarBuilder'], ['Menu de jogos do livro', 'openGamesMenu'], ['Revisão da aula', 'openClassReviewPlayer'],
 ];
 const SC_GAMES = [
-  ['ABC', 'openAlphabetGame'], ['Colors', 'openColorsGame'], ['Body Parts', 'openBodyGame'], ['Family', 'openFamilyGame'], ['Feelings', 'openFeelingsGame'],
+  ['ABC', 'openAlphabetGame'], ['Blend it!', 'openBlendGame'], ['Colors', 'openColorsGame'], ['Body Parts', 'openBodyGame'], ['Family', 'openFamilyGame'], ['Feelings', 'openFeelingsGame'],
   ['Weather', 'openWeatherGame'], ['Animals', 'openAnimalGame'], ['Music', 'openInstrumentsGame'], ['House', 'openHouseGame'],
   ['Where is it?', 'openPrepositionsGame'], ['Backpack', 'openBackpackGame'], ['Who am I?', 'openWhoAmI'], ['Maze Muncher', 'openMazeGame'],
   ['Jump & Learn', 'openJumpGame'], ['Old MacDonald', 'openFarmGame'], ['Touch it!', 'openTouchGame'], ['Pizza Shop', 'openShopGame'],
@@ -125,6 +125,7 @@ async function scRun() {
   await head('alphabet/a.wav', 'Áudios do ABC (a.wav)', 'Arquivos');
   await head('alphabet/z.wav', 'Áudios do ABC (z.wav)', 'Arquivos');
   if (typeof IG_TWEMOJI_BASE !== 'undefined') await head(`${IG_TWEMOJI_BASE}1f34e.svg`, 'Figuras dos jogos (Twemoji)', 'Arquivos');
+  await head('audios/sound-steps/game/s-a.mp3', 'Áudios do Blend it! (s-a.mp3)', 'Arquivos');
   await head('logo.png', 'Logo', 'Arquivos');
 
   // ---- 6. voice and microphone --------------------------------------------------

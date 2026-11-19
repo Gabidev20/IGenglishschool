@@ -27,6 +27,7 @@ const STUDENT_ACCESS_KEY = 'student_access';
 const SA_READY_GAMES = [
   { id: 'colors', icon: '🎨', label: 'Colors' },
   { id: 'alphabet', icon: '🔤', label: 'ABC — Alphabet' },
+  { id: 'blend', icon: '🧩', label: 'Blend it! (juntar sons)' },
   { id: 'jump', icon: '🦖', label: 'Jump & Learn' },
   { id: 'sayit', icon: '🎤', label: 'Say it! (falar)' },
   { id: 'farm', icon: '🐄', label: 'Old MacDonald' },

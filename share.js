@@ -638,6 +638,7 @@ function renderStudentHome(shell, studentId) {
     colors: () => tile('colors', '🎨', 'Colors', 'Cores — ouvir, tocar e falar', 'stu-tile--review'),
     drawing: () => tile('drawing', '🖍️', 'Drawing Challenge', 'Desenho surpresa — abra a caixa e desenhe', 'stu-tile--review'),
     alphabet: () => tile('alphabet', '🔤', 'ABC', 'Alfabeto — ouvir e falar as letras'),
+    blend: () => tile('blend', '🧩', 'Blend it!', 'Juntar os sons para ler — c-a-t, cat!'),
     sayit: () => tile('sayit', '🎤', 'Say it!', 'Falar — veja a figura e diga a palavra'),
     farm: () => tile('farm', '🐄', 'Old MacDonald', 'A fazenda — quem faz muu?'),
     touch: () => tile('touch', '🎈', 'Touch it!', 'Ouça e toque — cores, formas, números'),
@@ -675,7 +676,7 @@ function renderStudentHome(shell, studentId) {
   };
   // The picture games are tiles of their own; the teacher can switch each
   // one off in the link window.
-  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body', family: 'family', alphabet: 'alphabet', drawing: 'drawing', maze: 'maze', jump: 'jump', sayit: 'sayit', farm: 'farm', touch: 'touch', pizza: 'pizza', sounds: 'sounds', memory: 'memory' };
+  const READY_TILE = { colors: 'colors', feelings: 'feelings', weather: 'weather', animals: 'animals', music: 'music', house: 'house', where: 'where', backpack: 'backpack', body: 'body', family: 'family', alphabet: 'alphabet', blend: 'blend', drawing: 'drawing', maze: 'maze', jump: 'jump', sayit: 'sayit', farm: 'farm', touch: 'touch', pizza: 'pizza', sounds: 'sounds', memory: 'memory' };
   // A grown-up's page leads with the skill their teacher said matters most.
   const adultSkills = () => {
     const order = { speaking: ['speaking', 'audio'], listening: ['dictation'], writing: ['write', 'writingPractice'], reading: ['games'], grammar: ['practice'] };
@@ -686,8 +687,8 @@ function renderStudentHome(shell, studentId) {
   };
   const tilesFor = p => ({
     // Can't read yet: pictures and voice only — no writing, no reading.
-    prereader: ['review', 'sayit', 'farm', 'touch', 'sounds', 'pizza', 'memory', 'colors', 'alphabet', 'maze', 'jump', 'drawing', 'feelings', 'weather', 'body', 'family', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
-    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'sayit', 'maze', 'jump', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'practice', 'dictation', 'speaking', 'write', 'audio', 'mistakes'],
+    prereader: ['review', 'sayit', 'farm', 'touch', 'sounds', 'pizza', 'memory', 'colors', 'alphabet', 'blend', 'maze', 'jump', 'drawing', 'feelings', 'weather', 'body', 'family', 'animals', 'music', 'house', 'where', 'audio', 'mistakes', 'progress', 'homework'],
+    reader: ['progress', 'homework', 'review', 'games', 'alphabet', 'blend', 'sayit', 'maze', 'jump', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'drawing', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'practice', 'dictation', 'speaking', 'write', 'audio', 'mistakes'],
     writer: ['progress', 'homework', 'takeaway', 'ranking', 'review', 'practice', 'writingPractice', 'write', 'dictation', 'speaking', 'audio', 'alphabet', 'maze', 'jump', 'drawing', 'games', 'sayit', 'farm', 'touch', 'pizza', 'sounds', 'memory', 'colors', 'backpack', 'house', 'animals', 'feelings', 'music', 'where', 'weather', 'body', 'family', 'mistakes'],
     adult: adultSkills(),
   }[p] || [])
@@ -785,6 +786,7 @@ function renderStudentHome(shell, studentId) {
     family: () => openFamilyGame(),
     colors: () => openColorsGame(),
     alphabet: () => openAlphabetGame(),
+    blend: () => openBlendGame(),
     maze: () => openMazeGame(),
     jump: () => openJumpGame(),
     sayit: () => openSayItGame(),
