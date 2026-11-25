@@ -40,7 +40,7 @@ const TeacherBooks = (() => {
     return `
       <div class="tb-wrap">
         <h2 class="tb-title">📚 Livros IG</h2>
-        <p class="tb-sub">Seus livros e guias do professor. Só você vê esta área.</p>
+        <p class="tb-sub">Seus livros. Só você vê esta área.</p>
         ${inner}
       </div>`;
   }
@@ -81,8 +81,8 @@ const TeacherBooks = (() => {
         .filter(s => s.signedUrl)
         .map(s => ({ name: s.path, url: s.signedUrl, guide: /^guia/i.test(s.path) }));
       modalBody.innerHTML = shell(
+        // The teacher's guides (guia*.pdf) are not listed: Gabi does not use them.
         list('Livros do aluno', files.filter(f => !f.guide)) +
-        list('Guias do professor', files.filter(f => f.guide)) +
         '<p class="tb-note">Os links valem por 1 hora. Para abrir de novo depois, volte aqui.</p>'
       );
     } catch (e) {
