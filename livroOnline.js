@@ -299,12 +299,60 @@ const LivroOnline = (() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
+  // The browser's storage (about 5 MB, shared by the whole site) can be FULL.
+  // Before, a failed write was ignored: the editor said "Salvo" while nothing
+  // was kept, and the cloud sync found nothing to send. Now every page that
+  // could not be stored lives in memory (memPages) until it is stored or sent.
+  const memPages = new Map();            // lsKey -> page, only while localStorage refuses it
+  const bookKeyParts = key => { const m = /^igbook:([^:]+):(.+)$/.exec(key); return m ? { sid: m[1], id: m[2] } : null; };
   function readLocal(sid, id) {
-    try { const raw = localStorage.getItem(lsKey(sid, id)); return raw ? normalize(JSON.parse(raw)) : null; } catch (e) { return null; }
+    const k = lsKey(sid, id);
+    if (memPages.has(k)) return normalize(JSON.parse(JSON.stringify(memPages.get(k))));
+    try { const raw = localStorage.getItem(k); return raw ? normalize(JSON.parse(raw)) : null; } catch (e) { return null; }
   }
+  function tryStore(k, text) { try { localStorage.setItem(k, text); return true; } catch (e) { return false; } }
   function writeLocal(sid, id, page) {
-    try { localStorage.setItem(lsKey(sid, id), JSON.stringify(page)); return true; } catch (e) { return false; }
+    const k = lsKey(sid, id), text = JSON.stringify(page);
+    if (tryStore(k, text)) { memPages.delete(k); retryMemPages(); return true; }
+    // Full: free what the cloud already has, then try again.
+    freeLocalSpace(text.length + 4096, k);
+    if (tryStore(k, text)) { memPages.delete(k); return true; }
+    memPages.set(k, JSON.parse(text));
+    try { window.dispatchEvent(new CustomEvent('ig:storage-full', { detail: { where: 'livro' } })); } catch (e) { /* old browser */ }
+    return false;
   }
+  // Removes cached book pages that are safely in the cloud (not waiting to be
+  // sent) — oldest first — until `need` bytes are free. Returns bytes freed.
+  function freeLocalSpace(need, keepKey) {
+    const cloudOk = TeacherSync.mode === 'cloud' || StudentSync.mode === 'cloud';
+    if (!cloudOk) return 0;               // without the cloud the cache is the only copy
+    const rows = [];
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || key === keepKey || key.indexOf('igbook:') !== 0) continue;
+        const parts = bookKeyParts(key);
+        if (!parts || memPages.has(key) || TeacherSync.isDirty(parts.id) || StudentSync.isDirty(parts.id)) continue;
+        const raw = localStorage.getItem(key) || '';
+        let at = 0; try { at = Number(JSON.parse(raw).updatedAt) || 0; } catch (e) { /* unreadable: evict first */ }
+        rows.push({ key, at, size: raw.length });
+      }
+    } catch (e) { return 0; }
+    rows.sort((a, b) => a.at - b.at);
+    let freed = 0;
+    for (const r of rows) {
+      if (freed >= need) break;
+      try { localStorage.removeItem(r.key); freed += r.size; } catch (e) { /* ignore */ }
+    }
+    return freed;
+  }
+  function pendingInMemory() { return memPages.size; }
+  // When space comes back (a page was stored, or the teacher freed some), pages
+  // that only lived in memory are stored too.
+  function retryMemPages() {
+    memPages.forEach((page, k) => { if (tryStore(k, JSON.stringify(page))) memPages.delete(k); });
+  }
+  window.addEventListener('focus', () => { if (memPages.size) retryMemPages(); });
   const hasWork = p => Boolean(p && (p.strokes.length || p.texts.length || p.stickers.length || takeCount(p.take)
     || (p.answers && Object.keys(p.answers).length)));
   const contentPages = m => m.pages.filter(p => p.kind !== 'stickers');
@@ -481,9 +529,13 @@ const LivroOnline = (() => {
     offline: ['Sem internet — salvo neste aparelho', 'is-warn'],
     toobig: ['Página cheia demais — salva só neste aparelho', 'is-warn'],
     skip: ['⚠ A nuvem recusou — salvo só neste aparelho', 'is-warn'],
+    full: ['⚠ Memória do aparelho cheia — NÃO está salvo', 'is-warn'],
+    fullcloud: ['⚠ Memória cheia — salvando só na nuvem', 'is-warn'],
   };
   function paintStatus(el, s) {
     if (!el) return;
+    // Pages the browser could not keep (memory full) must never look "saved".
+    if (memPages.size && s !== 'saving') s = (s === 'saved') ? 'fullcloud' : 'full';
     const [text, cls] = STATUS[s] || STATUS.idle;
     el.textContent = text;
     el.className = 'lo-status ' + cls;
@@ -3035,7 +3087,7 @@ const LivroOnline = (() => {
 
   return {
     openSlides,
-    resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest, takeawayFor, takeawayItems,
+    freeSpace: freeLocalSpace, pendingInMemory, resUrl, BOOKS, bookFor, bookByAge, setBook, openStudent, openTeacher, openClass, openClassPicker, loadManifest, takeawayFor, takeawayItems,
     // Homework: open the student's book right on the pages the teacher set.
     // hw = { pages: [8, 9], label: 'p. 8–9', bim, onClose({ done, total }) }
     openHomeworkPages: (student, hw) => openBookHome(student, { teacher: !window.IG_SHARE_MODE, homework: hw }),

@@ -614,6 +614,63 @@ function igCopyWorkspace(from, to, overwrite) {
   return copied;
 }
 
+
+// ---------------------------------------------------------------------------
+// Storage full warning. The browser keeps about 5 MB for the whole site; when
+// it is full, writes fail. This banner says so (it used to be silent) and
+// offers to free space that is safe to free (see igSfFree).
+// ---------------------------------------------------------------------------
+function igSfReport() {
+  const rows = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      rows.push([k, (localStorage.getItem(k) || '').length]);
+    }
+  } catch (e) { /* ignore */ }
+  rows.sort((a, b) => b[1] - a[1]);
+  const total = rows.reduce((n, r) => n + r[1], 0);
+  return { total, rows: rows.slice(0, 12) };
+}
+function igSfFree() {
+  let freed = 0;
+  try {
+    if (typeof LivroOnline !== 'undefined' && LivroOnline.freeSpace) freed += LivroOnline.freeSpace(1e9);
+  } catch (e) { /* ignore */ }
+  ['ig_ipa_cache_v1'].forEach(k => {
+    try { const v = localStorage.getItem(k); if (v) { freed += v.length; localStorage.removeItem(k); } } catch (e) { /* ignore */ }
+  });
+  return freed;
+}
+let igSfLast = 0;
+function igSfBanner() {
+  const now = Date.now();
+  if (now - igSfLast < 60000 || document.getElementById('igSfBanner')) return;
+  igSfLast = now;
+  const bar = document.createElement('div');
+  bar.id = 'igSfBanner';
+  bar.setAttribute('role', 'alert');
+  bar.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:#fff3cd;border:2px solid #e0a800;color:#4a3b00;'
+    + 'border-radius:14px;padding:10px 14px;box-shadow:0 6px 24px rgba(0,0,0,.25);font:600 14px/1.35 system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:8px;align-items:center';
+  bar.innerHTML = '<span style="flex:1 1 260px">⚠ A memória do navegador está cheia: o que você faz agora pode <b>não ficar salvo neste aparelho</b>. '
+    + 'Clique em “Liberar espaço” (apaga só cópias que já estão na nuvem).</span>'
+    + '<button type="button" id="igSfFree" style="border:0;border-radius:10px;padding:8px 12px;background:#f05d77;color:#fff;font-weight:700;cursor:pointer">🧹 Liberar espaço</button>'
+    + '<button type="button" id="igSfInfo" style="border:0;border-radius:10px;padding:8px 12px;background:#eee;font-weight:700;cursor:pointer">📋 O que ocupa</button>'
+    + '<button type="button" id="igSfClose" style="border:0;background:transparent;font-size:18px;cursor:pointer" aria-label="Fechar">✕</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('#igSfClose').addEventListener('click', () => bar.remove());
+  bar.querySelector('#igSfFree').addEventListener('click', () => {
+    const freed = igSfFree();
+    alert(freed ? `Pronto! Liberei cerca de ${Math.round(freed / 1024)} KB. Tente de novo.` : 'Não havia nada seguro para apagar. Veja “O que ocupa”.');
+    bar.remove();
+  });
+  bar.querySelector('#igSfInfo').addEventListener('click', () => {
+    const r = igSfReport();
+    alert(`Memória usada: ${Math.round(r.total / 1024)} KB de ~5000 KB\n\nMaiores itens:\n` + r.rows.map(x => `${Math.round(x[1] / 1024)} KB — ${x[0]}`).join('\n'));
+  });
+}
+window.addEventListener('ig:storage-full', () => { try { igSfBanner(); } catch (e) { /* ignore */ } });
+
 const IGStore = (() => {
   const writeListeners = [];
 
@@ -632,7 +689,11 @@ const IGStore = (() => {
   }
 
   function setRaw(key, value) {
-    try { localStorage.setItem(igStorageKey(key), value); } catch (e) { /* quota / private mode */ }
+    try { localStorage.setItem(igStorageKey(key), value); }
+    catch (e) {
+      // quota / private mode: tell the teacher instead of losing work in silence
+      try { window.dispatchEvent(new CustomEvent('ig:storage-full', { detail: { where: key } })); } catch (e2) { /* old browser */ }
+    }
     notify(key, value);
   }
 
