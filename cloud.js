@@ -78,7 +78,7 @@ const IGCloud = (() => {
 
   async function probeLayout(candidate) {
     const sb = window.supabase.createClient(window.IG_SUPABASE.url, window.IG_SUPABASE.anonKey, {
-      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'ig-english-auth' },
+      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'ig-english-auth', storage: igSafeStore },
       db: { schema: candidate.schema },
     });
     const { error } = await sb.from(candidate.prefix + 'students').select('teacher_id').limit(1);
@@ -171,6 +171,8 @@ const IGCloud = (() => {
         // under the default key. Keep ours separate so the two never fight
         // over the same slot in localStorage.
         storageKey: 'ig-english-auth',
+        // Survives a full localStorage (utils.js): no sign-in loop.
+        storage: igSafeStore,
       },
       // All tables live in their own schema (see supabase-schema.sql), so
       // this project can share one free-tier Supabase database with another

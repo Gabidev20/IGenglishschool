@@ -466,17 +466,42 @@ function igClearSessionTombstones(studentId, ids) {
   try { localStorage.setItem(igTombstoneKey(), JSON.stringify(m)); } catch (e) { /* private mode */ }
 }
 
+// Storage that survives a FULL localStorage (book drawings fill the ~5 MB):
+// a write that localStorage refuses goes to this tab's sessionStorage (its
+// own space), and reads look there first. Used for the sign-in session and
+// the workspace id — without it a full browser sent the teacher back to the
+// sign-in screen on every reload.
+const igSafeStore = {
+  getItem(k) {
+    try { const s = sessionStorage.getItem('igsafe:' + k); if (s != null) return s; } catch (e) { /* ignore */ }
+    try { return localStorage.getItem(k); } catch (e) { return null; }
+  },
+  setItem(k, v) {
+    try {
+      localStorage.setItem(k, v);
+      try { sessionStorage.removeItem('igsafe:' + k); } catch (e) { /* ignore */ }
+      return;
+    } catch (e) {
+      try { window.dispatchEvent(new CustomEvent('ig:storage-full', { detail: { where: k } })); } catch (e2) { /* ignore */ }
+    }
+    try { sessionStorage.setItem('igsafe:' + k, v); } catch (e) { /* nothing left to try */ }
+  },
+  removeItem(k) {
+    try { localStorage.removeItem(k); } catch (e) { /* ignore */ }
+    try { sessionStorage.removeItem('igsafe:' + k); } catch (e) { /* ignore */ }
+  },
+};
+
 function igSetWorkspace(id) {
   igWorkspace = String(id || 'local');
-  try { localStorage.setItem(IG_WORKSPACE_KEY, igWorkspace); } catch (e) {}
+  igSafeStore.setItem(IG_WORKSPACE_KEY, igWorkspace);
 }
 
 // Read back the workspace chosen on the previous visit. Synchronous on
 // purpose: the app renders from storage the moment its scripts run, long
 // before any network call could answer.
 function igRestoreWorkspace() {
-  try { igWorkspace = localStorage.getItem(IG_WORKSPACE_KEY) || 'local'; }
-  catch (e) { igWorkspace = 'local'; }
+  igWorkspace = igSafeStore.getItem(IG_WORKSPACE_KEY) || 'local';
   return igWorkspace;
 }
 
@@ -669,7 +694,8 @@ function igSfBanner() {
     alert(`Memória usada: ${Math.round(r.total / 1024)} KB de ~5000 KB\n\nMaiores itens:\n` + r.rows.map(x => `${Math.round(x[1] / 1024)} KB — ${x[0]}`).join('\n'));
   });
 }
-window.addEventListener('ig:storage-full', () => { try { igSfBanner(); } catch (e) { /* ignore */ } });
+let igSfHit = false;
+window.addEventListener('ig:storage-full', () => { igSfHit = true; try { igSfBanner(); } catch (e) { /* ignore */ } });
 
 const IGStore = (() => {
   const writeListeners = [];

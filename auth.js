@@ -174,6 +174,22 @@ const IGAuth = (() => {
     await IGCloud.start(session);
     renderTeacherChip();
     askSetup();
+    igAuthFreeIfFull();
+  }
+
+  // The browser's storage was full while the cloud copy came in: free the
+  // book pages that are already safe in the cloud, then load once more so
+  // everything is stored on this computer again. Once per tab, never a loop.
+  function igAuthFreeIfFull() {
+    if (typeof igSfHit === 'undefined' || !igSfHit || typeof igSfFree !== 'function') return;
+    let done = false;
+    try { done = sessionStorage.getItem('igsafe:freed') === '1'; } catch (e) { /* ignore */ }
+    if (done) return;
+    setTimeout(() => {
+      const freed = igSfFree();
+      try { sessionStorage.setItem('igsafe:freed', '1'); } catch (e) { /* ignore */ }
+      if (freed > 0) window.location.reload();
+    }, 4000);
   }
 
   // The "who do you teach?" questions (teacherSetup.js), asked once the
