@@ -29,7 +29,7 @@
      "pages": 24,
      "first": 50,
      "last": 73,
-     "interactive": false
+     "interactive": true
     }
    ]
   },
@@ -61,7 +61,7 @@
      "pages": 23,
      "first": 48,
      "last": 70,
-     "interactive": false
+     "interactive": true
     }
    ]
   },
