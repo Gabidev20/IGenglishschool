@@ -188,6 +188,144 @@
       "title": "Alibi! Listen to Detective Kim and the three suspects.",
       "subtitle": "Page 97",
       "file": "u8-alibi.mp3"
+    },
+    {
+      "id": "u9-warm-up",
+      "unit": 9,
+      "unitTitle": "Compare It!",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 103",
+      "file": "u9-warm-up.mp3"
+    },
+    {
+      "id": "u9-top-picks",
+      "unit": 9,
+      "title": "Which Is Better? Luna and Theo compare three things.",
+      "subtitle": "Page 109",
+      "file": "u9-top-picks.mp3"
+    },
+    {
+      "id": "u9-debate-model",
+      "unit": 9,
+      "title": "Debate with your teacher. Listen to a model.",
+      "subtitle": "Page 110",
+      "file": "u9-debate-model.mp3"
+    },
+    {
+      "id": "u10-warm-up",
+      "unit": 10,
+      "unitTitle": "Our Planet",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 114",
+      "file": "u10-warm-up.mp3"
+    },
+    {
+      "id": "u10-eco-tips",
+      "unit": 10,
+      "title": "Green Tips. Listen to Maya and circle should or shouldn’t.",
+      "subtitle": "Page 120",
+      "file": "u10-eco-tips.mp3"
+    },
+    {
+      "id": "u10-park-rules",
+      "unit": 10,
+      "title": "Blue Lake Park. Listen to the rules.",
+      "subtitle": "Page 120",
+      "file": "u10-park-rules.mp3"
+    },
+    {
+      "id": "u10-campaign-model",
+      "unit": 10,
+      "title": "Present your campaign. Listen to a model.",
+      "subtitle": "Page 121",
+      "file": "u10-campaign-model.mp3"
+    },
+    {
+      "id": "u11-warm-up",
+      "unit": 11,
+      "unitTitle": "The Future",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 125",
+      "file": "u11-warm-up.mp3"
+    },
+    {
+      "id": "u11-plans",
+      "unit": 11,
+      "title": "Vacation plans. Listen to Sofia, Davi and Yuki.",
+      "subtitle": "Page 131",
+      "file": "u11-plans.mp3"
+    },
+    {
+      "id": "u11-predictions",
+      "unit": 11,
+      "title": "Future Talk. Mia and Leo make predictions for 2050.",
+      "subtitle": "Page 131",
+      "file": "u11-predictions.mp3"
+    },
+    {
+      "id": "u11-plans-model",
+      "unit": 11,
+      "title": "My vacation plans. Listen to a model.",
+      "subtitle": "Page 132",
+      "file": "u11-plans-model.mp3"
+    },
+    {
+      "id": "u12-warm-up",
+      "unit": 12,
+      "unitTitle": "Jobs and Dreams",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 136",
+      "file": "u12-warm-up.mp3"
+    },
+    {
+      "id": "u12-dream-jobs",
+      "unit": 12,
+      "title": "Dream jobs. Listen to three teens.",
+      "subtitle": "Page 141",
+      "file": "u12-dream-jobs.mp3"
+    },
+    {
+      "id": "u12-interview",
+      "unit": 12,
+      "title": "The interview. Listen to Theo’s job interview.",
+      "subtitle": "Page 142",
+      "file": "u12-interview.mp3"
+    },
+    {
+      "id": "u12-mock-interview",
+      "unit": 12,
+      "title": "A model interview for a junior reporter job.",
+      "subtitle": "Page 144",
+      "file": "u12-mock-interview.mp3"
+    },
+    {
+      "id": "u13-warm-up",
+      "unit": 13,
+      "unitTitle": "Experiences",
+      "title": "Warm-up. Ask and answer with your teacher.",
+      "subtitle": "Page 147",
+      "file": "u13-warm-up.mp3"
+    },
+    {
+      "id": "u13-blog",
+      "unit": 13,
+      "title": "Nina’s travel blog. Listen and read.",
+      "subtitle": "Page 148",
+      "file": "u13-blog.mp3"
+    },
+    {
+      "id": "u13-teen-survey",
+      "unit": 13,
+      "title": "The Teen Survey. Have you ever…?",
+      "subtitle": "Page 153",
+      "file": "u13-teen-survey.mp3"
+    },
+    {
+      "id": "u13-my-year",
+      "unit": 13,
+      "title": "My Year. Listen to a model presentation.",
+      "subtitle": "Page 155",
+      "file": "u13-my-year.mp3"
     }
   ],
   "_pagesV2": true

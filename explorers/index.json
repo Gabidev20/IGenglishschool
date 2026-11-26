@@ -28,6 +28,14 @@
    "first": 48,
    "last": 70,
    "interactive": true
+  },
+  {
+   "n": 4,
+   "path": "explorers/b4/manifest.json",
+   "pages": 23,
+   "first": 71,
+   "last": 93,
+   "interactive": true
   }
  ]
 }

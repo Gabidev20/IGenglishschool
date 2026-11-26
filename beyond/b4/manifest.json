@@ -1,0 +1,1583 @@
+{
+ "v": 1,
+ "book": "beyond",
+ "bimester": 4,
+ "id": "beyond:b4",
+ "title": "IG Beyond",
+ "ages": "12–14",
+ "color": "#c9435c",
+ "firstPage": 102,
+ "lastPage": 160,
+ "pageCount": 59,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 4"
+  },
+  {
+   "n": 9,
+   "title": "Unit 9 · Compare It!"
+  },
+  {
+   "n": 10,
+   "title": "Unit 10 · Our Planet"
+  },
+  {
+   "n": 11,
+   "title": "Unit 11 · The Future"
+  },
+  {
+   "n": 12,
+   "title": "Unit 12 · Jobs and Dreams"
+  },
+  {
+   "n": 13,
+   "title": "Unit 13 · Experiences"
+  }
+ ],
+ "stickerSheet": 160,
+ "pages": [
+  {
+   "n": 102,
+   "id": "p102",
+   "img": "p102.webp",
+   "thumb": "t102.webp",
+   "unit": 0,
+   "title": "Bimestre 4",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 103,
+   "id": "p103",
+   "img": "p103.webp",
+   "thumb": "t103.webp",
+   "unit": 9,
+   "title": "Unit 9 · Compare It!",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u9-warm-up",
+     "file": "u9-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 104,
+   "id": "p104",
+   "img": "p104.webp",
+   "thumb": "t104.webp",
+   "unit": 9,
+   "title": "Top 5 Fastest Animals",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 105,
+   "id": "p105",
+   "img": "p105.webp",
+   "thumb": "t105.webp",
+   "unit": 9,
+   "title": "Short Words: -er / -est",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 106,
+   "id": "p106",
+   "img": "p106.webp",
+   "thumb": "t106.webp",
+   "unit": 9,
+   "title": "Long Words: more / most",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 107,
+   "id": "p107",
+   "img": "p107.webp",
+   "thumb": "t107.webp",
+   "unit": 9,
+   "title": "Practice Plus: Compare",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 108,
+   "id": "p108",
+   "img": "p108.webp",
+   "thumb": "t108.webp",
+   "unit": 9,
+   "title": "As Tall As…",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 109,
+   "id": "p109",
+   "img": "p109.webp",
+   "thumb": "t109.webp",
+   "unit": 9,
+   "title": "Which Is Better?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-top-picks",
+     "file": "u9-top-picks.mp3",
+     "title": "Which Is Better? Luna and Theo compare three things.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 110,
+   "id": "p110",
+   "img": "p110.webp",
+   "thumb": "t110.webp",
+   "unit": 9,
+   "title": "Let’s Debate!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-debate-model",
+     "file": "u9-debate-model.mp3",
+     "title": "Debate with your teacher",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 111,
+   "id": "p111",
+   "img": "p111.webp",
+   "thumb": "t111.webp",
+   "unit": 9,
+   "title": "Write My Ranking",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 112,
+   "id": "p112",
+   "img": "p112.webp",
+   "thumb": "t112.webp",
+   "unit": 9,
+   "title": "My Top 5 Songs",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 113,
+   "id": "p113",
+   "img": "p113.webp",
+   "thumb": "t113.webp",
+   "unit": 9,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 114,
+   "id": "p114",
+   "img": "p114.webp",
+   "thumb": "t114.webp",
+   "unit": 10,
+   "title": "Unit 10 · Our Planet",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u10-warm-up",
+     "file": "u10-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 115,
+   "id": "p115",
+   "img": "p115.webp",
+   "thumb": "t115.webp",
+   "unit": 10,
+   "title": "Save Our Planet Week",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 116,
+   "id": "p116",
+   "img": "p116.webp",
+   "thumb": "t116.webp",
+   "unit": 10,
+   "title": "You Should…",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 117,
+   "id": "p117",
+   "img": "p117.webp",
+   "thumb": "t117.webp",
+   "unit": 10,
+   "title": "Rules: Must and Have To",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 118,
+   "id": "p118",
+   "img": "p118.webp",
+   "thumb": "t118.webp",
+   "unit": 10,
+   "title": "Practice Plus: Rules",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 119,
+   "id": "p119",
+   "img": "p119.webp",
+   "thumb": "t119.webp",
+   "unit": 10,
+   "title": "Park Rules and Volunteers",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 120,
+   "id": "p120",
+   "img": "p120.webp",
+   "thumb": "t120.webp",
+   "unit": 10,
+   "title": "Eco Tips and Rules",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-eco-tips",
+     "file": "u10-eco-tips.mp3",
+     "title": "Green Tips",
+     "available": true
+    },
+    {
+     "track": "u10-park-rules",
+     "file": "u10-park-rules.mp3",
+     "title": "Blue Lake Park",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 121,
+   "id": "p121",
+   "img": "p121.webp",
+   "thumb": "t121.webp",
+   "unit": 10,
+   "title": "Your Campaign!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-campaign-model",
+     "file": "u10-campaign-model.mp3",
+     "title": "Present your campaign",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 122,
+   "id": "p122",
+   "img": "p122.webp",
+   "thumb": "t122.webp",
+   "unit": 10,
+   "title": "My Campaign Poster",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 123,
+   "id": "p123",
+   "img": "p123.webp",
+   "thumb": "t123.webp",
+   "unit": 10,
+   "title": "Things I Can Change",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 124,
+   "id": "p124",
+   "img": "p124.webp",
+   "thumb": "t124.webp",
+   "unit": 10,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 125,
+   "id": "p125",
+   "img": "p125.webp",
+   "thumb": "t125.webp",
+   "unit": 11,
+   "title": "Unit 11 · The Future",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u11-warm-up",
+     "file": "u11-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 126,
+   "id": "p126",
+   "img": "p126.webp",
+   "thumb": "t126.webp",
+   "unit": 11,
+   "title": "Life in 2050",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 127,
+   "id": "p127",
+   "img": "p127.webp",
+   "thumb": "t127.webp",
+   "unit": 11,
+   "title": "Will and Won’t",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 128,
+   "id": "p128",
+   "img": "p128.webp",
+   "thumb": "t128.webp",
+   "unit": 11,
+   "title": "Going To: Plans",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 129,
+   "id": "p129",
+   "img": "p129.webp",
+   "thumb": "t129.webp",
+   "unit": 11,
+   "title": "Practice Plus: Future",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 130,
+   "id": "p130",
+   "img": "p130.webp",
+   "thumb": "t130.webp",
+   "unit": 11,
+   "title": "Vacation Plans",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 131,
+   "id": "p131",
+   "img": "p131.webp",
+   "thumb": "t131.webp",
+   "unit": 11,
+   "title": "Plans and Predictions",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-plans",
+     "file": "u11-plans.mp3",
+     "title": "Vacation plans",
+     "available": true
+    },
+    {
+     "track": "u11-predictions",
+     "file": "u11-predictions.mp3",
+     "title": "Future Talk",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 132,
+   "id": "p132",
+   "img": "p132.webp",
+   "thumb": "t132.webp",
+   "unit": 11,
+   "title": "My Vacation Plans",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-plans-model",
+     "file": "u11-plans-model.mp3",
+     "title": "My vacation plans",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 133,
+   "id": "p133",
+   "img": "p133.webp",
+   "thumb": "t133.webp",
+   "unit": 11,
+   "title": "Letter to My Future Self",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 134,
+   "id": "p134",
+   "img": "p134.webp",
+   "thumb": "t134.webp",
+   "unit": 11,
+   "title": "My Dream Concert",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 135,
+   "id": "p135",
+   "img": "p135.webp",
+   "thumb": "t135.webp",
+   "unit": 11,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 136,
+   "id": "p136",
+   "img": "p136.webp",
+   "thumb": "t136.webp",
+   "unit": 12,
+   "title": "Unit 12 · Jobs and Dreams",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u12-warm-up",
+     "file": "u12-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 137,
+   "id": "p137",
+   "img": "p137.webp",
+   "thumb": "t137.webp",
+   "unit": 12,
+   "title": "Summer Jobs",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 138,
+   "id": "p138",
+   "img": "p138.webp",
+   "thumb": "t138.webp",
+   "unit": 12,
+   "title": "I Love Dancing!",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 139,
+   "id": "p139",
+   "img": "p139.webp",
+   "thumb": "t139.webp",
+   "unit": 12,
+   "title": "Likes and Hates",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 140,
+   "id": "p140",
+   "img": "p140.webp",
+   "thumb": "t140.webp",
+   "unit": 12,
+   "title": "I’d Like to Be a Vet",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 141,
+   "id": "p141",
+   "img": "p141.webp",
+   "thumb": "t141.webp",
+   "unit": 12,
+   "title": "Dream Job Talk",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-dream-jobs",
+     "file": "u12-dream-jobs.mp3",
+     "title": "Dream jobs",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 142,
+   "id": "p142",
+   "img": "p142.webp",
+   "thumb": "t142.webp",
+   "unit": 12,
+   "title": "The Interview",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-interview",
+     "file": "u12-interview.mp3",
+     "title": "The interview",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 143,
+   "id": "p143",
+   "img": "p143.webp",
+   "thumb": "t143.webp",
+   "unit": 12,
+   "title": "Apply by Email",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 144,
+   "id": "p144",
+   "img": "p144.webp",
+   "thumb": "t144.webp",
+   "unit": 12,
+   "title": "Job Interview",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-mock-interview",
+     "file": "u12-mock-interview.mp3",
+     "title": "A model interview for a junior reporter job.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 145,
+   "id": "p145",
+   "img": "p145.webp",
+   "thumb": "t145.webp",
+   "unit": 12,
+   "title": "My Dream Job",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 146,
+   "id": "p146",
+   "img": "p146.webp",
+   "thumb": "t146.webp",
+   "unit": 12,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 147,
+   "id": "p147",
+   "img": "p147.webp",
+   "thumb": "t147.webp",
+   "unit": 13,
+   "title": "Unit 13 · Experiences",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u13-warm-up",
+     "file": "u13-warm-up.mp3",
+     "title": "Warm-up",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 148,
+   "id": "p148",
+   "img": "p148.webp",
+   "thumb": "t148.webp",
+   "unit": 13,
+   "title": "Nina’s Passport",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u13-blog",
+     "file": "u13-blog.mp3",
+     "title": "Nina’s travel blog",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 149,
+   "id": "p149",
+   "img": "p149.webp",
+   "thumb": "t149.webp",
+   "unit": 13,
+   "title": "Have You Ever…?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 150,
+   "id": "p150",
+   "img": "p150.webp",
+   "thumb": "t150.webp",
+   "unit": 13,
+   "title": "Have I Ever?",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 151,
+   "id": "p151",
+   "img": "p151.webp",
+   "thumb": "t151.webp",
+   "unit": 13,
+   "title": "Past Participles",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 152,
+   "id": "p152",
+   "img": "p152.webp",
+   "thumb": "t152.webp",
+   "unit": 13,
+   "title": "Experience Check",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 153,
+   "id": "p153",
+   "img": "p153.webp",
+   "thumb": "t153.webp",
+   "unit": 13,
+   "title": "The Teen Survey",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u13-teen-survey",
+     "file": "u13-teen-survey.mp3",
+     "title": "The Teen Survey",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 154,
+   "id": "p154",
+   "img": "p154.webp",
+   "thumb": "t154.webp",
+   "unit": 13,
+   "title": "Write a Blog Post",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 155,
+   "id": "p155",
+   "img": "p155.webp",
+   "thumb": "t155.webp",
+   "unit": 13,
+   "title": "My Year",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u13-my-year",
+     "file": "u13-my-year.mp3",
+     "title": "My Year",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 156,
+   "id": "p156",
+   "img": "p156.webp",
+   "thumb": "t156.webp",
+   "unit": 13,
+   "title": "My Bucket List",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 157,
+   "id": "p157",
+   "img": "p157.webp",
+   "thumb": "t157.webp",
+   "unit": 13,
+   "title": "Book Review Quiz",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 158,
+   "id": "p158",
+   "img": "p158.webp",
+   "thumb": "t158.webp",
+   "unit": 13,
+   "title": "Play & Review",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 159,
+   "id": "p159",
+   "img": "p159.webp",
+   "thumb": "t159.webp",
+   "unit": 13,
+   "title": "This Is Me: Your Zine",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 160,
+   "id": "p160",
+   "img": "p160.webp",
+   "thumb": "t160.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "reward1",
+   "img": "stickers/reward1.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    113,
+    124,
+    135,
+    146,
+    158
+   ],
+   "targets": [
+    {
+     "page": 113,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 124,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 135,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 146,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 158,
+     "x": 0.8381,
+     "y": 0.5791
+    }
+   ],
+   "label": "p. 113, 124, 135, 146…"
+  },
+  {
+   "id": "track1",
+   "img": "stickers/track1.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.0342,
+   "wmm": 14.0,
+   "hmm": 10.2,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "playlist1",
+   "img": "stickers/playlist1.webp",
+   "kind": "playlist",
+   "w": 0.1905,
+   "h": 0.0474,
+   "wmm": 40.0,
+   "hmm": 14.1,
+   "pages": [
+    112
+   ],
+   "targets": [
+    {
+     "page": 112,
+     "x": 0.8095,
+     "y": 0.1684
+    }
+   ],
+   "label": "p. 112"
+  },
+  {
+   "id": "reward2",
+   "img": "stickers/reward2.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    113,
+    124,
+    135,
+    146,
+    158
+   ],
+   "targets": [
+    {
+     "page": 113,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 124,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 135,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 146,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 158,
+     "x": 0.8381,
+     "y": 0.5791
+    }
+   ],
+   "label": "p. 113, 124, 135, 146…"
+  },
+  {
+   "id": "track2",
+   "img": "stickers/track2.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.0342,
+   "wmm": 14.0,
+   "hmm": 10.2,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "planet1",
+   "img": "stickers/planet1.webp",
+   "kind": "planet",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    123
+   ],
+   "targets": [
+    {
+     "page": 123,
+     "x": 0.8095,
+     "y": 0.1785
+    }
+   ],
+   "label": "p. 123"
+  },
+  {
+   "id": "reward3",
+   "img": "stickers/reward3.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    113,
+    124,
+    135,
+    146,
+    158
+   ],
+   "targets": [
+    {
+     "page": 113,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 124,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 135,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 146,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 158,
+     "x": 0.8381,
+     "y": 0.5791
+    }
+   ],
+   "label": "p. 113, 124, 135, 146…"
+  },
+  {
+   "id": "track3",
+   "img": "stickers/track3.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.034,
+   "wmm": 14.0,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "concert1",
+   "img": "stickers/concert1.webp",
+   "kind": "concert",
+   "w": 0.2,
+   "h": 0.0542,
+   "wmm": 42.0,
+   "hmm": 16.1,
+   "pages": [
+    134
+   ],
+   "targets": [
+    {
+     "page": 134,
+     "x": 0.8143,
+     "y": 0.1684
+    }
+   ],
+   "label": "p. 134"
+  },
+  {
+   "id": "reward4",
+   "img": "stickers/reward4.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    113,
+    124,
+    135,
+    146,
+    158
+   ],
+   "targets": [
+    {
+     "page": 113,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 124,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 135,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 146,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 158,
+     "x": 0.8381,
+     "y": 0.5791
+    }
+   ],
+   "label": "p. 113, 124, 135, 146…"
+  },
+  {
+   "id": "track4",
+   "img": "stickers/track4.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.034,
+   "wmm": 14.0,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "hired1",
+   "img": "stickers/hired1.webp",
+   "kind": "hired",
+   "w": 0.1714,
+   "h": 0.0407,
+   "wmm": 36.0,
+   "hmm": 12.1,
+   "pages": [
+    145
+   ],
+   "targets": [
+    {
+     "page": 145,
+     "x": 0.5619,
+     "y": 0.1818
+    }
+   ],
+   "label": "p. 145"
+  },
+  {
+   "id": "reward5",
+   "img": "stickers/reward5.webp",
+   "kind": "reward",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    113,
+    124,
+    135,
+    146,
+    158
+   ],
+   "targets": [
+    {
+     "page": 113,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 124,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 135,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 146,
+     "x": 0.8381,
+     "y": 0.6128
+    },
+    {
+     "page": 158,
+     "x": 0.8381,
+     "y": 0.5791
+    }
+   ],
+   "label": "p. 113, 124, 135, 146…"
+  },
+  {
+   "id": "track5",
+   "img": "stickers/track5.webp",
+   "kind": "track",
+   "w": 0.0667,
+   "h": 0.034,
+   "wmm": 14.0,
+   "hmm": 10.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3173
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.354
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.3907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4544
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.4911
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.5278
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.617
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6537
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.6904
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.754
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.7907
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8274
+    },
+    {
+     "page": 2,
+     "x": 0.4048,
+     "y": 0.8641
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "bucket1",
+   "img": "stickers/bucket1.webp",
+   "kind": "bucket",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    156
+   ],
+   "targets": [
+    {
+     "page": 156,
+     "x": 0.5429,
+     "y": 0.1886
+    }
+   ],
+   "label": "p. 156"
+  },
+  {
+   "id": "washi1",
+   "img": "stickers/washi1.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi2",
+   "img": "stickers/washi2.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "washi3",
+   "img": "stickers/washi3.webp",
+   "kind": "washi",
+   "w": 0.219,
+   "h": 0.0306,
+   "wmm": 46.0,
+   "hmm": 9.1,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  }
+ ]
+}

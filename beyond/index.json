@@ -28,6 +28,14 @@
    "first": 77,
    "last": 101,
    "interactive": true
+  },
+  {
+   "n": 4,
+   "path": "beyond/b4/manifest.json",
+   "pages": 59,
+   "first": 102,
+   "last": 160,
+   "interactive": true
   }
  ]
 }

@@ -1,0 +1,574 @@
+{
+ "v": 1,
+ "book": "explorers",
+ "bimester": 4,
+ "id": "explorers:b4",
+ "title": "IG Explorers",
+ "ages": "7–8",
+ "color": "#6f7d68",
+ "firstPage": 71,
+ "lastPage": 93,
+ "pageCount": 23,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 4"
+  },
+  {
+   "n": 10,
+   "title": "Unit 10 · The Treehouse"
+  },
+  {
+   "n": 11,
+   "title": "Unit 11 · Ocean Dive"
+  },
+  {
+   "n": 12,
+   "title": "Unit 12 · Space Station"
+  }
+ ],
+ "stickerSheet": 93,
+ "pages": [
+  {
+   "n": 71,
+   "id": "p71",
+   "img": "p71.webp",
+   "thumb": "t71.webp",
+   "unit": 0,
+   "title": "Bimestre 4",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 72,
+   "id": "p72",
+   "img": "p72.webp",
+   "thumb": "t72.webp",
+   "unit": 10,
+   "title": "Unit 10 · The Treehouse",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u10-treehouse-chant",
+     "file": "u10-treehouse-chant.mp3",
+     "title": "The Treehouse Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 73,
+   "id": "p73",
+   "img": "p73.webp",
+   "thumb": "t73.webp",
+   "unit": 10,
+   "title": "Discover: rooms and furniture",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-rooms",
+     "file": "u10-rooms.mp3",
+     "title": "Rooms",
+     "available": true
+    },
+    {
+     "track": "u10-furniture",
+     "file": "u10-furniture.mp3",
+     "title": "Furniture",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 74,
+   "id": "p74",
+   "img": "p74.webp",
+   "thumb": "t74.webp",
+   "unit": 10,
+   "title": "Practice: in, on, under",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 75,
+   "id": "p75",
+   "img": "p75.webp",
+   "thumb": "t75.webp",
+   "unit": 10,
+   "title": "Practice: where is it?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-where-is-it",
+     "file": "u10-where-is-it.mp3",
+     "title": "Where Is It? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 76,
+   "id": "p76",
+   "img": "p76.webp",
+   "thumb": "t76.webp",
+   "unit": 10,
+   "title": "Use: my bedroom",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 77,
+   "id": "p77",
+   "img": "p77.webp",
+   "thumb": "t77.webp",
+   "unit": 10,
+   "title": "Play: house games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 78,
+   "id": "p78",
+   "img": "p78.webp",
+   "thumb": "t78.webp",
+   "unit": 10,
+   "title": "Review: house check",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-listen-and-write",
+     "file": "u10-listen-and-write.mp3",
+     "title": "Listen and write.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 79,
+   "id": "p79",
+   "img": "p79.webp",
+   "thumb": "t79.webp",
+   "unit": 11,
+   "title": "Unit 11 · Ocean Dive",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u11-ocean-chant",
+     "file": "u11-ocean-chant.mp3",
+     "title": "The Ocean Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 80,
+   "id": "p80",
+   "img": "p80.webp",
+   "thumb": "t80.webp",
+   "unit": 11,
+   "title": "Discover: sea animals",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-sea-animals",
+     "file": "u11-sea-animals.mp3",
+     "title": "Sea animals",
+     "available": true
+    },
+    {
+     "track": "u11-there-is",
+     "file": "u11-there-is.mp3",
+     "title": "There is, there are",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 81,
+   "id": "p81",
+   "img": "p81.webp",
+   "thumb": "t81.webp",
+   "unit": 11,
+   "title": "Practice: there is, there are",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 82,
+   "id": "p82",
+   "img": "p82.webp",
+   "thumb": "t82.webp",
+   "unit": 11,
+   "title": "Practice: how many?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-how-many",
+     "file": "u11-how-many.mp3",
+     "title": "How Many? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 83,
+   "id": "p83",
+   "img": "p83.webp",
+   "thumb": "t83.webp",
+   "unit": 11,
+   "title": "Use: my undersea scene",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 84,
+   "id": "p84",
+   "img": "p84.webp",
+   "thumb": "t84.webp",
+   "unit": 11,
+   "title": "Play: ocean games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 85,
+   "id": "p85",
+   "img": "p85.webp",
+   "thumb": "t85.webp",
+   "unit": 11,
+   "title": "Review: ocean check",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-listen-and-write",
+     "file": "u11-listen-and-write.mp3",
+     "title": "Listen and write.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 86,
+   "id": "p86",
+   "img": "p86.webp",
+   "thumb": "t86.webp",
+   "unit": 12,
+   "title": "Unit 12 · Space Station",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u12-space-chant",
+     "file": "u12-space-chant.mp3",
+     "title": "The Space Station Chant",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 87,
+   "id": "p87",
+   "img": "p87.webp",
+   "thumb": "t87.webp",
+   "unit": 12,
+   "title": "Discover: days and routines",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-days",
+     "file": "u12-days.mp3",
+     "title": "Days of the week",
+     "available": true
+    },
+    {
+     "track": "u12-routine",
+     "file": "u12-routine.mp3",
+     "title": "My day",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 88,
+   "id": "p88",
+   "img": "p88.webp",
+   "thumb": "t88.webp",
+   "unit": 12,
+   "title": "Practice: I get up, I go",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 89,
+   "id": "p89",
+   "img": "p89.webp",
+   "thumb": "t89.webp",
+   "unit": 12,
+   "title": "Practice: Kiko’s day",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-kiko-day",
+     "file": "u12-kiko-day.mp3",
+     "title": "Kiko’s Day",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 90,
+   "id": "p90",
+   "img": "p90.webp",
+   "thumb": "t90.webp",
+   "unit": 12,
+   "title": "Use: my day",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 91,
+   "id": "p91",
+   "img": "p91.webp",
+   "thumb": "t91.webp",
+   "unit": 12,
+   "title": "Review Camp: race",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-listen-and-write",
+     "file": "u12-listen-and-write.mp3",
+     "title": "Listen and write.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 92,
+   "id": "p92",
+   "img": "p92.webp",
+   "thumb": "t92.webp",
+   "unit": 12,
+   "title": "Review Camp: explorer check and medal",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 93,
+   "id": "p93",
+   "img": "p93.webp",
+   "thumb": "t93.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "map10",
+   "img": "stickers/map10.webp",
+   "kind": "map10",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.8738,
+     "y": 0.7525
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "cat10",
+   "img": "stickers/cat10.webp",
+   "kind": "cat10",
+   "w": 0.1048,
+   "h": 0.0609,
+   "wmm": 22.0,
+   "hmm": 18.1,
+   "pages": [
+    76
+   ],
+   "targets": [
+    {
+     "page": 76,
+     "x": 0.1714,
+     "y": 0.5724
+    }
+   ],
+   "label": "p. 76"
+  },
+  {
+   "id": "reward10",
+   "img": "stickers/reward10.webp",
+   "kind": "reward10",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    78
+   ],
+   "targets": [
+    {
+     "page": 78,
+     "x": 0.4762,
+     "y": 0.8451
+    }
+   ],
+   "label": "p. 78"
+  },
+  {
+   "id": "map11",
+   "img": "stickers/map11.webp",
+   "kind": "map11",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6119,
+     "y": 0.7525
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "dolphin11",
+   "img": "stickers/dolphin11.webp",
+   "kind": "dolphin11",
+   "w": 0.1048,
+   "h": 0.0609,
+   "wmm": 22.0,
+   "hmm": 18.1,
+   "pages": [
+    83
+   ],
+   "targets": [
+    {
+     "page": 83,
+     "x": 0.1714,
+     "y": 0.5724
+    }
+   ],
+   "label": "p. 83"
+  },
+  {
+   "id": "reward11",
+   "img": "stickers/reward11.webp",
+   "kind": "reward11",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    85
+   ],
+   "targets": [
+    {
+     "page": 85,
+     "x": 0.4762,
+     "y": 0.8451
+    }
+   ],
+   "label": "p. 85"
+  },
+  {
+   "id": "map12",
+   "img": "stickers/map12.webp",
+   "kind": "map12",
+   "w": 0.0571,
+   "h": 0.0407,
+   "wmm": 12.0,
+   "hmm": 12.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.35,
+     "y": 0.7525
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "astro12",
+   "img": "stickers/astro12.webp",
+   "kind": "astro12",
+   "w": 0.1048,
+   "h": 0.0609,
+   "wmm": 22.0,
+   "hmm": 18.1,
+   "pages": [
+    90
+   ],
+   "targets": [
+    {
+     "page": 90,
+     "x": 0.1524,
+     "y": 0.4242
+    }
+   ],
+   "label": "p. 90"
+  },
+  {
+   "id": "reward12",
+   "img": "stickers/reward12.webp",
+   "kind": "reward12",
+   "w": 0.1333,
+   "h": 0.0946,
+   "wmm": 28.0,
+   "hmm": 28.1,
+   "pages": [
+    92
+   ],
+   "targets": [
+    {
+     "page": 92,
+     "x": 0.7619,
+     "y": 0.8249
+    }
+   ],
+   "label": "p. 92"
+  }
+ ]
+}

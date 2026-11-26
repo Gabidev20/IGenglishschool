@@ -1,0 +1,747 @@
+{
+ "v": 1,
+ "book": "little-steps",
+ "bimester": 4,
+ "id": "little-steps:b4",
+ "title": "IG Little Steps",
+ "ages": "3–6",
+ "color": "#f05d77",
+ "firstPage": 74,
+ "lastPage": 99,
+ "pageCount": 26,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 4"
+  },
+  {
+   "n": 10,
+   "title": "Mission 10 · Dress-Up Day"
+  },
+  {
+   "n": 11,
+   "title": "Mission 11 · Weather Planet"
+  },
+  {
+   "n": 12,
+   "title": "Mission 12 · Back to Earth"
+  }
+ ],
+ "stickerSheet": 99,
+ "pages": [
+  {
+   "n": 74,
+   "id": "p74",
+   "img": "p74.webp",
+   "thumb": "t74.webp",
+   "unit": 0,
+   "title": "Bimestre 4",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 75,
+   "id": "p75",
+   "img": "p75.webp",
+   "thumb": "t75.webp",
+   "unit": 10,
+   "title": "Mission 10 · Dress-Up Day",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u10-dress-up-song",
+     "file": "u10-dress-up-song.mp3",
+     "title": "Dress-Up Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 76,
+   "id": "p76",
+   "img": "p76.webp",
+   "thumb": "t76.webp",
+   "unit": 10,
+   "title": "Clothes",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-clothes",
+     "file": "u10-clothes.mp3",
+     "title": "Clothes! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 77,
+   "id": "p77",
+   "img": "p77.webp",
+   "thumb": "t77.webp",
+   "unit": 10,
+   "title": "Put it on!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-put-on",
+     "file": "u10-put-on.mp3",
+     "title": "What do you put on? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 78,
+   "id": "p78",
+   "img": "p78.webp",
+   "thumb": "t78.webp",
+   "unit": 10,
+   "title": "What color?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-what-color",
+     "file": "u10-what-color.mp3",
+     "title": "What color? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 79,
+   "id": "p79",
+   "img": "p79.webp",
+   "thumb": "t79.webp",
+   "unit": 10,
+   "title": "Dress-up day!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-dress-up-day",
+     "file": "u10-dress-up-day.mp3",
+     "title": "Dress-Up Day! Listen and stick.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 80,
+   "id": "p80",
+   "img": "p80.webp",
+   "thumb": "t80.webp",
+   "unit": 10,
+   "title": "Letter J",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 81,
+   "id": "p81",
+   "img": "p81.webp",
+   "thumb": "t81.webp",
+   "unit": 10,
+   "title": "My clothes",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-right-or-wrong",
+     "file": "u10-right-or-wrong.mp3",
+     "title": "Right or wrong? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 82,
+   "id": "p82",
+   "img": "p82.webp",
+   "thumb": "t82.webp",
+   "unit": 11,
+   "title": "Mission 11 · Weather Planet",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u11-weather-song",
+     "file": "u11-weather-song.mp3",
+     "title": "Weather Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 83,
+   "id": "p83",
+   "img": "p83.webp",
+   "thumb": "t83.webp",
+   "unit": 11,
+   "title": "Weather & me",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-weather-feelings",
+     "file": "u11-weather-feelings.mp3",
+     "title": "Weather and feelings! Listen, point and color.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 84,
+   "id": "p84",
+   "img": "p84.webp",
+   "thumb": "t84.webp",
+   "unit": 11,
+   "title": "It’s sunny!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-weather",
+     "file": "u11-weather.mp3",
+     "title": "How’s the weather? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 85,
+   "id": "p85",
+   "img": "p85.webp",
+   "thumb": "t85.webp",
+   "unit": 11,
+   "title": "How are you?",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-how-are-you",
+     "file": "u11-how-are-you.mp3",
+     "title": "How are you? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 86,
+   "id": "p86",
+   "img": "p86.webp",
+   "thumb": "t86.webp",
+   "unit": 11,
+   "title": "Weather window",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-weather-window",
+     "file": "u11-weather-window.mp3",
+     "title": "Weather window! Listen and stick.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 87,
+   "id": "p87",
+   "img": "p87.webp",
+   "thumb": "t87.webp",
+   "unit": 11,
+   "title": "Letter K",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 88,
+   "id": "p88",
+   "img": "p88.webp",
+   "thumb": "t88.webp",
+   "unit": 11,
+   "title": "Sun, rain, me",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-right-or-wrong",
+     "file": "u11-right-or-wrong.mp3",
+     "title": "Right or wrong? Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 89,
+   "id": "p89",
+   "img": "p89.webp",
+   "thumb": "t89.webp",
+   "unit": 12,
+   "title": "Mission 12 · Back to Earth",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u12-all-about-me-song",
+     "file": "u12-all-about-me-song.mp3",
+     "title": "All About Me Song",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 90,
+   "id": "p90",
+   "img": "p90.webp",
+   "thumb": "t90.webp",
+   "unit": 12,
+   "title": "All about me",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-about-me",
+     "file": "u12-about-me.mp3",
+     "title": "All about me! Listen and say.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 91,
+   "id": "p91",
+   "img": "p91.webp",
+   "thumb": "t91.webp",
+   "unit": 12,
+   "title": "Meet Ana",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-meet-ana",
+     "file": "u12-meet-ana.mp3",
+     "title": "Meet Ana! Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 92,
+   "id": "p92",
+   "img": "p92.webp",
+   "thumb": "t92.webp",
+   "unit": 12,
+   "title": "Meet Lucas",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-meet-lucas",
+     "file": "u12-meet-lucas.mp3",
+     "title": "Meet Lucas! Listen and circle.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 93,
+   "id": "p93",
+   "img": "p93.webp",
+   "thumb": "t93.webp",
+   "unit": 12,
+   "title": "My name",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 94,
+   "id": "p94",
+   "img": "p94.webp",
+   "thumb": "t94.webp",
+   "unit": 12,
+   "title": "Our trip album",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-trip-album",
+     "file": "u12-trip-album.mp3",
+     "title": "Our trip album! Listen and stick.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 95,
+   "id": "p95",
+   "img": "p95.webp",
+   "thumb": "t95.webp",
+   "unit": 12,
+   "title": "Letter L",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 96,
+   "id": "p96",
+   "img": "p96.webp",
+   "thumb": "t96.webp",
+   "unit": 12,
+   "title": "Review game",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 97,
+   "id": "p97",
+   "img": "p97.webp",
+   "thumb": "t97.webp",
+   "unit": 12,
+   "title": "I can do it!",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-my-turn",
+     "file": "u12-my-turn.mp3",
+     "title": "Your turn! Tell me about you.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 98,
+   "id": "p98",
+   "img": "p98.webp",
+   "thumb": "t98.webp",
+   "unit": 12,
+   "title": "Space Cadet",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 99,
+   "id": "p99",
+   "img": "p99.webp",
+   "thumb": "t99.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "m10-map",
+   "img": "stickers/m10-map.webp",
+   "kind": "m10-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "m10-reward",
+   "img": "stickers/m10-reward.webp",
+   "kind": "m10-reward",
+   "w": 0.1337,
+   "h": 0.0946,
+   "wmm": 28.1,
+   "hmm": 28.1,
+   "pages": [
+    81
+   ],
+   "targets": [
+    {
+     "page": 81,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 81"
+  },
+  {
+   "id": "m10-helmet",
+   "img": "stickers/m10-helmet.webp",
+   "kind": "m10-helmet",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    79
+   ],
+   "targets": [
+    {
+     "page": 79,
+     "x": 0.219,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 79"
+  },
+  {
+   "id": "m10-chef",
+   "img": "stickers/m10-chef.webp",
+   "kind": "m10-chef",
+   "w": 0.0825,
+   "h": 0.0586,
+   "wmm": 17.3,
+   "hmm": 17.4,
+   "pages": [
+    79
+   ],
+   "targets": [
+    {
+     "page": 79,
+     "x": 0.6667,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 79"
+  },
+  {
+   "id": "m10-fire",
+   "img": "stickers/m10-fire.webp",
+   "kind": "m10-fire",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    79
+   ],
+   "targets": [
+    {
+     "page": 79,
+     "x": 0.219,
+     "y": 0.5253
+    }
+   ],
+   "label": "p. 79"
+  },
+  {
+   "id": "m10-doctor",
+   "img": "stickers/m10-doctor.webp",
+   "kind": "m10-doctor",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    79
+   ],
+   "targets": [
+    {
+     "page": 79,
+     "x": 0.7238,
+     "y": 0.5892
+    }
+   ],
+   "label": "p. 79"
+  },
+  {
+   "id": "m11-map",
+   "img": "stickers/m11-map.webp",
+   "kind": "m11-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "m11-reward",
+   "img": "stickers/m11-reward.webp",
+   "kind": "m11-reward",
+   "w": 0.1333,
+   "h": 0.0948,
+   "wmm": 28.0,
+   "hmm": 28.2,
+   "pages": [
+    88
+   ],
+   "targets": [
+    {
+     "page": 88,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 88"
+  },
+  {
+   "id": "m11-sun",
+   "img": "stickers/m11-sun.webp",
+   "kind": "m11-sun",
+   "w": 0.0825,
+   "h": 0.0586,
+   "wmm": 17.3,
+   "hmm": 17.4,
+   "pages": [
+    86
+   ],
+   "targets": [
+    {
+     "page": 86,
+     "x": 0.2048,
+     "y": 0.3872
+    }
+   ],
+   "label": "p. 86"
+  },
+  {
+   "id": "m11-rain",
+   "img": "stickers/m11-rain.webp",
+   "kind": "m11-rain",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    86
+   ],
+   "targets": [
+    {
+     "page": 86,
+     "x": 0.5,
+     "y": 0.3872
+    }
+   ],
+   "label": "p. 86"
+  },
+  {
+   "id": "m11-cold",
+   "img": "stickers/m11-cold.webp",
+   "kind": "m11-cold",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    86
+   ],
+   "targets": [
+    {
+     "page": 86,
+     "x": 0.7952,
+     "y": 0.3872
+    }
+   ],
+   "label": "p. 86"
+  },
+  {
+   "id": "m12-map",
+   "img": "stickers/m12-map.webp",
+   "kind": "m12-map",
+   "w": 0.0591,
+   "h": 0.0424,
+   "wmm": 12.4,
+   "hmm": 12.6,
+   "pages": [],
+   "targets": [],
+   "label": ""
+  },
+  {
+   "id": "m12-reward",
+   "img": "stickers/m12-reward.webp",
+   "kind": "m12-reward",
+   "w": 0.1333,
+   "h": 0.0946,
+   "wmm": 28.0,
+   "hmm": 28.1,
+   "pages": [
+    97
+   ],
+   "targets": [
+    {
+     "page": 97,
+     "x": 0.219,
+     "y": 0.904
+    }
+   ],
+   "label": "p. 97"
+  },
+  {
+   "id": "m12-rocket",
+   "img": "stickers/m12-rocket.webp",
+   "kind": "m12-rocket",
+   "w": 0.0825,
+   "h": 0.0586,
+   "wmm": 17.3,
+   "hmm": 17.4,
+   "pages": [
+    94
+   ],
+   "targets": [
+    {
+     "page": 94,
+     "x": 0.2048,
+     "y": 0.3872
+    }
+   ],
+   "label": "p. 94"
+  },
+  {
+   "id": "m12-dino",
+   "img": "stickers/m12-dino.webp",
+   "kind": "m12-dino",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    94
+   ],
+   "targets": [
+    {
+     "page": 94,
+     "x": 0.5,
+     "y": 0.3872
+    }
+   ],
+   "label": "p. 94"
+  },
+  {
+   "id": "m12-kite",
+   "img": "stickers/m12-kite.webp",
+   "kind": "m12-kite",
+   "w": 0.0821,
+   "h": 0.0586,
+   "wmm": 17.2,
+   "hmm": 17.4,
+   "pages": [
+    94
+   ],
+   "targets": [
+    {
+     "page": 94,
+     "x": 0.7952,
+     "y": 0.3872
+    }
+   ],
+   "label": "p. 94"
+  }
+ ]
+}

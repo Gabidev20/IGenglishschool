@@ -1,0 +1,1104 @@
+{
+ "v": 1,
+ "units": "mm",
+ "book": "little-steps",
+ "bimester": 4,
+ "note": "Auto-checked exercises for bimester 4. Positions from the book sources (ix_b4_little_steps_extract.py); answers from _gabarito-b4-little-steps.md and the page images.",
+ "pages": {
+  "77": {
+   "items": [
+    {
+     "id": "put1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "put2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "put3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 97,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "put4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u10-put-on",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "78": {
+   "items": [
+    {
+     "id": "col1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 98.5,
+       "y": 81.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      },
+      {
+       "x": 128.5,
+       "y": 81.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      },
+      {
+       "x": 158.5,
+       "y": 81.0,
+       "w": 19,
+       "h": 19,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "col2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 98.5,
+       "y": 109.0,
+       "w": 19,
+       "h": 19,
+       "ok": true
+      },
+      {
+       "x": 128.5,
+       "y": 109.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      },
+      {
+       "x": 158.5,
+       "y": 109.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "col3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 98.5,
+       "y": 137.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      },
+      {
+       "x": 128.5,
+       "y": 137.0,
+       "w": 19,
+       "h": 19,
+       "ok": true
+      },
+      {
+       "x": 158.5,
+       "y": 137.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "col4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 98.5,
+       "y": 165.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      },
+      {
+       "x": 128.5,
+       "y": 165.0,
+       "w": 19,
+       "h": 19,
+       "ok": false
+      },
+      {
+       "x": 158.5,
+       "y": 165.0,
+       "w": 19,
+       "h": 19,
+       "ok": true
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u10-what-color",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "80": {
+   "items": [
+    {
+     "id": "findJ",
+     "type": "choice",
+     "multi": true,
+     "options": [
+      {
+       "x": 15.0,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 45.8,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      },
+      {
+       "x": 76.59,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 107.4,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      },
+      {
+       "x": 138.19,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 169.0,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "81": {
+   "items": [
+    {
+     "id": "rw1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 65.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      },
+      {
+       "x": 82.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "rw2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 159.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      },
+      {
+       "x": 176.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "rw3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 65.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      },
+      {
+       "x": 82.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "rw4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 159.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      },
+      {
+       "x": 176.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u10-right-or-wrong",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "84": {
+   "items": [
+    {
+     "id": "wx1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "wx2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "wx3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 97,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "wx4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u11-weather",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "85": {
+   "items": [
+    {
+     "id": "face1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 51.5,
+       "y": 79.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 88.5,
+       "y": 79.5,
+       "w": 21,
+       "h": 22,
+       "ok": true
+      },
+      {
+       "x": 125.5,
+       "y": 79.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 162.5,
+       "y": 79.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "face2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 51.5,
+       "y": 107.5,
+       "w": 21,
+       "h": 22,
+       "ok": true
+      },
+      {
+       "x": 88.5,
+       "y": 107.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 125.5,
+       "y": 107.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 162.5,
+       "y": 107.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "face3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 51.5,
+       "y": 135.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 88.5,
+       "y": 135.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 125.5,
+       "y": 135.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 162.5,
+       "y": 135.5,
+       "w": 21,
+       "h": 22,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "face4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 51.5,
+       "y": 163.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 88.5,
+       "y": 163.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      },
+      {
+       "x": 125.5,
+       "y": 163.5,
+       "w": 21,
+       "h": 22,
+       "ok": true
+      },
+      {
+       "x": 162.5,
+       "y": 163.5,
+       "w": 21,
+       "h": 22,
+       "ok": false
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u11-how-are-you",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "87": {
+   "items": [
+    {
+     "id": "findK",
+     "type": "choice",
+     "multi": true,
+     "options": [
+      {
+       "x": 15.0,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 45.8,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      },
+      {
+       "x": 76.6,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 107.41,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      },
+      {
+       "x": 138.2,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 169.0,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  "88": {
+   "items": [
+    {
+     "id": "rw1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 65.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      },
+      {
+       "x": 82.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "rw2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 159.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      },
+      {
+       "x": 176.8,
+       "y": 87.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "rw3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 65.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      },
+      {
+       "x": 82.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "rw4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 159.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      },
+      {
+       "x": 176.8,
+       "y": 123.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u11-right-or-wrong",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "91": {
+   "items": [
+    {
+     "id": "ana1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 80,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "ana2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 120,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "ana3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 97,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 147,
+       "y": 160,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "ana4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 47,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": true
+      },
+      {
+       "x": 97,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      },
+      {
+       "x": 147,
+       "y": 200,
+       "w": 38,
+       "h": 32,
+       "ok": false
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u12-meet-ana",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "92": {
+   "items": [
+    {
+     "id": "lucas1",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 65.8,
+       "y": 135.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      },
+      {
+       "x": 82.8,
+       "y": 135.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "lucas2",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 159.8,
+       "y": 135.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      },
+      {
+       "x": 176.8,
+       "y": 135.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "id": "lucas3",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 65.8,
+       "y": 171.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      },
+      {
+       "x": 82.8,
+       "y": 171.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "id": "lucas4",
+     "type": "choice",
+     "multi": false,
+     "options": [
+      {
+       "x": 159.8,
+       "y": 171.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": true
+      },
+      {
+       "x": 176.8,
+       "y": 171.8,
+       "w": 14.4,
+       "h": 14.4,
+       "ok": false
+      }
+     ]
+    }
+   ],
+   "listen": [
+    {
+     "track": "u12-meet-lucas",
+     "x": 186.2,
+     "y": 59.6,
+     "r": 6
+    }
+   ]
+  },
+  "95": {
+   "items": [
+    {
+     "id": "findL",
+     "type": "choice",
+     "multi": true,
+     "options": [
+      {
+       "x": 15.0,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 45.8,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      },
+      {
+       "x": 76.6,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 107.4,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      },
+      {
+       "x": 138.21,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": true
+      },
+      {
+       "x": 169.0,
+       "y": 247,
+       "w": 26,
+       "h": 39,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

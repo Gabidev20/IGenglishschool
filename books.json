@@ -30,6 +30,14 @@
      "first": 50,
      "last": 73,
      "interactive": true
+    },
+    {
+     "n": 4,
+     "path": "little-steps/b4/manifest.json",
+     "pages": 26,
+     "first": 74,
+     "last": 99,
+     "interactive": true
     }
    ]
   },
@@ -62,6 +70,14 @@
      "first": 48,
      "last": 70,
      "interactive": true
+    },
+    {
+     "n": 4,
+     "path": "explorers/b4/manifest.json",
+     "pages": 23,
+     "first": 71,
+     "last": 93,
+     "interactive": true
     }
    ]
   },
@@ -85,6 +101,22 @@
      "pages": 26,
      "first": 28,
      "last": 53,
+     "interactive": true
+    },
+    {
+     "n": 3,
+     "path": "adventurers/b3/manifest.json",
+     "pages": 26,
+     "first": 54,
+     "last": 79,
+     "interactive": true
+    },
+    {
+     "n": 4,
+     "path": "adventurers/b4/manifest.json",
+     "pages": 26,
+     "first": 80,
+     "last": 105,
      "interactive": true
     }
    ]
@@ -117,6 +149,14 @@
      "pages": 25,
      "first": 77,
      "last": 101,
+     "interactive": true
+    },
+    {
+     "n": 4,
+     "path": "beyond/b4/manifest.json",
+     "pages": 59,
+     "first": 102,
+     "last": 160,
      "interactive": true
     }
    ]

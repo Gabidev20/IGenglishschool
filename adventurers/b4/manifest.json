@@ -1,0 +1,669 @@
+{
+ "v": 1,
+ "book": "adventurers",
+ "bimester": 4,
+ "id": "adventurers:b4",
+ "title": "IG Adventurers",
+ "ages": "9–11",
+ "color": "#8e6d86",
+ "firstPage": 80,
+ "lastPage": 105,
+ "pageCount": 26,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 4"
+  },
+  {
+   "n": 10,
+   "title": "Level 10 · Treasure Hunt"
+  },
+  {
+   "n": 11,
+   "title": "Level 11 · Talent Show"
+  },
+  {
+   "n": 12,
+   "title": "Level 12 · Time Machine"
+  }
+ ],
+ "stickerSheet": 105,
+ "pages": [
+  {
+   "n": 80,
+   "id": "p80",
+   "img": "p80.webp",
+   "thumb": "t80.webp",
+   "unit": 0,
+   "title": "Bimestre 4",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 81,
+   "id": "p81",
+   "img": "p81.webp",
+   "thumb": "t81.webp",
+   "unit": 10,
+   "title": "Level 10 · Treasure Hunt",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u10-club-chant",
+     "file": "u10-club-chant.mp3",
+     "title": "Club Chant: Treasure Hunt!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 82,
+   "id": "p82",
+   "img": "p82.webp",
+   "thumb": "t82.webp",
+   "unit": 10,
+   "title": "Discover: places in town",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-listen-and-number",
+     "file": "u10-listen-and-number.mp3",
+     "title": "A · Listen and number.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 83,
+   "id": "p83",
+   "img": "p83.webp",
+   "thumb": "t83.webp",
+   "unit": 10,
+   "title": "Practice: prepositions of place",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 84,
+   "id": "p84",
+   "img": "p84.webp",
+   "thumb": "t84.webp",
+   "unit": 10,
+   "title": "Practice: directions",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 85,
+   "id": "p85",
+   "img": "p85.webp",
+   "thumb": "t85.webp",
+   "unit": 10,
+   "title": "Use: the treasure map reading",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-treasure-map",
+     "file": "u10-treasure-map.mp3",
+     "title": "The Treasure Map",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 86,
+   "id": "p86",
+   "img": "p86.webp",
+   "thumb": "t86.webp",
+   "unit": 10,
+   "title": "Use: Boss Challenge, the way to the treasure",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 87,
+   "id": "p87",
+   "img": "p87.webp",
+   "thumb": "t87.webp",
+   "unit": 10,
+   "title": "Play: Treasure Games",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u10-find-the-place",
+     "file": "u10-find-the-place.mp3",
+     "title": "B · Listen and write the place.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 88,
+   "id": "p88",
+   "img": "p88.webp",
+   "thumb": "t88.webp",
+   "unit": 10,
+   "title": "Review: Level 10 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 89,
+   "id": "p89",
+   "img": "p89.webp",
+   "thumb": "t89.webp",
+   "unit": 11,
+   "title": "Level 11 · Talent Show",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u11-club-chant",
+     "file": "u11-club-chant.mp3",
+     "title": "Club Chant: Talent Show!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 90,
+   "id": "p90",
+   "img": "p90.webp",
+   "thumb": "t90.webp",
+   "unit": 11,
+   "title": "Discover: actions",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-listen-and-number",
+     "file": "u11-listen-and-number.mp3",
+     "title": "A · Listen and number.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 91,
+   "id": "p91",
+   "img": "p91.webp",
+   "thumb": "t91.webp",
+   "unit": 11,
+   "title": "Practice: am, is, are + -ing",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 92,
+   "id": "p92",
+   "img": "p92.webp",
+   "thumb": "t92.webp",
+   "unit": 11,
+   "title": "Practice: negative and questions",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 93,
+   "id": "p93",
+   "img": "p93.webp",
+   "thumb": "t93.webp",
+   "unit": 11,
+   "title": "Use: live from the show reading",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-live-show",
+     "file": "u11-live-show.mp3",
+     "title": "Live from the Show",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 94,
+   "id": "p94",
+   "img": "p94.webp",
+   "thumb": "t94.webp",
+   "unit": 11,
+   "title": "Use: Boss Challenge, a postcard",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 95,
+   "id": "p95",
+   "img": "p95.webp",
+   "thumb": "t95.webp",
+   "unit": 11,
+   "title": "Play: Show Time Games",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u11-whos-doing-what",
+     "file": "u11-whos-doing-what.mp3",
+     "title": "B · Listen and write the name.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 96,
+   "id": "p96",
+   "img": "p96.webp",
+   "thumb": "t96.webp",
+   "unit": 11,
+   "title": "Review: Level 11 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 97,
+   "id": "p97",
+   "img": "p97.webp",
+   "thumb": "t97.webp",
+   "unit": 12,
+   "title": "Level 12 · Time Machine",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u12-club-chant",
+     "file": "u12-club-chant.mp3",
+     "title": "Club Chant: Time Machine!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 98,
+   "id": "p98",
+   "img": "p98.webp",
+   "thumb": "t98.webp",
+   "unit": 12,
+   "title": "Discover: my weekend",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-listen-and-number",
+     "file": "u12-listen-and-number.mp3",
+     "title": "A · Listen and number.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 99,
+   "id": "p99",
+   "img": "p99.webp",
+   "thumb": "t99.webp",
+   "unit": 12,
+   "title": "Practice: was and were",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 100,
+   "id": "p100",
+   "img": "p100.webp",
+   "thumb": "t100.webp",
+   "unit": 12,
+   "title": "Practice: regular past with -ed",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-ed-sounds",
+     "file": "u12-ed-sounds.mp3",
+     "title": "B · Listen and circle the sound.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 101,
+   "id": "p101",
+   "img": "p101.webp",
+   "thumb": "t101.webp",
+   "unit": 12,
+   "title": "Use: the time-travel diary reading",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u12-diary",
+     "file": "u12-diary.mp3",
+     "title": "The Time-Travel Diary",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 102,
+   "id": "p102",
+   "img": "p102.webp",
+   "thumb": "t102.webp",
+   "unit": 12,
+   "title": "Use: Boss Challenge, my last weekend",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 103,
+   "id": "p103",
+   "img": "p103.webp",
+   "thumb": "t103.webp",
+   "unit": 12,
+   "title": "Lesson 4: Final Review games and quiz",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 104,
+   "id": "p104",
+   "img": "p104.webp",
+   "thumb": "t104.webp",
+   "unit": 12,
+   "title": "Lesson 4",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 105,
+   "id": "p105",
+   "img": "p105.webp",
+   "thumb": "t105.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "b4s1",
+   "img": "stickers/b4s1.webp",
+   "kind": "b4s1",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.175,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b4s2",
+   "img": "stickers/b4s2.webp",
+   "kind": "b4s2",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    85
+   ],
+   "targets": [
+    {
+     "page": 85,
+     "x": 0.8476,
+     "y": 0.6347
+    }
+   ],
+   "label": "p. 85"
+  },
+  {
+   "id": "b4s3",
+   "img": "stickers/b4s3.webp",
+   "kind": "b4s3",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    86
+   ],
+   "targets": [
+    {
+     "page": 86,
+     "x": 0.8286,
+     "y": 0.6869
+    }
+   ],
+   "label": "p. 86"
+  },
+  {
+   "id": "b4s4",
+   "img": "stickers/b4s4.webp",
+   "kind": "b4s4",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    88
+   ],
+   "targets": [
+    {
+     "page": 88,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 88"
+  },
+  {
+   "id": "b4s5",
+   "img": "stickers/b4s5.webp",
+   "kind": "b4s5",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.3917,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b4s6",
+   "img": "stickers/b4s6.webp",
+   "kind": "b4s6",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    93
+   ],
+   "targets": [
+    {
+     "page": 93,
+     "x": 0.8286,
+     "y": 0.3199
+    }
+   ],
+   "label": "p. 93"
+  },
+  {
+   "id": "b4s7",
+   "img": "stickers/b4s7.webp",
+   "kind": "b4s7",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    94
+   ],
+   "targets": [
+    {
+     "page": 94,
+     "x": 0.7619,
+     "y": 0.404
+    }
+   ],
+   "label": "p. 94"
+  },
+  {
+   "id": "b4s8",
+   "img": "stickers/b4s8.webp",
+   "kind": "b4s8",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    96
+   ],
+   "targets": [
+    {
+     "page": 96,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 96"
+  },
+  {
+   "id": "b4s9",
+   "img": "stickers/b4s9.webp",
+   "kind": "b4s9",
+   "w": 0.1052,
+   "h": 0.0744,
+   "wmm": 22.1,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6083,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b4s10",
+   "img": "stickers/b4s10.webp",
+   "kind": "b4s10",
+   "w": 0.1147,
+   "h": 0.0811,
+   "wmm": 24.1,
+   "hmm": 24.1,
+   "pages": [
+    101
+   ],
+   "targets": [
+    {
+     "page": 101,
+     "x": 0.8286,
+     "y": 0.3199
+    }
+   ],
+   "label": "p. 101"
+  },
+  {
+   "id": "b4s11",
+   "img": "stickers/b4s11.webp",
+   "kind": "b4s11",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    102
+   ],
+   "targets": [
+    {
+     "page": 102,
+     "x": 0.819,
+     "y": 0.4242
+    }
+   ],
+   "label": "p. 102"
+  },
+  {
+   "id": "b4s12",
+   "img": "stickers/b4s12.webp",
+   "kind": "b4s12",
+   "w": 0.1147,
+   "h": 0.0811,
+   "wmm": 24.1,
+   "hmm": 24.1,
+   "pages": [
+    104
+   ],
+   "targets": [
+    {
+     "page": 104,
+     "x": 0.8381,
+     "y": 0.4714
+    }
+   ],
+   "label": "p. 104"
+  },
+  {
+   "id": "b4s13",
+   "img": "stickers/b4s13.webp",
+   "kind": "b4s13",
+   "w": 0.1183,
+   "h": 0.0839,
+   "wmm": 24.8,
+   "hmm": 24.9,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.825,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  }
+ ]
+}

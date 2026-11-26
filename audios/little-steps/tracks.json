@@ -248,6 +248,135 @@
       "title": "Snack time! Listen and stick.",
       "subtitle": "Page 69",
       "file": "u9-set-the-table.mp3"
+    },
+    {
+      "id": "u10-dress-up-song",
+      "unit": 10,
+      "unitTitle": "Dress-Up Day",
+      "title": "Dress-Up Song",
+      "subtitle": "Page 75",
+      "file": "u10-dress-up-song.mp3"
+    },
+    {
+      "id": "u10-clothes",
+      "unit": 10,
+      "title": "Clothes! Listen, point and color.",
+      "subtitle": "Page 76",
+      "file": "u10-clothes.mp3"
+    },
+    {
+      "id": "u10-put-on",
+      "unit": 10,
+      "title": "What do you put on? Listen and circle.",
+      "subtitle": "Page 77",
+      "file": "u10-put-on.mp3"
+    },
+    {
+      "id": "u10-what-color",
+      "unit": 10,
+      "title": "What color? Listen and circle.",
+      "subtitle": "Page 78",
+      "file": "u10-what-color.mp3"
+    },
+    {
+      "id": "u10-dress-up-day",
+      "unit": 10,
+      "title": "Dress-Up Day! Listen and stick.",
+      "subtitle": "Page 79",
+      "file": "u10-dress-up-day.mp3"
+    },
+    {
+      "id": "u10-right-or-wrong",
+      "unit": 10,
+      "title": "Right or wrong? Listen and circle.",
+      "subtitle": "Page 81",
+      "file": "u10-right-or-wrong.mp3"
+    },
+    {
+      "id": "u11-weather-song",
+      "unit": 11,
+      "unitTitle": "Weather Planet",
+      "title": "Weather Song",
+      "subtitle": "Page 82",
+      "file": "u11-weather-song.mp3"
+    },
+    {
+      "id": "u11-weather-feelings",
+      "unit": 11,
+      "title": "Weather and feelings! Listen, point and color.",
+      "subtitle": "Page 83",
+      "file": "u11-weather-feelings.mp3"
+    },
+    {
+      "id": "u11-weather",
+      "unit": 11,
+      "title": "How’s the weather? Listen and circle.",
+      "subtitle": "Page 84",
+      "file": "u11-weather.mp3"
+    },
+    {
+      "id": "u11-how-are-you",
+      "unit": 11,
+      "title": "How are you? Listen and circle.",
+      "subtitle": "Page 85",
+      "file": "u11-how-are-you.mp3"
+    },
+    {
+      "id": "u11-weather-window",
+      "unit": 11,
+      "title": "Weather window! Listen and stick.",
+      "subtitle": "Page 86",
+      "file": "u11-weather-window.mp3"
+    },
+    {
+      "id": "u11-right-or-wrong",
+      "unit": 11,
+      "title": "Right or wrong? Listen and circle.",
+      "subtitle": "Page 88",
+      "file": "u11-right-or-wrong.mp3"
+    },
+    {
+      "id": "u12-all-about-me-song",
+      "unit": 12,
+      "unitTitle": "Back to Earth",
+      "title": "All About Me Song",
+      "subtitle": "Page 89",
+      "file": "u12-all-about-me-song.mp3"
+    },
+    {
+      "id": "u12-about-me",
+      "unit": 12,
+      "title": "All about me! Listen and say.",
+      "subtitle": "Page 90",
+      "file": "u12-about-me.mp3"
+    },
+    {
+      "id": "u12-meet-ana",
+      "unit": 12,
+      "title": "Meet Ana! Listen and circle.",
+      "subtitle": "Page 91",
+      "file": "u12-meet-ana.mp3"
+    },
+    {
+      "id": "u12-meet-lucas",
+      "unit": 12,
+      "title": "Meet Lucas! Listen and circle.",
+      "subtitle": "Page 92",
+      "file": "u12-meet-lucas.mp3"
+    },
+    {
+      "id": "u12-trip-album",
+      "unit": 12,
+      "title": "Our trip album! Listen and stick.",
+      "subtitle": "Page 94",
+      "file": "u12-trip-album.mp3"
+    },
+    {
+      "id": "u12-my-turn",
+      "unit": 12,
+      "title": "Your turn! Tell me about you.",
+      "subtitle": "Page 97",
+      "file": "u12-my-turn.mp3"
     }
   ]
 }

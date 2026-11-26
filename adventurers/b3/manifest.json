@@ -1,0 +1,648 @@
+{
+ "v": 1,
+ "book": "adventurers",
+ "bimester": 3,
+ "id": "adventurers:b3",
+ "title": "IG Adventurers",
+ "ages": "9–11",
+ "color": "#8e6d86",
+ "firstPage": 54,
+ "lastPage": 79,
+ "pageCount": 26,
+ "imgW": 1500,
+ "imgH": 2123,
+ "aspect": 1.41429,
+ "coord": "Student work uses page units: x 0..10000 across the page width, y 0..14143 down the page.",
+ "units": [
+  {
+   "n": 0,
+   "title": "Bimestre 3"
+  },
+  {
+   "n": 7,
+   "title": "Level 7 · Life in Space"
+  },
+  {
+   "n": 8,
+   "title": "Level 8 · Meet the Champion"
+  },
+  {
+   "n": 9,
+   "title": "Level 9 · Kids Cook-Off"
+  }
+ ],
+ "stickerSheet": 79,
+ "pages": [
+  {
+   "n": 54,
+   "id": "p54",
+   "img": "p54.webp",
+   "thumb": "t54.webp",
+   "unit": 0,
+   "title": "Bimestre 3",
+   "kind": "cover",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 55,
+   "id": "p55",
+   "img": "p55.webp",
+   "thumb": "t55.webp",
+   "unit": 7,
+   "title": "Level 7 · Life in Space",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u7-club-chant",
+     "file": "u7-club-chant.mp3",
+     "title": "Club Chant: Life in Space!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 56,
+   "id": "p56",
+   "img": "p56.webp",
+   "thumb": "t56.webp",
+   "unit": 7,
+   "title": "Discover: my routine",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-listen-and-number",
+     "file": "u7-listen-and-number.mp3",
+     "title": "A · Listen and number.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 57,
+   "id": "p57",
+   "img": "p57.webp",
+   "thumb": "t57.webp",
+   "unit": 7,
+   "title": "Practice: time and days of the week",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 58,
+   "id": "p58",
+   "img": "p58.webp",
+   "thumb": "t58.webp",
+   "unit": 7,
+   "title": "Practice: I, you, we, they",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 59,
+   "id": "p59",
+   "img": "p59.webp",
+   "thumb": "t59.webp",
+   "unit": 7,
+   "title": "Use: A Day on the ISS reading",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u7-iss-day",
+     "file": "u7-iss-day.mp3",
+     "title": "A Day on the ISS",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 60,
+   "id": "p60",
+   "img": "p60.webp",
+   "thumb": "t60.webp",
+   "unit": 7,
+   "title": "Use: Boss Challenge, my routine",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 61,
+   "id": "p61",
+   "img": "p61.webp",
+   "thumb": "t61.webp",
+   "unit": 7,
+   "title": "Play: Mission Control games",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 62,
+   "id": "p62",
+   "img": "p62.webp",
+   "thumb": "t62.webp",
+   "unit": 7,
+   "title": "Review: Level 7 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 63,
+   "id": "p63",
+   "img": "p63.webp",
+   "thumb": "t63.webp",
+   "unit": 8,
+   "title": "Level 8 · Meet the Champion",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u8-club-chant",
+     "file": "u8-club-chant.mp3",
+     "title": "Club Chant: Meet the Champion!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 64,
+   "id": "p64",
+   "img": "p64.webp",
+   "thumb": "t64.webp",
+   "unit": 8,
+   "title": "Discover: frequency adverbs",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 65,
+   "id": "p65",
+   "img": "p65.webp",
+   "thumb": "t65.webp",
+   "unit": 8,
+   "title": "Practice: he, she, it",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 66,
+   "id": "p66",
+   "img": "p66.webp",
+   "thumb": "t66.webp",
+   "unit": 8,
+   "title": "Practice: does and doesn't",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 67,
+   "id": "p67",
+   "img": "p67.webp",
+   "thumb": "t67.webp",
+   "unit": 8,
+   "title": "Use: interview with a champion",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-interview",
+     "file": "u8-interview.mp3",
+     "title": "Interview with Lia Costa",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 68,
+   "id": "p68",
+   "img": "p68.webp",
+   "thumb": "t68.webp",
+   "unit": 8,
+   "title": "Use: Boss Challenge, my hero",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 69,
+   "id": "p69",
+   "img": "p69.webp",
+   "thumb": "t69.webp",
+   "unit": 8,
+   "title": "Play: Champion games",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u8-guess-the-sport",
+     "file": "u8-guess-the-sport.mp3",
+     "title": "B · Listen and write the sport.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 70,
+   "id": "p70",
+   "img": "p70.webp",
+   "thumb": "t70.webp",
+   "unit": 8,
+   "title": "Review: Level 8 Complete",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 71,
+   "id": "p71",
+   "img": "p71.webp",
+   "thumb": "t71.webp",
+   "unit": 9,
+   "title": "Level 9 · Kids Cook-Off",
+   "kind": "opener",
+   "audio": [
+    {
+     "track": "u9-club-chant",
+     "file": "u9-club-chant.mp3",
+     "title": "Club Chant: Kids Cook-Off!",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 72,
+   "id": "p72",
+   "img": "p72.webp",
+   "thumb": "t72.webp",
+   "unit": 9,
+   "title": "Discover: food and meals",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-listen-and-number",
+     "file": "u9-listen-and-number.mp3",
+     "title": "A · Listen and number.",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 73,
+   "id": "p73",
+   "img": "p73.webp",
+   "thumb": "t73.webp",
+   "unit": 9,
+   "title": "Practice: countable and uncountable",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 74,
+   "id": "p74",
+   "img": "p74.webp",
+   "thumb": "t74.webp",
+   "unit": 9,
+   "title": "Practice: some and any",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 75,
+   "id": "p75",
+   "img": "p75.webp",
+   "thumb": "t75.webp",
+   "unit": 9,
+   "title": "Use: the Cook-Off menu reading",
+   "kind": "page",
+   "audio": [
+    {
+     "track": "u9-menu",
+     "file": "u9-menu.mp3",
+     "title": "The Cook-Off Menu",
+     "available": true
+    }
+   ],
+   "interactive": null
+  },
+  {
+   "n": 76,
+   "id": "p76",
+   "img": "p76.webp",
+   "thumb": "t76.webp",
+   "unit": 9,
+   "title": "Use: Boss Challenge, my healthy menu",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 77,
+   "id": "p77",
+   "img": "p77.webp",
+   "thumb": "t77.webp",
+   "unit": 9,
+   "title": "Lesson 4",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 78,
+   "id": "p78",
+   "img": "p78.webp",
+   "thumb": "t78.webp",
+   "unit": 9,
+   "title": "Lesson 4",
+   "kind": "page",
+   "audio": [],
+   "interactive": null
+  },
+  {
+   "n": 79,
+   "id": "p79",
+   "img": "p79.webp",
+   "thumb": "t79.webp",
+   "unit": null,
+   "title": "Stickers",
+   "kind": "stickers",
+   "audio": [],
+   "interactive": null
+  }
+ ],
+ "stickers": [
+  {
+   "id": "b3s1",
+   "img": "stickers/b3s1.webp",
+   "kind": "b3s1",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.175,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b3s2",
+   "img": "stickers/b3s2.webp",
+   "kind": "b3s2",
+   "w": 0.1429,
+   "h": 0.0744,
+   "wmm": 30.0,
+   "hmm": 22.1,
+   "pages": [
+    59
+   ],
+   "targets": [
+    {
+     "page": 59,
+     "x": 0.8286,
+     "y": 0.3199
+    }
+   ],
+   "label": "p. 59"
+  },
+  {
+   "id": "b3s3",
+   "img": "stickers/b3s3.webp",
+   "kind": "b3s3",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    60
+   ],
+   "targets": [
+    {
+     "page": 60,
+     "x": 0.819,
+     "y": 0.4242
+    }
+   ],
+   "label": "p. 60"
+  },
+  {
+   "id": "b3s4",
+   "img": "stickers/b3s4.webp",
+   "kind": "b3s4",
+   "w": 0.1143,
+   "h": 0.0814,
+   "wmm": 24.0,
+   "hmm": 24.2,
+   "pages": [
+    62
+   ],
+   "targets": [
+    {
+     "page": 62,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 62"
+  },
+  {
+   "id": "b3s5",
+   "img": "stickers/b3s5.webp",
+   "kind": "b3s5",
+   "w": 0.1048,
+   "h": 0.0744,
+   "wmm": 22.0,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.3917,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b3s6",
+   "img": "stickers/b3s6.webp",
+   "kind": "b3s6",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    67
+   ],
+   "targets": [
+    {
+     "page": 67,
+     "x": 0.1857,
+     "y": 0.5084
+    }
+   ],
+   "label": "p. 67"
+  },
+  {
+   "id": "b3s7",
+   "img": "stickers/b3s7.webp",
+   "kind": "b3s7",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    68
+   ],
+   "targets": [
+    {
+     "page": 68,
+     "x": 0.819,
+     "y": 0.4175
+    }
+   ],
+   "label": "p. 68"
+  },
+  {
+   "id": "b3s8",
+   "img": "stickers/b3s8.webp",
+   "kind": "b3s8",
+   "w": 0.1143,
+   "h": 0.0811,
+   "wmm": 24.0,
+   "hmm": 24.1,
+   "pages": [
+    70
+   ],
+   "targets": [
+    {
+     "page": 70,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 70"
+  },
+  {
+   "id": "b3s9",
+   "img": "stickers/b3s9.webp",
+   "kind": "b3s9",
+   "w": 0.1052,
+   "h": 0.0744,
+   "wmm": 22.1,
+   "hmm": 22.1,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.6083,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  },
+  {
+   "id": "b3s10",
+   "img": "stickers/b3s10.webp",
+   "kind": "b3s10",
+   "w": 0.1147,
+   "h": 0.0811,
+   "wmm": 24.1,
+   "hmm": 24.1,
+   "pages": [
+    75
+   ],
+   "targets": [
+    {
+     "page": 75,
+     "x": 0.8286,
+     "y": 0.3199
+    }
+   ],
+   "label": "p. 75"
+  },
+  {
+   "id": "b3s11",
+   "img": "stickers/b3s11.webp",
+   "kind": "b3s11",
+   "w": 0.0952,
+   "h": 0.0676,
+   "wmm": 20.0,
+   "hmm": 20.1,
+   "pages": [
+    76
+   ],
+   "targets": [
+    {
+     "page": 76,
+     "x": 0.8095,
+     "y": 0.431
+    }
+   ],
+   "label": "p. 76"
+  },
+  {
+   "id": "b3s12",
+   "img": "stickers/b3s12.webp",
+   "kind": "b3s12",
+   "w": 0.1147,
+   "h": 0.0811,
+   "wmm": 24.1,
+   "hmm": 24.1,
+   "pages": [
+    78
+   ],
+   "targets": [
+    {
+     "page": 78,
+     "x": 0.8381,
+     "y": 0.5118
+    }
+   ],
+   "label": "p. 78"
+  },
+  {
+   "id": "b3s13",
+   "img": "stickers/b3s13.webp",
+   "kind": "b3s13",
+   "w": 0.1183,
+   "h": 0.0839,
+   "wmm": 24.8,
+   "hmm": 24.9,
+   "pages": [
+    2
+   ],
+   "targets": [
+    {
+     "page": 2,
+     "x": 0.825,
+     "y": 0.3165
+    }
+   ],
+   "label": "p. 2"
+  }
+ ]
+}

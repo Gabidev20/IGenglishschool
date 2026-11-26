@@ -105,6 +105,159 @@
       "title": "Animal Fact Files",
       "subtitle": "Page 49",
       "file": "u6-fact-files.mp3"
+    },
+    {
+      "id": "u7-club-chant",
+      "unit": 7,
+      "unitTitle": "Life in Space",
+      "title": "Club Chant: Life in Space!",
+      "subtitle": "Page 55",
+      "file": "u7-club-chant.mp3"
+    },
+    {
+      "id": "u7-listen-and-number",
+      "unit": 7,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 56",
+      "file": "u7-listen-and-number.mp3"
+    },
+    {
+      "id": "u7-iss-day",
+      "unit": 7,
+      "title": "A Day on the ISS",
+      "subtitle": "Page 59",
+      "file": "u7-iss-day.mp3"
+    },
+    {
+      "id": "u8-club-chant",
+      "unit": 8,
+      "unitTitle": "Meet the Champion",
+      "title": "Club Chant: Meet the Champion!",
+      "subtitle": "Page 63",
+      "file": "u8-club-chant.mp3"
+    },
+    {
+      "id": "u8-interview",
+      "unit": 8,
+      "title": "Interview with Lia Costa",
+      "subtitle": "Page 67",
+      "file": "u8-interview.mp3"
+    },
+    {
+      "id": "u8-guess-the-sport",
+      "unit": 8,
+      "title": "B · Listen and write the sport.",
+      "subtitle": "Page 69",
+      "file": "u8-guess-the-sport.mp3"
+    },
+    {
+      "id": "u9-club-chant",
+      "unit": 9,
+      "unitTitle": "Kids Cook-Off",
+      "title": "Club Chant: Kids Cook-Off!",
+      "subtitle": "Page 71",
+      "file": "u9-club-chant.mp3"
+    },
+    {
+      "id": "u9-listen-and-number",
+      "unit": 9,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 72",
+      "file": "u9-listen-and-number.mp3"
+    },
+    {
+      "id": "u9-menu",
+      "unit": 9,
+      "title": "The Cook-Off Menu",
+      "subtitle": "Page 75",
+      "file": "u9-menu.mp3"
+    },
+    {
+      "id": "u10-club-chant",
+      "unit": 10,
+      "unitTitle": "Treasure Hunt",
+      "title": "Club Chant: Treasure Hunt!",
+      "subtitle": "Page 81",
+      "file": "u10-club-chant.mp3"
+    },
+    {
+      "id": "u10-listen-and-number",
+      "unit": 10,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 82",
+      "file": "u10-listen-and-number.mp3"
+    },
+    {
+      "id": "u10-treasure-map",
+      "unit": 10,
+      "title": "The Treasure Map",
+      "subtitle": "Page 85",
+      "file": "u10-treasure-map.mp3"
+    },
+    {
+      "id": "u10-find-the-place",
+      "unit": 10,
+      "title": "B · Listen and write the place.",
+      "subtitle": "Page 87",
+      "file": "u10-find-the-place.mp3"
+    },
+    {
+      "id": "u11-club-chant",
+      "unit": 11,
+      "unitTitle": "Talent Show",
+      "title": "Club Chant: Talent Show!",
+      "subtitle": "Page 89",
+      "file": "u11-club-chant.mp3"
+    },
+    {
+      "id": "u11-listen-and-number",
+      "unit": 11,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 90",
+      "file": "u11-listen-and-number.mp3"
+    },
+    {
+      "id": "u11-live-show",
+      "unit": 11,
+      "title": "Live from the Show",
+      "subtitle": "Page 93",
+      "file": "u11-live-show.mp3"
+    },
+    {
+      "id": "u11-whos-doing-what",
+      "unit": 11,
+      "title": "B · Listen and write the name.",
+      "subtitle": "Page 95",
+      "file": "u11-whos-doing-what.mp3"
+    },
+    {
+      "id": "u12-club-chant",
+      "unit": 12,
+      "unitTitle": "Time Machine",
+      "title": "Club Chant: Time Machine!",
+      "subtitle": "Page 97",
+      "file": "u12-club-chant.mp3"
+    },
+    {
+      "id": "u12-listen-and-number",
+      "unit": 12,
+      "title": "A · Listen and number.",
+      "subtitle": "Page 98",
+      "file": "u12-listen-and-number.mp3"
+    },
+    {
+      "id": "u12-ed-sounds",
+      "unit": 12,
+      "title": "B · Listen and circle the sound.",
+      "subtitle": "Page 100",
+      "file": "u12-ed-sounds.mp3"
+    },
+    {
+      "id": "u12-diary",
+      "unit": 12,
+      "title": "The Time-Travel Diary",
+      "subtitle": "Page 101",
+      "file": "u12-diary.mp3"
     }
   ]
 }

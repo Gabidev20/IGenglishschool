@@ -28,6 +28,14 @@
    "first": 50,
    "last": 73,
    "interactive": true
+  },
+  {
+   "n": 4,
+   "path": "little-steps/b4/manifest.json",
+   "pages": 26,
+   "first": 74,
+   "last": 99,
+   "interactive": true
   }
  ]
 }

@@ -1,0 +1,851 @@
+{
+  "book": "IG Sound Steps",
+  "_help": "Each item in 'tracks' becomes a player on the page. Put the .mp3 in this folder and add an item: id (used in the link #t=<id>; letters, numbers and dashes), unit (number), unitTitle (optional, shown once per unit), title, subtitle (optional, e.g. 'Page 4'), file (the mp3 name in this folder).",
+  "tracks": [
+    {
+      "id": "u1-song",
+      "unit": 1,
+      "unitTitle": "Meadow · s a t",
+      "title": "The Sound Trail Song (s a t)",
+      "subtitle": "Page 3",
+      "file": "u1-song.mp3"
+    },
+    {
+      "id": "u1-sound-s",
+      "unit": 1,
+      "title": "Sound s: sss, sun",
+      "subtitle": "Page 4",
+      "file": "u1-sound-s.mp3"
+    },
+    {
+      "id": "u1-sound-a",
+      "unit": 1,
+      "title": "Sound a: aaa, apple",
+      "subtitle": "Page 4",
+      "file": "u1-sound-a.mp3"
+    },
+    {
+      "id": "u1-sound-t",
+      "unit": 1,
+      "title": "Sound t: tuh, tent",
+      "subtitle": "Page 4",
+      "file": "u1-sound-t.mp3"
+    },
+    {
+      "id": "u1-listen-circle",
+      "unit": 1,
+      "title": "Listen and circle the first sound",
+      "subtitle": "Page 5",
+      "file": "u1-listen-circle.mp3"
+    },
+    {
+      "id": "u1-sort-words",
+      "unit": 1,
+      "title": "Sort the pictures by sound",
+      "subtitle": "Page 6",
+      "file": "u1-sort-words.mp3"
+    },
+    {
+      "id": "u1-blend",
+      "unit": 1,
+      "title": "Blend and read: sat, at, as",
+      "subtitle": "Page 7",
+      "file": "u1-blend.mp3"
+    },
+    {
+      "id": "u1-game-words",
+      "unit": 1,
+      "title": "Sound Trail game: say the first sound",
+      "subtitle": "Page 8",
+      "file": "u1-game-words.mp3"
+    },
+    {
+      "id": "u1-reader",
+      "unit": 1,
+      "title": "Mini-reader: at, sat, I sat.",
+      "subtitle": "Page 9",
+      "file": "u1-reader.mp3"
+    },
+    {
+      "id": "u2-song",
+      "unit": 2,
+      "unitTitle": "Pond · p i n",
+      "title": "The Pond Song (p i n)",
+      "subtitle": "Page 10",
+      "file": "u2-song.mp3"
+    },
+    {
+      "id": "u2-sound-p",
+      "unit": 2,
+      "title": "Sound p: puh, pig",
+      "subtitle": "Page 11",
+      "file": "u2-sound-p.mp3"
+    },
+    {
+      "id": "u2-sound-i",
+      "unit": 2,
+      "title": "Sound i: ih, igloo",
+      "subtitle": "Page 11",
+      "file": "u2-sound-i.mp3"
+    },
+    {
+      "id": "u2-sound-n",
+      "unit": 2,
+      "title": "Sound n: nnn, nest",
+      "subtitle": "Page 11",
+      "file": "u2-sound-n.mp3"
+    },
+    {
+      "id": "u2-listen-circle",
+      "unit": 2,
+      "title": "Listen and circle the first sound",
+      "subtitle": "Page 12",
+      "file": "u2-listen-circle.mp3"
+    },
+    {
+      "id": "u2-sort-words",
+      "unit": 2,
+      "title": "Sort the pictures by sound",
+      "subtitle": "Page 12",
+      "file": "u2-sort-words.mp3"
+    },
+    {
+      "id": "u2-tap-it-out",
+      "unit": 2,
+      "title": "Tap it out: pin, sip, nap, tap",
+      "subtitle": "Page 13",
+      "file": "u2-tap-it-out.mp3"
+    },
+    {
+      "id": "u2-blend",
+      "unit": 2,
+      "title": "Blend and read: pin, tap, sit and more",
+      "subtitle": "Page 14",
+      "file": "u2-blend.mp3"
+    },
+    {
+      "id": "u2-game",
+      "unit": 2,
+      "title": "Sound bingo: say the first sound",
+      "subtitle": "Page 15",
+      "file": "u2-game.mp3"
+    },
+    {
+      "id": "u2-reader",
+      "unit": 2,
+      "title": "Mini-reader: A pin. A tin. It is a tap.",
+      "subtitle": "Page 16",
+      "file": "u2-reader.mp3"
+    },
+    {
+      "id": "u3-song",
+      "unit": 3,
+      "unitTitle": "Farm · c k e h r",
+      "title": "The Sound Trail Song (c k e h r)",
+      "subtitle": "Page 17",
+      "file": "u3-song.mp3"
+    },
+    {
+      "id": "u3-sound-ck",
+      "unit": 3,
+      "title": "Sounds c and k: kuh, cat, kite",
+      "subtitle": "Page 18",
+      "file": "u3-sound-ck.mp3"
+    },
+    {
+      "id": "u3-sound-e",
+      "unit": 3,
+      "title": "Sound e: eh, egg",
+      "subtitle": "Page 18",
+      "file": "u3-sound-e.mp3"
+    },
+    {
+      "id": "u3-sound-h",
+      "unit": 3,
+      "title": "Sound h: hhh, hat",
+      "subtitle": "Page 18",
+      "file": "u3-sound-h.mp3"
+    },
+    {
+      "id": "u3-sound-r",
+      "unit": 3,
+      "title": "Sound r: rrr, rabbit",
+      "subtitle": "Page 18",
+      "file": "u3-sound-r.mp3"
+    },
+    {
+      "id": "u3-listen-circle",
+      "unit": 3,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 19",
+      "file": "u3-listen-circle.mp3"
+    },
+    {
+      "id": "u3-blend",
+      "unit": 3,
+      "title": "Trace, blend and heart words: cat, kit, hen, pen",
+      "subtitle": "Page 20",
+      "file": "u3-blend.mp3"
+    },
+    {
+      "id": "u3-read",
+      "unit": 3,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 21",
+      "file": "u3-read.mp3"
+    },
+    {
+      "id": "u3-reader",
+      "unit": 3,
+      "title": "Mini-reader: The hen sat in the pen.",
+      "subtitle": "Page 22",
+      "file": "u3-reader.mp3"
+    },
+    {
+      "id": "u3-game-words",
+      "unit": 3,
+      "title": "Review game: say the first sound",
+      "subtitle": "Page 23",
+      "file": "u3-game-words.mp3"
+    },
+    {
+      "id": "u3-reading-check",
+      "unit": 3,
+      "title": "Reading check: words and sentences",
+      "subtitle": "Page 24",
+      "file": "u3-reading-check.mp3"
+    },
+    {
+      "id": "u4-song",
+      "unit": 4,
+      "unitTitle": "Beach · m d g o",
+      "title": "The Sound Trail Song (m d g o)",
+      "subtitle": "Page 27",
+      "file": "u4-song.mp3"
+    },
+    {
+      "id": "u4-sound-m",
+      "unit": 4,
+      "title": "Sound m: mmm, mop",
+      "subtitle": "Page 28",
+      "file": "u4-sound-m.mp3"
+    },
+    {
+      "id": "u4-sound-d",
+      "unit": 4,
+      "title": "Sound d: duh, dog",
+      "subtitle": "Page 28",
+      "file": "u4-sound-d.mp3"
+    },
+    {
+      "id": "u4-sound-g",
+      "unit": 4,
+      "title": "Sound g: guh, goat",
+      "subtitle": "Page 28",
+      "file": "u4-sound-g.mp3"
+    },
+    {
+      "id": "u4-sound-o",
+      "unit": 4,
+      "title": "Sound o: ah, octopus (not a!)",
+      "subtitle": "Page 28",
+      "file": "u4-sound-o.mp3"
+    },
+    {
+      "id": "u4-listen-circle",
+      "unit": 4,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 29",
+      "file": "u4-listen-circle.mp3"
+    },
+    {
+      "id": "u4-blend",
+      "unit": 4,
+      "title": "Trace, blend and heart words: mat, mop, dog, dig",
+      "subtitle": "Page 30",
+      "file": "u4-blend.mp3"
+    },
+    {
+      "id": "u4-read",
+      "unit": 4,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 31",
+      "file": "u4-read.mp3"
+    },
+    {
+      "id": "u4-game",
+      "unit": 4,
+      "title": "Beach game: sound hunt and roll & read",
+      "subtitle": "Page 32",
+      "file": "u4-game.mp3"
+    },
+    {
+      "id": "u4-reader",
+      "unit": 4,
+      "title": "Mini-reader: The dog got a mop.",
+      "subtitle": "Page 33",
+      "file": "u4-reader.mp3"
+    },
+    {
+      "id": "u5-song",
+      "unit": 5,
+      "unitTitle": "Garden · u l f b",
+      "title": "The Garden Song (u l f b)",
+      "subtitle": "Page 34",
+      "file": "u5-song.mp3"
+    },
+    {
+      "id": "u5-sound-u",
+      "unit": 5,
+      "title": "Sound u: uh, umbrella",
+      "subtitle": "Page 35",
+      "file": "u5-sound-u.mp3"
+    },
+    {
+      "id": "u5-sound-l",
+      "unit": 5,
+      "title": "Sound l: lll, lion",
+      "subtitle": "Page 35",
+      "file": "u5-sound-l.mp3"
+    },
+    {
+      "id": "u5-sound-f",
+      "unit": 5,
+      "title": "Sound f: fff, fish",
+      "subtitle": "Page 35",
+      "file": "u5-sound-f.mp3"
+    },
+    {
+      "id": "u5-sound-b",
+      "unit": 5,
+      "title": "Sound b: buh, ball",
+      "subtitle": "Page 35",
+      "file": "u5-sound-b.mp3"
+    },
+    {
+      "id": "u5-listen-circle",
+      "unit": 5,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 36",
+      "file": "u5-listen-circle.mp3"
+    },
+    {
+      "id": "u5-blend",
+      "unit": 5,
+      "title": "Trace, blend and heart words: bug, bus, fan, log",
+      "subtitle": "Page 37",
+      "file": "u5-blend.mp3"
+    },
+    {
+      "id": "u5-read",
+      "unit": 5,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 38",
+      "file": "u5-read.mp3"
+    },
+    {
+      "id": "u5-game",
+      "unit": 5,
+      "title": "Garden Bingo: find the picture",
+      "subtitle": "Page 39",
+      "file": "u5-game.mp3"
+    },
+    {
+      "id": "u5-reader",
+      "unit": 5,
+      "title": "Mini-reader: My bug is big.",
+      "subtitle": "Page 40",
+      "file": "u5-reader.mp3"
+    },
+    {
+      "id": "u6-song",
+      "unit": 6,
+      "unitTitle": "Forest · j w v y",
+      "title": "The Sound Trail Song (j w v y)",
+      "subtitle": "Page 41",
+      "file": "u6-song.mp3"
+    },
+    {
+      "id": "u6-sound-j",
+      "unit": 6,
+      "title": "Sound j: juh, jam",
+      "subtitle": "Page 42",
+      "file": "u6-sound-j.mp3"
+    },
+    {
+      "id": "u6-sound-w",
+      "unit": 6,
+      "title": "Sound w: wuh, web",
+      "subtitle": "Page 42",
+      "file": "u6-sound-w.mp3"
+    },
+    {
+      "id": "u6-sound-v",
+      "unit": 6,
+      "title": "Sound v: vvv, van",
+      "subtitle": "Page 42",
+      "file": "u6-sound-v.mp3"
+    },
+    {
+      "id": "u6-sound-y",
+      "unit": 6,
+      "title": "Sound y: yuh, yo-yo",
+      "subtitle": "Page 42",
+      "file": "u6-sound-y.mp3"
+    },
+    {
+      "id": "u6-sound-wv",
+      "unit": 6,
+      "title": "Zoom tip: w is not v",
+      "subtitle": "Page 42",
+      "file": "u6-sound-wv.mp3"
+    },
+    {
+      "id": "u6-listen-circle",
+      "unit": 6,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 43",
+      "file": "u6-listen-circle.mp3"
+    },
+    {
+      "id": "u6-blend",
+      "unit": 6,
+      "title": "Trace, blend and heart words: jam, web, van, yes",
+      "subtitle": "Page 44",
+      "file": "u6-blend.mp3"
+    },
+    {
+      "id": "u6-read",
+      "unit": 6,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 45",
+      "file": "u6-read.mp3"
+    },
+    {
+      "id": "u6-reader",
+      "unit": 6,
+      "title": "Mini-reader: The dog can jog.",
+      "subtitle": "Page 46",
+      "file": "u6-reader.mp3"
+    },
+    {
+      "id": "u6-game-words",
+      "unit": 6,
+      "title": "Review game: say the sound",
+      "subtitle": "Page 47",
+      "file": "u6-game-words.mp3"
+    },
+    {
+      "id": "u6-reading-check",
+      "unit": 6,
+      "title": "Reading check: words and sentences",
+      "subtitle": "Page 48",
+      "file": "u6-reading-check.mp3"
+    },
+    {
+      "id": "u7-song",
+      "unit": 7,
+      "unitTitle": "Mountain · x z qu ck",
+      "title": "The Mountain Song (x z qu ck)",
+      "subtitle": "Page 51",
+      "file": "u7-song.mp3"
+    },
+    {
+      "id": "u7-sound-x",
+      "unit": 7,
+      "title": "Sound x: ks, box",
+      "subtitle": "Page 52",
+      "file": "u7-sound-x.mp3"
+    },
+    {
+      "id": "u7-sound-z",
+      "unit": 7,
+      "title": "Sound z: zzz, zebra",
+      "subtitle": "Page 52",
+      "file": "u7-sound-z.mp3"
+    },
+    {
+      "id": "u7-sound-qu",
+      "unit": 7,
+      "title": "Sound qu: kwuh, quilt",
+      "subtitle": "Page 52",
+      "file": "u7-sound-qu.mp3"
+    },
+    {
+      "id": "u7-sound-ck",
+      "unit": 7,
+      "title": "Sound ck: kuh, duck",
+      "subtitle": "Page 52",
+      "file": "u7-sound-ck.mp3"
+    },
+    {
+      "id": "u7-listen-circle",
+      "unit": 7,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 53",
+      "file": "u7-listen-circle.mp3"
+    },
+    {
+      "id": "u7-blend",
+      "unit": 7,
+      "title": "Trace, blend and heart words: box, zip, quiz, duck",
+      "subtitle": "Page 54",
+      "file": "u7-blend.mp3"
+    },
+    {
+      "id": "u7-read",
+      "unit": 7,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 55",
+      "file": "u7-read.mp3"
+    },
+    {
+      "id": "u7-game",
+      "unit": 7,
+      "title": "Mountain Climb: read the words",
+      "subtitle": "Page 56",
+      "file": "u7-game.mp3"
+    },
+    {
+      "id": "u7-reader",
+      "unit": 7,
+      "title": "Mini-reader: A fox is in a box.",
+      "subtitle": "Page 57",
+      "file": "u7-reader.mp3"
+    },
+    {
+      "id": "u8-song",
+      "unit": 8,
+      "unitTitle": "River · sh ch",
+      "title": "The River Song (sh ch)",
+      "subtitle": "Page 58",
+      "file": "u8-song.mp3"
+    },
+    {
+      "id": "u8-sound-sh",
+      "unit": 8,
+      "title": "Sound sh: shhh, ship",
+      "subtitle": "Page 59",
+      "file": "u8-sound-sh.mp3"
+    },
+    {
+      "id": "u8-sound-ch",
+      "unit": 8,
+      "title": "Sound ch: ch, chip",
+      "subtitle": "Page 59",
+      "file": "u8-sound-ch.mp3"
+    },
+    {
+      "id": "u8-listen-circle",
+      "unit": 8,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 60",
+      "file": "u8-listen-circle.mp3"
+    },
+    {
+      "id": "u8-blend",
+      "unit": 8,
+      "title": "Trace, blend and heart words: ship, shop, chip, chop, fish, dish, much, rich",
+      "subtitle": "Page 61",
+      "file": "u8-blend.mp3"
+    },
+    {
+      "id": "u8-read",
+      "unit": 8,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 62",
+      "file": "u8-read.mp3"
+    },
+    {
+      "id": "u8-game",
+      "unit": 8,
+      "title": "River Fishing: sh fish and ch fish",
+      "subtitle": "Page 63",
+      "file": "u8-game.mp3"
+    },
+    {
+      "id": "u8-reader",
+      "unit": 8,
+      "title": "Mini-reader: The ship is big.",
+      "subtitle": "Page 64",
+      "file": "u8-reader.mp3"
+    },
+    {
+      "id": "u9-song",
+      "unit": 9,
+      "unitTitle": "Park · th ng",
+      "title": "The Park Song (th ng)",
+      "subtitle": "Page 65",
+      "file": "u9-song.mp3"
+    },
+    {
+      "id": "u9-sound-th",
+      "unit": 9,
+      "title": "Sound th: thhh, three",
+      "subtitle": "Page 66",
+      "file": "u9-sound-th.mp3"
+    },
+    {
+      "id": "u9-sound-ng",
+      "unit": 9,
+      "title": "Sound ng: ng, ring",
+      "subtitle": "Page 66",
+      "file": "u9-sound-ng.mp3"
+    },
+    {
+      "id": "u9-listen-circle",
+      "unit": 9,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 67",
+      "file": "u9-listen-circle.mp3"
+    },
+    {
+      "id": "u9-blend",
+      "unit": 9,
+      "title": "Trace, blend and heart words: thin, this, that, then, bath, with, ring, king",
+      "subtitle": "Page 68",
+      "file": "u9-blend.mp3"
+    },
+    {
+      "id": "u9-read",
+      "unit": 9,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 69",
+      "file": "u9-read.mp3"
+    },
+    {
+      "id": "u9-reader",
+      "unit": 9,
+      "title": "Mini-reader: This is a ring.",
+      "subtitle": "Page 70",
+      "file": "u9-reader.mp3"
+    },
+    {
+      "id": "u9-game-words",
+      "unit": 9,
+      "title": "Park Trail: review of Units 1 to 9",
+      "subtitle": "Page 71",
+      "file": "u9-game-words.mp3"
+    },
+    {
+      "id": "u9-reading-check",
+      "unit": 9,
+      "title": "Reading check: words and sentences",
+      "subtitle": "Page 72",
+      "file": "u9-reading-check.mp3"
+    },
+    {
+      "id": "u10-song",
+      "unit": 10,
+      "unitTitle": "Campsite · blends",
+      "title": "The Campsite Song (blends)",
+      "subtitle": "Page 75",
+      "file": "u10-song.mp3"
+    },
+    {
+      "id": "u10-blend-fr",
+      "unit": 10,
+      "title": "Blend fr: frog",
+      "subtitle": "Page 76",
+      "file": "u10-blend-fr.mp3"
+    },
+    {
+      "id": "u10-blend-fl",
+      "unit": 10,
+      "title": "Blend fl: flag",
+      "subtitle": "Page 76",
+      "file": "u10-blend-fl.mp3"
+    },
+    {
+      "id": "u10-blend-st",
+      "unit": 10,
+      "title": "Blend st: stop",
+      "subtitle": "Page 76",
+      "file": "u10-blend-st.mp3"
+    },
+    {
+      "id": "u10-blend-gr",
+      "unit": 10,
+      "title": "Blend gr: grapes",
+      "subtitle": "Page 76",
+      "file": "u10-blend-gr.mp3"
+    },
+    {
+      "id": "u10-blend-mp",
+      "unit": 10,
+      "title": "Blend mp: lamp",
+      "subtitle": "Page 77",
+      "file": "u10-blend-mp.mp3"
+    },
+    {
+      "id": "u10-blend-nt",
+      "unit": 10,
+      "title": "Blend nt: tent",
+      "subtitle": "Page 77",
+      "file": "u10-blend-nt.mp3"
+    },
+    {
+      "id": "u10-blend-nd",
+      "unit": 10,
+      "title": "Blend nd: sand",
+      "subtitle": "Page 77",
+      "file": "u10-blend-nd.mp3"
+    },
+    {
+      "id": "u10-blend-lk",
+      "unit": 10,
+      "title": "Blend lk: milk",
+      "subtitle": "Page 77",
+      "file": "u10-blend-lk.mp3"
+    },
+    {
+      "id": "u10-listen-circle",
+      "unit": 10,
+      "title": "Listen, circle and sort",
+      "subtitle": "Page 78",
+      "file": "u10-listen-circle.mp3"
+    },
+    {
+      "id": "u10-blend",
+      "unit": 10,
+      "title": "Trace, blend and heart words: frog, stop, jump, tent",
+      "subtitle": "Page 79",
+      "file": "u10-blend.mp3"
+    },
+    {
+      "id": "u10-read",
+      "unit": 10,
+      "title": "Read and match, read and check, sentences",
+      "subtitle": "Page 80",
+      "file": "u10-read.mp3"
+    },
+    {
+      "id": "u10-game",
+      "unit": 10,
+      "title": "Camp Bingo: read the words",
+      "subtitle": "Page 81",
+      "file": "u10-game.mp3"
+    },
+    {
+      "id": "u10-reader",
+      "unit": 10,
+      "title": "Mini-reader: The frog is on a step.",
+      "subtitle": "Page 82",
+      "file": "u10-reader.mp3"
+    },
+    {
+      "id": "u11-song",
+      "unit": 11,
+      "unitTitle": "Orchard · sentences",
+      "title": "The Orchard Song (sentences)",
+      "subtitle": "Page 83",
+      "file": "u11-song.mp3"
+    },
+    {
+      "id": "u11-sentence",
+      "unit": 11,
+      "title": "What is a sentence?",
+      "subtitle": "Page 84",
+      "file": "u11-sentence.mp3"
+    },
+    {
+      "id": "u11-have",
+      "unit": 11,
+      "title": "Heart word: have",
+      "subtitle": "Page 84",
+      "file": "u11-have.mp3"
+    },
+    {
+      "id": "u11-like",
+      "unit": 11,
+      "title": "Heart word: like",
+      "subtitle": "Page 84",
+      "file": "u11-like.mp3"
+    },
+    {
+      "id": "u11-build",
+      "unit": 11,
+      "title": "Build it and read",
+      "subtitle": "Page 85",
+      "file": "u11-build.mp3"
+    },
+    {
+      "id": "u11-read",
+      "unit": 11,
+      "title": "Read and match, read and check, read and color",
+      "subtitle": "Page 86",
+      "file": "u11-read.mp3"
+    },
+    {
+      "id": "u11-game",
+      "unit": 11,
+      "title": "Sentence Trail: read and hop",
+      "subtitle": "Page 87",
+      "file": "u11-game.mp3"
+    },
+    {
+      "id": "u11-reader1",
+      "unit": 11,
+      "title": "Mini-reader 1: Dot has a plum.",
+      "subtitle": "Page 88",
+      "file": "u11-reader1.mp3"
+    },
+    {
+      "id": "u11-reader2",
+      "unit": 11,
+      "title": "Mini-reader 2: We have a tent.",
+      "subtitle": "Page 89",
+      "file": "u11-reader2.mp3"
+    },
+    {
+      "id": "u12-song",
+      "unit": 12,
+      "unitTitle": "Reading Day · review",
+      "title": "The Reading Day Song",
+      "subtitle": "Page 90",
+      "file": "u12-song.mp3"
+    },
+    {
+      "id": "u12-sounds",
+      "unit": 12,
+      "title": "Sound check: circle the sound",
+      "subtitle": "Page 91",
+      "file": "u12-sounds.mp3"
+    },
+    {
+      "id": "u12-words",
+      "unit": 12,
+      "title": "Read the words",
+      "subtitle": "Page 92",
+      "file": "u12-words.mp3"
+    },
+    {
+      "id": "u12-story1",
+      "unit": 12,
+      "title": "Story 1: Dot Goes to Camp",
+      "subtitle": "Page 93",
+      "file": "u12-story1.mp3"
+    },
+    {
+      "id": "u12-story2",
+      "unit": 12,
+      "title": "Story 2: The Frog and the Plum",
+      "subtitle": "Page 94",
+      "file": "u12-story2.mp3"
+    },
+    {
+      "id": "u12-challenge",
+      "unit": 12,
+      "title": "Reading Day challenge",
+      "subtitle": "Page 95",
+      "file": "u12-challenge.mp3"
+    },
+    {
+      "id": "u12-certificate",
+      "unit": 12,
+      "title": "Sound Star certificate",
+      "subtitle": "Page 96",
+      "file": "u12-certificate.mp3"
+    }
+  ]
+}

@@ -304,6 +304,114 @@
       "title": "Listen and write.",
       "subtitle": "Page 68",
       "file": "u9-listen-and-write.mp3"
+    },
+    {
+      "id": "u10-treehouse-chant",
+      "unit": 10,
+      "unitTitle": "The Treehouse",
+      "title": "The Treehouse Chant",
+      "subtitle": "Page 72",
+      "file": "u10-treehouse-chant.mp3"
+    },
+    {
+      "id": "u10-rooms",
+      "unit": 10,
+      "title": "Rooms. Listen, point and say.",
+      "subtitle": "Page 73",
+      "file": "u10-rooms.mp3"
+    },
+    {
+      "id": "u10-furniture",
+      "unit": 10,
+      "title": "Furniture. Listen, point and say.",
+      "subtitle": "Page 73",
+      "file": "u10-furniture.mp3"
+    },
+    {
+      "id": "u10-where-is-it",
+      "unit": 10,
+      "title": "Where Is It? Listen and circle.",
+      "subtitle": "Page 75",
+      "file": "u10-where-is-it.mp3"
+    },
+    {
+      "id": "u10-listen-and-write",
+      "unit": 10,
+      "title": "Listen and write.",
+      "subtitle": "Page 78",
+      "file": "u10-listen-and-write.mp3"
+    },
+    {
+      "id": "u11-ocean-chant",
+      "unit": 11,
+      "unitTitle": "Ocean Dive",
+      "title": "The Ocean Chant",
+      "subtitle": "Page 79",
+      "file": "u11-ocean-chant.mp3"
+    },
+    {
+      "id": "u11-sea-animals",
+      "unit": 11,
+      "title": "Sea animals. Listen, point and say.",
+      "subtitle": "Page 80",
+      "file": "u11-sea-animals.mp3"
+    },
+    {
+      "id": "u11-there-is",
+      "unit": 11,
+      "title": "There is, there are. Listen, point and say.",
+      "subtitle": "Page 80",
+      "file": "u11-there-is.mp3"
+    },
+    {
+      "id": "u11-how-many",
+      "unit": 11,
+      "title": "How Many? Listen and circle.",
+      "subtitle": "Page 82",
+      "file": "u11-how-many.mp3"
+    },
+    {
+      "id": "u11-listen-and-write",
+      "unit": 11,
+      "title": "Listen and write.",
+      "subtitle": "Page 85",
+      "file": "u11-listen-and-write.mp3"
+    },
+    {
+      "id": "u12-space-chant",
+      "unit": 12,
+      "unitTitle": "Space Station",
+      "title": "The Space Station Chant",
+      "subtitle": "Page 86",
+      "file": "u12-space-chant.mp3"
+    },
+    {
+      "id": "u12-days",
+      "unit": 12,
+      "title": "Days of the week. Listen, point and say.",
+      "subtitle": "Page 87",
+      "file": "u12-days.mp3"
+    },
+    {
+      "id": "u12-routine",
+      "unit": 12,
+      "title": "My day. Listen, point and say.",
+      "subtitle": "Page 87",
+      "file": "u12-routine.mp3"
+    },
+    {
+      "id": "u12-kiko-day",
+      "unit": 12,
+      "title": "Kiko’s Day. Listen and number.",
+      "subtitle": "Page 89",
+      "file": "u12-kiko-day.mp3"
+    },
+    {
+      "id": "u12-listen-and-write",
+      "unit": 12,
+      "title": "Listen and write.",
+      "subtitle": "Page 91",
+      "file": "u12-listen-and-write.mp3"
     }
   ]
 }
