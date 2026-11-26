@@ -386,7 +386,7 @@ function ceOpenTopicForm(levelId, existing, forceNew) {
       </div>
 
       <div class="gm-form-field">
-        <label for="ceSentences">🧩 Unscramble sentences (one per line, 3–9 words each)</label>
+        <label for="ceSentences">🧩 Unscramble sentences (one per line — the games use the ones with 3–9 words)</label>
         <textarea id="ceSentences" rows="4"
           placeholder="I am a student&#10;She is my teacher">${igEscapeHtml((draft.practiceSentences || []).join('\n'))}</textarea>
         <p class="ce-hint">These are the sentences students rebuild word by word. The reading text below
@@ -584,15 +584,11 @@ function ceSaveTopic(levelId, draft, originalId, isNew) {
     delete draft.video;
   }
 
-  // 3-9 words: below that there is nothing to unscramble, above it the tiles
-  // stop fitting on a phone.
+  // The games only play sentences of 3-9 words (lkSentences skips the rest),
+  // so a shorter or longer line never blocks saving: it is kept as written.
+  // ("I'm Brazilian" used to stop the whole topic from being saved.)
   const sentences = document.getElementById('ceSentences').value
     .split(/\n+/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean);
-  const badLength = sentences.find(x => {
-    const n = x.split(' ').length;
-    return n < 3 || n > 9;
-  });
-  if (badLength) return fail(`Unscramble sentences need 3 to 9 words. This one has ${badLength.split(' ').length}: "${badLength}"`);
   if (sentences.length) draft.practiceSentences = sentences; else delete draft.practiceSentences;
 
   if (!draft.title) return fail('Please give the topic a title.');
